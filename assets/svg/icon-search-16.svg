@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;}
+	.st1{fill:#303441;}
+</style>
+<g id="icon-search" transform="translate(-373 -33)">
+	<g id="그룹_1">
+		<g id="타원_1" transform="translate(373 33)">
+			<g>
+				<circle class="st0" cx="7.4" cy="7.3" r="7.3"/>
+			</g>
+			<g>
+				<path class="st1" d="M7.4,14.6c-4,0-7.3-3.3-7.3-7.3c0-4,3.3-7.3,7.3-7.3s7.3,3.3,7.3,7.3C14.7,11.3,11.5,14.6,7.4,14.6z
+					 M7.4,1.8c-3,0-5.5,2.5-5.5,5.5c0,3,2.5,5.5,5.5,5.5s5.5-2.5,5.5-5.5C12.9,4.3,10.4,1.8,7.4,1.8z"/>
+			</g>
+		</g>
+		<g id="패스_1">
+			<path class="st1" d="M388,49c-0.2,0-0.5-0.1-0.6-0.3l-3-2.8c-0.4-0.3-0.4-0.9,0-1.3c0.3-0.4,0.9-0.4,1.3,0l3,2.8
+				c0.4,0.3,0.4,0.9,0,1.3C388.5,48.9,388.2,49,388,49z"/>
+		</g>
+	</g>
+</g>
+</svg>

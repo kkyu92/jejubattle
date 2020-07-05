@@ -1,0 +1,102 @@
+import React from 'react';
+import {
+  Container,
+  Header,
+  Text,
+  Image,
+  HView,
+  Seperator,
+  TextInput,
+  Button,
+  Checkbox,
+} from 'react-native-nuno-ui';
+import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import Icons from '../../commons/Icons';
+import {custom} from '../../config';
+import ListItem from '../../commons/ListItem';
+
+export default function WishList(props) {
+  const [edit, setEdit] = React.useState(false);
+  const data = [
+    {id: '0'},
+    {id: '1'},
+    {id: '2'},
+    {id: '3'},
+    {id: '4'},
+    {id: '5'},
+    {id: '6'},
+    {id: 's'},
+  ];
+  const renderItem = () => {
+    return <ListItem editMode={edit} />;
+  };
+  return (
+    <Container>
+      <Header
+        left={'close'}
+        title={'위시리스트'}
+        rightComponent={
+          <HView>
+            <TouchableOpacity
+              onPress={() => null}
+              style={{paddingHorizontal: 5, paddingVertical: 5}}>
+              <Icons name={'icon-map-24'} size={20} color={'dimgray'} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setEdit(true)}
+              style={{paddingHorizontal: 20, paddingVertical: 5}}>
+              <Text
+                text={'편집'}
+                fontSize={16}
+                fontWeight={'500'}
+                color={'dimgray'}
+              />
+            </TouchableOpacity>
+          </HView>
+        }
+        navigation={props.navigation}
+      />
+      {edit && (
+        <HView
+          style={{
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            paddingTop: 20,
+          }}>
+          <Checkbox multiple={true} label={'모두선택'} onPress={() => null} />
+          <Text
+            text={'1개 선택됨'}
+            fontWeight={'500'}
+            fontSize={14}
+            color={'dimgray'}
+          />
+        </HView>
+      )}
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        // ListEmptyComponent={<Empty />}
+        // ListHeaderComponent={FlatListHeader()}
+        // refreshing={pullToRefresh}
+        // onRefresh={() => {
+        //   setIsLast(false);
+        //   setPullToRefresh(true);
+        // }}
+      />
+      {edit && (
+        <View>
+          <Seperator line />
+          <HView style={{padding: 20}}>
+            <Button text={'취소'} color={'white'} onPress={() => setEdit(false)} />
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button text={'삭제'} color={custom.themeColor} onPress={() => null} stretch/>
+            </View>
+          </HView>
+          <Seperator bottom />
+        </View>
+      )}
+    </Container>
+  );
+}
