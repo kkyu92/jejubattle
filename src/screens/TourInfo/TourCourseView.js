@@ -78,7 +78,7 @@ export default function TourCourseView(props) {
   return (
     <Container>
       <Header
-        left={'back'}
+        left={'close'}
         title={'추천코스'}
         navigation={props.navigation}
         rightComponent={

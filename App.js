@@ -6,14 +6,22 @@
  * @flow strict-local
  */
 
+import 'react-native-gesture-handler';
 import React from 'react';
 import {useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {RootStackScreen} from './src/navigations';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
-import { Nuno } from 'react-native-nuno-ui';
-import { custom } from './src/config';
+import {Nuno} from 'react-native-nuno-ui';
+import {
+  GEOCODE_API,
+  BUNDLE_ID,
+  PACKAGE_NAME,
+  IOS_STORE_ID,
+  FIREBASE_WEB_API,
+  custom,
+} from './src/config';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +29,12 @@ Nuno.init({
   themeColor: custom.themeColor,
   textColor: custom.textColor,
   headerTitleWeight: custom.headerTitleWeight,
+  dynamicLink: custom.dynamicLink,
+  FIREBASE_WEB_API: FIREBASE_WEB_API,
+  IOS_STORE_ID: IOS_STORE_ID,
+  PACKAGE_NAME: PACKAGE_NAME,
+  BUNDLE_ID: BUNDLE_ID,
+  GEOCODE_API: GEOCODE_API,
 });
 
 const App: () => React$Node = () => {
@@ -29,7 +43,8 @@ const App: () => React$Node = () => {
 
   const theme = {
     colors: {
-      background: colorScheme === 'light' ? 'white' : 'black',
+      // background: colorScheme === 'light' ? 'white' : 'black',
+      background: 'white',
     },
   };
 

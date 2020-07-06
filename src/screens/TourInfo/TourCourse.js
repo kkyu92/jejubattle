@@ -38,7 +38,7 @@ export default function TourCourse(props) {
   };
   return (
     <Container>
-      <Header left={'back'} title={'추천코스'} navigation={props.navigation} />
+      <Header left={'close'} title={'추천코스'} navigation={props.navigation} />
       <Seperator height={20} />
       <FlatList
         data={data}

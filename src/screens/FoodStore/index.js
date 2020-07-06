@@ -34,7 +34,7 @@ export default function FoodStore(props) {
   return (
     <Container>
       <Header
-        left={'back'}
+        left={'close'}
         rightComponent={
           <TouchableOpacity
             onPress={() => setFilterVisible(true)}

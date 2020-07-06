@@ -99,7 +99,7 @@ export default function Archive(props) {
         <View style={{padding: 10, backgroundColor: 'white', borderRadius: 5}}>
           <Image
             height={230}
-            width={Math.floor(screenWidth - 72)}
+            width={Math.floor(screenWidth - 110)}
             borderRadius={8}
             uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
             // onPress={() => null}

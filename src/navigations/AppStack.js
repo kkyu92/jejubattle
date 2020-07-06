@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import BottomTabStackScreen from './BottomTabStack';
-import { screenWidth } from '../styles';
+import {screenWidth} from '../styles';
 import Drawer from '../screens/Drawer';
 import Notification from '../screens/Notification';
 import Search from '../screens/Search';
@@ -44,7 +44,11 @@ function LeftDrawerStackScreen() {
 const MyInfoStack = createStackNavigator();
 function MyInfoStackScreen() {
   return (
-    <MyInfoStack.Navigator headerMode="none">
+    <MyInfoStack.Navigator
+      headerMode="none"
+      screenOptions={{
+        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+      }}>
       <MyInfoStack.Screen name="MyInfo" component={MyInfo} />
       <MyInfoStack.Screen name="CoinCharge" component={CoinCharge} />
       <MyInfoStack.Screen name="PurchaseHistory" component={PurchaseHistory} />
@@ -55,7 +59,12 @@ function MyInfoStackScreen() {
 const TourInfoStack = createStackNavigator();
 function TourInfoStackScreen() {
   return (
-    <TourInfoStack.Navigator headerMode="none">
+    <TourInfoStack.Navigator
+      headerMode="none"
+      screenOptions={{
+        // cardOverlayEnabled: true,
+        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+      }}>
       <TourInfoStack.Screen name="TourInfo" component={TourInfo} />
       <TourInfoStack.Screen name="TourCourse" component={TourCourse} />
       <TourInfoStack.Screen name="TourCourseView" component={TourCourseView} />
@@ -66,7 +75,12 @@ function TourInfoStackScreen() {
 const EventStack = createStackNavigator();
 function EventStackScreen() {
   return (
-    <EventStack.Navigator headerMode="none">
+    <EventStack.Navigator
+      headerMode="none"
+      screenOptions={{
+        // cardOverlayEnabled: true,
+        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+      }}>
       <EventStack.Screen name="Event" component={Event} />
       <EventStack.Screen name="EventView" component={EventView} />
     </EventStack.Navigator>

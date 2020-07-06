@@ -21,7 +21,7 @@ export default function EditProfile(props) {
   const [modalPassword, setModalPassword] = React.useState(false);
   return (
     <Container>
-      <Header left={'back'} title={'정보수정'} navigation={props.navigation} />
+      <Header left={'close'} title={'정보수정'} navigation={props.navigation} />
       <ScrollView>
         <View style={{padding: 20}}>
           <HView style={{paddingVertical: 30}}>

@@ -65,7 +65,7 @@ export default function PurchaseHistory(props) {
   };
   return (
     <Container>
-      <Header left={'back'} title={'구매내역'} navigation={props.navigation} />
+      <Header left={'close'} title={'구매내역'} navigation={props.navigation} />
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}

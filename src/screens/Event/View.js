@@ -83,7 +83,7 @@ export default function EventView(props) {
   return (
     <Container>
       <Header
-        left={'back'}
+        left={'close'}
         title={'이벤트'}
         navigation={props.navigation}
         rightComponent={

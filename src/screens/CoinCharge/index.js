@@ -17,7 +17,7 @@ export default function CoinCharge(props) {
   return (
     <Container>
       <Header
-        left={'back'}
+        left={'close'}
         rightComponent={
           <TouchableOpacity
             onPress={() => props.navigation.navigate('PurchaseHistory')}
