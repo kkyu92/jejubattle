@@ -12,9 +12,6 @@ import {
   Modal,
 } from 'react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
-import Icons from '../../commons/Icons';
-import {custom} from '../../config';
-import ListItem from '../../commons/ListItem';
 import Accordion from 'react-native-collapsible/Accordion';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
@@ -88,7 +85,7 @@ export default function Notice(props) {
         activeSections={activeSection}
         sections={data}
         expandMultiple={true}
-        touchableComponent={TouchableOpacity}
+        touchableComponent={(props) => <TouchableOpacity {...props} />}
         renderHeader={renderHeader}
         renderContent={renderContent}
         onChange={updateSection}

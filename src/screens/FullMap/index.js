@@ -59,7 +59,6 @@ export default function FullMap(props) {
                 onChangeText={() => null}
                 borderWidth={0}
                 placeholder={'검색하실 키워드를 입력해주세요.'}
-                clearButtonMode={true}
               />
             </View>
           </HView>
