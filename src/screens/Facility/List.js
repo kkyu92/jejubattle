@@ -131,17 +131,45 @@ export default function FacilityList(props) {
             <View style={{alignItems: 'center'}}>
               <Text text={'필터'} fontWeight={'bold'} fontSize={18} />
             </View>
+            <Seperator height={20} />
+            <HView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'등록순'} checked={true} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'추천순'} checked={false} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'내 위치순'} checked={false} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'평점순'} checked={false} />
+              </View>
+            </HView>
             <Seperator height={30} />
-            <HView style={{flexWrap: 'wrap'}}>
-              <Checkbox label={'등록순'} />
-              <Checkbox label={'등록순'} />
-              <Checkbox label={'등록순'} />
-              <Checkbox label={'등록순'} />
+            <HView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'학교운동장'} checked={true} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'체육공원'} checked={false} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'공공체육시설'} checked={false} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'사설체육시설'} checked={false} />
+              </View>
             </HView>
           </View>
           <HView style={{padding: 10}}>
             <View style={{flex: 1}}>
-              <Button text={'취소'} onPress={() => setFilterVisible(false)} color={'lightgray'} stretch />
+              <Button
+                text={'취소'}
+                onPress={() => setFilterVisible(false)}
+                color={'gray'}
+                stretch
+              />
             </View>
             <Seperator width={10} />
             <View style={{flex: 1}}>

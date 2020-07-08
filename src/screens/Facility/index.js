@@ -1,8 +1,15 @@
 import React from 'react';
-import {Container, Text, Header, Seperator, HView, Image} from 'react-native-nuno-ui';
+import {
+  Container,
+  Text,
+  Header,
+  Seperator,
+  HView,
+  Image,
+} from 'react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import Icons from '../../commons/Icons';
-import {ShadowStyle} from '../../styles';
+import {ShadowStyle, screenWidth} from '../../styles';
 
 export default function Facility(props) {
   return (
@@ -42,78 +49,102 @@ export default function Facility(props) {
           <Text text={'구기종목'} fontWeight={'bold'} fontSize={21} />
           <Seperator height={30} />
           <HView style={{flexWrap: 'wrap'}}>
-            <TouchableOpacity style={{alignItems: 'center', marginRight: 20}} onPress={() => props.navigation.navigate('FacilityList')}>
-              <View
-                style={{
-                  backgroundColor: 'whitesmoke',
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                }}
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-soccer.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
               />
-              <Seperator height={8} />
-              <Text text={'축구'} fontSize={15} color={'gray'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center', marginRight: 20}} onPress={() => null}>
-              <View
-                style={{
-                  backgroundColor: 'whitesmoke',
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                }}
+              <Seperator height={10} />
+              <Text text={'축구'} fontSize={14} />
+            </View>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-basketball.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
               />
-              <Seperator height={8} />
-              <Text text={'축구'} fontSize={15} color={'gray'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center', marginRight: 20}} onPress={() => null}>
-              <View
-                style={{
-                  backgroundColor: 'whitesmoke',
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                }}
+              <Seperator height={10} />
+              <Text text={'농구'} fontSize={14} />
+            </View>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-baseball.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
               />
-              <Seperator height={8} />
-              <Text text={'축구'} fontSize={15} color={'gray'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center', marginRight: 20}} onPress={() => null}>
-              <View
-                style={{
-                  backgroundColor: 'whitesmoke',
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                }}
+              <Seperator height={10} />
+              <Text text={'야구'} fontSize={14} />
+            </View>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-golf.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
               />
-              <Seperator height={8} />
-              <Text text={'축구'} fontSize={15} color={'gray'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center', marginRight: 20}} onPress={() => null}>
-              <View
-                style={{
-                  backgroundColor: 'whitesmoke',
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                }}
+              <Seperator height={10} />
+              <Text text={'골프'} fontSize={14} />
+            </View>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-tennis.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
               />
-              <Seperator height={8} />
-              <Text text={'축구'} fontSize={15} color={'gray'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center', marginRight: 20}} onPress={() => null}>
-              <View
-                style={{
-                  backgroundColor: 'whitesmoke',
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                }}
+              <Seperator height={10} />
+              <Text text={'테니스'} fontSize={14} />
+            </View>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-badminton.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
               />
-              <Seperator height={8} />
-              <Text text={'축구'} fontSize={15} color={'gray'} />
-            </TouchableOpacity>
+              <Seperator height={10} />
+              <Text text={'배드민턴'} fontSize={14} />
+            </View>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-billards.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
+              />
+              <Seperator height={10} />
+              <Text text={'당구'} fontSize={14} />
+            </View>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Image
+                local
+                height={Math.floor((screenWidth - 180) / 5)}
+                width={Math.floor((screenWidth - 180) / 5)}
+                uri={require('../../../assets/img/icon-balling.png')}
+                onPress={() => props.navigation.navigate('FacilityList')}
+                resizeMode={'cover'}
+              />
+              <Seperator height={10} />
+              <Text text={'볼링'} fontSize={14} />
+            </View>
           </HView>
         </View>
         <View

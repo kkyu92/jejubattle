@@ -14,13 +14,28 @@ import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 
 export default function Search(props) {
-  const dataFacility = [{id: '0'}, {id: '1'}];
-  const dataRecommand = [{id: '0'}, {id: '1'}];
-  const renderFacility = () => {
-    return <ListItem />;
-  };
-  const renderRecommand = () => {
-    return <ListItem />;
+  const data = [{id: '0'}, {id: '1'}, {id: '2'}, {id: '3'}, {id: '4'}, {id: '5'}, {id: '6'}, {id: '7'}];
+  const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([0, 3]);
+  const renderItems = ({item, index}) => {
+    if (index === 0) {
+      return (
+        <HView style={{padding: 20, backgroundColor: 'white'}}>
+          <Text fontSize={16} fontWeight={'bold'} text={'운동시설'} />
+          <Text fontSize={16} text={'에서의 검색결과'} />
+          <Text fontSize={16} text={'(2)'} color={'gray'} />
+        </HView>
+      );
+    } else if (index === 3) {
+      return (
+        <HView style={{padding: 20, backgroundColor: 'white'}}>
+          <Text fontSize={16} fontWeight={'bold'} text={'추천코스'} />
+          <Text fontSize={16} text={'에서의 검색결과'} />
+          <Text fontSize={16} text={'(2)'} color={'gray'} />
+        </HView>
+      );
+    } else {
+      return <ListItem />;
+    }
   };
   return (
     <Container>
@@ -121,15 +136,12 @@ export default function Search(props) {
           </TouchableOpacity>
         </ScrollView>
       </HView>
-      <HView style={{padding: 20}}>
-        <Text fontSize={16} fontWeight={'bold'} text={'운동시설'} />
-        <Text fontSize={16} text={'에서의 검색결과'} />
-        <Text fontSize={16} text={'(2)'} color={'gray'} />
-      </HView>
+
       <FlatList
-        data={dataFacility}
+        data={data}
         keyExtractor={(item) => item.id}
-        renderItem={renderFacility}
+        renderItem={renderItems}
+        stickyHeaderIndices={stickyHeaderIndices}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}
@@ -139,23 +151,7 @@ export default function Search(props) {
         // }}
       />
       <Seperator height={10} color={'whitesmoke'} />
-      <HView style={{padding: 20}}>
-        <Text fontSize={16} fontWeight={'bold'} text={'추천코스'} />
-        <Text fontSize={16} text={'에서의 검색결과'} />
-        <Text fontSize={16} text={'(2)'} color={'gray'} />
-      </HView>
-      <FlatList
-        data={dataRecommand}
-        keyExtractor={(item) => item.id}
-        renderItem={renderRecommand}
-        // ListEmptyComponent={<Empty />}
-        // ListHeaderComponent={FlatListHeader()}
-        // refreshing={pullToRefresh}
-        // onRefresh={() => {
-        //   setIsLast(false);
-        //   setPullToRefresh(true);
-        // }}
-      />
+
     </Container>
   );
 }

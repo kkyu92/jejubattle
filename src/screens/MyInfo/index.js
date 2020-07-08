@@ -26,13 +26,12 @@ export default function MyInfo(props) {
           alignItems: 'center',
           padding: 30,
         }}>
-        <View
-          style={{
-            width: 68,
-            height: 68,
-            borderRadius: 34,
-            backgroundColor: 'gray',
-          }}
+        <Image
+          local
+          uri={require('../../../assets/img/img-user2.png')}
+          width={68}
+          height={68}
+          borderRadius={34}
         />
         <Seperator height={10} />
         <StarRating
@@ -55,8 +54,24 @@ export default function MyInfo(props) {
         />
         <Seperator height={15} />
         <HView>
+          <Image
+            local
+            uri={require('../../../assets/img/icon-coinmoney.png')}
+            width={20}
+            height={20}
+            borderRadius={10}
+          />
+          <Seperator width={10} />
           <Text fontSize={13} text={'2 coin'} />
           <Seperator width={20} />
+          <Image
+            local
+            uri={require('../../../assets/img/icon-pointmoney.png')}
+            width={20}
+            height={20}
+            borderRadius={10}
+          />
+          <Seperator width={10} />
           <Text fontSize={13} text={'3 point'} />
         </HView>
       </View>
@@ -64,16 +79,37 @@ export default function MyInfo(props) {
         <TouchableOpacity
           onPress={() => actionSheetRef.current?.setModalVisible()}
           style={{alignItems: 'center'}}>
+          <Image
+            local
+            uri={require('../../../assets/img/icon-myscore.png')}
+            width={34}
+            height={44}
+          />
+          <Seperator height={10} />
           <Text fontSize={14} text={'전적'} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => props.navigation.navigate('CoinCharge')}
           style={{alignItems: 'center'}}>
+          <Image
+            local
+            uri={require('../../../assets/img/icon-coinchange.png')}
+            width={44}
+            height={44}
+          />
+          <Seperator height={10} />
           <Text fontSize={14} text={'코인충전소'} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => props.navigation.navigate('EditProfile')}
           style={{alignItems: 'center'}}>
+          <Image
+            local
+            uri={require('../../../assets/img/icon-mypage-modify.png')}
+            width={40}
+            height={44}
+          />
+          <Seperator height={10} />
           <Text fontSize={14} text={'정보 수정'} />
         </TouchableOpacity>
       </HView>

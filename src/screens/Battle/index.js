@@ -7,6 +7,8 @@ import {
   HView,
   Button,
   Image,
+  Modal,
+  Checkbox,
 } from 'react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -85,6 +87,52 @@ export default function Battle(props) {
         // }}
       />
       <FloatingButton onPress={() => props.navigation.navigate('BattleEdit')} />
+      <Modal
+        isVisible={filterVisible}
+        onBackdropPress={() => setFilterVisible(false)}>
+        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
+          <View style={{padding: 20}}>
+            <View style={{alignItems: 'center'}}>
+              <Text text={'필터'} fontWeight={'bold'} fontSize={18} />
+            </View>
+            <Seperator height={20} />
+            <HView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'등록순'} checked={true} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'추천순'} checked={false} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'내 위치순'} checked={false} />
+              </View>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox label={'평점순'} checked={false} />
+              </View>
+            </HView>
+          </View>
+          <HView style={{padding: 10}}>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                onPress={() => setFilterVisible(false)}
+                color={'gray'}
+                stretch
+              />
+            </View>
+            <Seperator width={10} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'적용하기'}
+                onPress={() => null}
+                color={custom.themeColor}
+                stretch
+                disable={false}
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
     </Container>
   );
 }

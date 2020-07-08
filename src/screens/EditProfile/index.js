@@ -287,7 +287,7 @@ export default function EditProfile(props) {
               placeholder={'최대 50자 까지 작성 가능합니다.'}
             />
           </View>
-          <Seperator height={50} />
+          <Seperator height={20} />
           <HView>
             <View style={{flex: 1}}>
               <Button
@@ -327,7 +327,7 @@ export default function EditProfile(props) {
               text={'비밀번호 변경'}
             />
           </View>
-          <Seperator height={50} />
+          <Seperator height={20} />
           <View>
             <TextInput
               title={'현재 비밀번호'}
@@ -354,7 +354,7 @@ export default function EditProfile(props) {
             />
             <Seperator line />
           </View>
-          <Seperator height={50} />
+          <Seperator height={20} />
           <HView>
             <View style={{flex: 1}}>
               <Button

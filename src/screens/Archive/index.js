@@ -44,7 +44,7 @@ export default function Archive(props) {
           style={{
             borderColor: 'lightgray',
             borderWidth: 1,
-            borderRadius: 4,
+            borderRadius: 10,
             alignItems: 'center',
             padding: 10,
           }}>
@@ -55,6 +55,9 @@ export default function Archive(props) {
             onPress={() => showDetail()}
             resizeMode={'cover'}
           />
+          <View style={{position: 'absolute', top: 5, right: 5}}>
+            <Button text={'D-2'} color={'#FE491B'} size={'small'} />
+          </View>
         </TouchableOpacity>
         <View
           style={{

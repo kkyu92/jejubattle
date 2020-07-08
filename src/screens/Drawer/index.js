@@ -1,5 +1,12 @@
 import React from 'react';
-import {Container, Header, Seperator, HView, Text} from 'react-native-nuno-ui';
+import {
+  Container,
+  Header,
+  Seperator,
+  HView,
+  Text,
+  Image,
+} from 'react-native-nuno-ui';
 import {TouchableOpacity, View} from 'react-native';
 import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';
@@ -29,13 +36,15 @@ export default function Drawer(props) {
       />
       <Seperator height={35} />
       <HView style={{paddingHorizontal: 20}}>
-        <View
-          style={{
-            width: 68,
-            height: 68,
-            borderRadius: 34,
-            backgroundColor: 'gray',
-          }}
+        <Image
+          local
+          uri={require('../../../assets/img/img-user2.png')}
+          width={68}
+          height={68}
+          borderRadius={34}
+          onPress={() =>
+            props.navigation.navigate('MyInfoStack', {screen: 'MyInfo'})
+          }
         />
         <Seperator width={22} />
         <View>
@@ -66,8 +75,24 @@ export default function Drawer(props) {
         </View>
         <Seperator width={22} />
         <HView>
+          <Image
+            local
+            uri={require('../../../assets/img/icon-coinmoney.png')}
+            width={20}
+            height={20}
+            borderRadius={10}
+          />
+          <Seperator width={10} />
           <Text fontSize={13} text={'2 coin'} color={'gray'} />
           <Seperator width={20} />
+          <Image
+            local
+            uri={require('../../../assets/img/icon-pointmoney.png')}
+            width={20}
+            height={20}
+            borderRadius={10}
+          />
+          <Seperator width={10} />
           <Text fontSize={13} text={'3 point'} color={'gray'} />
         </HView>
       </HView>
@@ -78,7 +103,7 @@ export default function Drawer(props) {
 
       {/* menu list */}
       <ScrollView>
-        <TouchableOpacity onPress={() => null}>
+        <TouchableOpacity onPress={() => props.navigation.navigate('FullMap')}>
           <HView
             style={{
               paddingHorizontal: 20,
@@ -86,18 +111,15 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-mylocation-20'} size={19} color={'gray'} />
+              <Icons name={'icon-mylocation-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'내 주변 살펴보기'} fontSize={18} color={'gray'} />
+              <Text text={'내 주변 살펴보기'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
         </TouchableOpacity>
         <Seperator line />
-        <TouchableOpacity
-          onPress={() =>
-            props.navigation.navigate('MyInfoStack', {screen: 'MyInfo'})
-          }>
+        <TouchableOpacity onPress={() => props.navigation.navigate('MyBattleStack', {screen: 'MyBattle'})}>
           <HView
             style={{
               paddingHorizontal: 20,
@@ -105,9 +127,9 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-mybattle-20'} size={19} color={'gray'} />
+              <Icons name={'icon-mybattle-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'나의 배틀'} fontSize={18} color={'gray'} />
+              <Text text={'나의 배틀'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -126,9 +148,9 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-tripinfo-20'} size={19} color={'gray'} />
+              <Icons name={'icon-tripinfo-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'여행정보'} fontSize={18} color={'gray'} />
+              <Text text={'여행정보'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -142,9 +164,9 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-wishlist-20'} size={19} color={'gray'} />
+              <Icons name={'icon-wishlist-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'위시리스트'} fontSize={18} color={'gray'} />
+              <Text text={'위시리스트'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -158,9 +180,9 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-listbox-20'} size={19} color={'gray'} />
+              <Icons name={'icon-listbox-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'보관함'} fontSize={18} color={'gray'} />
+              <Text text={'보관함'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -179,9 +201,9 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-event-20'} size={19} color={'gray'} />
+              <Icons name={'icon-event-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'이벤트'} fontSize={18} color={'gray'} />
+              <Text text={'이벤트'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -195,9 +217,9 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-notice-20'} size={19} color={'gray'} />
+              <Icons name={'icon-notice-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'공지사항'} fontSize={18} color={'gray'} />
+              <Text text={'공지사항'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -212,9 +234,9 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-cs-20'} size={19} color={'gray'} />
+              <Icons name={'icon-cs-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'고객센터'} fontSize={18} color={'gray'} />
+              <Text text={'고객센터'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -228,14 +250,14 @@ export default function Drawer(props) {
               justifyContent: 'space-between',
             }}>
             <HView>
-              <Icons name={'icon-setting-20'} size={19} color={'gray'} />
+              <Icons name={'icon-setting-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'설정'} fontSize={18} color={'gray'} />
+              <Text text={'설정'} fontSize={18} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
         </TouchableOpacity>
-        <Seperator line />
+        {/* <Seperator line /> */}
       </ScrollView>
     </Container>
   );

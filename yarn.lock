@@ -5073,6 +5073,11 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "^1.2.5"
 
+moment@^2.27.0:
+  version "2.27.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
+  integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -5886,11 +5891,12 @@ react-native-modal@^11.5.6:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
 
-react-native-nuno-ui@^1.0.33:
-  version "1.0.33"
-  resolved "https://registry.yarnpkg.com/react-native-nuno-ui/-/react-native-nuno-ui-1.0.33.tgz#79174fe382e6f805bffcca858d29fdb3bdf96001"
-  integrity sha512-RdpHRGPOCpumlp94Rl3oVlBrcONrr0jZR5jcra6KG8gbRpJajNhrs2TKaU0aMLdd2a3ohNmBZsZz7UEQ+pOTRw==
+react-native-nuno-ui@^1.0.49:
+  version "1.0.49"
+  resolved "https://registry.yarnpkg.com/react-native-nuno-ui/-/react-native-nuno-ui-1.0.49.tgz#167f98e5f82928c203d7ea09d57938d65677bb41"
+  integrity sha512-lqSSda7DT6SVLGcLJKlJ/WZDaYxdssRS8vD/a6PFsdpnkGW0LakDuQUirUPnxH9zHQxxhu8WVPv4pATv1hjbLg==
   dependencies:
+    moment "^2.27.0"
     react-native-image-zoom-viewer "^3.0.1"
     react-native-iphone-x-helper "^1.2.1"
     react-native-keyboard-spacer "^0.4.1"

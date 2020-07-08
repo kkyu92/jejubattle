@@ -37,25 +37,56 @@ export default function TourInfo(props) {
         <View style={{padding: 20}}>
           <Text text={'카테고리'} fontWeight={'bold'} fontSize={18} />
         </View>
-        <HView>
-          <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => props.navigation.navigate('TourCourse')}>
+        <HView style={{padding: 20}}>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center'}}
+            onPress={() => props.navigation.navigate('TourCourse')}>
+            <Image
+              local
+              uri={require('../../../assets/img/icon-bestcourse.png')}
+              width={46}
+              height={46}
+            />
+            <Seperator height={10} />
             <Text text={'추천코스'} fontSize={14} fontWeight={'500'} />
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => props.navigation.navigate('FoodStore')}>
+            <Image
+              local
+              uri={require('../../../assets/img/icon-gourmet.png')}
+              width={46}
+              height={46}
+            />
+            <Seperator height={10} />
             <Text text={'맛집'} fontSize={14} fontWeight={'500'} />
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => null}>
+            <Image
+              local
+              uri={require('../../../assets/img/icon-sightseeing.png')}
+              width={45}
+              height={43}
+            />
+            <Seperator height={10} />
             <Text text={'관광지'} fontSize={14} fontWeight={'500'} />
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => null}>
+            <Image
+              local
+              uri={require('../../../assets/img/icon-leisure.png')}
+              width={45}
+              height={45}
+            />
+            <Seperator height={10} />
             <Text text={'체험'} fontSize={14} fontWeight={'500'} />
           </TouchableOpacity>
         </HView>
+        <Seperator height={20} />
         <View style={{padding: 20}}>
           <Text text={'제주에서 이런 곳은 어때요?'} fontWeight={'bold'} fontSize={18} />
         </View>
       </View>
-    )
+    );
   };
   const renderItem = ({item, index}) => {
     return (

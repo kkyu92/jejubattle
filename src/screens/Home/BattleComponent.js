@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TouchableOpacity} from 'react-native';
-import {HView, Text, Seperator} from 'react-native-nuno-ui';
+import {HView, Text, Seperator, Image} from 'react-native-nuno-ui';
 import Icons from '../../commons/Icons';
 import {ShadowStyle} from '../../styles';
 import MatchMember from '../../commons/MatchMember';
@@ -45,6 +45,14 @@ export default function BattleComponent(props) {
             fontSize={18}
             fontWeight={'bold'}
           />
+          <View style={{position: 'absolute', top: 0, right: 10}}>
+            <Image
+              local
+              uri={require('../../../assets/img/icon-roomtitle.png')}
+              width={22}
+              height={27}
+            />
+          </View>
         </View>
         <Seperator height={25} />
         <MatchMember />
@@ -55,13 +63,13 @@ export default function BattleComponent(props) {
             <Seperator height={5} />
             <Text text={'배드민턴'} fontSize={15} />
           </View>
-          <Seperator vline />
+          <Seperator vline height={40} />
           <View style={{alignItems: 'center', flex: 1}}>
             <Text text={'시간'} fontSize={13} color={'gray'} />
             <Seperator height={5} />
             <Text text={'14:00'} fontSize={15} />
           </View>
-          <Seperator vline />
+          <Seperator vline height={40} />
           <View style={{alignItems: 'center', flex: 1}}>
             <Text text={'장소'} fontSize={13} color={'gray'} />
             <Seperator height={5} />

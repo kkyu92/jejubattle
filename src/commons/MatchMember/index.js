@@ -1,5 +1,5 @@
 import React from 'react';
-import {HView, Seperator, Text, Modal, Button} from 'react-native-nuno-ui';
+import {HView, Seperator, Text, Modal, Button, Image} from 'react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
 import { custom } from '../../config';
 import StarRating from 'react-native-star-rating';
@@ -10,14 +10,13 @@ export default function MatchMember(props) {
   return (
     <HView style={{justifyContent: 'center'}}>
       <View style={{alignItems: 'center'}}>
-        <TouchableOpacity
+        <Image
+          local
+          uri={require('../../../assets/img/user_boy.png')}
+          width={72}
+          height={72}
+          borderRadius={36}
           onPress={() => setMemberModal(true)}
-          style={{
-            width: 72,
-            height: 72,
-            backgroundColor: 'lightgray',
-            borderRadius: 36,
-          }}
         />
         <Seperator height={10} />
         <Text text={'소소한유리병'} fontWeight={'500'} fontSize={16} />
@@ -26,14 +25,13 @@ export default function MatchMember(props) {
         <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
       </View>
       <View style={{alignItems: 'center'}}>
-        <TouchableOpacity
+        <Image
+          local
+          uri={require('../../../assets/img/user_girl.png')}
+          width={72}
+          height={72}
+          borderRadius={36}
           onPress={() => setMemberModal(true)}
-          style={{
-            width: 72,
-            height: 72,
-            backgroundColor: 'lightgray',
-            borderRadius: 36,
-          }}
         />
         <Seperator height={10} />
         <Text text={'게으른슈퍼맨'} fontWeight={'500'} fontSize={16} />

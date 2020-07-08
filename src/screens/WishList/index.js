@@ -38,18 +38,19 @@ export default function WishList(props) {
         rightComponent={
           <HView>
             <TouchableOpacity
-              onPress={() => null}
+              onPress={() => props.navigation.navigate('FullMap')}
               style={{paddingHorizontal: 5, paddingVertical: 5}}>
-              <Icons name={'icon-map-24'} size={20} color={'dimgray'} />
+              <Icons name={'icon-map-24'} size={20} color={edit ? 'gray' : 'black'} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setEdit(true)}
-              style={{paddingHorizontal: 20, paddingVertical: 5}}>
+              onPress={!edit ? () => setEdit(true) : null}
+              activeOpacity={edit ? 1 : 0.5}
+              style={{paddingRight: 20, paddingLeft: 10, paddingVertical: 5}}>
               <Text
                 text={'편집'}
                 fontSize={16}
                 fontWeight={'500'}
-                color={'dimgray'}
+                color={edit ? 'gray' : 'black'}
               />
             </TouchableOpacity>
           </HView>
