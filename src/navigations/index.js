@@ -7,6 +7,7 @@ import {Alert, AppState} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 // import {getPushInfo} from '../api/notification';
 import * as RootNavigation from './RootNavigation';
+import RNBootSplash from "react-native-bootsplash";
 
 const RootStack = createStackNavigator();
 
@@ -17,7 +18,7 @@ export function RootStackScreen(props) {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let token;
-
+      RNBootSplash.hide({ duration: 250 }); // fade
       // try {
       //   token = await AsyncStorage.getItem('token');
       // } catch (e) {
