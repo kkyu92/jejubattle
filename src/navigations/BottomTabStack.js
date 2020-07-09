@@ -25,7 +25,7 @@ function TabStackScreen() {
       initialRouteName="Home"
       tabBarOptions={{
         style: {
-          // paddingTop: 12,
+          elevation: 0,
           borderTopColor: 'lightgray',
         },
       }}>

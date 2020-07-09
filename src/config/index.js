@@ -10,4 +10,5 @@ export const custom = {
   textColor: '#222430',
   headerTitleWeight: 'bold',
   dynamicLink: 'https://jejubattle.page.link',
+  mapProvider: 'google',
 };

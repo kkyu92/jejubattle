@@ -30,6 +30,7 @@ Nuno.init({
   textColor: custom.textColor,
   headerTitleWeight: custom.headerTitleWeight,
   dynamicLink: custom.dynamicLink,
+  mapProvider: custom.mapProvider,
   FIREBASE_WEB_API: FIREBASE_WEB_API,
   IOS_STORE_ID: IOS_STORE_ID,
   PACKAGE_NAME: PACKAGE_NAME,
