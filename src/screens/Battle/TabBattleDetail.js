@@ -28,7 +28,7 @@ export default function TabBattleDetail(props) {
           paddingVertical: 30,
           paddingHorizontal: 20,
         }}>
-        <View style={{flex: 1, alignItems: 'center'}}>
+        <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => props.navigation.navigate('Report')}>
           <Icons name={'icon-report-30'} size={30} color={'silver'} />
           <Seperator height={10} />
           <Text
@@ -37,7 +37,7 @@ export default function TabBattleDetail(props) {
             fontWeight={'500'}
             color={'gray'}
           />
-        </View>
+        </TouchableOpacity>
         <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => setModalSetting(true)}>
           <Icons name={'icon-setting-30'} size={30} color={'silver'} />
           <Seperator height={10} />

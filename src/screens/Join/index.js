@@ -14,6 +14,7 @@ import {
 import {View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
+import Icons from '../../commons/Icons';
 
 export default function Join(props) {
   const [name, setName] = React.useState('');
@@ -29,14 +30,32 @@ export default function Join(props) {
         <Seperator height={30} />
         <View style={{padding: 20}}>
           <HView>
-            <Image
-              local
-              uri={require('../../../assets/img/img-user1.png')}
-              width={72}
-              height={72}
-              borderRadius={36}
-              onPress={() => null}
-            />
+            <View>
+              <Image
+                local
+                uri={require('../../../assets/img/img-user1.png')}
+                width={72}
+                height={72}
+                borderRadius={36}
+                onPress={() => null}
+              />
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  position: 'absolute',
+                  borderWidth: 1,
+                  borderColor: 'lightgray',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 24,
+                  height: 24,
+                  borderRadius: 12,
+                  right: 0,
+                  bottom: 0,
+                }}>
+                <Icons name={'icon-pencil-12'} size={13} color={'lightgray'} />
+              </View>
+            </View>
           </HView>
           <Seperator height={30} />
           <Text text={'이름'} fontSize={16} fontWeight={'500'} />
@@ -72,7 +91,13 @@ export default function Join(props) {
           <Seperator height={10} />
           <View>
             <HView>
-              <Picker items={[]} value={''} placeholder={'통신사'} onPress={() => null} closeBar={true} />
+              <Picker
+                items={[]}
+                value={''}
+                placeholder={'통신사'}
+                onPress={() => null}
+                closeBar={true}
+              />
               <Seperator width={10} />
               <View style={{flex: 1}}>
                 <HView>
@@ -85,7 +110,13 @@ export default function Join(props) {
                       placeholder={'전화번호를 입력해주세요'}
                     />
                   </View>
-                  <Button text={'인증요청'} onPress={() => null} textColor={'dimgray'} color={'white'} borderRadius={20} />
+                  <Button
+                    text={'인증요청'}
+                    onPress={() => null}
+                    textColor={'dimgray'}
+                    color={'white'}
+                    borderRadius={20}
+                  />
                 </HView>
                 <Seperator line />
               </View>
@@ -101,7 +132,13 @@ export default function Join(props) {
                   placeholder={'인증번호를 입력해주세요'}
                 />
               </View>
-              <Button text={'인증'} onPress={() => null} textColor={'dimgray'} color={'white'} borderRadius={20} />
+              <Button
+                text={'인증'}
+                onPress={() => null}
+                textColor={'dimgray'}
+                color={'white'}
+                borderRadius={20}
+              />
             </HView>
             <Seperator line />
           </View>
@@ -110,19 +147,40 @@ export default function Join(props) {
           {/* 약관동의 */}
           <HView>
             <View style={{flex: 1, alignItems: 'flex-start'}}>
-              <Checkbox multiple label={'약관1'} onPress={() => null} checked={false} />
+              <Checkbox
+                multiple
+                // customChecked={<Icons name={'icon-radiocheck-28'} size={28} color={custom.themeColor} />}
+                label={'약관1'}
+                onPress={() => null}
+                checked={true}
+              />
             </View>
             <View style={{flex: 1, alignItems: 'flex-start'}}>
-              <Checkbox multiple label={'약관1'} onPress={() => null} checked={false} />
+              <Checkbox
+                multiple
+                label={'약관1'}
+                onPress={() => null}
+                checked={false}
+              />
             </View>
           </HView>
           <Seperator height={5} />
           <HView>
             <View style={{flex: 1, alignItems: 'flex-start'}}>
-              <Checkbox multiple label={'약관1'} onPress={() => null} checked={false} />
+              <Checkbox
+                multiple
+                label={'약관1'}
+                onPress={() => null}
+                checked={false}
+              />
             </View>
             <View style={{flex: 1, alignItems: 'flex-start'}}>
-              <Checkbox multiple label={'약관1'} onPress={() => null} checked={false} />
+              <Checkbox
+                multiple
+                label={'약관1'}
+                onPress={() => null}
+                checked={false}
+              />
             </View>
           </HView>
 
@@ -160,7 +218,11 @@ export default function Join(props) {
           />
           <Seperator line />
           <Seperator height={20} />
-          <Checkbox label={'약관에 동의하였습니다'} checked={true} onPress={() => null} />
+          <Checkbox
+            label={'약관에 동의하였습니다'}
+            checked={true}
+            onPress={() => null}
+          />
         </View>
       </KeyboardAwareScrollView>
       <View

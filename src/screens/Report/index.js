@@ -34,16 +34,22 @@ export default function Report(props) {
         </View>
         <View style={{paddingHorizontal: 40}}>
           <View style={{paddingVertical: 10}}>
-            <Checkbox value={''} onPress={() => null} label={'악의적 비방'} checked={true} size={'large'} />
+            <Checkbox value={''} onPress={() => null} label={'노 쇼 (No Show)'} checked={true} size={'large'} />
           </View>
           <View style={{paddingVertical: 10}}>
-            <Checkbox value={''} onPress={() => null} label={'사행성, 불법 홍보 및 광고'} checked={false} size={'large'} />
+            <Checkbox value={''} onPress={() => null} label={'비매너 플레이 및 언행'} checked={false} size={'large'} />
           </View>
           <View style={{paddingVertical: 10}}>
-            <Checkbox value={''} onPress={() => null} label={'본 컨텐츠와 관계없는 리뷰'} checked={false} size={'large'} />
+            <Checkbox value={''} onPress={() => null} label={'악의적인 승부 조작'} checked={false} size={'large'} />
           </View>
           <View style={{paddingVertical: 10}}>
-            <Checkbox value={''} onPress={() => null} label={'기타'} checked={false} size={'large'} />
+            <Checkbox value={''} onPress={() => null} label={'욕설, 폭력, 협박 등의 형사상의 문제'} checked={false} size={'large'} />
+          </View>
+          <View style={{paddingVertical: 10}}>
+            <Checkbox value={''} onPress={() => null} label={'성희롱, 성추행 등의 성적 불쾌감 형성'} checked={false} size={'large'} />
+          </View>
+          <View style={{paddingVertical: 10}}>
+            <Checkbox value={''} onPress={() => null} label={'사행성, 불법 광고 홍보 및 전파'} checked={false} size={'large'} />
           </View>
         </View>
         <Seperator height={20} />
@@ -57,17 +63,17 @@ export default function Report(props) {
           <TextInput
             multiline={true}
             placeholder={
-              '다른 고객들을 위해 리뷰는 솔직하고 매너있게 작성해주세요!'
+              '신고하실 내용을 자세하게 적어주세요.'
             }
             value={''}
             onChangeText={() => null}
             showRemain={true}
-            maxLength={100}
+            maxLength={5000}
             backgroundColor={'whitesmoke'}
             borderWidth={0}
           />
         </View>
-        <HView style={{paddingHorizontal: 20}}>
+        <HView style={{paddingHorizontal: 20, marginBottom: 20}}>
           <TouchableOpacity
             onPress={() => null}
             style={{

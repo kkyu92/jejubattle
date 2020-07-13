@@ -236,8 +236,8 @@ export function RootStackScreen(props) {
   return (
     <AppContext.Provider value={{...state, dispatch}}>
       <RootStack.Navigator headerMode="none">
-        {/* <RootStack.Screen name="App" component={AppStackScreen} /> */}
-        <RootStack.Screen name="Auth" component={AuthStackScreen} />
+        <RootStack.Screen name="App" component={AppStackScreen} />
+        {/* <RootStack.Screen name="Auth" component={AuthStackScreen} /> */}
       </RootStack.Navigator>
     </AppContext.Provider>
   );
