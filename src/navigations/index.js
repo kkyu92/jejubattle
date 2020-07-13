@@ -8,6 +8,7 @@ import messaging from '@react-native-firebase/messaging';
 // import {getPushInfo} from '../api/notification';
 import * as RootNavigation from './RootNavigation';
 import RNBootSplash from "react-native-bootsplash";
+import AuthStackScreen from './AuthStack';
 
 const RootStack = createStackNavigator();
 
@@ -235,7 +236,8 @@ export function RootStackScreen(props) {
   return (
     <AppContext.Provider value={{...state, dispatch}}>
       <RootStack.Navigator headerMode="none">
-        <RootStack.Screen name="App" component={AppStackScreen} />
+        {/* <RootStack.Screen name="App" component={AppStackScreen} /> */}
+        <RootStack.Screen name="Auth" component={AuthStackScreen} />
       </RootStack.Navigator>
     </AppContext.Provider>
   );

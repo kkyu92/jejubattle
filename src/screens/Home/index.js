@@ -35,8 +35,7 @@ export default function Home(props) {
       alertVisible={showUpdateModal}
       onBackdropPress={() => setShowUpdateModal(false)}
       onConfirm={() => setShowUpdateModal(false)}
-      onCancel={() => setShowUpdateModal(false)}
-    >
+      onCancel={() => setShowUpdateModal(false)}>
       <Header
         leftComponent={
           <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
@@ -97,7 +96,10 @@ export default function Home(props) {
           </TouchableOpacity>
         </HView>
         <Seperator height={30} />
-        <ScrollView horizontal={true} style={{paddingLeft: 20}}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{paddingLeft: 20}}>
           <View>
             <Image
               height={105}

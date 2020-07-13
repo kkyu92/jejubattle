@@ -30,9 +30,34 @@ export default function Battle(props) {
     {id: 's'},
   ];
   const renderItem = ({item, index}) => {
-    return (
-      <ListItemBattle onPress={() => props.navigation.navigate('BattleView')} />
-    );
+    if (index === 0) {
+      return (
+        <HView style={{padding: 20, justifyContent: 'space-between', backgroundColor: 'white'}}>
+          <Text text={'내가 만든 배틀'} fontWeight={'bold'} fontSize={18} />
+          <HView>
+            <Text text={'접기'} fontWeight={'500'} fontSize={14} />
+            <Seperator width={10} />
+            <Image
+              local
+              uri={require('../../../assets/img/icon-fold.png')}
+              height={27}
+              width={27}
+              resizeMode={'cover'}
+            />
+          </HView>
+        </HView>
+      );
+    } else if (index === 2) {
+      return (
+        <HView style={{padding: 20, justifyContent: 'space-between', backgroundColor: 'white'}}>
+          <Text text={'배틀 목록'} fontWeight={'bold'} fontSize={18} />
+        </HView>
+      );
+    } else {
+      return (
+        <ListItemBattle onPress={() => props.navigation.navigate('BattleView')} />
+      );
+    }
   };
   return (
     <Container>
@@ -66,18 +91,12 @@ export default function Battle(props) {
           </TouchableOpacity>
         }
       />
-      <Seperator height={20} />
-      <HView style={{padding: 20, justifyContent: 'space-between'}}>
-        <Text text={'내가 만든 배틀'} fontWeight={'bold'} fontSize={18} />
-        <HView>
-          <Text text={'접기'} fontWeight={'500'} fontSize={14} />
-          <Icons name={'icon-folding-27'} size={23} color={'dimgray'} />
-        </HView>
-      </HView>
+      {/* <Seperator height={20} /> */}
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        stickyHeaderIndices={[0, 2]}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}

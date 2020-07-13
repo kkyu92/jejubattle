@@ -36,11 +36,10 @@ export default function PurchaseHistory(props) {
           }}
           onPress={() => null}>
           <Image
+            local
+            uri={require('../../../assets/img/icon-coinmoney.png')}
             height={40}
             width={40}
-            borderRadius={20}
-            uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-            onPress={() => null}
             resizeMode={'cover'}
           />
           <Seperator width={10} />

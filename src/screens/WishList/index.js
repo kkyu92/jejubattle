@@ -64,7 +64,7 @@ export default function WishList(props) {
             paddingHorizontal: 20,
             paddingTop: 20,
           }}>
-          <Checkbox multiple={true} label={'모두선택'} onPress={() => null} />
+          <Checkbox multiple label={'모두선택'} checked={false} onPress={() => null} size={'large'} />
           <Text
             text={'1개 선택됨'}
             fontWeight={'500'}

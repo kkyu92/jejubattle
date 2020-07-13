@@ -55,7 +55,8 @@ export default function ListItem(props) {
           </View>
           <Seperator width={10} />
           {props.editMode ? (
-            <Checkbox value={false} onPress={() => null} />
+            // <Checkbox value={false} onPress={() => null} />
+            <Checkbox multiple checked={true} onPress={() => null} size={'large'} />
           ) : (
             <TouchableOpacity onPress={() => null}>
               <Icons name="icon-bookmark-20" size={20} color={'black'} />

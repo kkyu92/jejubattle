@@ -57,11 +57,12 @@ export default function BattleEdit(props) {
           <View>
             <Text fontSize={16} fontWeight={'500'} text={'실력 선택'} color={'dimgray'} />
             <Seperator height={20} />
-            <HView>
-              <Checkbox label={'초보'} value={false} onPress={() => null} />
-              <Checkbox label={'중수'} value={false} onPress={() => null} />
-              <Checkbox label={'고수'} value={false} onPress={() => null} />
-              <Checkbox label={'프로'} value={false} onPress={() => null} />
+            <HView style={{justifyContent: 'space-between'}}>
+              <Checkbox label={'초보'} value={false} size={'large'} onPress={() => null} />
+              <Checkbox label={'중수'} value={false} size={'large'} onPress={() => null} />
+              <Checkbox label={'고수'} value={false} size={'large'} onPress={() => null} />
+              <Checkbox label={'프로'} value={false} size={'large'} onPress={() => null} />
+              <Seperator width={40} />
             </HView>
           </View>
           {/* <Seperator line /> */}
