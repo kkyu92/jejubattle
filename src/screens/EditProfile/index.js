@@ -254,6 +254,7 @@ export default function EditProfile(props) {
           color={custom.themeColor}
           disable={false}
           loading={false}
+          size={'large'}
           stretch
         />
       </HView>
@@ -294,6 +295,7 @@ export default function EditProfile(props) {
                 text={'취소'}
                 color={'gray'}
                 onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>
@@ -303,6 +305,7 @@ export default function EditProfile(props) {
                 text={'완료'}
                 color={custom.themeColor}
                 onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>
@@ -361,6 +364,7 @@ export default function EditProfile(props) {
                 text={'취소'}
                 color={'gray'}
                 onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>
@@ -370,6 +374,7 @@ export default function EditProfile(props) {
                 text={'완료'}
                 color={custom.themeColor}
                 onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>

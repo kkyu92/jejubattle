@@ -100,7 +100,7 @@ export default function TourInfo(props) {
           width={Math.floor(screenWidth - 40)}
           borderRadius={10}
           uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-          onPress={() => props.navigation.navigate('EventView')}
+          onPress={() => props.navigation.navigate('TourCourseView')}
           resizeMode={'cover'}
         />
       </View>

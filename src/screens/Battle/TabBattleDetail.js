@@ -11,6 +11,7 @@ import {
   DateTime,
   Checkbox,
   Modal,
+  Image,
 } from 'react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -19,6 +20,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 export default function TabBattleDetail(props) {
   const [modalExit, setModalExit] = React.useState(false);
+  const [modalStart, setModalStart] = React.useState(false);
   const [modalSetting, setModalSetting] = React.useState(false);
   return (
     <Container>
@@ -28,7 +30,9 @@ export default function TabBattleDetail(props) {
           paddingVertical: 30,
           paddingHorizontal: 20,
         }}>
-        <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => props.navigation.navigate('Report')}>
+        <TouchableOpacity
+          style={{flex: 1, alignItems: 'center'}}
+          onPress={() => props.navigation.navigate('Report')}>
           <Icons name={'icon-report-30'} size={30} color={'silver'} />
           <Seperator height={10} />
           <Text
@@ -38,7 +42,9 @@ export default function TabBattleDetail(props) {
             color={'gray'}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => setModalSetting(true)}>
+        <TouchableOpacity
+          style={{flex: 1, alignItems: 'center'}}
+          onPress={() => setModalSetting(true)}>
           <Icons name={'icon-setting-30'} size={30} color={'silver'} />
           <Seperator height={10} />
           <Text
@@ -145,16 +151,18 @@ export default function TabBattleDetail(props) {
           color={'white'}
           disable={false}
           loading={false}
+          size={'large'}
           // stretch
         />
         <Seperator width={20} />
         <View style={{flex: 1}}>
           <Button
             text={'배틀시작'}
-            onPress={() => null}
+            onPress={() => setModalStart(true)}
             color={custom.themeColor}
             disable={false}
             loading={false}
+            size={'large'}
             stretch
           />
         </View>
@@ -189,6 +197,7 @@ export default function TabBattleDetail(props) {
                 text={'위임하기'}
                 color={'gray'}
                 onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>
@@ -198,6 +207,92 @@ export default function TabBattleDetail(props) {
                 text={'삭제'}
                 color={custom.themeColor}
                 onPress={() => null}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
+      {/* 배틀시작 버튼 */}
+      <Modal
+        isVisible={modalStart}
+        onBackdropPress={() => setModalStart(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          <Text
+            fontSize={18}
+            fontWeight={'bold'}
+            color={'black'}
+            style={{textAlign: 'center'}}
+            text={
+              '코인을 사용하여\n배틀을 시작하시겠습니까?\n더욱 풍부한 보상을\n받으실 수 있습니다.'
+            }
+          />
+          <Seperator height={30} />
+          <HView ttyle={{justifyContent: 'center'}}>
+            <Text fontSize={16} color={'dimgray'} text={'보유 코인'} />
+            <Seperator width={30} />
+            <Image
+              local
+              uri={require('../../../assets/img/icon-coinmoney.png')}
+              height={20}
+              width={20}
+              resizeMode={'cover'}
+            />
+            <Seperator width={10} />
+            <Text fontSize={16} color={'dimgray'} text={'2 coin'} />
+          </HView>
+          <Seperator height={10} />
+          <HView ttyle={{justifyContent: 'center'}}>
+            <Text fontSize={16} color={'dimgray'} text={'보유 포인트'} />
+            <Seperator width={30} />
+            <Image
+              local
+              uri={require('../../../assets/img/icon-pointmoney.png')}
+              height={20}
+              width={20}
+              resizeMode={'cover'}
+            />
+            <Seperator width={10} />
+            <Text fontSize={16} color={'dimgray'} text={'3 point'} />
+          </HView>
+          <Seperator height={20} />
+          <View style={{alignItems: 'center'}}>
+            <Button
+              size={'medium'}
+              text={'랜덤박스 보기'}
+              onPress={() => {
+                setModalStart(false);
+                props.navigation.navigate('RandomBox');
+              }}
+              color={'white'}
+              borderRadius={20}
+            />
+          </View>
+          <Seperator height={30} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'아니요'}
+                color={'gray'}
+                onPress={() => null}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'예'}
+                color={custom.themeColor}
+                onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>
@@ -205,7 +300,9 @@ export default function TabBattleDetail(props) {
         </View>
       </Modal>
       {/* 필수설정 버튼 */}
-      <Modal isVisible={modalSetting} onBackdropPress={() => setModalSetting(false)}>
+      <Modal
+        isVisible={modalSetting}
+        onBackdropPress={() => setModalSetting(false)}>
         <View
           style={{
             padding: 20,
@@ -222,11 +319,30 @@ export default function TabBattleDetail(props) {
           </View>
           <Seperator height={50} />
           <View>
-            <TextInput title={'장소설정'} value={''} onChangeText={() => null} borderWidth={0} placeholder={'장소이름'} />
+            <TextInput
+              title={'장소설정'}
+              value={''}
+              onChangeText={() => null}
+              borderWidth={0}
+              placeholder={'장소이름'}
+            />
             <Seperator line marginBottom={20} />
-            <DateTime type={'time'} title={'시간'} value={''} onPress={() => null} borderWidth={0} placeholder={'자세한시간'} />
+            <DateTime
+              type={'time'}
+              title={'시간'}
+              value={''}
+              onPress={() => null}
+              borderWidth={0}
+              placeholder={'자세한시간'}
+            />
             <Seperator line marginBottom={20} />
-            <DateTime title={'날짜선택'} value={''} onPress={() => null} borderWidth={0} placeholder={'자세한시간'} />
+            <DateTime
+              title={'날짜선택'}
+              value={''}
+              onPress={() => null}
+              borderWidth={0}
+              placeholder={'자세한시간'}
+            />
             <Seperator line />
           </View>
           <Seperator height={50} />
@@ -236,6 +352,7 @@ export default function TabBattleDetail(props) {
                 text={'취소'}
                 color={'gray'}
                 onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>
@@ -245,6 +362,7 @@ export default function TabBattleDetail(props) {
                 text={'적용'}
                 color={custom.themeColor}
                 onPress={() => null}
+                size={'large'}
                 stretch
               />
             </View>

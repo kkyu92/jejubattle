@@ -20,14 +20,14 @@ import FloatingButton from '../../commons/FloatingButton';
 export default function Battle(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
   const data = [
-    {id: '0'},
-    {id: '1'},
-    {id: '2'},
-    {id: '3'},
-    {id: '4'},
-    {id: '5'},
-    {id: '6'},
-    {id: 's'},
+    {id: '0', status: 'waiting', level: '중수'},
+    {id: '1', status: 'playing', level: '고수'},
+    {id: '2', status: 'done', level: '프로', win: true},
+    {id: '3', status: 'waiting', level: '프로', win: false},
+    {id: '4', status: 'waiting', level: '프로', win: true},
+    {id: '5', status: 'waiting', level: '프로', win: true},
+    {id: '6', status: 'waiting', level: '프로', win: true},
+    {id: 's', status: 'waiting', level: '프로', win: true},
   ];
   const renderItem = ({item, index}) => {
     if (index === 0) {
@@ -55,7 +55,7 @@ export default function Battle(props) {
       );
     } else {
       return (
-        <ListItemBattle onPress={() => props.navigation.navigate('BattleView')} />
+        <ListItemBattle onPress={() => props.navigation.navigate('BattleView')} item={item} />
       );
     }
   };

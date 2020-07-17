@@ -145,6 +145,19 @@ android {
         }
     }
     signingConfigs {
+        release {
+          if (project.hasProperty('UPLOAD_KEY_STORE_FILE')) {
+            storeFile file(UPLOAD_KEY_STORE_FILE)
+            storePassword UPLOAD_KEY_STORE_PASSWORD
+            keyAlias UPLOAD_KEY_ALIAS
+            keyPassword UPLOAD_KEY_PASSWORD
+          }
+          // release keyhash 만들기 (kakao talk 에 필요하다)
+          // play store > 앱서명 > 앱서명 인증서 > SHA1
+          // echo 6D:63:D4:66:61:7C:48:20:5D:FC:62:7C:57:B5:0C:F5:21:09:E2:FA | xxd -r -p | openssl base64
+          // Xo8WBi6jzSxKDVR4drqm84yr9iU= // debug keyhash
+          // bWPUZmF8SCBd/GJ8V7UM9SEJ4vo= // release keyhash
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -159,7 +172,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

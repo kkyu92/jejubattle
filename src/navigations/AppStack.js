@@ -26,6 +26,7 @@ import TourCourseView from '../screens/TourInfo/TourCourseView';
 import FoodStore from '../screens/FoodStore';
 import FullMap from '../screens/FullMap';
 import MyBattle from '../screens/MyBattle';
+import BattleView from '../screens/Battle/View';
 
 const LeftDrawerStack = createDrawerNavigator();
 function LeftDrawerStackScreen() {
@@ -52,6 +53,7 @@ function MyBattleStackScreen() {
         cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
       }}>
       <MyBattleStack.Screen name="MyBattle" component={MyBattle} />
+      <MyBattleStack.Screen name="BattleView" component={BattleView} />
     </MyBattleStack.Navigator>
   );
 }
@@ -116,7 +118,7 @@ export default function AppStackScreen() {
       {/* Modal Stacks */}
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Search" component={Search} />
-      <Stack.Screen name="MyBattleStack" component={MyBattleStackScreen} />
+      {/* <Stack.Screen name="MyBattleStack" component={MyBattleStackScreen} /> */}
       <Stack.Screen name="MyInfoStack" component={MyInfoStackScreen} />
       <Stack.Screen name="TourInfoStack" component={TourInfoStackScreen} />
       <Stack.Screen name="WishList" component={WishList} />

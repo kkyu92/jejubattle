@@ -95,6 +95,7 @@ export default function BattleEdit(props) {
           color={custom.themeColor}
           disable={false}
           loading={false}
+          size={'large'}
           stretch
         />
         <Seperator bottom />

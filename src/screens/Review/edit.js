@@ -40,6 +40,7 @@ export default function ReviewEdit(props) {
             maxLength={100}
             backgroundColor={'whitesmoke'}
             borderWidth={0}
+            padding={20}
           />
         </View>
         <HView style={{paddingHorizontal: 20}}>
@@ -55,6 +56,7 @@ export default function ReviewEdit(props) {
           text={'작성완료'}
           onPress={() => null}
           color={custom.themeColor}
+          size={'large'}
           stretch
         />
       </View>

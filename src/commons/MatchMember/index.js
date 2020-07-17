@@ -46,13 +46,12 @@ export default function MatchMember(props) {
             borderRadius: 10,
             alignItems: 'center',
           }}>
-          <View
-            style={{
-              width: 72,
-              height: 72,
-              backgroundColor: 'lightgray',
-              borderRadius: 36,
-            }}
+          <Image
+            local
+            uri={require('../../../assets/img/user_girl.png')}
+            width={72}
+            height={72}
+            borderRadius={36}
           />
           <View style={{paddingVertical: 8}}>
             <StarRating

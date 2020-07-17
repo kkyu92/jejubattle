@@ -119,10 +119,7 @@ export default function Drawer(props) {
           </HView>
         </TouchableOpacity>
         <Seperator line />
-        <TouchableOpacity
-          onPress={() =>
-            props.navigation.navigate('MyBattleStack', {screen: 'MyBattle'})
-          }>
+        <TouchableOpacity onPress={() => props.navigation.navigate('MyBattle')}>
           <HView
             style={{
               paddingHorizontal: 20,

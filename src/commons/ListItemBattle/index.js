@@ -1,9 +1,16 @@
 import React from 'react';
-import { HView, Seperator, Text, Image, Checkbox, Button } from 'react-native-nuno-ui';
+import {
+  HView,
+  Seperator,
+  Text,
+  Image,
+  Checkbox,
+  Button,
+} from 'react-native-nuno-ui';
 import Icons from '../Icons';
-import { custom } from '../../config';
-import { TouchableOpacity, View } from 'react-native';
-import { ShadowStyle } from '../../styles';
+import {custom} from '../../config';
+import {TouchableOpacity, View} from 'react-native';
+import {ShadowStyle} from '../../styles';
 
 export default function ListItemBattle(props) {
   return (
@@ -19,9 +26,18 @@ export default function ListItemBattle(props) {
           }}>
           <HView style={{justifyContent: 'space-between'}}>
             <HView>
-              <Text text={'[1] 배드민턴 하자 드루와라'} fontSize={16} fontWeight={'bold'} />
+              <Text
+                text={'[1] 배드민턴 하자 드루와라'}
+                fontSize={16}
+                fontWeight={'bold'}
+              />
               <Seperator width={9} />
-              <Button text={'초보'} size={'small'} textColor={custom.themeColor} borderColor={custom.themeColor} />
+              <Button
+                text={props.item.level}
+                size={'small'}
+                textColor={custom.themeColor}
+                borderColor={custom.themeColor}
+              />
             </HView>
             <HView>
               <Icons name={'icon-lock-12'} size={12} color={'dimgray'} />
@@ -61,12 +77,81 @@ export default function ListItemBattle(props) {
                   <Text text={'메모'} fontSize={14} color={'gray'} />
                 </View>
                 <View style={{flex: 0.5}}>
-                  <Text text={'메모입니다 메모입니다 메모입니다 메모입니다 메모입니다 메모입니다'} fontSize={14} color={'gray'} />
+                  <Text
+                    text={
+                      '메모입니다 메모입니다 메모입니다 메모입니다 메모입니다 메모입니다'
+                    }
+                    fontSize={14}
+                    color={'gray'}
+                  />
                 </View>
               </HView>
             </View>
             <View>
-              <Button text={'배틀중'} size={'medium'} color={custom.themeColor} borderRadius={20} />
+              {props.item.status === 'waiting' && (
+                <>
+                  <Button
+                    text={'대기중'}
+                    size={'medium'}
+                    color={'#CECCCD'}
+                    borderRadius={20}
+                  />
+                  <Seperator height={5} />
+                  <Button
+                    text={'삭제'}
+                    size={'medium'}
+                    color={'white'}
+                    textColor={'gray'}
+                    borderRadius={20}
+                    stretch
+                  />
+                </>
+              )}
+              {props.item.status === 'playing' && (
+                <Button
+                  text={'배틀중'}
+                  size={'medium'}
+                  color={custom.themeColor}
+                  borderRadius={20}
+                />
+              )}
+              {props.item.status === 'done' && (
+                <>
+                  {props.item.win ? (
+                    <Image
+                      local
+                      uri={require('../../../assets/img/icon-win.png')}
+                      height={70}
+                      width={70}
+                      resizeMode={'cover'}
+                    />
+                  ) : (
+                    <Image
+                      local
+                      uri={require('../../../assets/img/icon-lose.png')}
+                      height={70}
+                      width={70}
+                      resizeMode={'cover'}
+                    />
+                  )}
+                  <Button
+                    text={'배틀완료'}
+                    size={'medium'}
+                    color={'#EBEBEB'}
+                    textColor={'gray'}
+                    borderRadius={20}
+                  />
+                  <Seperator height={5} />
+                  <Button
+                    text={'삭제'}
+                    size={'medium'}
+                    color={'white'}
+                    textColor={'gray'}
+                    borderRadius={20}
+                    stretch
+                  />
+                </>
+              )}
             </View>
           </HView>
         </TouchableOpacity>

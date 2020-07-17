@@ -16,6 +16,7 @@ import Icons from '../../commons/Icons';
 import BattleComponent from './BattleComponent';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function Home(props) {
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
@@ -106,7 +107,7 @@ export default function Home(props) {
               width={140}
               borderRadius={4}
               uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => null}
+              onPress={() => props.navigation.navigate('FacilityView')}
               resizeMode={'cover'}
             />
             <Seperator height={10} />
@@ -119,7 +120,7 @@ export default function Home(props) {
               width={140}
               borderRadius={4}
               uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => null}
+              onPress={() => props.navigation.navigate('FacilityView')}
               resizeMode={'cover'}
             />
             <Seperator height={10} />
@@ -132,7 +133,7 @@ export default function Home(props) {
               width={140}
               borderRadius={4}
               uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => null}
+              onPress={() => props.navigation.navigate('FacilityView')}
               resizeMode={'cover'}
             />
             <Seperator height={10} />
@@ -145,7 +146,7 @@ export default function Home(props) {
               width={140}
               borderRadius={4}
               uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => null}
+              onPress={() => props.navigation.navigate('FacilityView')}
               resizeMode={'cover'}
             />
             <Seperator height={10} />
@@ -155,6 +156,17 @@ export default function Home(props) {
         </ScrollView>
         <Seperator bottom />
       </ScrollView>
+      {/* <AwesomeAlert
+        show={passwordAlert}
+        title='비밀번호 오류'
+        message='비밀번호는 영문과 숫자 포함 6자 이상입니다'
+        showConfirmButton={true}
+        confirmText="확인"
+        confirmButtonColor={custom.themeColor}
+        onConfirmPressed={() => {
+          setPasswordAlert(false);
+        }}
+      /> */}
     </Container>
   );
 }
