@@ -18,6 +18,7 @@ import ReviewEdit from '../screens/Review/edit';
 import Report from '../screens/Report';
 import MyBattle from '../screens/MyBattle';
 import RandomBox from '../screens/Battle/RandomBox';
+import WishList from '../screens/WishList';
 
 const Tab = createBottomTabNavigator();
 function TabStackScreen() {
@@ -113,6 +114,7 @@ export default function BottomTabStackScreen() {
       <BottomTabStack.Screen name="BattleView" component={BattleView} />
       <BottomTabStack.Screen name="ReviewEdit" component={ReviewEdit} />
       <BottomTabStack.Screen name="RandomBox" component={RandomBox} />
+      <BottomTabStack.Screen name="WishList" component={WishList} />
       <BottomTabStack.Screen name="Report" component={Report} />
     </BottomTabStack.Navigator>
   );

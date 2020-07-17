@@ -55,6 +55,7 @@ export default function EditProfile(props) {
                 size={'medium'}
                 borderRadius={20}
                 color={'white'}
+                stretch
               />
             </View>
           </HView>
@@ -76,6 +77,7 @@ export default function EditProfile(props) {
                 size={'medium'}
                 borderRadius={20}
                 color={'white'}
+                stretch
               />
             </View>
           </HView>

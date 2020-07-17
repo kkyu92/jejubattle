@@ -81,15 +81,17 @@ export default function Notice(props) {
       <View style={{padding: 20}}>
         <Text text={'전체공지'} fontSize={18} fontWeight={'bold'} />
       </View>
-      <Accordion
-        activeSections={activeSection}
-        sections={data}
-        expandMultiple={true}
-        touchableComponent={(props) => <TouchableOpacity {...props} />}
-        renderHeader={renderHeader}
-        renderContent={renderContent}
-        onChange={updateSection}
-      />
+      <ScrollView>
+        <Accordion
+          activeSections={activeSection}
+          sections={data}
+          expandMultiple={true}
+          touchableComponent={(props) => <TouchableOpacity {...props} />}
+          renderHeader={renderHeader}
+          renderContent={renderContent}
+          onChange={updateSection}
+        />
+      </ScrollView>
     </Container>
   );
 }

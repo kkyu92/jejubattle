@@ -10,6 +10,7 @@ import {
   Picker,
   DateTime,
   Checkbox,
+  Image,
 } from 'react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -71,7 +72,25 @@ export default function BattleView(props) {
       <View style={{alignItems: 'flex-end', padding: 20}}>
         <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => setShowMatchMember(!showMatchMember)}>
           <Text text={'접기'} fontWeight={'500'} fontSize={14} />
-          <Icons name={'icon-folding-27'} size={23} color={'dimgray'} />
+          <Seperator width={10} />
+          {/* <Icons name={'icon-folding-27'} size={23} color={'dimgray'} /> */}
+          {showMatchMember ? (
+            <Image
+              local
+              uri={require('../../../assets/img/icon-fold.png')}
+              height={27}
+              width={27}
+              resizeMode={'cover'}
+            />
+          ) : (
+            <Image
+              local
+              uri={require('../../../assets/img/icon-fold.png')}
+              height={27}
+              width={27}
+              resizeMode={'cover'}
+            />
+          )}
         </TouchableOpacity>
       </View>
       {showMatchMember && <MatchMember />}

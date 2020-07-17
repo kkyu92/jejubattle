@@ -49,9 +49,7 @@ export default function CoinCharge(props) {
               resizeMode={'cover'}
             />
             <Seperator width={10} />
-            <Text text={'배틀코인 '} fontSize={13} color={'dimgray'} />
-            <Text text={'2'} fontSize={23} color={'dimgray'} />
-            <Text text={'개'} fontSize={13} color={'dimgray'} />
+            <Text text={'배틀코인 2개'} fontSize={13} color={'dimgray'} />
           </HView>
           <HView style={{flex: 0.5, padding: 20, alignItems: 'center'}}>
             <Image
@@ -62,9 +60,7 @@ export default function CoinCharge(props) {
               resizeMode={'cover'}
             />
             <Seperator width={10} />
-            <Text text={'배틀코인 '} fontSize={13} color={'dimgray'} />
-            <Text text={'2'} fontSize={23} color={'dimgray'} />
-            <Text text={'개'} fontSize={13} color={'dimgray'} />
+            <Text text={'배틀코인 2개'} fontSize={13} color={'dimgray'} />
           </HView>
         </HView>
 
@@ -85,12 +81,10 @@ export default function CoinCharge(props) {
             <Seperator width={20} />
             <View>
               <HView>
-                <Text text={'배틀코인 '} fontSize={18} />
-                <Text text={'1개'} fontSize={18} />
+                <Text text={'배틀코인 1개'} fontSize={18} />
               </HView>
               <HView style={{alignItems: 'flex-end'}}>
-                <Text text={'1,200'} fontSize={23} />
-                <Text text={'원'} fontSize={14} />
+                <Text text={'1,200 원'} fontSize={23} />
               </HView>
             </View>
           </HView>
@@ -106,13 +100,11 @@ export default function CoinCharge(props) {
             <Seperator width={20} />
             <View>
               <HView>
-                <Text text={'배틀코인 '} fontSize={18} />
-                <Text text={'1개'} fontSize={18} />
+                <Text text={'배틀코인 1개'} fontSize={18} />
               </HView>
               <HView style={{alignItems: 'flex-end'}}>
                 <Text text={'1,200 원'} fontSize={23} style={{textDecorationLine: 'line-through'}} />
-                <Text text={'1,200'} fontSize={23} />
-                <Text text={'원'} fontSize={14} />
+                <Text text={'1,200 원'} fontSize={23} />
               </HView>
             </View>
           </HView>
@@ -128,13 +120,11 @@ export default function CoinCharge(props) {
             <Seperator width={20} />
             <View>
               <HView>
-                <Text text={'배틀코인 '} fontSize={18} />
-                <Text text={'1개'} fontSize={18} />
+                <Text text={'배틀코인 1개'} fontSize={18} />
               </HView>
               <HView style={{alignItems: 'flex-end'}}>
                 <Text text={'1,200 원'} fontSize={23} style={{textDecorationLine: 'line-through'}} />
-                <Text text={'1,200'} fontSize={23} />
-                <Text text={'원'} fontSize={14} />
+                <Text text={'1,200 원'} fontSize={23} />
               </HView>
             </View>
           </HView>
@@ -157,12 +147,10 @@ export default function CoinCharge(props) {
             <Seperator width={20} />
             <View>
               <HView>
-                <Text text={'배틀코인 '} fontSize={18} />
-                <Text text={'1개'} fontSize={18} />
+                <Text text={'배틀코인 1개'} fontSize={18} />
               </HView>
               <HView style={{alignItems: 'flex-end'}}>
-                <Text text={'1,200'} fontSize={23} />
-                <Text text={'원'} fontSize={14} />
+                <Text text={'1,200 원'} fontSize={23} />
               </HView>
             </View>
           </HView>
@@ -178,8 +166,7 @@ export default function CoinCharge(props) {
             <Seperator width={20} />
             <View>
               <HView>
-                <Text text={'배틀코인 '} fontSize={18} />
-                <Text text={'1개'} fontSize={18} />
+                <Text text={'배틀코인 1개'} fontSize={18} />
               </HView>
               <HView style={{alignItems: 'flex-end'}}>
                 <Text text={'포인트 3개 필요'} fontSize={14} />

@@ -19,9 +19,12 @@ import FloatingButton from '../../commons/FloatingButton';
 
 export default function Battle(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
+  const [showMyBattle, setShowMyBattle] = React.useState(true);
   const data = [
-    {id: '0', status: 'waiting', level: '중수'},
-    {id: '1', status: 'playing', level: '고수'},
+    {id: 'e', title: '내가 만든 배틀', foldable: true},
+    {id: '0', status: 'waiting', level: '중수', foldable: true},
+    {id: '1', status: 'playing', level: '고수', foldable: true},
+    {id: 'e', title: '배틀 목록'},
     {id: '2', status: 'done', level: '프로', win: true},
     {id: '3', status: 'waiting', level: '프로', win: false},
     {id: '4', status: 'waiting', level: '프로', win: true},
@@ -30,33 +33,53 @@ export default function Battle(props) {
     {id: 's', status: 'waiting', level: '프로', win: true},
   ];
   const renderItem = ({item, index}) => {
-    if (index === 0) {
+    if (item.title) {
       return (
-        <HView style={{padding: 20, justifyContent: 'space-between', backgroundColor: 'white'}}>
-          <Text text={'내가 만든 배틀'} fontWeight={'bold'} fontSize={18} />
-          <HView>
-            <Text text={'접기'} fontWeight={'500'} fontSize={14} />
-            <Seperator width={10} />
-            <Image
-              local
-              uri={require('../../../assets/img/icon-fold.png')}
-              height={27}
-              width={27}
-              resizeMode={'cover'}
-            />
-          </HView>
-        </HView>
-      );
-    } else if (index === 2) {
-      return (
-        <HView style={{padding: 20, justifyContent: 'space-between', backgroundColor: 'white'}}>
-          <Text text={'배틀 목록'} fontWeight={'bold'} fontSize={18} />
+        <HView
+          style={{
+            padding: 20,
+            justifyContent: 'space-between',
+            backgroundColor: 'white',
+          }}>
+          <Text text={item.title} fontWeight={'bold'} fontSize={18} />
+          {item.foldable && (
+            <TouchableOpacity onPress={() => setShowMyBattle(!showMyBattle)}>
+              <HView>
+                <Text text={'접기'} fontWeight={'500'} fontSize={14} />
+                <Seperator width={10} />
+                {showMyBattle ? (
+                  <Image
+                    local
+                    uri={require('../../../assets/img/icon-fold.png')}
+                    height={27}
+                    width={27}
+                    resizeMode={'cover'}
+                  />
+                ) : (
+                  <Image
+                    local
+                    uri={require('../../../assets/img/icon-fold.png')}
+                    height={27}
+                    width={27}
+                    resizeMode={'cover'}
+                  />
+                )}
+              </HView>
+            </TouchableOpacity>
+          )}
         </HView>
       );
     } else {
-      return (
-        <ListItemBattle onPress={() => props.navigation.navigate('BattleView')} item={item} />
-      );
+      if (item.foldable && !showMyBattle) {
+        return null;
+      } else {
+        return (
+          <ListItemBattle
+            onPress={() => props.navigation.navigate('BattleView')}
+            item={item}
+          />
+        );
+      }
     }
   };
   return (
@@ -96,7 +119,7 @@ export default function Battle(props) {
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        stickyHeaderIndices={[0, 2]}
+        stickyHeaderIndices={[0, 3]}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}

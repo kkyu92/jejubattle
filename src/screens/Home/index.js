@@ -16,7 +16,6 @@ import Icons from '../../commons/Icons';
 import BattleComponent from './BattleComponent';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
-import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function Home(props) {
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);

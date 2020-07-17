@@ -121,7 +121,7 @@ export default function AppStackScreen() {
       {/* <Stack.Screen name="MyBattleStack" component={MyBattleStackScreen} /> */}
       <Stack.Screen name="MyInfoStack" component={MyInfoStackScreen} />
       <Stack.Screen name="TourInfoStack" component={TourInfoStackScreen} />
-      <Stack.Screen name="WishList" component={WishList} />
+      {/* <Stack.Screen name="WishList" component={WishList} /> */}
       <Stack.Screen name="Archive" component={Archive} />
       <Stack.Screen name="EventStack" component={EventStackScreen} />
       <Stack.Screen name="Notice" component={Notice} />

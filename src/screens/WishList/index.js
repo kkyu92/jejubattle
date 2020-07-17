@@ -28,12 +28,12 @@ export default function WishList(props) {
     {id: 's'},
   ];
   const renderItem = () => {
-    return <ListItem editMode={edit} />;
+    return <ListItem editMode={edit} onPress={() => props.navigation.navigate('FacilityView')}/>;
   };
   return (
     <Container>
       <Header
-        left={'close'}
+        left={'back'}
         title={'위시리스트'}
         rightComponent={
           <HView>
@@ -88,11 +88,11 @@ export default function WishList(props) {
       {edit && (
         <View>
           <Seperator line />
-          <HView style={{padding: 20}}>
-            <Button text={'취소'} color={'white'} onPress={() => setEdit(false)} />
+          <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
+            <Button text={'취소'} color={'white'} onPress={() => setEdit(false)} size={'large'} />
             <Seperator width={20} />
             <View style={{flex: 1}}>
-              <Button text={'삭제'} color={custom.themeColor} onPress={() => null} stretch/>
+              <Button text={'삭제'} color={custom.themeColor} onPress={() => null} size={'large'} stretch/>
             </View>
           </HView>
           <Seperator bottom />

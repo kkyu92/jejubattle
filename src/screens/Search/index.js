@@ -53,7 +53,7 @@ export default function Search(props) {
               onChangeText={() => null}
               borderWidth={0}
               placeholder={'검색하실 키워드를 입력해주세요.'}
-              clearButtonMode={true}
+              clearButtonMode={'while-editing'}
             />
           </View>
         }

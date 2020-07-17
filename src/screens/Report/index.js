@@ -121,14 +121,14 @@ export default function Report(props) {
             }}>
             <Icons name={'icon-camera-20'} size={20} color={'dimgray'} />
             <Seperator height={5} />
-            <Text text={'사진 0/5'} fontSize={14} color={'dimgray'} />
+            <Text text={'사진'} fontSize={14} color={'dimgray'} />
           </TouchableOpacity>
         </HView>
       </KeyboardAwareScrollView>
       <View
         style={{
           paddingHorizontal: 20,
-          paddingTop: 10,
+          padding: 10,
           borderTopWidth: 1,
           borderTopColor: 'lightgray',
         }}>

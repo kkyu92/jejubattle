@@ -35,28 +35,30 @@ export default function Drawer(props) {
         containerStyle={{borderBottomWidth: 0}}
       />
       <Seperator height={35} />
-      <HView style={{paddingHorizontal: 20}}>
-        <Image
-          local
-          uri={require('../../../assets/img/img-user2.png')}
-          width={68}
-          height={68}
-          borderRadius={34}
-          onPress={() =>
-            props.navigation.navigate('MyInfoStack', {screen: 'MyInfo'})
-          }
-        />
-        <Seperator width={22} />
-        <View>
-          <Text fontSize={21} text={'내이름'} fontWeight={'bold'} />
-          <Seperator height={10} />
-          <Text
-            fontSize={15}
-            text={'대표종목: 축구, 배드민턴, 농구'}
-            color={'gray'}
+      <TouchableOpacity
+        onPress={() =>
+          props.navigation.navigate('MyInfoStack', {screen: 'MyInfo'})
+        }>
+        <HView style={{paddingHorizontal: 20}}>
+          <Image
+            local
+            uri={require('../../../assets/img/img-user2.png')}
+            width={68}
+            height={68}
+            borderRadius={34}
           />
-        </View>
-      </HView>
+          <Seperator width={22} />
+          <View>
+            <Text fontSize={21} text={'내이름'} fontWeight={'bold'} />
+            <Seperator height={10} />
+            <Text
+              fontSize={15}
+              text={'대표종목: 축구, 배드민턴, 농구'}
+              color={'gray'}
+            />
+          </View>
+        </HView>
+      </TouchableOpacity>
       <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
         <View
           style={{
