@@ -22,6 +22,9 @@ import {
   FIREBASE_WEB_API,
   custom,
 } from './src/config';
+import { AppContext, useAppReducer } from './src/context';
+import AppStackScreen from './src/navigations/AppStack';
+import AuthStackScreen from './src/navigations/AuthStack';
 
 const Stack = createStackNavigator();
 
@@ -40,6 +43,7 @@ Nuno.init({
 
 const App: () => React$Node = () => {
   const colorScheme = useColorScheme();
+  const {state, dispatch} = useAppReducer();
   const [ready, setReady] = React.useState(false);
 
   const theme = {
@@ -72,11 +76,25 @@ const App: () => React$Node = () => {
     }
   }, []);
 
+  console.groupCollapsed('[CONTEXT]');
+  console.info(state);
+  console.groupEnd();
+
+  if (!ready) {
+    return null;
+  }
+
   return (
     <NavigationContainer theme={theme} ref={navigationRef}>
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Root" component={RootStackScreen} />
-      </Stack.Navigator>
+      <AppContext.Provider value={{...state, dispatch}}>
+        <Stack.Navigator headerMode="none">
+          {state.me ? (
+            <Stack.Screen name="App" component={AppStackScreen} />
+          ) : (
+            <Stack.Screen name="Auth" component={AuthStackScreen} />
+          )}
+        </Stack.Navigator>
+      </AppContext.Provider>
     </NavigationContainer>
   );
 };

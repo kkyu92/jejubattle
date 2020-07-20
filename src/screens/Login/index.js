@@ -22,7 +22,7 @@ export default function Login(props) {
 
   return (
     <Container
-      backgroundImage={require('../../../assets/img/bg/442675-PEKYXF-126.png')}>
+      backgroundImage={require('../../../assets/img/bg/img-background-login.png')}>
       <KeyboardAwareScrollView
         contentContainerStyle={{
           flex: 1,

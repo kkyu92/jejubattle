@@ -6,40 +6,23 @@ export const useAppReducer = () => {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
-        case 'RESTORE_TOKEN':
+        case 'AUTHORIZED':
           return {
             ...prevState,
-            isLoading: false,
-            me: action.data.me,
+            me: action.data,
           };
-        case 'GET_ME':
+        case 'UNAUTHORIZED':
           return {
             ...prevState,
-            isLoading: false,
-            me: action.data.me,
+            me: null,
           };
-        case 'SIGN_IN':
-          return {
-            ...prevState,
-            me: action.data.me,
-          };
-        case 'SIGN_OUT':
-          return {
-            ...prevState,
-            me: {},
-          };
-        case 'UPDATE_USER':
+        case 'UPDATEME':
           const prevMe = prevState.me;
           return {
             ...prevState,
             me: {...prevMe, ...action.data},
           };
-        case 'SET_FILTER_ITEMS':
-          return {
-            ...prevState,
-            filterItems: action.data,
-          };
-        case 'UPDATE_NOTI':
+        case 'UPDATENOTI':
           return {
             ...prevState,
             noti: action.data,
@@ -47,8 +30,7 @@ export const useAppReducer = () => {
       }
     },
     {
-      isLoading: true,
-      me: {},
+      me: null,
       noti: [],
     },
   );
