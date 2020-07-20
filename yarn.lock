@@ -6382,10 +6382,10 @@ react-native-modal@^11.5.6:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
 
-react-native-nuno-ui@^1.0.70:
-  version "1.0.70"
-  resolved "https://registry.yarnpkg.com/react-native-nuno-ui/-/react-native-nuno-ui-1.0.70.tgz#c205be4d07fe42256a76bff19396ea25762efdce"
-  integrity sha512-02ARN4BZQI89lEMt5gTJNwMeqBJGcIHQxWoOvVszk4LXQ4pjRRjA3DOFDhEeZOMomIQGYe7vKva+KqCk6dfduA==
+react-native-nuno-ui@^1.0.74:
+  version "1.0.74"
+  resolved "https://registry.yarnpkg.com/react-native-nuno-ui/-/react-native-nuno-ui-1.0.74.tgz#5bb7c386252185e27cc231ff4a553d2315c99059"
+  integrity sha512-gzOBuvhyDh5LhnMtdDseS527TLf3V9tjMstYYEOIaWf7AocdPrF410fmBTyhf8IphDS3pjU3yigvZtnrFcmhLA==
   dependencies:
     moment "^2.27.0"
     react-native-image-zoom-viewer "^3.0.1"

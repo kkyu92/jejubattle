@@ -5,6 +5,7 @@
 #import <React/RCTRootView.h>
 #import "RNBootSplash.h" // <- add the header import
 #import <GoogleMaps/GoogleMaps.h>
+#import <Firebase.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -32,6 +33,10 @@ static void InitializeFlipper(UIApplication *application) {
 #if DEBUG
   InitializeFlipper(application);
 #endif
+
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
 
   [GMSServices provideAPIKey:@"AIzaSyB1MmZqZSsulLsArJQh1bpx63nZzzyP_P8"]; // add this line using the api key obtained from Google Console
 

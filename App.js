@@ -10,7 +10,6 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {RootStackScreen} from './src/navigations';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
 import {Nuno} from 'react-native-nuno-ui';
@@ -25,6 +24,8 @@ import {
 import { AppContext, useAppReducer } from './src/context';
 import AppStackScreen from './src/navigations/AppStack';
 import AuthStackScreen from './src/navigations/AuthStack';
+import { registerAppWithFCM, requestPermission, getToken } from './src/fcm';
+import RNBootSplash from 'react-native-bootsplash';
 
 const Stack = createStackNavigator();
 
@@ -55,9 +56,9 @@ const App: () => React$Node = () => {
 
   let init = async () => {
     // …do multiple async tasks
-    // await registerAppWithFCM();
-    // await requestPermission();
-    // await getToken();
+    await registerAppWithFCM();
+    await requestPermission();
+    await getToken();
     // await apiInit();
     // await locationInit();
   };
@@ -66,6 +67,7 @@ const App: () => React$Node = () => {
     if (!ready) {
       init().finally(() => {
         setReady(true);
+        RNBootSplash.hide({duration: 500});
         // dynamicLinks()
         //   .getInitialLink()
         //   .then(link => {

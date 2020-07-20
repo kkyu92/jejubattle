@@ -18,6 +18,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* jejubattleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* jejubattleTests.m */; };
 		4459163BE6AEA36852F9359A /* libPods-jejubattle-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 217B3A8010D8CB60C6ED9AA0 /* libPods-jejubattle-tvOSTests.a */; };
 		68827E96DCF73E479FAB267F /* libPods-jejubattle.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB1581EA3DD999D8B1A99DD8 /* libPods-jejubattle.a */; };
+		6F04615E24C5D12400D58F4E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */; };
 		6FA07B1C24B5BCC70063B017 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6FA07B1B24B5BCC70063B017 /* BootSplash.storyboard */; };
 		6FAEFC4F24AC94C9006F9953 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FAEFC4E24AC94C9006F9953 /* icomoon.ttf */; };
 		DFBB47D1480351B363BFF074 /* libPods-jejubattle-jejubattleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59E670C7ED17AFBDCA6C12BD /* libPods-jejubattle-jejubattleTests.a */; };
@@ -61,6 +62,7 @@
 		2D02E4901E0B4A5D006451C7 /* jejubattle-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "jejubattle-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		59E670C7ED17AFBDCA6C12BD /* libPods-jejubattle-jejubattleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-jejubattle-jejubattleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F2E7F2625E571D00B4961F2 /* Pods-jejubattle-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jejubattle-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-jejubattle-tvOSTests/Pods-jejubattle-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6FA07B1B24B5BCC70063B017 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = jejubattle/BootSplash.storyboard; sourceTree = "<group>"; };
 		6FAEFC4E24AC94C9006F9953 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = icomoon.ttf; sourceTree = "<group>"; };
 		A5964AEF8103489EAC5D6751 /* Pods-jejubattle-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jejubattle-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-jejubattle-tvOSTests/Pods-jejubattle-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 		13B07FAE1A68108700A75B9A /* jejubattle */ = {
 			isa = PBXGroup;
 			children = (
+				6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -356,6 +359,7 @@
 			files = (
 				6FAEFC4F24AC94C9006F9953 /* icomoon.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				6F04615E24C5D12400D58F4E /* GoogleService-Info.plist in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				6FA07B1C24B5BCC70063B017 /* BootSplash.storyboard in Resources */,
 			);
