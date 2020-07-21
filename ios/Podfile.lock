@@ -167,6 +167,25 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.6.0):
     - GoogleUtilities/Logger
+  - kakao-login (2.7.0):
+    - KakaoOpenSDK (~> 1.21.0)
+    - React
+  - KakaoOpenSDK (1.21.1):
+    - KakaoOpenSDK/KakaoCommon (= 1.21.1)
+    - KakaoOpenSDK/KakaoLink (= 1.21.1)
+    - KakaoOpenSDK/KakaoMessageTemplate (= 1.21.1)
+    - KakaoOpenSDK/KakaoNavi (= 1.21.1)
+    - KakaoOpenSDK/KakaoOpenSDK (= 1.21.1)
+    - KakaoOpenSDK/KakaoPlusFriend (= 1.21.1)
+  - KakaoOpenSDK/KakaoCommon (1.21.1)
+  - KakaoOpenSDK/KakaoLink (1.21.1):
+    - KakaoOpenSDK/KakaoCommon
+  - KakaoOpenSDK/KakaoMessageTemplate (1.21.1)
+  - KakaoOpenSDK/KakaoNavi (1.21.1):
+    - KakaoOpenSDK/KakaoCommon
+  - KakaoOpenSDK/KakaoOpenSDK (1.21.1)
+  - KakaoOpenSDK/KakaoPlusFriend (1.21.1):
+    - KakaoOpenSDK/KakaoCommon
   - libwebp (1.1.0):
     - libwebp/demux (= 1.1.0)
     - libwebp/mux (= 1.1.0)
@@ -497,6 +516,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - Google-Maps-iOS-Utils
   - GoogleMaps
+  - "kakao-login (from `../node_modules/@react-native-seoul/kakao-login`)"
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -566,6 +586,7 @@ SPEC REPOS:
     - GoogleDataTransportCCTSupport
     - GoogleMaps
     - GoogleUtilities
+    - KakaoOpenSDK
     - libwebp
     - nanopb
     - OpenSSL-Universal
@@ -587,6 +608,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  kakao-login:
+    :path: "../node_modules/@react-native-seoul/kakao-login"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -695,6 +718,8 @@ SPEC CHECKSUMS:
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleMaps: 32ca02de09de357a10ac773f2c70f1986751392d
   GoogleUtilities: 39530bc0ad980530298e9c4af8549e991fd033b1
+  kakao-login: 6da3fee5a39f1dd5f88de7534c20ed564ca448fb
+  KakaoOpenSDK: 7a7b728491fc199bf2186fec5bbf2c70ba14f474
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355

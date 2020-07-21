@@ -1492,6 +1492,13 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-7.2.1.tgz#b08cb1ae4171ee76cb25f765b2f1f1f01ac9a083"
   integrity sha512-5w94m+XFj2P/VdGZW3AuXvhsAnjHC03vQcTdJm7B5vZo2ZbfnVEH4Dyb7V9rlI2stPc2/cIBiMK/oTerMAaDtw==
 
+"@react-native-seoul/kakao-login@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@react-native-seoul/kakao-login/-/kakao-login-2.7.0.tgz#6a8990773dc81a4a74a6c7991ffa3fa1f216f38b"
+  integrity sha512-/oFJuOuqBCliL4elsTvHCmhS0WyPa9WYpZ69+lHaAVObBYgoL/q0QHO6L9VktFsW5iI19sT8NN6+RiCARO9+CA==
+  dependencies:
+    dooboolab-welcome "^1.1.0"
+
 "@react-navigation/bottom-tabs@^5.6.1":
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.6.1.tgz#f4aa23913a0c26ec3dd4dc268cd83e3d0e5f4dc4"
@@ -2888,6 +2895,11 @@ domexception@^2.0.1:
   integrity sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg==
   dependencies:
     webidl-conversions "^5.0.0"
+
+dooboolab-welcome@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/dooboolab-welcome/-/dooboolab-welcome-1.2.0.tgz#295818ce85a8e97dc90c0ec0510b4008e2d722dc"
+  integrity sha512-XgEbjJHAsKLge/e8jtuHsv84Ovg1Gx0GvnOTOmOlVGV1643nduTAkT3fyo/mxKbzvyXBr47RHaJAY4R2toI0UA==
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"

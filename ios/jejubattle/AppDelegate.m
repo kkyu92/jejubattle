@@ -6,6 +6,7 @@
 #import "RNBootSplash.h" // <- add the header import
 #import <GoogleMaps/GoogleMaps.h>
 #import <Firebase.h>
+#import <KakaoOpenSDK/KakaoOpenSDK.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -63,6 +64,29 @@ static void InitializeFlipper(UIApplication *application) {
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+                                                options:(NSDictionary<NSString *,id> *)options {
+  // kakao login
+  if ([KOSession isKakaoAccountLoginCallback:url]) {
+    return [KOSession handleOpenURL:url];
+  }
+
+    // facebook login
+//  if ([[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options]) {
+//    return true;
+//  }
+//
+//  if ([RCTLinkingManager application:application openURL:url options:options]) {
+//    return true;
+//  }
+  return false;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    [KOSession handleDidBecomeActive];
 }
 
 @end
