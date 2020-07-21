@@ -23,18 +23,41 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
+				<string>fb277258110177997</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FacebookAppID</key>
+	<string>277258110177997</string>
+	<key>FacebookDisplayName</key>
+	<string>jejubattle</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>4f9e332e4542802f6f7587f6294cff32</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
+		<string>kakaokompassauth</string>
+		<string>storykompassauth</string>
+		<string>fbapi</string>
+		<string>fbapi20130214</string>
+		<string>fbapi20130410</string>
+		<string>fbapi20130702</string>
+		<string>fbapi20131010</string>
+		<string>fbapi20131219</string>
+		<string>fbapi20140410</string>
+		<string>fbapi20140116</string>
+		<string>fbapi20150313</string>
+		<string>fbapi20150629</string>
+		<string>fbapi20160328</string>
+		<string>fbauth</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -52,6 +75,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>프로필 사잔 설정을 위해 사진접근을 허용해주세요</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>icomoon.ttf</string>
@@ -83,52 +108,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-  <key>LSApplicationQueriesSchemes</key>
-  <array>
-      <!-- 공통 -->
-      <string>kakao4f9e332e4542802f6f7587f6294cff32</string>
-
-      <!-- 간편로그인 -->
-      <string>kakaokompassauth</string>
-      <string>storykompassauth</string>
-
-      <!-- 카카오톡링크 -->
-<!--      <string>kakaolink</string>-->
-<!--      <string>kakaotalk-5.9.7</string>-->
-
-      <!-- 카카오스토리링크 -->
-<!--      <string>storylink</string>-->
-
-			<!-- fb -->
-			<string>fbapi</string>
-			<string>fbapi20130214</string>
-			<string>fbapi20130410</string>
-			<string>fbapi20130702</string>
-			<string>fbapi20131010</string>
-			<string>fbapi20131219</string>
-			<string>fbapi20140410</string>
-			<string>fbapi20140116</string>
-			<string>fbapi20150313</string>
-			<string>fbapi20150629</string>
-			<string>fbapi20160328</string>
-			<string>fbauth</string>
-			<string>fb-messenger-share-api</string>
-			<string>fbauth2</string>
-			<string>fbshareextension</string>
-  </array>
-
-  <key>CFBundleURLTypes</key>
-  <array>
-    <dict>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>fb277258110177997</string>
-      </array>
-    </dict>
-  </array>
-  <key>FacebookAppID</key>
-  <string>277258110177997</string>
-  <key>FacebookDisplayName</key>
-  <string>jejubattle</string>
 </dict>
 </plist>

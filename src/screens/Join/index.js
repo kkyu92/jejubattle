@@ -11,17 +11,36 @@ import {
   Checkbox,
   Picker,
 } from 'react-native-nuno-ui';
-import {View} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
 import Icons from '../../commons/Icons';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function Join(props) {
+  const [photo, setPhoto] = React.useState('');
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [repassword, setRepassword] = React.useState('');
+
+  const getPhoto = (index) => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      mediaType: 'photo',
+      smartAlbums: ['UserLibrary'],
+      cropping: true,
+    })
+      .then(async (res) => {
+        console.log('ImagePicker openPicker', res);
+        setPhoto(res.path);
+      })
+      .catch((err) => {
+        console.log('ImagePicker openPicker error', err);
+      });
+  };
 
   return (
     <Container>
@@ -30,32 +49,41 @@ export default function Join(props) {
         <Seperator height={30} />
         <View style={{padding: 20}}>
           <HView>
-            <View>
-              <Image
-                local
-                uri={require('../../../assets/img/img-user1.png')}
-                width={72}
-                height={72}
-                borderRadius={36}
-                onPress={() => null}
-              />
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  position: 'absolute',
-                  borderWidth: 1,
-                  borderColor: 'lightgray',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 24,
-                  height: 24,
-                  borderRadius: 12,
-                  right: 0,
-                  bottom: 0,
-                }}>
-                <Icons name={'icon-pencil-12'} size={13} color={'lightgray'} />
+            <TouchableOpacity onPress={() => getPhoto()}>
+              <View>
+                {photo ? (
+                  <Image uri={photo} width={72} height={72} borderRadius={36} />
+                ) : (
+                  <Image
+                    local
+                    uri={require('../../../assets/img/img-user1.png')}
+                    width={72}
+                    height={72}
+                    borderRadius={36}
+                  />
+                )}
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    position: 'absolute',
+                    borderWidth: 1,
+                    borderColor: 'lightgray',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 24,
+                    height: 24,
+                    borderRadius: 12,
+                    right: 0,
+                    bottom: 0,
+                  }}>
+                  <Icons
+                    name={'icon-pencil-12'}
+                    size={13}
+                    color={'lightgray'}
+                  />
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
           </HView>
           <Seperator height={30} />
           <Text text={'이름'} fontSize={16} fontWeight={'500'} />
@@ -72,14 +100,14 @@ export default function Join(props) {
           <Seperator height={10} />
           <HView>
             <Checkbox
-              size={'large'}
+              // size={'large'}
               checked={gender === 'male'}
               label={'남성'}
               onPress={() => setGender('male')}
             />
             <Seperator width={60} />
             <Checkbox
-              size={'large'}
+              // size={'large'}
               checked={gender === 'female'}
               label={'여성'}
               onPress={() => setGender('female')}
