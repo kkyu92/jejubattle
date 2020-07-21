@@ -7,6 +7,8 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import <Firebase.h>
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <React/RCTLinkingManager.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -74,13 +76,13 @@ static void InitializeFlipper(UIApplication *application) {
   }
 
     // facebook login
-//  if ([[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options]) {
-//    return true;
-//  }
-//
-//  if ([RCTLinkingManager application:application openURL:url options:options]) {
-//    return true;
-//  }
+  if ([[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options]) {
+    return true;
+  }
+
+  if ([RCTLinkingManager application:application openURL:url options:options]) {
+    return true;
+  }
   return false;
 }
 

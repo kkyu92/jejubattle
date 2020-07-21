@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">제주배틀</string>
     <string name="kakao_app_key">4f9e332e4542802f6f7587f6294cff32</string>
+    <string name="facebook_app_id">190673938847034</string>
 </resources>
