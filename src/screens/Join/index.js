@@ -11,20 +11,85 @@ import {
   Checkbox,
   Picker,
 } from 'react-native-nuno-ui';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Alert} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
 import Icons from '../../commons/Icons';
 import ImagePicker from 'react-native-image-crop-picker';
+import Axios from 'axios';
+import {logApi, checkEmail, checkPassword} from 'react-native-nuno-ui/funcs';
+import {AppContext} from '../../context';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default function Join(props) {
+  const context = React.useContext(AppContext);
   const [photo, setPhoto] = React.useState('');
   const [name, setName] = React.useState('');
+  const [mobile, setMobile] = React.useState('');
   const [gender, setGender] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [repassword, setRepassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
+  const prePostUser = () => {
+    const checkemail = checkEmail(email);
+    const checkpassword = checkPassword(password, repassword);
+    if (!checkemail.valid) {
+      Alert.alert('이메일 오류', '이메일 형식이 아닙니다');
+      return;
+    }
+    if (password !== repassword) {
+      Alert.alert('비밀번호 오류', '두 비밀번호가 서로 다릅니다');
+      return;
+    }
+    if (!checkpassword.valid) {
+      Alert.alert('비밀번호 오류', '비밀번호는 문자와 숫자포함 6자 이상입니다');
+      return;
+    }
+    postUser();
+  };
+  const postUser = () => {
+    setLoading(true);
+    Axios.post('signup', {
+      userCode: 1,
+      userId: email,
+      userPwd: password,
+      userName: name,
+      userSex: gender,
+      userPhone: mobile,
+      userPushkey: global.fcmToken,
+    })
+      .then(async (res) => {
+        setLoading(false);
+        logApi('postUser', res.data);
+        if (res.data.token) {
+          await AsyncStorage.setItem('token', res.data.token);
+          context.dispatch({type: 'AUTHORIZED', data: res.data});
+          Alert.alert(
+            '회원가입 완료',
+            '프로필 작성을 완료하시고 서비스를 이용해보세요',
+            [
+              {
+                text: '확인',
+                onPress: () => props.navigation.navigate('ProfileEdit'),
+              },
+            ],
+          );
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        logApi('postUser', err?.response);
+        // email duplication check
+        // if (
+        //   err.response?.data?.code === '23505' &&
+        //   err.response?.data?.field?.email
+        // ) {
+        //   Alert.alert('이메일 오류', '이미 사용중인 이메일입니다.');
+        // }
+      });
+  };
   const getPhoto = (index) => {
     ImagePicker.openPicker({
       width: 300,
@@ -101,16 +166,16 @@ export default function Join(props) {
           <HView>
             <Checkbox
               // size={'large'}
-              checked={gender === 'male'}
+              checked={gender === 'M'}
               label={'남성'}
-              onPress={() => setGender('male')}
+              onPress={() => setGender('M')}
             />
             <Seperator width={60} />
             <Checkbox
               // size={'large'}
-              checked={gender === 'female'}
+              checked={gender === 'F'}
               label={'여성'}
-              onPress={() => setGender('female')}
+              onPress={() => setGender('F')}
             />
           </HView>
 
@@ -119,20 +184,22 @@ export default function Join(props) {
           <Seperator height={10} />
           <View>
             <HView>
-              <Picker
-                items={[]}
-                value={''}
-                placeholder={'통신사'}
-                onPress={() => null}
-                closeBar={true}
-              />
+              <View style={{width: 100}}>
+                <Picker
+                  items={[]}
+                  value={''}
+                  placeholder={'통신사'}
+                  onPress={() => null}
+                  closeBar={true}
+                />
+              </View>
               <Seperator width={10} />
               <View style={{flex: 1}}>
                 <HView>
                   <View style={{flex: 1}}>
                     <TextInput
-                      value={''}
-                      onChangeText={(e) => null}
+                      value={mobile}
+                      onChangeText={(e) => setMobile(e)}
                       borderWidth={0}
                       keyboardType={'number-pad'}
                       placeholder={'전화번호를 입력해주세요'}
@@ -219,6 +286,7 @@ export default function Join(props) {
             value={email}
             onChangeText={(e) => setEmail(e)}
             borderWidth={0}
+            autoCapitalize={'none'}
             placeholder={'아이디로 사용할 이메일을 입력해주세요'}
           />
           <Seperator line />
@@ -264,7 +332,8 @@ export default function Join(props) {
           stretch
           size={'large'}
           text={'회원가입'}
-          onPress={() => null}
+          loading={loading}
+          onPress={() => prePostUser()}
           color={custom.themeColor}
         />
         <Seperator bottom />

@@ -11,17 +11,32 @@ import {
   Carousel,
   Image,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import BattleComponent from './BattleComponent';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import AsyncStorage from '@react-native-community/async-storage';
+import { AppContext } from '../../context';
 
 export default function Home(props) {
+  const context = React.useContext(AppContext);
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
   const [alertTitle, setAertTitle] = React.useState('');
   const [alertText, setAlertText] = React.useState('');
   React.useEffect(() => {
+    // get version
+    Axios.post('version')
+      .then(async (res) => {
+        logApi('postVersion', res.data);
+      })
+      .catch((err) => {
+        // setLoading(false);
+        logApi('postVersion', err?.response);
+      });
+
     setShowUpdateModal(true);
     setAertTitle('업데이트 알림');
     setAlertText(

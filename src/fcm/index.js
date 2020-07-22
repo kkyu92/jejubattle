@@ -39,6 +39,7 @@ export async function getToken() {
   // 2 = messaging.AuthorizationStatus.PROVISIONAL: Provisional authorization has been granted.
   if (granted) {
     const token = await messaging().getToken();
+    global.fcmToken = token;
     await AsyncStorage.setItem('fcmToken', token);
   }
 }

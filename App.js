@@ -26,6 +26,7 @@ import AppStackScreen from './src/navigations/AppStack';
 import AuthStackScreen from './src/navigations/AuthStack';
 import { registerAppWithFCM, requestPermission, getToken } from './src/fcm';
 import RNBootSplash from 'react-native-bootsplash';
+import Init from './src/commons/Init';
 
 const Stack = createStackNavigator();
 
@@ -59,7 +60,7 @@ const App: () => React$Node = () => {
     await registerAppWithFCM();
     await requestPermission();
     await getToken();
-    // await apiInit();
+    await Init();
     // await locationInit();
   };
 

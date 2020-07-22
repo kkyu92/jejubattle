@@ -14,11 +14,31 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { screenWidth } from '../../styles';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
 export default function Login(props) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  const signin = () => {
+    setLoading(true);
+    Axios.post('signin', {
+      userId: email,
+      userPwd: password,
+      userPushKey: global.fcmToken,
+    })
+      .then(async (res) => {
+        logApi('postVersion', res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        logApi('postVersion', err?.response);
+        setLoading(false);
+      });
+  };
 
   return (
     <Container
@@ -70,6 +90,7 @@ export default function Login(props) {
             backgroundColor={'transparent'}
             textColor={'white'}
             borderColor={'white'}
+            autoCapitalize={'none'}
             placeholder={'이메일'}
             placeholderTextColor={'white'}
           />
@@ -86,6 +107,7 @@ export default function Login(props) {
             onChangeText={(e) => setPassword(e)}
             backgroundColor={'transparent'}
             textColor={'white'}
+            showEye={true}
             borderColor={'white'}
             placeholder={'패스워드'}
             placeholderTextColor={'white'}
@@ -159,12 +181,13 @@ export default function Login(props) {
           <Seperator height={50} />
           <Button
             text={'로그인'}
-            onPress={() => null}
+            onPress={() => signin()}
             color={'whitesmoke'}
             size={'large'}
             textColor={'black'}
             borderColor={'whitesmoke'}
             stretch
+            loading={loading}
           />
         </View>
         {/* </View> */}

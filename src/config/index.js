@@ -1,4 +1,5 @@
-export const API_URL = ' https://www.jejubattle.com/api/';
+// export const API_URL = 'https://www.jejubattle.com/api/';
+export const API_URL = 'https://kangmin.shop/api/';
 export const GEOCODE_API = '';
 export const FIREBASE_WEB_API = 'AIzaSyA1YDEatBC9m11UqOGyrzV6AJXwJDff1fI';
 export const IOS_STORE_ID = '';
