@@ -15,9 +15,13 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function FacilityList(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
+  const [filter1, setFilter1] = React.useState(0);
+  const [filter2, setFilter2] = React.useState(0);
   const data = [
     {id: '0'},
     {id: '1'},
@@ -28,6 +32,22 @@ export default function FacilityList(props) {
     {id: '6'},
     {id: 's'},
   ];
+  React.useEffect(() => {
+    getList();
+  }, []);
+  const getList = () => {
+    Axios.post(props.route.params.endpoint, {
+      code: props.route.params.code,
+      clCode: filter2,
+      orderType: filter1,
+    })
+      .then((res) => {
+        logApi(props.route.params.endpoint, res.data);
+      })
+      .catch((err) => {
+        logApi(props.route.params.endpoint + ' error', err.response);
+      });
+  }
   const renderItem = () => {
     return (
       <ListItem onPress={() => props.navigation.navigate('FacilityView')} />
@@ -132,33 +152,69 @@ export default function FacilityList(props) {
               <Text text={'필터'} fontWeight={'bold'} fontSize={18} />
             </View>
             <Seperator height={20} />
-            <HView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'등록순'} checked={true} />
+            <HView>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'등록순'}
+                  checked={filter1 === 1}
+                  onPress={() => setFilter1(1)}
+                />
               </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'추천순'} checked={false} />
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'추천순'}
+                  checked={filter1 === 2}
+                  onPress={() => setFilter1(2)}
+                />
               </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'내 위치순'} checked={false} />
+            </HView>
+            <HView>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'내 위치순'}
+                  checked={filter1 === 3}
+                  onPress={() => setFilter1(3)}
+                />
               </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'평점순'} checked={false} />
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'평점순'}
+                  checked={filter1 === 4}
+                  onPress={() => setFilter1(4)}
+                />
               </View>
             </HView>
             <Seperator height={30} />
-            <HView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'학교운동장'} checked={true} />
+            <HView>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'학교운동장'}
+                  checked={filter2 === 1}
+                  onPress={() => setFilter2(1)}
+                />
               </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'체육공원'} checked={false} />
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'체육공원'}
+                  checked={filter2 === 2}
+                  onPress={() => setFilter2(2)}
+                />
               </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'공공체육시설'} checked={false} />
+            </HView>
+            <HView>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'공공체육시설'}
+                  checked={filter2 === 3}
+                  onPress={() => setFilter2(3)}
+                />
               </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'사설체육시설'} checked={false} />
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'사설체육시설'}
+                  checked={filter2 === 4}
+                  onPress={() => setFilter2(4)}
+                />
               </View>
             </HView>
           </View>
@@ -175,7 +231,10 @@ export default function FacilityList(props) {
             <View style={{flex: 1}}>
               <Button
                 text={'적용하기'}
-                onPress={() => null}
+                onPress={() => {
+                  getList();
+                  setFilterVisible(false);
+                }}
                 color={custom.themeColor}
                 stretch
                 disable={false}

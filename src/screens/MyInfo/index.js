@@ -13,10 +13,12 @@ import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';
 import { custom } from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
+import { AppContext } from '../../context';
 
 const actionSheetRef = React.createRef();
 
 export default function MyInfo(props) {
+  const context = React.useContext(AppContext);
   return (
     <Container>
       <Header left={'close'} navigation={props.navigation} title={'내정보'} />
@@ -45,7 +47,7 @@ export default function MyInfo(props) {
           fullStarColor={custom.themeColor}
         />
         <Seperator height={10} />
-        <Text text={'내이름'} fontWeight={'bold'} fontSize={21} />
+        <Text text={context.me.userName} fontWeight={'bold'} fontSize={21} />
         <Seperator height={10} />
         <Text
           text={'대표종목: 축구, 배드민턴, 농구'}

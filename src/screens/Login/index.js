@@ -9,18 +9,22 @@ import {
   HView,
   Modal,
 } from 'react-native-nuno-ui';
-import {View} from 'react-native';
+import {View, Alert} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { screenWidth } from '../../styles';
 import Axios from 'axios';
 import { logApi } from 'react-native-nuno-ui/funcs';
+import AsyncStorage from '@react-native-community/async-storage';
+import { AppContext } from '../../context';
 
 export default function Login(props) {
+  const context = React.useContext(AppContext);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [emailForPassword, setEmailForPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
   const signin = () => {
@@ -28,14 +32,32 @@ export default function Login(props) {
     Axios.post('signin', {
       userId: email,
       userPwd: password,
-      userPushKey: global.fcmToken,
+      userPushkey: global.fcmToken,
     })
       .then(async (res) => {
-        logApi('postVersion', res.data);
+        logApi('signin success', res.data);
         setLoading(false);
+        await AsyncStorage.setItem('token', res.data.token);
+        context.dispatch({type: 'AUTHORIZED', data: res.data});
       })
       .catch((err) => {
-        logApi('postVersion', err?.response);
+        logApi('signin error', err?.response);
+        setLoading(false);
+        Alert.alert('로그인', err.response?.data?.message);
+      });
+  };
+  const pwInquiry = () => {
+    setLoading(true);
+    Axios.post('pwInquiry', {
+      userEmail: emailForPassword,
+    })
+      .then((res) => {
+        logApi('pwInquiry success', res.data);
+        setLoading(false);
+        setModalVisible(false);
+      })
+      .catch((err) => {
+        logApi('pwInquiry error', err?.response);
         setLoading(false);
       });
   };
@@ -92,6 +114,7 @@ export default function Login(props) {
             borderColor={'white'}
             autoCapitalize={'none'}
             placeholder={'이메일'}
+            keyboardType={'email-address'}
             placeholderTextColor={'white'}
           />
           <Seperator height={20} />
@@ -208,9 +231,11 @@ export default function Login(props) {
             <Text text={'이메일'} fontSize={14} fontWeight={'500'} />
             <Seperator height={10} />
             <TextInput
-              value={email}
-              onChangeText={(e) => setEmail(e)}
+              value={emailForPassword}
+              onChangeText={(e) => setEmailForPassword(e)}
               borderWidth={0}
+              autoCapitalize={'none'}
+              keyboardType={'email-address'}
               placeholder={'이메일을 입력해주세요'}
             />
             <Seperator line />
@@ -219,7 +244,7 @@ export default function Login(props) {
               <View style={{flex: 1}}>
                 <Button
                   text={'취소'}
-                  onPress={() => null}
+                  onPress={() => setModalVisible(false)}
                   color={'gray'}
                   size={'large'}
                   stretch
@@ -229,7 +254,7 @@ export default function Login(props) {
               <View style={{flex: 1}}>
                 <Button
                   text={'확인'}
-                  onPress={() => null}
+                  onPress={() => pwInquiry()}
                   color={custom.themeColor}
                   size={'large'}
                   stretch

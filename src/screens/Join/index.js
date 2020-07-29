@@ -66,16 +66,6 @@ export default function Join(props) {
         if (res.data.token) {
           await AsyncStorage.setItem('token', res.data.token);
           context.dispatch({type: 'AUTHORIZED', data: res.data});
-          Alert.alert(
-            '회원가입 완료',
-            '프로필 작성을 완료하시고 서비스를 이용해보세요',
-            [
-              {
-                text: '확인',
-                onPress: () => props.navigation.navigate('ProfileEdit'),
-              },
-            ],
-          );
         }
       })
       .catch((err) => {
@@ -287,6 +277,7 @@ export default function Join(props) {
             onChangeText={(e) => setEmail(e)}
             borderWidth={0}
             autoCapitalize={'none'}
+            keyboardType={'email-address'}
             placeholder={'아이디로 사용할 이메일을 입력해주세요'}
           />
           <Seperator line />

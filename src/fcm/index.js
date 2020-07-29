@@ -29,9 +29,9 @@ export async function hasPermission() {
   return await messaging().hasPermission();
 }
 
-export async function getToken() {
+export async function getFcmToken() {
   const granted = await hasPermission();
-  console.log('getToken authorizationStatus', granted);
+  console.log('getFcmToken authorizationStatus', granted);
 
   // -1 = messaging.AuthorizationStatus.NOT_DETERMINED: Permission has not yet been requested for your application.
   // 0 = messaging.AuthorizationStatus.DENIED: The user has denied notification permissions.

@@ -17,8 +17,13 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
+import { AppContext } from '../../context';
 
 export default function Setting(props) {
+  const context = React.useContext(AppContext);
+  const signout = () => {
+    context.dispatch({type: 'UNAUTHORIZED'});
+  };
   return (
     <Container>
       <Header left={'close'} title={'설정'} navigation={props.navigation} />
@@ -91,7 +96,7 @@ export default function Setting(props) {
 
       <Seperator height={50} />
 
-      <TouchableOpacity style={{paddingHorizontal: 20, paddingVertical: 15}} onPress={() => null}>
+      <TouchableOpacity style={{paddingHorizontal: 20, paddingVertical: 15}} onPress={() => signout()}>
         <Text
           text={'로그아웃'}
           fontSize={18}

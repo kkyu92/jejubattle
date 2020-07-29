@@ -12,8 +12,10 @@ import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
+import { AppContext } from '../../context';
 
 export default function Drawer(props) {
+  const context = React.useContext(AppContext);
   return (
     <Container>
       <Header
@@ -49,7 +51,7 @@ export default function Drawer(props) {
           />
           <Seperator width={22} />
           <View>
-            <Text fontSize={21} text={'내이름'} fontWeight={'bold'} />
+            <Text fontSize={21} text={context.me?.userName} fontWeight={'bold'} />
             <Seperator height={10} />
             <Text
               fontSize={15}

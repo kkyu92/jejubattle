@@ -19,29 +19,32 @@ import {ScrollView} from 'react-native-gesture-handler';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
-import { AppContext } from '../../context';
+import {AppContext} from '../../context';
 
 export default function Home(props) {
   const context = React.useContext(AppContext);
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
   const [alertTitle, setAertTitle] = React.useState('');
   const [alertText, setAlertText] = React.useState('');
+  const [banner, setBanner] = React.useState([]);
+  const [recommand, setRecommand] = React.useState([]);
   React.useEffect(() => {
-    // get version
-    Axios.post('version')
+    Axios.get('mainList')
       .then(async (res) => {
-        logApi('postVersion', res.data);
+        logApi('mainList', res.data);
+        setBanner(res.data.bannerList);
+        setRecommand(res.data.recomList);
       })
       .catch((err) => {
         // setLoading(false);
-        logApi('postVersion', err?.response);
+        logApi('mainList error', err?.response);
       });
 
-    setShowUpdateModal(true);
-    setAertTitle('업데이트 알림');
-    setAlertText(
-      '제주배틀박스 앱이 v.1.0.2 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!',
-    );
+    // setShowUpdateModal(true);
+    // setAertTitle('업데이트 알림');
+    // setAlertText(
+    //   '제주배틀박스 앱이 v.1.0.2 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!',
+    // );
   }, []);
   return (
     <Container

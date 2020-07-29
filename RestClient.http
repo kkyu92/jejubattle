@@ -1,0 +1,12 @@
+@host=https://kangmin.shop/api/
+@token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiVGVzdCIsImlzcyI6ImthbmdtaW4uc2hvcCIsIl9wayI6NSwiZXhwIjoxNTk4NjAyNzUwfQ.OZHvoPis4aubxRxA8BkvdBksURmddXLbwwk948kmOMw
+
+GET {{host}}mainList HTTP/1.1
+token: {{token}}
+
+
+###
+
+POST {{host}}sportsList HTTP/1.1
+Content-Type: application/json
+token: {{token}}

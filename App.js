@@ -24,9 +24,11 @@ import {
 import { AppContext, useAppReducer } from './src/context';
 import AppStackScreen from './src/navigations/AppStack';
 import AuthStackScreen from './src/navigations/AuthStack';
-import { registerAppWithFCM, requestPermission, getToken } from './src/fcm';
+import {requestPermission, getFcmToken} from './src/fcm';
 import RNBootSplash from 'react-native-bootsplash';
 import Init from './src/commons/Init';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
 const Stack = createStackNavigator();
 
@@ -57,11 +59,24 @@ const App: () => React$Node = () => {
 
   let init = async () => {
     // …do multiple async tasks
-    await registerAppWithFCM();
+    // await registerAppWithFCM();
     await requestPermission();
-    await getToken();
+    await getFcmToken();
     await Init();
     // await locationInit();
+    if (global.token) {
+      await Axios.post('getme', {})
+        .then((res) => {
+          logApi('getme', res.data);
+          dispatch({
+            type: 'AUTHORIZED',
+            data: res.data,
+          });
+        })
+        .catch((err) => {
+          logApi('getme error', err.response);
+        });
+    }
   };
 
   React.useEffect(() => {

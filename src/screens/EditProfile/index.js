@@ -15,10 +15,28 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
+import { AppContext } from '../../context';
 
 export default function EditProfile(props) {
+  const context = React.useContext(AppContext);
+  const [userName, setUserName] = React.useState(context.me.userName || '');
   const [modalIntroduce, setModalIntroduce] = React.useState(false);
   const [modalPassword, setModalPassword] = React.useState(false);
+  let provider = '';
+  switch(context.me.userCode) {
+    case 1:
+      provider = '없음';
+      break;
+    case 2:
+      provider = '연동완료(네이버)';
+      break;
+    case 3:
+      provider = '연동완료(카카오)';
+      break;
+    case 4:
+      provider = '연동완료(페이스북)';
+      break;
+  }
   return (
     <Container>
       <Header left={'close'} title={'정보수정'} navigation={props.navigation} />
@@ -30,7 +48,7 @@ export default function EditProfile(props) {
             </View>
             <View style={{flex: 0.8}}>
               <Text
-                text={'내이름'}
+                text={context.me.userName}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
@@ -43,7 +61,7 @@ export default function EditProfile(props) {
             </View>
             <View style={{flex: 0.6}}>
               <Text
-                text={'010-9999-2222'}
+                text={context.me.userPhone}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
@@ -65,7 +83,7 @@ export default function EditProfile(props) {
             </View>
             <View style={{flex: 0.6}}>
               <Text
-                text={'example@gmail.com'}
+                text={context.me.userId}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
@@ -87,7 +105,7 @@ export default function EditProfile(props) {
             </View>
             <View style={{flex: 0.8}}>
               <Text
-                text={'여성'}
+                text={context.me.userSex === 'M' ? '남성' : '여성'}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
@@ -100,7 +118,7 @@ export default function EditProfile(props) {
             </View>
             <View style={{flex: 0.8}}>
               <Text
-                text={'연동완료 (FACEBOOK)'}
+                text={provider}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}

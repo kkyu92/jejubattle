@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../config';
 import axios from 'axios';
-import { Platform } from 'react-native';
+import {Platform} from 'react-native';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default async () => {
   // const lang = await AsyncStorage.getItem('lang');
@@ -31,7 +32,17 @@ export default async () => {
   const token = await AsyncStorage.getItem('token');
   global.token = token;
   axios.defaults.baseURL = API_URL;
+  axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   axios.defaults.headers.common['token'] = token;
   axios.defaults.headers.common['os'] = Platform.OS === 'android' ? 1 : 2;
   axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+  await axios
+    .post('version', {})
+    .then((res) => {
+      logApi('Version', res.data);
+    })
+    .catch((err) => {
+      logApi('Version error', err.response);
+    });
 };
