@@ -18,19 +18,22 @@ import ListItem from '../../commons/ListItem';
 import Accordion from 'react-native-collapsible/Accordion';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { screenWidth } from '../../styles';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
-const data = [
-  {id: '0'},
-  {id: '1'},
-  {id: '2'},
-  {id: '3'},
-  {id: '4'},
-  {id: '5'},
-  {id: '6'},
-  {id: 's'},
-];
 
 export default function TourInfo(props) {
+  const [travel, setTravel] = React.useState([]);
+  React.useEffect(() => {
+    Axios.get('travel')
+      .then((res) => {
+        logApi('travel', res.data);
+        setTravel(res.data);
+      })
+      .catch((err) => {
+        logApi('travel error', err.response);
+      });
+  }, []);
   const FlatListHeader = () => {
     return (
       <View>
@@ -99,8 +102,10 @@ export default function TourInfo(props) {
           height={Math.floor((screenWidth - 40) * 0.4)}
           width={Math.floor(screenWidth - 40)}
           borderRadius={10}
-          uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-          onPress={() => props.navigation.navigate('TourCourseView')}
+          uri={item.faImgUrl}
+          onPress={() =>
+            props.navigation.navigate('TourCourseView', {faPk: item.faPk})
+          }
           resizeMode={'cover'}
         />
       </View>
@@ -111,8 +116,8 @@ export default function TourInfo(props) {
       <Header left={'close'} title={'여행정보'} navigation={props.navigation} />
       <Seperator height={20} />
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={travel}
+        keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         ListHeaderComponent={FlatListHeader()}

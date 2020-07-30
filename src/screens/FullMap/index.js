@@ -3,13 +3,38 @@ import {Map, Seperator, HView, TextInput, Image} from 'react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
 import {ShadowStyle} from '../../styles';
 import Icons from '../../commons/Icons';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function FullMap(props) {
+  const [keyword, setKeyword] = React.useState('');
+  const [currentLocation, setCurrentLocation] = React.useState({});
+  React.useEffect(() => {
+    aroundme();
+  }, []);
+
+  const aroundme = () => {
+    // 테스트 좌표
+    // "lat": 37.55375859999999,
+    // "lon": 126.9809696,
+    Axios.post('aroundme', {
+      lat: 37.55375859999999, //global.address.coords.latitude,
+      lon: 126.9809696, //global.address.coords.longitude,
+      keyword: keyword,
+    })
+      .then((res) => {
+        logApi('aroundme', res.data);
+      })
+      .catch((err) => {
+        logApi('aroundme error', err.response);
+      });
+  };
   return (
     <View style={{flex: 1}} keyboardShouldPersistTaps={'handled'}>
       <Map
         showZoom={true}
-        showCompass={true}
+        showCurrent={true}
+        getCurrentPosition={(e) => setCurrentLocation(e)}
         customCenter={
           <Image
             local
@@ -55,9 +80,12 @@ export default function FullMap(props) {
             <Icons name="icon-search-16" size={16} color={'black'} />
             <View style={{flex: 1}}>
               <TextInput
-                value={''}
-                onChangeText={() => null}
+                value={keyword}
+                onChangeText={(e) => setKeyword(e)}
                 borderWidth={0}
+                returnKeyType={'search'}
+                returnKeyLabel={'검색'}
+                onSubmitEditing={() => aroundme()}
                 placeholder={'검색하실 키워드를 입력해주세요.'}
               />
             </View>

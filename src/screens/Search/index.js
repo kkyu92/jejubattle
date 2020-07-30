@@ -12,29 +12,79 @@ import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
+import Axios from 'axios';
+import {
+  logApi,
+  saveRecentKeyword,
+  getRecentKeyword,
+  removeRecentKeyword,
+} from 'react-native-nuno-ui/funcs';
 
 export default function Search(props) {
-  const data = [{id: '0'}, {id: '1'}, {id: '2'}, {id: '3'}, {id: '4'}, {id: '5'}, {id: '6'}, {id: '7'}];
-  const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([0, 3]);
+  const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([]);
+  const [keyword, setKeyword] = React.useState('');
+  const [result, setResult] = React.useState([]);
+  const [recentKeywords, setRecentKeywords] = React.useState([]);
+
+  React.useEffect(() => {
+    getKeywords();
+  }, []);
+  const getKeywords = async () => {
+    const temp = await getRecentKeyword();
+    setRecentKeywords(temp);
+  };
+  const getList = (key) => {
+    Axios.post('gojiKeywordList', {
+      keyword: key,
+    })
+      .then(async (res) => {
+        logApi('gojiList', res.data);
+        let temp = [];
+        let stickyIndex = [];
+        if (res.data.facility.length > 0) {
+          temp.push({
+            faPk: 1000000,
+            title: '운동시설',
+            cnt: res.data.facility.length,
+          });
+          temp = temp.concat(res.data.facility);
+          stickyIndex.push(0);
+        }
+        if (res.data.recommand.length > 0) {
+          temp.push({
+            faPk: 1000001,
+            title: '추천코스',
+            cnt: res.data.recommand.length,
+          });
+          temp = temp.concat(res.data.recommand);
+          if (stickyIndex.length === 0) {
+            stickyIndex.push(0);
+          } else {
+            stickyIndex.push(res.data.facility.length + 1);
+          }
+        }
+        setResult(temp);
+        setStickyHeaderIndices(stickyIndex);
+
+        const k = await saveRecentKeyword(key, 5);
+        setRecentKeywords(k);
+      })
+      .catch((err) => {
+        logApi('gojiList error', err.response);
+      });
+  };
+
   const renderItems = ({item, index}) => {
-    if (index === 0) {
+    if (item.title) {
       return (
         <HView style={{padding: 20, backgroundColor: 'white'}}>
-          <Text fontSize={16} fontWeight={'bold'} text={'운동시설'} />
+          <Text fontSize={16} fontWeight={'bold'} text={item.title} />
           <Text fontSize={16} text={'에서의 검색결과'} />
-          <Text fontSize={16} text={'(2)'} color={'gray'} />
-        </HView>
-      );
-    } else if (index === 3) {
-      return (
-        <HView style={{padding: 20, backgroundColor: 'white'}}>
-          <Text fontSize={16} fontWeight={'bold'} text={'추천코스'} />
-          <Text fontSize={16} text={'에서의 검색결과'} />
-          <Text fontSize={16} text={'(2)'} color={'gray'} />
+          <Text fontSize={16} text={`(${item.cnt})`} color={'gray'} />
         </HView>
       );
     } else {
-      return <ListItem />;
+      return <ListItem item={item} />;
     }
   };
   return (
@@ -49,9 +99,12 @@ export default function Search(props) {
         centerComponent={
           <View style={{flex: 1}}>
             <TextInput
-              value={''}
-              onChangeText={() => null}
+              value={keyword}
+              onChangeText={(e) => setKeyword(e)}
               borderWidth={0}
+              returnKeyType={'search'}
+              returnKeyLabel={'검색'}
+              onSubmitEditing={() => getList(keyword)}
               placeholder={'검색하실 키워드를 입력해주세요.'}
               clearButtonMode={'while-editing'}
             />
@@ -64,82 +117,40 @@ export default function Search(props) {
           <Text text={'최근 검색어'} color={'gray'} fontSize={13} />
         </View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'whitesmoke',
-              padding: 10,
-              borderRadius: 4,
-              marginRight: 10,
-            }}
-            onPress={() => null}>
-            <Text text={'야구장'} color={'dimgray'} fontSize={14} />
-            <Seperator width={8} />
-            <Icons name={'icon-cancel-7'} size={7} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'whitesmoke',
-              padding: 10,
-              borderRadius: 4,
-              marginRight: 10,
-            }}
-            onPress={() => null}>
-            <Text text={'야구장'} color={'dimgray'} fontSize={14} />
-            <Seperator width={8} />
-            <Icons name={'icon-cancel-7'} size={7} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'whitesmoke',
-              padding: 10,
-              borderRadius: 4,
-              marginRight: 10,
-            }}
-            onPress={() => null}>
-            <Text text={'야구장'} color={'dimgray'} fontSize={14} />
-            <Seperator width={8} />
-            <Icons name={'icon-cancel-7'} size={7} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'whitesmoke',
-              padding: 10,
-              borderRadius: 4,
-              marginRight: 10,
-            }}
-            onPress={() => null}>
-            <Text text={'야구장'} color={'dimgray'} fontSize={14} />
-            <Seperator width={8} />
-            <Icons name={'icon-cancel-7'} size={7} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'whitesmoke',
-              padding: 10,
-              borderRadius: 4,
-              marginRight: 10,
-            }}
-            onPress={() => null}>
-            <Text text={'야구장'} color={'dimgray'} fontSize={14} />
-            <Seperator width={8} />
-            <Icons name={'icon-cancel-7'} size={7} />
-          </TouchableOpacity>
+          {recentKeywords.map((e, i) => {
+            return (
+              <TouchableOpacity
+                key={i}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: 'whitesmoke',
+                  padding: 10,
+                  borderRadius: 4,
+                  marginRight: 10,
+                }}
+                onPress={() => {
+                  setKeyword(e.keyword);
+                  getList(e.keyword);
+                }}>
+                <Text text={e.keyword} color={'dimgray'} fontSize={14} />
+                <Seperator width={8} />
+                <TouchableOpacity
+                  onPress={async () => {
+                    const temp = await removeRecentKeyword(e.keyword);
+                    setRecentKeywords(temp);
+                  }}>
+                  <Icons name={'icon-cancel-7'} size={7} />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </HView>
 
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={result}
+        keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItems}
         stickyHeaderIndices={stickyHeaderIndices}
         // ListEmptyComponent={<Empty />}
@@ -150,8 +161,7 @@ export default function Search(props) {
         //   setPullToRefresh(true);
         // }}
       />
-      <Seperator height={10} color={'whitesmoke'} />
-
+      {/* <Seperator height={10} color={'whitesmoke'} /> */}
     </Container>
   );
 }

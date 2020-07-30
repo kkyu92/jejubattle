@@ -1,7 +1,7 @@
 import React from 'react';
 import {Container, Text, Seperator, Image, HView} from 'react-native-nuno-ui';
-import {View} from 'react-native';
-import { screenWidth } from '../../styles';
+import {View, TouchableOpacity, Linking} from 'react-native';
+import {screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 
 export default function TabFacilityInfo(props) {
@@ -114,7 +114,11 @@ export default function TabFacilityInfo(props) {
         <Text text={'이용 시간'} fontSize={18} fontWeight={'bold'} />
       </View>
       <HView
-        style={{paddingHorizontal: 40, alignItems: 'flex-start', marginBottom: 30}}>
+        style={{
+          paddingHorizontal: 40,
+          alignItems: 'flex-start',
+          marginBottom: 30,
+        }}>
         <View style={{flex: 0.3}}>
           <Text text={'토요일'} fontSize={18} color={'dimgray'} />
         </View>
@@ -126,7 +130,11 @@ export default function TabFacilityInfo(props) {
         </View>
       </HView>
       <HView
-        style={{paddingHorizontal: 40, alignItems: 'flex-start', marginBottom: 30}}>
+        style={{
+          paddingHorizontal: 40,
+          alignItems: 'flex-start',
+          marginBottom: 30,
+        }}>
         <View style={{flex: 0.3}}>
           <Text text={'일요일,공휴일'} fontSize={18} color={'dimgray'} />
         </View>
@@ -144,7 +152,11 @@ export default function TabFacilityInfo(props) {
         <Text text={'이용 요금'} fontSize={18} fontWeight={'bold'} />
       </View>
       <HView
-        style={{paddingHorizontal: 40, alignItems: 'flex-start', marginBottom: 30}}>
+        style={{
+          paddingHorizontal: 40,
+          alignItems: 'flex-start',
+          marginBottom: 30,
+        }}>
         <View style={{flex: 0.3}}>
           <Text text={'평일 주간'} fontSize={18} color={'dimgray'} />
         </View>
@@ -157,7 +169,11 @@ export default function TabFacilityInfo(props) {
         </View>
       </HView>
       <HView
-        style={{paddingHorizontal: 40, alignItems: 'flex-start', marginBottom: 30}}>
+        style={{
+          paddingHorizontal: 40,
+          alignItems: 'flex-start',
+          marginBottom: 30,
+        }}>
         <View style={{flex: 0.3}}>
           <Text text={'평일 야간'} fontSize={18} color={'dimgray'} />
         </View>
@@ -177,7 +193,11 @@ export default function TabFacilityInfo(props) {
       </View>
       <HView style={{paddingHorizontal: 40}}>
         <Icons name={'icon-call-18'} size={20} color={'dimgray'} />
-        <Text text={'064-760-3319'} fontSize={18} color={'dimgray'} />
+        <Seperator width={20} />
+        <TouchableOpacity
+          onPress={() => Linking.openURL(`tel:${props.data.faPhone}`)}>
+          <Text text={props.data.faPhone} fontSize={18} color={'dimgray'} />
+        </TouchableOpacity>
       </HView>
 
       <Seperator height={20} />
@@ -185,9 +205,10 @@ export default function TabFacilityInfo(props) {
       <View style={{padding: 20}}>
         <Text text={'주소'} fontSize={18} fontWeight={'bold'} />
       </View>
-      <HView style={{paddingHorizontal: 40}}>
+      <HView style={{paddingHorizontal: 40, alignItems: 'flex-start'}}>
         <Icons name={'icon-loaction-18'} size={20} color={'dimgray'} />
-        <Text text={'제주특별자치도 서귀포시 효돈순환로 311-29'} fontSize={18} color={'dimgray'} />
+        <Seperator width={20} />
+        <Text text={props.data.faAddr} fontSize={18} color={'dimgray'} />
       </HView>
       <Seperator bottom />
     </Container>

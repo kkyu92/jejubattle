@@ -20,37 +20,38 @@ import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function FacilityList(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
+  const [tab] = React.useState(props.route.params.tablist || []);
+  const [activeTab, setActiveTab] = React.useState(props.route.params.code);
   const [filter1, setFilter1] = React.useState(0);
   const [filter2, setFilter2] = React.useState(0);
-  const data = [
-    {id: '0'},
-    {id: '1'},
-    {id: '2'},
-    {id: '3'},
-    {id: '4'},
-    {id: '5'},
-    {id: '6'},
-    {id: 's'},
-  ];
+  const [keyword, setKeyword] = React.useState('');
+  const [list, setList] = React.useState([]);
   React.useEffect(() => {
     getList();
-  }, []);
+  }, [activeTab]);
   const getList = () => {
     Axios.post(props.route.params.endpoint, {
-      code: props.route.params.code,
+      code: activeTab,
       clCode: filter2,
       orderType: filter1,
+      keyword: keyword,
     })
       .then((res) => {
         logApi(props.route.params.endpoint, res.data);
+        setList(res.data);
       })
       .catch((err) => {
         logApi(props.route.params.endpoint + ' error', err.response);
       });
-  }
-  const renderItem = () => {
+  };
+  const renderItem = ({item, index}) => {
     return (
-      <ListItem onPress={() => props.navigation.navigate('FacilityView')} />
+      <ListItem
+        onPress={() =>
+          props.navigation.navigate('FacilityView', {faPk: item.faPk})
+        }
+        item={item}
+      />
     );
   };
   return (
@@ -71,7 +72,7 @@ export default function FacilityList(props) {
             <Text text={'필터'} color={custom.themeColor} fontSize={17} />
           </TouchableOpacity>
         }
-        title={'구기종목'}
+        title={props.route.params.title}
         navigation={props.navigation}
         containerStyle={{borderBottomWidth: 0}}
       />
@@ -85,55 +86,47 @@ export default function FacilityList(props) {
             borderBottomWidth: 1,
           }}>
           <TouchableOpacity
-            onPress={() => null}
+            onPress={() => setActiveTab(0)}
             style={{
               paddingVertical: 15,
               paddingHorizontal: 10,
-              borderBottomWidth: 3,
-              borderBottomColor: custom.themeColor,
+              borderBottomWidth: activeTab === 0 ? 3 : undefined,
+              borderBottomColor:
+                activeTab === 0 ? custom.themeColor : undefined,
             }}>
-            <Text text={'전체'} fontSize={17} color={'gray'} />
+            <Text
+              text={'전체'}
+              fontSize={17}
+              color={activeTab === 0 ? custom.themeColor : 'gray'}
+              fontWeight={activeTab === 0 ? 'bold' : undefined}
+            />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'축구'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'농구'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'야구'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'골프'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'테니스'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'배드민턴'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'족구'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
+          {tab.map((e) => {
+            return (
+              <TouchableOpacity
+                key={e.code}
+                onPress={() => setActiveTab(e.code)}
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 10,
+                  borderBottomWidth: activeTab === e.code ? 3 : undefined,
+                  borderBottomColor:
+                    activeTab === e.code ? custom.themeColor : undefined,
+                }}>
+                <Text
+                  text={e.name}
+                  fontSize={17}
+                  color={activeTab === e.code ? custom.themeColor : 'gray'}
+                  fontWeight={activeTab === e.code ? 'bold' : undefined}
+                />
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={list}
+        keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}

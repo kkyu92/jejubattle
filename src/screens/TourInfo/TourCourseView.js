@@ -21,17 +21,9 @@ import {screenWidth} from '../../styles';
 import {TabView} from 'react-native-tab-view';
 import TabTourIntroduction from './TabTourIntroduction';
 import TabTourReview from './TabTourReview';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
-const data = [
-  {id: '0'},
-  {id: '1'},
-  {id: '2'},
-  {id: '3'},
-  {id: '4'},
-  {id: '5'},
-  {id: '6'},
-  {id: 's'},
-];
 const initialLayout = {width: screenWidth};
 
 export default function TourCourseView(props) {
@@ -40,7 +32,20 @@ export default function TourCourseView(props) {
     {key: '1', title: '소개'},
     {key: '2', title: '리뷰'},
   ]);
+  const [facility, setFacility] = React.useState({});
+  const [reply, setReply] = React.useState([]);
 
+  React.useEffect(() => {
+    Axios.get(`advertInfo/${props.route.params.faPk}`)
+      .then((res) => {
+        logApi('advertInfo', res.data);
+        setFacility(res.data.facility);
+        setReply(res.data.replyList);
+      })
+      .catch((err) => {
+        logApi('advertInfo error', err.response);
+      });
+  }, []);
   const renderTabBar = (tabprops) => {
     return (
       <HView style={{justifyContent: 'space-between', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
@@ -70,9 +75,11 @@ export default function TourCourseView(props) {
   const renderScene = ({route}) => {
     switch (route.key) {
       case '1':
-        return <TabTourIntroduction navigation={props.navigation} />;
+        return (
+          <TabTourIntroduction navigation={props.navigation} data={facility} />
+        );
       case '2':
-        return <TabTourReview navigation={props.navigation} />;
+        return <TabTourReview navigation={props.navigation} data={reply} />;
     }
   };
   return (
@@ -102,27 +109,21 @@ export default function TourCourseView(props) {
             height={Math.floor(screenWidth * 0.6)}
             width={screenWidth}
             // borderRadius={0}
-            uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
+            uri={facility.faImgUrl}
             // onPress={props.onPress}
             resizeMode={'cover'}
           />
           <Seperator height={20} />
           <HView style={{padding: 20, justifyContent: 'space-between'}}>
-            <Text text={'제주 차박 핫스팟'} fontSize={21} fontWeight={'bold'} />
+            <Text text={facility.faName} fontSize={21} fontWeight={'bold'} />
             <HView style={{paddingHorizontal: 20, justifyContent: 'flex-end'}}>
               <Icons name={'icon-like-12'} size={18} color={'gray'} />
               <Seperator width={5} />
-              <Text text={'32'} fontSize={14} color={'gray'} />
+              <Text text={facility.faLikeCnt} fontSize={14} color={'gray'} />
             </HView>
           </HView>
           <View style={{paddingHorizontal: 20}}>
-            <Text
-              text={
-                '좋은 숙소에서 1박하는 것도 재미라면 캠핑 느낌나는 느낌적인 느낌 차박에도 도전해 보세요!'
-              }
-              fontSize={18}
-              color={'dimgray'}
-            />
+            <Text text={facility.faSubject} fontSize={18} color={'dimgray'} />
           </View>
           <Seperator height={20} />
         </View>

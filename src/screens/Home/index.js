@@ -32,7 +32,7 @@ export default function Home(props) {
     Axios.get('mainList')
       .then(async (res) => {
         logApi('mainList', res.data);
-        setBanner(res.data.bannerList);
+        setBanner(res.data.bannerList.map((e) => e.imgUrl));
         setRecommand(res.data.recomList);
       })
       .catch((err) => {
@@ -78,14 +78,7 @@ export default function Home(props) {
         navigation={props.navigation}
       />
       <ScrollView>
-        <ImageCarousel
-          data={[
-            'https://homepages.cae.wisc.edu/~ece533/images/airplane.png',
-            'https://homepages.cae.wisc.edu/~ece533/images/arctichare.png',
-            'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80',
-          ]}
-          height={170}
-        />
+        <ImageCarousel data={banner} height={170} />
 
         {/* View Carousel */}
         <Carousel
@@ -118,72 +111,27 @@ export default function Home(props) {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           style={{paddingLeft: 20}}>
-          <View>
-            <Image
-              height={105}
-              width={140}
-              borderRadius={4}
-              uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => props.navigation.navigate('FacilityView')}
-              resizeMode={'cover'}
-            />
-            <Seperator height={10} />
-            <Text text={'제주 중문 야구장'} color={'dimgray'} fontSize={16} />
-          </View>
-          <Seperator width={20} />
-          <View>
-            <Image
-              height={105}
-              width={140}
-              borderRadius={4}
-              uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => props.navigation.navigate('FacilityView')}
-              resizeMode={'cover'}
-            />
-            <Seperator height={10} />
-            <Text text={'제주 중문 야구장'} color={'dimgray'} fontSize={16} />
-          </View>
-          <Seperator width={20} />
-          <View>
-            <Image
-              height={105}
-              width={140}
-              borderRadius={4}
-              uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => props.navigation.navigate('FacilityView')}
-              resizeMode={'cover'}
-            />
-            <Seperator height={10} />
-            <Text text={'제주 중문 야구장'} color={'dimgray'} fontSize={16} />
-          </View>
-          <Seperator width={20} />
-          <View>
-            <Image
-              height={105}
-              width={140}
-              borderRadius={4}
-              uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              onPress={() => props.navigation.navigate('FacilityView')}
-              resizeMode={'cover'}
-            />
-            <Seperator height={10} />
-            <Text text={'제주 중문 야구장'} color={'dimgray'} fontSize={16} />
-          </View>
-          <Seperator width={20} />
+          {recommand.map((e) => {
+            return (
+              <View style={{width: 140, marginRight: 20}} key={e.code}>
+                <Image
+                  height={105}
+                  width={140}
+                  borderRadius={4}
+                  uri={e.imgUrl}
+                  onPress={() =>
+                    props.navigation.navigate('FacilityView', {faPk: e.code})
+                  }
+                  resizeMode={'cover'}
+                />
+                <Seperator height={10} />
+                <Text text={e.name} color={'dimgray'} fontSize={16} />
+              </View>
+            );
+          })}
         </ScrollView>
         <Seperator bottom />
       </ScrollView>
-      {/* <AwesomeAlert
-        show={passwordAlert}
-        title='비밀번호 오류'
-        message='비밀번호는 영문과 숫자 포함 6자 이상입니다'
-        showConfirmButton={true}
-        confirmText="확인"
-        confirmButtonColor={custom.themeColor}
-        onConfirmPressed={() => {
-          setPasswordAlert(false);
-        }}
-      /> */}
     </Container>
   );
 }

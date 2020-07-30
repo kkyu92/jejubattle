@@ -33,7 +33,10 @@ const data = [
 export default function TabTourIntroduction(props) {
   const renderItem = ({item, index}) => {
     return (
-      <ListItem onPress={() => props.navigation.navigate('TourCourseView')} />
+      <ListItem
+        onPress={() => props.navigation.navigate('TourCourseView')}
+        item={item}
+      />
     );
   };
   return (
@@ -43,7 +46,7 @@ export default function TabTourIntroduction(props) {
         <Text text={'여행 설명'} fontSize={18} fontWeight={'bold'} />
       </View>
       <View style={{paddingHorizontal: 20}}>
-        <Text text={'좋은 숙소에서 1박하는 것도 재미라면 캠핑 느낌나는 느낌적인 느낌 차박에도 도전해 보세요!좋은 숙소에서 1박하는 것도 재미라면 캠핑 느낌나는 느낌적인 느낌 차박에도 도전해 보세요!'} fontSize={18} color={'dimgray'} />
+        <Text text={props.data.fa1Subj?.replace(/<br>/g, '\n')} fontSize={18} color={'dimgray'} />
       </View>
       <View style={{padding: 20}}>
         <Button text={'더보기'} color={'white'} onPress={() => null} stretch />

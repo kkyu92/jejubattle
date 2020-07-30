@@ -16,25 +16,45 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
-import { TabView } from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import TabFacilityIntroduce from './TabFacilityIntroduce';
 import TabFacilityInfo from './TabFacilityInfo';
 import TabFacilityReview from './TabFacilityReview';
-import { screenWidth } from '../../styles';
+import {screenWidth} from '../../styles';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 const initialLayout = {width: screenWidth};
 
 export default function FacilityView(props) {
   const [index, setIndex] = React.useState(0);
+  const [facility, setFacility] = React.useState({});
+  const [reply, setReply] = React.useState([]);
   const [routes] = React.useState([
     {key: '1', title: '소개'},
     {key: '2', title: '정보'},
     {key: '3', title: '리뷰'},
   ]);
 
+  React.useEffect(() => {
+    Axios.get(`facilityInfo/${props.route.params.faPk}`)
+      .then((res) => {
+        logApi('facilityInfo', res.data);
+        setFacility(res.data.facility);
+        setReply(res.data.replyList);
+      })
+      .catch((err) => {
+        logApi('facilityInfo error', err.response);
+      });
+  }, []);
   const renderTabBar = (tabprops) => {
     return (
-      <HView style={{justifyContent: 'space-between', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
+      <HView
+        style={{
+          justifyContent: 'space-between',
+          borderBottomColor: 'lightgray',
+          borderBottomWidth: 1,
+        }}>
         {tabprops.navigationState.routes.map((route, i) => {
           return (
             <TouchableOpacity
@@ -61,11 +81,21 @@ export default function FacilityView(props) {
   const renderScene = ({route}) => {
     switch (route.key) {
       case '1':
-        return <TabFacilityIntroduce navigation={props.navigation} />;
+        return (
+          <TabFacilityIntroduce navigation={props.navigation} data={facility} />
+        );
       case '2':
-        return <TabFacilityInfo navigation={props.navigation} />;
+        return (
+          <TabFacilityInfo navigation={props.navigation} data={facility} />
+        );
       case '3':
-        return <TabFacilityReview navigation={props.navigation} />;
+        return (
+          <TabFacilityReview
+            navigation={props.navigation}
+            data={reply}
+            replyCnt={facility.faReplyCnt}
+          />
+        );
     }
   };
   return (
@@ -92,25 +122,21 @@ export default function FacilityView(props) {
       />
       <ScrollView>
         <ImageCarousel
-          data={[
-            'https://homepages.cae.wisc.edu/~ece533/images/airplane.png',
-            'https://homepages.cae.wisc.edu/~ece533/images/arctichare.png',
-            'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80',
-          ]}
+          data={[facility.faImgUrl]}
           height={300}
           // onPress={() => setImageViewer(true)}
         />
         <Seperator height={20} />
         <HView style={{padding: 20, justifyContent: 'space-between'}}>
-          <Text text={'서귀포시 체육관'} fontWeight={'bold'} fontSize={21} />
+          <Text text={facility.faName} fontWeight={'bold'} fontSize={21} />
           <HView style={{paddingHorizontal: 20, justifyContent: 'flex-end'}}>
             <Icons name={'icon-like-12'} size={18} color={'gray'} />
             <Seperator width={5} />
-            <Text text={'32'} fontSize={14} color={'gray'} />
+            <Text text={facility.faLikeCnt} fontSize={14} color={'gray'} />
           </HView>
         </HView>
         <View style={{padding: 20}}>
-          <Text text={'서귀포 도민들이 가장 자주 가는 체육관'} color={'dimgray'} fontSize={18} />
+          <Text text={facility.faSubject} color={'dimgray'} fontSize={18} />
         </View>
         <Seperator height={20} />
         <TabView

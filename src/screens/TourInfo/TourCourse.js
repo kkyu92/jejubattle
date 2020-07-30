@@ -18,22 +18,26 @@ import ListItem from '../../commons/ListItem';
 import Accordion from 'react-native-collapsible/Accordion';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { screenWidth } from '../../styles';
-
-const data = [
-  {id: '0'},
-  {id: '1'},
-  {id: '2'},
-  {id: '3'},
-  {id: '4'},
-  {id: '5'},
-  {id: '6'},
-  {id: 's'},
-];
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
 export default function TourCourse(props) {
+  const [travle, setTravel] = React.useState([]);
+  React.useEffect(() => {
+    Axios.post(`travelList`, {
+      faCode: 1,
+    })
+      .then((res) => {
+        logApi('travelList', res.data);
+        setTravel(res.data);
+      })
+      .catch((err) => {
+        logApi('travelList error', err.response);
+      });
+  }, []);
   const renderItem = ({item, index}) => {
     return (
-      <ListItem onPress={() => props.navigation.navigate('TourCourseView')} />
+      <ListItem onPress={() => props.navigation.navigate('TourCourseView')} item={item} />
     );
   };
   return (
@@ -41,7 +45,7 @@ export default function TourCourse(props) {
       <Header left={'close'} title={'추천코스'} navigation={props.navigation} />
       <Seperator height={20} />
       <FlatList
-        data={data}
+        data={travle}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}

@@ -103,8 +103,10 @@ export default function Facility(props) {
                     uri={e.icon}
                     onPress={() =>
                       props.navigation.navigate('FacilityList', {
+                        title: '구기종목',
                         endpoint: 'gojiList',
                         code: e.code,
+                        tablist: sports1,
                       })
                     }
                     resizeMode={'contain'}
@@ -137,8 +139,10 @@ export default function Facility(props) {
                     uri={e.icon}
                     onPress={() =>
                       props.navigation.navigate('FacilityList', {
+                        title: '건강운동',
                         endpoint: '',
                         code: e.code,
+                        tablist: sports2,
                       })
                     }
                     resizeMode={'contain'}
