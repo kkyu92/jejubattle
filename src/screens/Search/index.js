@@ -84,7 +84,14 @@ export default function Search(props) {
         </HView>
       );
     } else {
-      return <ListItem item={item} />;
+      return (
+        <ListItem
+          onPress={() =>
+            props.navigation.navigate('FacilityView', {faPk: item.faPk})
+          }
+          item={item}
+        />
+      );
     }
   };
   return (

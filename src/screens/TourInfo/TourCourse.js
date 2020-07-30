@@ -37,7 +37,12 @@ export default function TourCourse(props) {
   }, []);
   const renderItem = ({item, index}) => {
     return (
-      <ListItem onPress={() => props.navigation.navigate('TourCourseView')} item={item} />
+      <ListItem
+        onPress={() =>
+          props.navigation.navigate('TourCourseView', {faPk: item.faPk})
+        }
+        item={item}
+      />
     );
   };
   return (
@@ -46,7 +51,7 @@ export default function TourCourse(props) {
       <Seperator height={20} />
       <FlatList
         data={travle}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}

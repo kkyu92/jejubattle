@@ -20,9 +20,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {screenWidth} from '../../styles';
 import {TabView} from 'react-native-tab-view';
 import TabTourIntroduction from './TabTourIntroduction';
-import TabTourReview from './TabTourReview';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import TabReview from '../../commons/TabReview';
 
 const initialLayout = {width: screenWidth};
 
@@ -48,7 +48,12 @@ export default function TourCourseView(props) {
   }, []);
   const renderTabBar = (tabprops) => {
     return (
-      <HView style={{justifyContent: 'space-between', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
+      <HView
+        style={{
+          justifyContent: 'space-between',
+          borderBottomColor: 'lightgray',
+          borderBottomWidth: 1,
+        }}>
         {tabprops.navigationState.routes.map((route, i) => {
           return (
             <TouchableOpacity
@@ -79,7 +84,13 @@ export default function TourCourseView(props) {
           <TabTourIntroduction navigation={props.navigation} data={facility} />
         );
       case '2':
-        return <TabTourReview navigation={props.navigation} data={reply} />;
+        return (
+          <TabReview
+            navigation={props.navigation}
+            data={reply}
+            replyCnt={facility.faReplyCnt}
+          />
+        );
     }
   };
   return (

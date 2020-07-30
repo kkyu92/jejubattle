@@ -19,7 +19,7 @@ import ListItem from '../../commons/ListItem';
 import {TabView} from 'react-native-tab-view';
 import TabFacilityIntroduce from './TabFacilityIntroduce';
 import TabFacilityInfo from './TabFacilityInfo';
-import TabFacilityReview from './TabFacilityReview';
+import TabReview from '../../commons/TabReview';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
@@ -90,7 +90,7 @@ export default function FacilityView(props) {
         );
       case '3':
         return (
-          <TabFacilityReview
+          <TabReview
             navigation={props.navigation}
             data={reply}
             replyCnt={facility.faReplyCnt}

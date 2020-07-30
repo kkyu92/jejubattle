@@ -100,6 +100,7 @@ export default function TabTourIntroduction(props) {
         </HView>
       </View>
 
+{/*
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
@@ -111,7 +112,7 @@ export default function TabTourIntroduction(props) {
         //   setIsLast(false);
         //   setPullToRefresh(true);
         // }}
-      />
+      /> */}
     </Container>
   );
 }
