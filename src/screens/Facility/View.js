@@ -22,7 +22,7 @@ import TabFacilityInfo from './TabFacilityInfo';
 import TabReview from '../../commons/TabReview';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, share} from 'react-native-nuno-ui/funcs';
 
 const initialLayout = {width: screenWidth};
 
@@ -37,6 +37,9 @@ export default function FacilityView(props) {
   ]);
 
   React.useEffect(() => {
+    get()
+  }, []);
+  const get = () => {
     Axios.get(`facilityInfo/${props.route.params.faPk}`)
       .then((res) => {
         logApi('facilityInfo', res.data);
@@ -46,7 +49,7 @@ export default function FacilityView(props) {
       .catch((err) => {
         logApi('facilityInfo error', err.response);
       });
-  }, []);
+  };
   const renderTabBar = (tabprops) => {
     return (
       <HView
@@ -94,6 +97,9 @@ export default function FacilityView(props) {
             navigation={props.navigation}
             data={reply}
             replyCnt={facility.faReplyCnt}
+            scopeCnt={facility.faScopeCnt}
+            faPk={facility.faPk}
+            refresh={get}
           />
         );
     }
@@ -110,7 +116,12 @@ export default function FacilityView(props) {
               <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => null}
+              onPress={() =>
+                share(
+                  `https://jejubattle.com/facility/${props.route.params.faPk}`,
+                  '',
+                )
+              }
               style={{paddingHorizontal: 20, paddingVertical: 5}}>
               <Icons name={'icon-share-20'} size={20} color={'black'} />
             </TouchableOpacity>

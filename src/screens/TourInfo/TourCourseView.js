@@ -21,7 +21,7 @@ import {screenWidth} from '../../styles';
 import {TabView} from 'react-native-tab-view';
 import TabTourIntroduction from './TabTourIntroduction';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, share} from 'react-native-nuno-ui/funcs';
 import TabReview from '../../commons/TabReview';
 
 const initialLayout = {width: screenWidth};
@@ -36,6 +36,9 @@ export default function TourCourseView(props) {
   const [reply, setReply] = React.useState([]);
 
   React.useEffect(() => {
+    get();
+  }, []);
+  const get = () => {
     Axios.get(`advertInfo/${props.route.params.faPk}`)
       .then((res) => {
         logApi('advertInfo', res.data);
@@ -45,7 +48,7 @@ export default function TourCourseView(props) {
       .catch((err) => {
         logApi('advertInfo error', err.response);
       });
-  }, []);
+  };
   const renderTabBar = (tabprops) => {
     return (
       <HView
@@ -89,6 +92,9 @@ export default function TourCourseView(props) {
             navigation={props.navigation}
             data={reply}
             replyCnt={facility.faReplyCnt}
+            scopeCnt={facility.faScopeCnt}
+            faPk={facility.faPk}
+            refresh={get}
           />
         );
     }
@@ -107,7 +113,12 @@ export default function TourCourseView(props) {
               <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => null}
+              onPress={() =>
+                share(
+                  `https://jejubattle.com/tourinfo/${props.route.params.faPk}`,
+                  '',
+                )
+              }
               style={{paddingHorizontal: 20, paddingVertical: 5}}>
               <Icons name={'icon-share-20'} size={20} color={'black'} />
             </TouchableOpacity>

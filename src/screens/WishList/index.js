@@ -28,7 +28,8 @@ export default function WishList(props) {
     {id: 's'},
   ];
   const renderItem = () => {
-    return <ListItem editMode={edit} onPress={() => props.navigation.navigate('FacilityView')}/>;
+    // return <ListItem editMode={edit} onPress={() => props.navigation.navigate('FacilityView')}/>;
+    return null;
   };
   return (
     <Container>

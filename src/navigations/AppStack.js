@@ -27,6 +27,7 @@ import FoodStore from '../screens/FoodStore';
 import FullMap from '../screens/FullMap';
 import MyBattle from '../screens/MyBattle';
 import BattleView from '../screens/Battle/View';
+import ReviewEdit from '../screens/Review/edit';
 
 const LeftDrawerStack = createDrawerNavigator();
 function LeftDrawerStackScreen() {
@@ -122,6 +123,7 @@ export default function AppStackScreen() {
       <Stack.Screen name="MyInfoStack" component={MyInfoStackScreen} />
       <Stack.Screen name="TourInfoStack" component={TourInfoStackScreen} />
       {/* <Stack.Screen name="WishList" component={WishList} /> */}
+      <Stack.Screen name="ReviewEdit" component={ReviewEdit} />
       <Stack.Screen name="Archive" component={Archive} />
       <Stack.Screen name="EventStack" component={EventStackScreen} />
       <Stack.Screen name="Notice" component={Notice} />

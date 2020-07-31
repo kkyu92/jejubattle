@@ -17,10 +17,9 @@ import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Accordion from 'react-native-collapsible/Accordion';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { screenWidth } from '../../styles';
+import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
-
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function TourInfo(props) {
   const [travel, setTravel] = React.useState([]);
@@ -53,7 +52,9 @@ export default function TourInfo(props) {
             <Seperator height={10} />
             <Text text={'추천코스'} fontSize={14} fontWeight={'500'} />
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => props.navigation.navigate('FoodStore')}>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center'}}
+            onPress={() => props.navigation.navigate('FoodStore')}>
             <Image
               local
               uri={require('../../../assets/img/icon-gourmet.png')}
@@ -63,7 +64,9 @@ export default function TourInfo(props) {
             <Seperator height={10} />
             <Text text={'맛집'} fontSize={14} fontWeight={'500'} />
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => null}>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center'}}
+            onPress={() => null}>
             <Image
               local
               uri={require('../../../assets/img/icon-sightseeing.png')}
@@ -73,7 +76,9 @@ export default function TourInfo(props) {
             <Seperator height={10} />
             <Text text={'관광지'} fontSize={14} fontWeight={'500'} />
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => null}>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center'}}
+            onPress={() => null}>
             <Image
               local
               uri={require('../../../assets/img/icon-leisure.png')}
@@ -86,7 +91,11 @@ export default function TourInfo(props) {
         </HView>
         <Seperator height={20} />
         <View style={{padding: 20}}>
-          <Text text={'제주에서 이런 곳은 어때요?'} fontWeight={'bold'} fontSize={18} />
+          <Text
+            text={'제주에서 이런 곳은 어때요?'}
+            fontWeight={'bold'}
+            fontSize={18}
+          />
         </View>
       </View>
     );

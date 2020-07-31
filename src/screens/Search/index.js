@@ -38,7 +38,7 @@ export default function Search(props) {
       keyword: key,
     })
       .then(async (res) => {
-        logApi('gojiList', res.data);
+        logApi('gojiKeywordList', res.data);
         let temp = [];
         let stickyIndex = [];
         if (res.data.facility.length > 0) {
@@ -64,13 +64,13 @@ export default function Search(props) {
           }
         }
         setResult(temp);
-        setStickyHeaderIndices(stickyIndex);
+        // setStickyHeaderIndices(stickyIndex);
 
         const k = await saveRecentKeyword(key, 5);
         setRecentKeywords(k);
       })
       .catch((err) => {
-        logApi('gojiList error', err.response);
+        logApi('gojiKeywordList error', err.response);
       });
   };
 

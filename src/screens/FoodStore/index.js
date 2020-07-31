@@ -15,21 +15,44 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
 export default function FoodStore(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
-  const data = [
-    {id: '0'},
-    {id: '1'},
-    {id: '2'},
-    {id: '3'},
-    {id: '4'},
-    {id: '5'},
-    {id: '6'},
-    {id: 's'},
-  ];
-  const renderItem = () => {
-    return <ListItem />;
+  const [activeTab, setActiveTab] = React.useState(0);
+  const [orderType, setOrderType] = React.useState(0);
+  const [store, setStore] = React.useState([]);
+  const [category, setCategory] = React.useState([]);
+  React.useEffect(() => {
+    getTravelList();
+  }, []);
+  const getTravelList = () => {
+    Axios.post('travelList', {
+      faCode: 2,
+      code: activeTab,
+      orderType: orderType,
+      lat: global.address.coords.latitude,
+      lon: global.address.coords.longitude,
+    })
+      .then((res) => {
+        logApi('travelList 2', res.data);
+        setStore(res.data.facility);
+        setCategory(res.data.category);
+      })
+      .catch((err) => {
+        logApi('travelList 2 error', err.response);
+      });
+  };
+  const renderItem = ({item, index}) => {
+    return (
+      <ListItem
+        onPress={() =>
+          props.navigation.navigate('TourCourseView', {faPk: item.faPk})
+        }
+        item={item}
+      />
+    );
   };
   return (
     <Container>
@@ -110,8 +133,8 @@ export default function FoodStore(props) {
         </ScrollView>
       </View>
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={store}
+        keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
@@ -130,11 +153,37 @@ export default function FoodStore(props) {
               <Text text={'필터'} fontWeight={'bold'} fontSize={18} />
             </View>
             <Seperator height={30} />
-            <HView style={{flexWrap: 'wrap'}}>
-              <Checkbox label={'등록순'} />
-              <Checkbox label={'등록순'} />
-              <Checkbox label={'등록순'} />
-              <Checkbox label={'등록순'} />
+            <HView>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'등록순'}
+                  checked={orderType === 1}
+                  onPress={() => setOrderType(1)}
+                />
+              </View>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'추천순'}
+                  checked={orderType === 2}
+                  onPress={() => setOrderType(2)}
+                />
+              </View>
+            </HView>
+            <HView>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'내 위치순'}
+                  checked={orderType === 3}
+                  onPress={() => setOrderType(3)}
+                />
+              </View>
+              <View style={{paddingVertical: 10, flex: 0.5}}>
+                <Checkbox
+                  label={'평점순'}
+                  checked={orderType === 4}
+                  onPress={() => setOrderType(4)}
+                />
+              </View>
             </HView>
           </View>
           <HView style={{padding: 10}}>
@@ -145,7 +194,10 @@ export default function FoodStore(props) {
             <View style={{flex: 1}}>
               <Button
                 text={'적용하기'}
-                onPress={() => null}
+                onPress={() => {
+                  setFilterVisible(false);
+                  getTravelList();
+                }}
                 color={custom.themeColor}
                 stretch
                 disable={false}

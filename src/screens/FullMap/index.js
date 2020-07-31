@@ -32,6 +32,8 @@ export default function FullMap(props) {
   return (
     <View style={{flex: 1}} keyboardShouldPersistTaps={'handled'}>
       <Map
+        latitude={37.55375859999999}
+        longitude={126.9809696}
         showZoom={true}
         showCurrent={true}
         getCurrentPosition={(e) => setCurrentLocation(e)}

@@ -12,8 +12,10 @@ import StarRating from 'react-native-star-rating';
 import {custom} from '../../config';
 import Icons from '../Icons';
 import {screenWidth} from '../../styles';
+import {AppContext} from '../../context';
 
 export default function TabReview(props) {
+  const context = React.useContext(AppContext);
   return (
     <Container>
       <View style={{padding: 20}}>
@@ -21,7 +23,7 @@ export default function TabReview(props) {
       </View>
       <HView style={{padding: 20}}>
         <View style={{flex: 0.2, alignItems: 'flex-end'}}>
-          <Text text={'4.5'} fontSize={33} fontWeight={'bold'} />
+          <Text text={props.scopeCnt} fontSize={33} fontWeight={'bold'} />
         </View>
         <View style={{flex: 0.4, paddingLeft: 20}}>
           <View style={{alignItems: 'flex-start'}}>
@@ -37,13 +39,22 @@ export default function TabReview(props) {
             />
           </View>
           <Seperator height={5} />
-          <Text text={'8개의 평가'} fontSize={14} color={'gray'} />
+          <Text
+            text={`${props.replyCnt}개의 평가`}
+            fontSize={14}
+            color={'gray'}
+          />
         </View>
         <View style={{flex: 0.4, alignItems: 'flex-end'}}>
           <Button
             text={'리뷰작성'}
             color={'white'}
-            onPress={() => props.navigation.navigate('ReviewEdit')}
+            onPress={() =>
+              props.navigation.navigate('ReviewEdit', {
+                faPk: props.faPk,
+                refresh: props.refresh,
+              })
+            }
           />
         </View>
       </HView>
@@ -86,7 +97,7 @@ export default function TabReview(props) {
                 <StarRating
                   disabled={true}
                   maxStars={5}
-                  rating={5}
+                  rating={e.reScope}
                   starSize={11}
                   emptyStarColor={custom.themeColor}
                   halfStarEnabled={true}
@@ -94,7 +105,7 @@ export default function TabReview(props) {
                   fullStarColor={custom.themeColor}
                 />
                 <Seperator width={5} />
-                <Text text={'4.0'} fontSize={14} color={'gray'} />
+                <Text text={e.reScope} fontSize={14} color={'gray'} />
               </HView>
               <Seperator height={5} />
               {e.reImgUrl && (
@@ -117,17 +128,19 @@ export default function TabReview(props) {
                     color={'darkgray'}
                   />
                   <Seperator width={20} />
-                  <TouchableOpacity
-                    onPress={() => props.navigation.navigate('Report')}
-                    style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Icons
-                      name={'icon-declare-15'}
-                      size={15}
-                      color={'orangered'}
-                    />
-                    <Seperator width={5} />
-                    <Text text={'신고'} fontSize={14} color={'darkgray'} />
-                  </TouchableOpacity>
+                  {e.userPk !== context.me.userPk && (
+                    <TouchableOpacity
+                      onPress={() => props.navigation.navigate('Report')}
+                      style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Icons
+                        name={'icon-declare-15'}
+                        size={15}
+                        color={'orangered'}
+                      />
+                      <Seperator width={5} />
+                      <Text text={'신고'} fontSize={14} color={'darkgray'} />
+                    </TouchableOpacity>
+                  )}
                 </HView>
                 <TouchableOpacity
                   onPress={() => null}
@@ -140,12 +153,22 @@ export default function TabReview(props) {
                 </TouchableOpacity>
               </HView>
               <Seperator height={10} />
-              <Button
-                text={'수정'}
-                size={'medium'}
-                color={'white'}
-                onPress={() => null}
-              />
+              {e.userPk === context.me.userPk && (
+                <Button
+                  text={'수정'}
+                  size={'medium'}
+                  color={'white'}
+                  onPress={() =>
+                    props.navigation.navigate('ReviewEdit', {
+                      rePk: e.rePk,
+                      reScope: e.reScope,
+                      reContent: e.reContent,
+                      file: e.reImgUrl,
+                      refresh: props.refresh,
+                    })
+                  }
+                />
+              )}
             </View>
           </HView>
         );

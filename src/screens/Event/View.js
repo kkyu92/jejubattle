@@ -16,6 +16,7 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
+import { share } from 'react-native-nuno-ui/funcs';
 
 export default function EventView(props) {
   const data = [{id: '0'}, {id: '1'}, {id: '2'}, {id: '3'}];
@@ -94,7 +95,12 @@ export default function EventView(props) {
               <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => null}
+              onPress={() =>
+                share(
+                  `https://jejubattle.com/event/${props.route.params.faPk}`,
+                  '',
+                )
+              }
               style={{paddingHorizontal: 20, paddingVertical: 5}}>
               <Icons name={'icon-share-20'} size={20} color={'black'} />
             </TouchableOpacity>

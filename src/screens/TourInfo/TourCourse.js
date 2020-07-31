@@ -15,21 +15,25 @@ import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
-import Accordion from 'react-native-collapsible/Accordion';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { screenWidth } from '../../styles';
 import Axios from 'axios';
 import { logApi } from 'react-native-nuno-ui/funcs';
+import { AppContext } from '../../context';
 
 export default function TourCourse(props) {
+  const context = React.useContext(AppContext);
   const [travle, setTravel] = React.useState([]);
+  const [orderType, setOrderType] = React.useState(0);
+
   React.useEffect(() => {
-    Axios.post(`travelList`, {
+    Axios.post('travelList', {
       faCode: 1,
+      orderType: orderType,
+      lat: global.address.coords.latitude,
+      lon: global.address.coords.longitude,
     })
       .then((res) => {
         logApi('travelList', res.data);
-        setTravel(res.data);
+        setTravel(res.data.facility);
       })
       .catch((err) => {
         logApi('travelList error', err.response);
