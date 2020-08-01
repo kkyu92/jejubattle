@@ -78,7 +78,7 @@ export default function Home(props) {
         navigation={props.navigation}
       />
       <ScrollView>
-        <ImageCarousel data={banner} height={170} />
+        <ImageCarousel data={banner} height={170} onPress={() => null} />
 
         {/* View Carousel */}
         <Carousel

@@ -9,6 +9,8 @@ import {logApi} from 'react-native-nuno-ui/funcs';
 export default function FullMap(props) {
   const [keyword, setKeyword] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState({});
+  const [result, setResult] = React.useState([]);
+
   React.useEffect(() => {
     aroundme();
   }, []);
@@ -24,6 +26,13 @@ export default function FullMap(props) {
     })
       .then((res) => {
         logApi('aroundme', res.data);
+        const temp = res.data.map((e) => ({
+          coords: {latitude: e.faLat, longitude: e.falon},
+          title: e.faName,
+          // description: e.faSubject,
+          markerComponent: require('../../../assets/img/icon-soccer.png'),
+        }));
+        setResult(temp);
       })
       .catch((err) => {
         logApi('aroundme error', err.response);
@@ -36,6 +45,7 @@ export default function FullMap(props) {
         longitude={126.9809696}
         showZoom={true}
         showCurrent={true}
+        markers={result}
         getCurrentPosition={(e) => setCurrentLocation(e)}
         customCenter={
           <Image

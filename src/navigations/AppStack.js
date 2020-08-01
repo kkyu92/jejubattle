@@ -8,7 +8,6 @@ import BottomTabStackScreen from './BottomTabStack';
 import {screenWidth} from '../styles';
 import Drawer from '../screens/Drawer';
 import Notification from '../screens/Notification';
-import Search from '../screens/Search';
 import MyInfo from '../screens/MyInfo';
 import CoinCharge from '../screens/CoinCharge';
 import PurchaseHistory from '../screens/PurchaseHistory';
@@ -118,7 +117,6 @@ export default function AppStackScreen() {
 
       {/* Modal Stacks */}
       <Stack.Screen name="Notification" component={Notification} />
-      <Stack.Screen name="Search" component={Search} />
       {/* <Stack.Screen name="MyBattleStack" component={MyBattleStackScreen} /> */}
       <Stack.Screen name="MyInfoStack" component={MyInfoStackScreen} />
       <Stack.Screen name="TourInfoStack" component={TourInfoStackScreen} />

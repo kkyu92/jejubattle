@@ -124,7 +124,7 @@ export default function ReviewEdit(props) {
   return (
     <Container>
       <Header left={'close'} title={'리뷰작성'} navigation={props.navigation} />
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps={'handled'}>
         <Seperator height={50} />
         <View style={{alignItems: 'center'}}>
           <Text text={'서귀포시 체육관'} fontSize={21} />
@@ -173,6 +173,7 @@ export default function ReviewEdit(props) {
               <View
                 style={{
                   padding: 10,
+                  paddingHorizontal: 20,
                   alignItems: 'center',
                   borderWidth: 1,
                   borderColor: 'lightgray',

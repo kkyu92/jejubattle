@@ -18,6 +18,7 @@ import Report from '../screens/Report';
 import MyBattle from '../screens/MyBattle';
 import RandomBox from '../screens/Battle/RandomBox';
 import WishList from '../screens/WishList';
+import Search from '../screens/Search';
 
 const Tab = createBottomTabNavigator();
 function TabStackScreen() {
@@ -106,6 +107,7 @@ export default function BottomTabStackScreen() {
       <BottomTabStack.Screen name="TabStack" component={TabStackScreen} />
 
       {/* Cards */}
+      <BottomTabStack.Screen name="Search" component={Search} />
       <BottomTabStack.Screen name="FacilityList" component={FacilityList} />
       <BottomTabStack.Screen name="FacilityView" component={FacilityView} />
       <BottomTabStack.Screen name="MyBattle" component={MyBattle} />

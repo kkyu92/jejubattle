@@ -19,6 +19,7 @@
 ####  Android Internal Test Links
   >
 
-####  2020.07.119
-  > android (1.0.0.1)
-  > ios (1.0.0.1)
+####  2020.07.31
+  > android (1.0.0.3)
+
+  - api 연결, 데이타 바인딩
