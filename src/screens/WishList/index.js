@@ -23,6 +23,7 @@ export default function WishList(props) {
   const context = React.useContext(AppContext);
   const [edit, setEdit] = React.useState(false);
   const [wishList, setWishList] = React.useState([]);
+  const [checkAll, setCheckAll] = React.useState(false);
   const isFocused = useIsFocused();
 
   React.useEffect(() => {
@@ -32,7 +33,7 @@ export default function WishList(props) {
     Axios.get('wishList')
       .then((res) => {
         logApi('wishList', res.data);
-        setWishList(res.data);
+        setWishList(res.data.map((e) => ({...e, checked: false})));
       })
       .catch((err) => {
         logApi('wishList error', err.response);
@@ -51,8 +52,25 @@ export default function WishList(props) {
         index={index}
         scrapOn={scrapOn}
         scrapOff={scrapOff}
+        handleCheck={handleCheck}
       />
     );
+  };
+  const handleCheck = (index) => {
+    const temp = [...wishList];
+    temp[index].checked = !temp[index].checked;
+    setWishList(temp);
+  };
+  const deleteAll = () => {
+    const body = wishList.filter((f) => f.checked).map((e) => ({faPk: e.faPk}));
+    Axios.post('wishDelete', body)
+      .then((res) => {
+        logApi('wishDelete', res.data);
+        get();
+      })
+      .catch((err) => {
+        logApi('wishDelete error', err.response);
+      });
   };
   const scrapOn = (item, index) => {
     Axios.post('scrapOn', {
@@ -125,8 +143,13 @@ export default function WishList(props) {
           <Checkbox
             multiple
             label={'모두선택'}
-            checked={false}
-            onPress={() => null}
+            checked={checkAll}
+            onPress={() => {
+              let temp = [...wishList];
+              temp = temp.map((e) => ({...e, checked: !checkAll}));
+              setWishList(temp);
+              setCheckAll(!checkAll);
+            }}
             size={'large'}
           />
           <Text
@@ -164,7 +187,7 @@ export default function WishList(props) {
               <Button
                 text={'삭제'}
                 color={custom.themeColor}
-                onPress={() => null}
+                onPress={() => deleteAll()}
                 size={'large'}
                 stretch
               />

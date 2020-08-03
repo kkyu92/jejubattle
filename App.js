@@ -103,6 +103,9 @@ const App: () => React$Node = () => {
     if (url.includes('https://jejubattle.com/facility/')) {
       id && RootNavigation.navigate('FacilityView', {faPk: id});
     }
+    if (url.includes('https://jejubattle.com/tourinfo/')) {
+      id && RootNavigation.navigate('TourCourseView', {faPk: id});
+    }
   };
 
   console.groupCollapsed('[CONTEXT]');

@@ -54,8 +54,8 @@ export default function ListItem(props) {
             // <Checkbox value={false} onPress={() => null} />
             <Checkbox
               multiple
-              checked={true}
-              onPress={() => null}
+              checked={props.item.checked}
+              onPress={() => props.handleCheck(props.index)}
               size={'large'}
             />
           ) : props.item.faScrapType === 'N' ? (
