@@ -18,8 +18,10 @@ import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import { useIsFocused } from '@react-navigation/native';
+import { AppContext } from '../../context';
 
 export default function FacilityList(props) {
+  const context = React.useContext(AppContext);
   const [filterVisible, setFilterVisible] = React.useState(false);
   const [tab] = React.useState(props.route.params.tablist || []);
   const [activeTab, setActiveTab] = React.useState(props.route.params.code);
@@ -56,8 +58,41 @@ export default function FacilityList(props) {
           })
         }
         item={item}
+        index={index}
+        scrapOn={scrapOn}
+        scrapOff={scrapOff}
       />
     );
+  };
+  const scrapOn = (item, index) => {
+    Axios.post('scrapOn', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOn', res.data);
+        const temp = [...list];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setList(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOn error', err.response);
+      });
+  };
+  const scrapOff = (item, index) => {
+    Axios.post('scrapOff', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOff', res.data);
+        const temp = [...list];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setList(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOff error', err.response);
+      });
   };
   return (
     <Container>

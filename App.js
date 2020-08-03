@@ -12,6 +12,7 @@ import {useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
+import * as RootNavigation from './src/navigations/RootNavigation';
 import {Nuno} from 'react-native-nuno-ui';
 import {
   GEOCODE_API,
@@ -29,6 +30,7 @@ import RNBootSplash from 'react-native-bootsplash';
 import Init from './src/commons/Init';
 import Axios from 'axios';
 import { logApi } from 'react-native-nuno-ui/funcs';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
 
 const Stack = createStackNavigator();
 
@@ -84,15 +86,24 @@ const App: () => React$Node = () => {
       init().finally(() => {
         setReady(true);
         RNBootSplash.hide({duration: 500});
-        // dynamicLinks()
-        //   .getInitialLink()
-        //   .then(link => {
-        //     console.log('dynamic link', link);
-        //     saveDeeplink(link.url);
-        //   });
+        dynamicLinks()
+          .getInitialLink()
+          .then((link) => {
+            console.log('dynamic link', link);
+            handleRoute(link.url);
+          });
       });
     }
   }, []);
+
+  const handleRoute = (url) => {
+    const splitArray = url.split('/');
+    const id = splitArray[splitArray.length - 1];
+
+    if (url.includes('https://jejubattle.com/facility/')) {
+      id && RootNavigation.navigate('FacilityView', {faPk: id});
+    }
+  };
 
   console.groupCollapsed('[CONTEXT]');
   console.info(state);

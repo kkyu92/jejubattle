@@ -16,6 +16,7 @@
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/picker": "^1.6.5",
     "@react-native-firebase/app": "^8.0.0",
+    "@react-native-firebase/dynamic-links": "^7.4.1",
     "@react-native-firebase/messaging": "^7.2.1",
     "@react-native-seoul/kakao-login": "^2.7.0",
     "@react-navigation/bottom-tabs": "^5.6.1",

@@ -99,6 +99,32 @@ export default function TourCourseView(props) {
         );
     }
   };
+  const scrapOn = () => {
+    Axios.post('scrapOn', {
+      faPk: facility.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOn', res.data);
+        get();
+      })
+      .catch((err) => {
+        logApi('scrapOn error', err.response);
+      });
+  };
+  const scrapOff = () => {
+    Axios.post('scrapOff', {
+      faPk: facility.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOff', res.data);
+        get();
+      })
+      .catch((err) => {
+        logApi('scrapOff error', err.response);
+      });
+  };
   const likeOn = () => {
     Axios.post('likeOn', {
       faPk: facility.faPk,
@@ -135,11 +161,23 @@ export default function TourCourseView(props) {
         navigation={props.navigation}
         rightComponent={
           <HView>
-            <TouchableOpacity
-              onPress={() => null}
-              style={{paddingHorizontal: 5, paddingVertical: 5}}>
-              <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
-            </TouchableOpacity>
+            {facility.faScrapType === 'N' ? (
+              <TouchableOpacity
+                onPress={() => scrapOn()}
+                style={{paddingHorizontal: 5, paddingVertical: 5}}>
+                <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => scrapOff()}
+                style={{paddingHorizontal: 5, paddingVertical: 5}}>
+                <Icons
+                  name={'icon-bookmark-s-20'}
+                  size={20}
+                  color={custom.themeColor}
+                />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               onPress={() =>
                 share(

@@ -16,29 +16,32 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
-import { AppContext } from '../../context';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import {AppContext} from '../../context';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function TourCourse(props) {
   const context = React.useContext(AppContext);
-  const [travle, setTravel] = React.useState([]);
+  const [travel, setTravel] = React.useState([]);
   const [orderType, setOrderType] = React.useState(0);
+  const isFocused = useIsFocused();
 
   React.useEffect(() => {
-    Axios.post('travelList', {
-      faCode: 1,
-      orderType: orderType,
-      lat: global.address.coords.latitude,
-      lon: global.address.coords.longitude,
-    })
-      .then((res) => {
-        logApi('travelList', res.data);
-        setTravel(res.data.facility);
+    isFocused &&
+      Axios.post('travelList', {
+        faCode: 1,
+        orderType: orderType,
+        lat: global.address.coords.latitude,
+        lon: global.address.coords.longitude,
       })
-      .catch((err) => {
-        logApi('travelList error', err.response);
-      });
-  }, []);
+        .then((res) => {
+          logApi('travelList', res.data);
+          setTravel(res.data.facility);
+        })
+        .catch((err) => {
+          logApi('travelList error', err.response);
+        });
+  }, [isFocused]);
   const renderItem = ({item, index}) => {
     return (
       <ListItem
@@ -46,15 +49,48 @@ export default function TourCourse(props) {
           props.navigation.navigate('TourCourseView', {faPk: item.faPk})
         }
         item={item}
+        index={index}
+        scrapOn={scrapOn}
+        scrapOff={scrapOff}
       />
     );
+  };
+  const scrapOn = (item, index) => {
+    Axios.post('scrapOn', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOn', res.data);
+        const temp = [...travel];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setTravel(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOn error', err.response);
+      });
+  };
+  const scrapOff = (item, index) => {
+    Axios.post('scrapOff', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOff', res.data);
+        const temp = [...travel];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setTravel(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOff error', err.response);
+      });
   };
   return (
     <Container>
       <Header left={'close'} title={'추천코스'} navigation={props.navigation} />
       <Seperator height={20} />
       <FlatList
-        data={travle}
+        data={travel}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}

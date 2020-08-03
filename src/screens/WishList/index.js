@@ -17,8 +17,10 @@ import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import { useIsFocused } from '@react-navigation/native';
+import { AppContext } from '../../context';
 
 export default function WishList(props) {
+  const context = React.useContext(AppContext);
   const [edit, setEdit] = React.useState(false);
   const [wishList, setWishList] = React.useState([]);
   const isFocused = useIsFocused();
@@ -46,8 +48,41 @@ export default function WishList(props) {
           })
         }
         item={item}
+        index={index}
+        scrapOn={scrapOn}
+        scrapOff={scrapOff}
       />
     );
+  };
+  const scrapOn = (item, index) => {
+    Axios.post('scrapOn', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOn', res.data);
+        const temp = [...wishList];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setWishList(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOn error', err.response);
+      });
+  };
+  const scrapOff = (item, index) => {
+    Axios.post('scrapOff', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOff', res.data);
+        const temp = [...wishList];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setWishList(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOff error', err.response);
+      });
   };
   return (
     <Container>
@@ -104,7 +139,7 @@ export default function WishList(props) {
       )}
       <FlatList
         data={wishList}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}

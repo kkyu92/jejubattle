@@ -19,8 +19,10 @@ import {
   getRecentKeyword,
   removeRecentKeyword,
 } from 'react-native-nuno-ui/funcs';
+import { AppContext } from '../../context';
 
 export default function Search(props) {
+  const context = React.useContext(AppContext);
   const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([]);
   const [keyword, setKeyword] = React.useState('');
   const [result, setResult] = React.useState([]);
@@ -90,9 +92,42 @@ export default function Search(props) {
             props.navigation.navigate('FacilityView', {faPk: item.faPk})
           }
           item={item}
+          index={index}
+          scrapOn={scrapOn}
+          scrapOff={scrapOff}
         />
       );
     }
+  };
+  const scrapOn = (item, index) => {
+    Axios.post('scrapOn', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOn', res.data);
+        const temp = [...result];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setResult(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOn error', err.response);
+      });
+  };
+  const scrapOff = (item, index) => {
+    Axios.post('scrapOff', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOff', res.data);
+        const temp = [...result];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setResult(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOff error', err.response);
+      });
   };
   return (
     <Container>

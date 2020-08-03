@@ -16,17 +16,23 @@ import {custom} from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import {AppContext} from '../../context';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function FoodStore(props) {
+  const context = React.useContext(AppContext);
   const [filterVisible, setFilterVisible] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
   const [orderType, setOrderType] = React.useState(0);
   const [store, setStore] = React.useState([]);
   const [category, setCategory] = React.useState([]);
+  const isFocused = useIsFocused();
+
   React.useEffect(() => {
-    getTravelList();
-  }, []);
+    isFocused && getTravelList();
+  }, [isFocused, activeTab]);
+
   const getTravelList = () => {
     Axios.post('travelList', {
       faCode: 2,
@@ -51,8 +57,41 @@ export default function FoodStore(props) {
           props.navigation.navigate('TourCourseView', {faPk: item.faPk})
         }
         item={item}
+        index={index}
+        scrapOn={scrapOn}
+        scrapOff={scrapOff}
       />
     );
+  };
+  const scrapOn = (item, index) => {
+    Axios.post('scrapOn', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOn', res.data);
+        const temp = [...store];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setStore(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOn error', err.response);
+      });
+  };
+  const scrapOff = (item, index) => {
+    Axios.post('scrapOff', {
+      faPk: item.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('scrapOff', res.data);
+        const temp = [...store];
+        temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
+        setStore(temp);
+      })
+      .catch((err) => {
+        logApi('scrapOff error', err.response);
+      });
   };
   return (
     <Container>
@@ -86,50 +125,31 @@ export default function FoodStore(props) {
             borderBottomWidth: 1,
           }}>
           <TouchableOpacity
-            onPress={() => null}
+            onPress={() => setActiveTab(0)}
             style={{
               paddingVertical: 15,
               paddingHorizontal: 10,
               borderBottomWidth: 3,
-              borderBottomColor: custom.themeColor,
+              borderBottomColor: activeTab === 0 ? custom.themeColor : 'white',
             }}>
             <Text text={'전체'} fontSize={17} color={'gray'} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'카페'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'디저트'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'제주전통식'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'고깃집'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'횟집'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'일식'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{paddingVertical: 15, paddingHorizontal: 10}}>
-            <Text text={'중식'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
+          {category.map((e, i) => {
+            return (
+              <TouchableOpacity
+                key={e.code}
+                onPress={() => setActiveTab(e.code)}
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 10,
+                  borderBottomWidth: 3,
+                  borderBottomColor:
+                    activeTab === e.code ? custom.themeColor : 'white',
+                }}>
+                <Text text={e.name} fontSize={17} color={'gray'} />
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
       <FlatList
@@ -188,7 +208,12 @@ export default function FoodStore(props) {
           </View>
           <HView style={{padding: 10}}>
             <View style={{flex: 1}}>
-              <Button text={'취소'} onPress={() => setFilterVisible(false)} color={'lightgray'} stretch />
+              <Button
+                text={'취소'}
+                onPress={() => setFilterVisible(false)}
+                color={'lightgray'}
+                stretch
+              />
             </View>
             <Seperator width={10} />
             <View style={{flex: 1}}>

@@ -3,36 +3,8 @@ import {HView, Seperator, Text, Image, Checkbox} from 'react-native-nuno-ui';
 import Icons from '../Icons';
 import {custom} from '../../config';
 import {TouchableOpacity, View} from 'react-native';
-import Axios from 'axios';
-import {AppContext} from '../../context';
-import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function ListItem(props) {
-  const context = React.useContext(AppContext);
-  const scrapOn = () => {
-    Axios.post('scrapOn', {
-      faPk: props.item.faPk,
-      userPk: context.me.userPk,
-    })
-      .then((res) => {
-        logApi('scrapOn', res.data);
-      })
-      .catch((err) => {
-        logApi('scrapOn error', err.response);
-      });
-  };
-  const scrapOff = () => {
-    Axios.post('scrapOff', {
-      faPk: props.item.faPk,
-      userPk: context.me.userPk,
-    })
-      .then((res) => {
-        logApi('scrapOff', res.data);
-      })
-      .catch((err) => {
-        logApi('scrapOff error', err.response);
-      });
-  };
   return (
     <View>
       <TouchableOpacity onPress={props.onPress}>
@@ -87,12 +59,18 @@ export default function ListItem(props) {
               size={'large'}
             />
           ) : props.item.faScrapType === 'N' ? (
-            <TouchableOpacity onPress={() => scrapOn()}>
+            <TouchableOpacity
+              onPress={() => props.scrapOn(props.item, props.index)}>
               <Icons name="icon-bookmark-20" size={20} color={'black'} />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => scrapOff()}>
-              <Icons name="icon-bookmark-s-20" size={20} color={custom.themeColor} />
+            <TouchableOpacity
+              onPress={() => props.scrapOff(props.item, props.index)}>
+              <Icons
+                name="icon-bookmark-s-20"
+                size={20}
+                color={custom.themeColor}
+              />
             </TouchableOpacity>
           )}
         </HView>
