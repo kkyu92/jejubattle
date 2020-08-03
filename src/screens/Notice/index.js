@@ -14,6 +14,8 @@ import {
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 const data = [
   {id: '0'},
@@ -28,6 +30,18 @@ const data = [
 
 export default function Notice(props) {
   const [activeSection, setActiveSection] = React.useState([0]);
+  const [notices, setNotices] = React.useState([]);
+  React.useEffect(() => {
+    Axios.get('notice')
+      .then((res) => {
+        logApi('event', res.data);
+        setNotices(res.data);
+      })
+      .catch((err) => {
+        logApi('event error', err.response);
+      });
+  }, []);
+
   const renderHeader = (content, index, isActive) => {
     return (
       <View style={{paddingHorizontal: 20}}>
@@ -39,12 +53,12 @@ export default function Notice(props) {
           }}>
           <View>
             <Text
-              text={'앱 버전이 1.1.5(v)로 업데이트 되었습니다'}
+              text={content.noSubject}
               fontSize={16}
               fontWeight={isActive ? 'bold' : '200'}
             />
             <Seperator height={6} />
-            <Text text={'2020.04.12'} fontSize={14} color={'gray'} />
+            <Text text={content.noDetetime} fontSize={14} color={'gray'} />
           </View>
 
           {isActive ? (
@@ -57,13 +71,11 @@ export default function Notice(props) {
       </View>
     );
   };
-  const renderContent = (data) => {
+  const renderContent = (content) => {
     return (
       <View style={{padding: 20}}>
         <Text
-          text={
-            '학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항학교 운동장, 운동시설 이용시 주의사항'
-          }
+          text={content.noContent.replace(/<br>/g, '\n')}
           fontSize={16}
           color={'dimgray'}
         />
@@ -71,7 +83,7 @@ export default function Notice(props) {
       </View>
     );
   };
-  const updateSection = active => {
+  const updateSection = (active) => {
     setActiveSection(active);
   };
   return (
@@ -84,7 +96,7 @@ export default function Notice(props) {
       <ScrollView>
         <Accordion
           activeSections={activeSection}
-          sections={data}
+          sections={notices}
           expandMultiple={true}
           touchableComponent={(props) => <TouchableOpacity {...props} />}
           renderHeader={renderHeader}

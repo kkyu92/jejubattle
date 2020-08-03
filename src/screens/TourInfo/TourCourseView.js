@@ -14,8 +14,6 @@ import {
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
-import ListItem from '../../commons/ListItem';
-import Accordion from 'react-native-collapsible/Accordion';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {screenWidth} from '../../styles';
 import {TabView} from 'react-native-tab-view';
@@ -23,10 +21,12 @@ import TabTourIntroduction from './TabTourIntroduction';
 import Axios from 'axios';
 import {logApi, share} from 'react-native-nuno-ui/funcs';
 import TabReview from '../../commons/TabReview';
+import {AppContext} from '../../context';
 
 const initialLayout = {width: screenWidth};
 
 export default function TourCourseView(props) {
+  const context = React.useContext(AppContext);
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {key: '1', title: '소개'},
@@ -99,6 +99,34 @@ export default function TourCourseView(props) {
         );
     }
   };
+  const likeOn = () => {
+    Axios.post('likeOn', {
+      faPk: facility.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('likeOn', res.data);
+        get();
+        // props.route.params?.refresh();
+      })
+      .catch((err) => {
+        logApi('likeOn error', err.response);
+      });
+  };
+  const likeOff = () => {
+    Axios.post('likeOff', {
+      faPk: facility.faPk,
+      userPk: context.me.userPk,
+    })
+      .then((res) => {
+        logApi('likeOff', res.data);
+        get();
+        // props.route.params?.refresh();
+      })
+      .catch((err) => {
+        logApi('likeOff error', err.response);
+      });
+  };
   return (
     <Container>
       <Header
@@ -139,7 +167,19 @@ export default function TourCourseView(props) {
           <HView style={{padding: 20, justifyContent: 'space-between'}}>
             <Text text={facility.faName} fontSize={21} fontWeight={'bold'} />
             <HView style={{paddingHorizontal: 20, justifyContent: 'flex-end'}}>
-              <Icons name={'icon-like-12'} size={18} color={'gray'} />
+              {facility.faLikeType === 'N' ? (
+                <TouchableOpacity onPress={() => likeOn()}>
+                  <AntDesign name={'like2'} size={20} color={'gray'} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => likeOff()}>
+                  <AntDesign
+                    name={'like1'}
+                    size={20}
+                    color={custom.themeColor}
+                  />
+                </TouchableOpacity>
+              )}
               <Seperator width={5} />
               <Text text={facility.faLikeCnt} fontSize={14} color={'gray'} />
             </HView>

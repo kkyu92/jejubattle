@@ -14,22 +14,40 @@ import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function WishList(props) {
   const [edit, setEdit] = React.useState(false);
-  const data = [
-    {id: '0'},
-    {id: '1'},
-    {id: '2'},
-    {id: '3'},
-    {id: '4'},
-    {id: '5'},
-    {id: '6'},
-    {id: 's'},
-  ];
-  const renderItem = () => {
-    // return <ListItem editMode={edit} onPress={() => props.navigation.navigate('FacilityView')}/>;
-    return null;
+  const [wishList, setWishList] = React.useState([]);
+  const isFocused = useIsFocused();
+
+  React.useEffect(() => {
+    isFocused && get();
+  }, [isFocused]);
+  const get = () => {
+    Axios.get('wishList')
+      .then((res) => {
+        logApi('wishList', res.data);
+        setWishList(res.data);
+      })
+      .catch((err) => {
+        logApi('wishList error', err.response);
+      });
+  };
+  const renderItem = ({item, index}) => {
+    return (
+      <ListItem
+        editMode={edit}
+        onPress={() =>
+          props.navigation.navigate('FacilityView', {
+            faPk: item.faPk,
+          })
+        }
+        item={item}
+      />
+    );
   };
   return (
     <Container>
@@ -41,7 +59,11 @@ export default function WishList(props) {
             <TouchableOpacity
               onPress={() => props.navigation.navigate('FullMap')}
               style={{paddingHorizontal: 5, paddingVertical: 5}}>
-              <Icons name={'icon-map-24'} size={20} color={edit ? 'gray' : 'black'} />
+              <Icons
+                name={'icon-map-24'}
+                size={20}
+                color={edit ? 'gray' : 'black'}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={!edit ? () => setEdit(true) : null}
@@ -65,7 +87,13 @@ export default function WishList(props) {
             paddingHorizontal: 20,
             paddingTop: 20,
           }}>
-          <Checkbox multiple label={'모두선택'} checked={false} onPress={() => null} size={'large'} />
+          <Checkbox
+            multiple
+            label={'모두선택'}
+            checked={false}
+            onPress={() => null}
+            size={'large'}
+          />
           <Text
             text={'1개 선택됨'}
             fontWeight={'500'}
@@ -75,7 +103,7 @@ export default function WishList(props) {
         </HView>
       )}
       <FlatList
-        data={data}
+        data={wishList}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
@@ -90,10 +118,21 @@ export default function WishList(props) {
         <View>
           <Seperator line />
           <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
-            <Button text={'취소'} color={'white'} onPress={() => setEdit(false)} size={'large'} />
+            <Button
+              text={'취소'}
+              color={'white'}
+              onPress={() => setEdit(false)}
+              size={'large'}
+            />
             <Seperator width={20} />
             <View style={{flex: 1}}>
-              <Button text={'삭제'} color={custom.themeColor} onPress={() => null} size={'large'} stretch/>
+              <Button
+                text={'삭제'}
+                color={custom.themeColor}
+                onPress={() => null}
+                size={'large'}
+                stretch
+              />
             </View>
           </HView>
           <Seperator bottom />

@@ -16,15 +16,22 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
 export default function Event(props) {
   const [modalVisible, setModalVisible] = React.useState(false);
-  const data = [
-    {id: '0'},
-    {id: '1'},
-    {id: '2'},
-    {id: '3'},
-  ];
+  const [events, setEvents] = React.useState([]);
+  React.useEffect(() => {
+    Axios.get('event')
+      .then((res) => {
+        logApi('event', res.data);
+        setEvents(res.data);
+      })
+      .catch((err) => {
+        logApi('event error', err.response);
+      });
+  }, []);
   const showDetail = () => {
     setModalVisible(true);
   };
@@ -38,15 +45,15 @@ export default function Event(props) {
           height={Math.floor((screenWidth - 40) * 0.4)}
           width={Math.floor(screenWidth - 40)}
           borderRadius={10}
-          uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-          onPress={() => props.navigation.navigate('EventView')}
+          uri={item.imgUrl}
+          onPress={() => props.navigation.navigate('EventView', {item: item})}
           resizeMode={'cover'}
         />
         <Seperator height={20} />
-        <Text text={'제주 들불축제'} fontWeight={'bold'} fontSize={18} />
+        <Text text={item.evSubject} fontWeight={'bold'} fontSize={18} />
         <Seperator height={10} />
         <Text
-          text={'기간: 2020년 9월 2일 ~. 2020년 10월 1일'}
+          text={`기간: ${item.startDate} ~ ${item.endDate}`}
           color={'gray'}
           fontSize={14}
         />
@@ -57,7 +64,7 @@ export default function Event(props) {
     <Container>
       <Header left={'close'} title={'이벤트'} navigation={props.navigation} />
       <FlatList
-        data={data}
+        data={events}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}

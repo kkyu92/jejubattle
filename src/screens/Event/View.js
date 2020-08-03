@@ -28,20 +28,24 @@ export default function EventView(props) {
             height={Math.floor((screenWidth - 40) * 1.6)}
             width={Math.floor(screenWidth - 40)}
             // borderRadius={10}
-            uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-            resizeMode={'cover'}
+            uri={props.route.params.item.imgUrl}
+            resizeMode={'contain'}
           />
         </View>
         <HView style={{paddingHorizontal: 20, justifyContent: 'flex-end'}}>
           <Icons name={'icon-like-12'} size={18} color={'gray'} />
           <Seperator width={5} />
-          <Text text={'32'} fontSize={14} color={'gray'} />
+          <Text
+            text={props.route.params.item.evLikeCnt}
+            fontSize={14}
+            color={'gray'}
+          />
         </HView>
         <Seperator marginTop={20} line />
         <View style={{padding: 20}}>
           <HView>
             <Text text={'댓글'} fontSize={18} fontWeight={'bold'} />
-            <Text text={'(2)'} fontSize={15} color={'gray'} />
+            <Text text={`(0)`} fontSize={15} color={'gray'} />
           </HView>
         </View>
       </View>
@@ -97,7 +101,7 @@ export default function EventView(props) {
             <TouchableOpacity
               onPress={() =>
                 share(
-                  `https://jejubattle.com/event/${props.route.params.faPk}`,
+                  `https://jejubattle.com/event/${props.route.params.item.evPk}`,
                   '',
                 )
               }

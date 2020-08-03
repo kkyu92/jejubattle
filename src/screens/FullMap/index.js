@@ -5,6 +5,9 @@ import {ShadowStyle} from '../../styles';
 import Icons from '../../commons/Icons';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
+import ActionSheet from 'react-native-actions-sheet';
+
+const actionSheetRef = React.createRef();
 
 export default function FullMap(props) {
   const [keyword, setKeyword] = React.useState('');
@@ -20,13 +23,14 @@ export default function FullMap(props) {
     // "lat": 37.55375859999999,
     // "lon": 126.9809696,
     Axios.post('aroundme', {
-      lat: 37.55375859999999, //global.address.coords.latitude,
-      lon: 126.9809696, //global.address.coords.longitude,
+      lat: currentLocation.latitude, //global.address.coords.latitude,
+      lon: currentLocation.longitude, //global.address.coords.longitude,
       keyword: keyword,
     })
       .then((res) => {
         logApi('aroundme', res.data);
         const temp = res.data.map((e) => ({
+          faPk: e.faPk,
           coords: {latitude: e.faLat, longitude: e.falon},
           title: e.faName,
           // description: e.faSubject,
@@ -38,8 +42,12 @@ export default function FullMap(props) {
         logApi('aroundme error', err.response);
       });
   };
+  const showActionSheet = (e) => {
+    console.log('Fullmap selected marker', e);
+    actionSheetRef.current?.setModalVisible();
+  };
   return (
-    <View style={{flex: 1}} keyboardShouldPersistTaps={'handled'}>
+    <View style={{flex: 1}}>
       <Map
         latitude={37.55375859999999}
         longitude={126.9809696}
@@ -47,6 +55,7 @@ export default function FullMap(props) {
         showCurrent={true}
         markers={result}
         getCurrentPosition={(e) => setCurrentLocation(e)}
+        showActionSheet={() => showActionSheet()}
         customCenter={
           <Image
             local
@@ -119,6 +128,15 @@ export default function FullMap(props) {
           </TouchableOpacity>
         </HView>
       </View>
+      <ActionSheet
+        ref={actionSheetRef}
+        headerAlwaysVisible={true}
+        footerAlwaysVisible={true}
+        gestureEnabled={true}
+        bounceOnOpen={true}>
+        <View>
+        </View>
+      </ActionSheet>
     </View>
   );
 }

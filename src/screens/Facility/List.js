@@ -17,6 +17,7 @@ import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function FacilityList(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
@@ -26,9 +27,11 @@ export default function FacilityList(props) {
   const [filter2, setFilter2] = React.useState(0);
   const [keyword, setKeyword] = React.useState('');
   const [list, setList] = React.useState([]);
+  const isFocused = useIsFocused();
+
   React.useEffect(() => {
-    getList();
-  }, [activeTab]);
+    isFocused && getList();
+  }, [activeTab, isFocused]);
   const getList = () => {
     Axios.post(props.route.params.endpoint, {
       code: activeTab,
@@ -48,7 +51,9 @@ export default function FacilityList(props) {
     return (
       <ListItem
         onPress={() =>
-          props.navigation.navigate('FacilityView', {faPk: item.faPk})
+          props.navigation.navigate('FacilityView', {
+            faPk: item.faPk,
+          })
         }
         item={item}
       />
