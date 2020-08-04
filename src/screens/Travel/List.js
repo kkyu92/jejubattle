@@ -184,6 +184,11 @@ export default function TravelList(props) {
         data={travel}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
+        ItemSeparatorComponent={() => (
+          <View style={{paddingLeft: 20}}>
+            <Seperator line />
+          </View>
+        )}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}

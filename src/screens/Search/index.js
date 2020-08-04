@@ -19,7 +19,7 @@ import {
   getRecentKeyword,
   removeRecentKeyword,
 } from 'react-native-nuno-ui/funcs';
-import { AppContext } from '../../context';
+import {AppContext} from '../../context';
 
 export default function Search(props) {
   const context = React.useContext(AppContext);
@@ -196,6 +196,18 @@ export default function Search(props) {
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItems}
         stickyHeaderIndices={stickyHeaderIndices}
+        ItemSeparatorComponent={(e) => {
+          console.log('ItemSeparatorComponent', e);
+          if (e.leadingItem.title) {
+            return null;
+          } else {
+            return (
+              <View style={{paddingLeft: 20}}>
+                <Seperator line />
+              </View>
+            );
+          }
+        }}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}

@@ -83,9 +83,6 @@ export default function ListItem(props) {
           )}
         </HView>
       </TouchableOpacity>
-      <View style={{paddingLeft: 20}}>
-        <Seperator line />
-      </View>
     </View>
   );
 }

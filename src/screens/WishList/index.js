@@ -16,8 +16,8 @@ import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
-import { useIsFocused } from '@react-navigation/native';
-import { AppContext } from '../../context';
+import {useIsFocused} from '@react-navigation/native';
+import {AppContext} from '../../context';
 
 export default function WishList(props) {
   const context = React.useContext(AppContext);
@@ -165,6 +165,11 @@ export default function WishList(props) {
         data={wishList}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
+        ItemSeparatorComponent={() => (
+          <View style={{paddingLeft: 20}}>
+            <Seperator line />
+          </View>
+        )}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}

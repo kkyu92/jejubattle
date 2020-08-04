@@ -169,6 +169,11 @@ export default function FacilityList(props) {
         data={list}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
+        ItemSeparatorComponent={() => (
+          <View style={{paddingLeft: 20}}>
+            <Seperator line />
+          </View>
+        )}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}
