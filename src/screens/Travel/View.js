@@ -223,7 +223,11 @@ export default function TravelView(props) {
             </HView>
           </HView>
           <View style={{paddingHorizontal: 20}}>
-            <Text text={facility.faSubject} fontSize={18} color={'dimgray'} />
+            <Text
+              text={facility.faSubject.replace(/<br>/g, '\n')}
+              fontSize={18}
+              color={'dimgray'}
+            />
           </View>
           <Seperator height={20} />
         </View>

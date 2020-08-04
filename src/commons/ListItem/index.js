@@ -25,8 +25,14 @@ export default function ListItem(props) {
           <View style={{flex: 1, paddingVertical: 10}}>
             <Text text={props.item.faName} fontSize={16} fontWeight={'bold'} />
             <Seperator height={10} />
-            <Text text={props.item.faSubject} fontSize={14} color={'gray'} />
-            <Seperator height={20} />
+            <Text
+              text={props.item.faSubject?.replace(/<br>/g, '\n')}
+              fontSize={14}
+              ellipsizeMode={'tail'}
+              numberOfLines={2}
+              color={'gray'}
+            />
+            <Seperator height={10} />
             <HView>
               <Icons
                 name={'icon-star-12'}
