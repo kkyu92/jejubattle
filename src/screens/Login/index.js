@@ -8,16 +8,17 @@ import {
   Image,
   HView,
   Modal,
+  Checkbox,
 } from 'react-native-nuno-ui';
 import {View, Alert} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { screenWidth } from '../../styles';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import {logApi} from 'react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
-import { AppContext } from '../../context';
+import {AppContext} from '../../context';
 import RNKakaoLogins from '@react-native-seoul/kakao-login';
 import {
   LoginManager,
@@ -26,6 +27,7 @@ import {
   GraphRequestManager,
 } from 'react-native-fbsdk';
 import Init from '../../commons/Init';
+import Icons from '../../commons/Icons';
 
 export default function Login(props) {
   const context = React.useContext(AppContext);
@@ -34,7 +36,15 @@ export default function Login(props) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [emailForPassword, setEmailForPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [permissionVisible, setPermissionVisible] = React.useState(false);
+  const [permission1, setPermission1] = React.useState(false);
+  const [permission2, setPermission2] = React.useState(false);
+  const joinCallback = React.useRef();
 
+  const gotoJoin = (callback) => {
+    setPermissionVisible(true);
+    joinCallback.current = callback;
+  };
   const signin = () => {
     setLoading(true);
     Axios.post('signin', {
@@ -73,10 +83,12 @@ export default function Login(props) {
         logApi('snsSignin error', err?.response);
         setLoading(false);
         if (err?.response.status === 403) {
-          props.navigation.navigate('Join', {
-            userId: userId,
-            userCode: userCode,
-          });
+          gotoJoin(() =>
+            props.navigation.navigate('Join', {
+              userId: userId,
+              userCode: userCode,
+            }),
+          );
         } else {
           Alert.alert('로그인', err.response?.data?.message);
         }
@@ -97,10 +109,8 @@ export default function Login(props) {
         setLoading(false);
       });
   };
-  const startWithApple = () => {
-  };
-  const startWithNaver = () => {
-  };
+  const startWithApple = () => {};
+  const startWithNaver = () => {};
   const startWithKakao = () => {
     RNKakaoLogins.login((err, res) => {
       if (err) {
@@ -189,7 +199,9 @@ export default function Login(props) {
             fontWeight={'bold'}
             color={'rgba(0, 0, 0, 0.6)'}
             borderRadius={20}
-            onPress={() => props.navigation.navigate('Join')}
+            onPress={() => {
+              gotoJoin(() => props.navigation.navigate('Join'));
+            }}
           />
         </HView>
         <Seperator height={30} />
@@ -359,6 +371,58 @@ export default function Login(props) {
                 />
               </View>
             </HView>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        isVisible={permissionVisible}
+        onBackdropPress={() => setPermissionVisible(false)}>
+        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
+          <View style={{padding: 20}}>
+            <View style={{alignItems: 'center'}}>
+              <Text text={'레스포 앱 권한'} fontWeight={'bold'} fontSize={18} />
+            </View>
+            <Seperator height={20} />
+            <HView>
+              <HView style={{flex: 1}}>
+                <Icons name={'icon-appreport-20'} size={20} color={'gray'} />
+                <Seperator width={10} />
+                <Text text={'기기 및 앱 기록'} fontSize={16} />
+              </HView>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox
+                  size={'large'}
+                  checked={permission1}
+                  onPress={() => setPermission1(!permission1)}
+                />
+              </View>
+            </HView>
+            <HView>
+              <HView style={{flex: 1}}>
+                <Icons name={'icon-loaction-20'} size={20} color={'gray'} />
+                <Seperator width={10} />
+                <Text text={'위치'} fontSize={16} />
+              </HView>
+              <View style={{paddingVertical: 10}}>
+                <Checkbox
+                  size={'large'}
+                  checked={permission2}
+                  onPress={() => setPermission2(!permission2)}
+                />
+              </View>
+            </HView>
+          </View>
+          <View style={{padding: 10}}>
+            <Button
+              text={'동의하고 계속하기'}
+              onPress={() => {
+                setPermissionVisible(false);
+                joinCallback.current();
+              }}
+              disable={!permission1 || !permission2}
+              color={custom.themeColor}
+              stretch
+            />
           </View>
         </View>
       </Modal>
