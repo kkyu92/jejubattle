@@ -32,6 +32,11 @@ export default function Join(props) {
   const [password, setPassword] = React.useState('');
   const [repassword, setRepassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [agreement, setAgreement] = React.useState(false);
+  const [agreement1, setAgreement1] = React.useState(false);
+  const [agreement2, setAgreement2] = React.useState(false);
+  const [agreement3, setAgreement3] = React.useState(false);
+  const [agreement4, setAgreement4] = React.useState(false);
 
   const prePostUser = () => {
     const checkemail = checkEmail(email);
@@ -105,7 +110,7 @@ export default function Join(props) {
   return (
     <Container>
       <Header left={'back'} navigation={props.navigation} title={'회원가입'} />
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView keyboardShouldPersistTaps={'handled'}>
         <Seperator height={30} />
         <View style={{padding: 20}}>
           <HView>
@@ -241,16 +246,16 @@ export default function Join(props) {
                 multiple
                 // customChecked={<Icons name={'icon-radiocheck-28'} size={28} color={custom.themeColor} />}
                 label={'약관1'}
-                onPress={() => null}
-                checked={true}
+                onPress={() => setAgreement1(!agreement1)}
+                checked={agreement1}
               />
             </View>
             <View style={{flex: 1, alignItems: 'flex-start'}}>
               <Checkbox
                 multiple
-                label={'약관1'}
-                onPress={() => null}
-                checked={false}
+                label={'약관2'}
+                onPress={() => setAgreement2(!agreement2)}
+                checked={agreement2}
               />
             </View>
           </HView>
@@ -259,17 +264,17 @@ export default function Join(props) {
             <View style={{flex: 1, alignItems: 'flex-start'}}>
               <Checkbox
                 multiple
-                label={'약관1'}
-                onPress={() => null}
-                checked={false}
+                label={'약관3'}
+                onPress={() => setAgreement3(!agreement3)}
+                checked={agreement3}
               />
             </View>
             <View style={{flex: 1, alignItems: 'flex-start'}}>
               <Checkbox
                 multiple
-                label={'약관1'}
-                onPress={() => null}
-                checked={false}
+                label={'약관4'}
+                onPress={() => setAgreement4(!agreement4)}
+                checked={agreement4}
               />
             </View>
           </HView>
@@ -317,8 +322,8 @@ export default function Join(props) {
           <Seperator height={20} />
           <Checkbox
             label={'약관에 동의하였습니다'}
-            checked={true}
-            onPress={() => null}
+            checked={agreement}
+            onPress={() => setAgreement(!agreement)}
           />
         </View>
       </KeyboardAwareScrollView>
@@ -334,6 +339,17 @@ export default function Join(props) {
           size={'large'}
           text={'회원가입'}
           loading={loading}
+          disable={
+            !name ||
+            !agreement ||
+            !agreement1 ||
+            !agreement2 ||
+            !agreement3 ||
+            !agreement4 ||
+            !gender ||
+            !email ||
+            !mobile
+          }
           onPress={() => prePostUser()}
           color={custom.themeColor}
         />

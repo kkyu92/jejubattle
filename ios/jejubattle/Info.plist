@@ -47,6 +47,8 @@
 	<string>a9c548999f8cc42b37a3abced15f8406</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+    <string>naversearchapp</string>
+    <string>naversearchthirdlogin</string>
 		<string>kakaoa9c548999f8cc42b37a3abced15f8406</string>
 		<string>kakaokompassauth</string>
 		<string>storykompassauth</string>
