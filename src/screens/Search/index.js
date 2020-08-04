@@ -95,6 +95,7 @@ export default function Search(props) {
           index={index}
           scrapOn={scrapOn}
           scrapOff={scrapOff}
+          showScrap={true}
         />
       );
     }

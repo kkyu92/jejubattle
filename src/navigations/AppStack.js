@@ -19,10 +19,9 @@ import Notice from '../screens/Notice';
 import CustomerCenter from '../screens/CustomerCenter';
 import Setting from '../screens/Setting';
 import EventView from '../screens/Event/View';
-import TourInfo from '../screens/TourInfo';
-import TourCourse from '../screens/TourInfo/TourCourse';
-import TourCourseView from '../screens/TourInfo/TourCourseView';
-import FoodStore from '../screens/FoodStore';
+import Travel from '../screens/Travel';
+import TravelList from '../screens/Travel/List';
+import TravelView from '../screens/Travel/View';
 import FullMap from '../screens/FullMap';
 import MyBattle from '../screens/MyBattle';
 import BattleView from '../screens/Battle/View';
@@ -81,10 +80,9 @@ function TourInfoStackScreen() {
         // cardOverlayEnabled: true,
         cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
       }}>
-      <TourInfoStack.Screen name="TourInfo" component={TourInfo} />
-      <TourInfoStack.Screen name="TourCourse" component={TourCourse} />
-      <TourInfoStack.Screen name="TourCourseView" component={TourCourseView} />
-      <TourInfoStack.Screen name="FoodStore" component={FoodStore} />
+      <TourInfoStack.Screen name="Travel" component={Travel} />
+      <TourInfoStack.Screen name="TravelList" component={TravelList} />
+      <TourInfoStack.Screen name="TravelView" component={TravelView} />
     </TourInfoStack.Navigator>
   );
 }

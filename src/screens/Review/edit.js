@@ -67,8 +67,8 @@ export default function ReviewEdit(props) {
         });
     } else {
       const formData = new FormData();
-      formData.append('faPk', JSON.stringify(props.route.params.faPk));
-      formData.append('userKey', JSON.stringify(context.me.userPk));
+      formData.append('faPk', props.route.params.faPk);
+      formData.append('userKey', context.me.userPk);
       formData.append('reContent', reContent);
       formData.append('reScope', reScope);
       if (file) {

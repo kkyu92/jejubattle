@@ -61,6 +61,7 @@ export default function FacilityList(props) {
         index={index}
         scrapOn={scrapOn}
         scrapOff={scrapOff}
+        showScrap={true}
       />
     );
   };

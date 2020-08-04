@@ -1,65 +1,81 @@
 import React from 'react';
 import {
   Container,
-  Text,
   Header,
-  Seperator,
-  HView,
+  Text,
   Image,
-  Checkbox,
+  HView,
+  Seperator,
+  TextInput,
   Button,
+  Checkbox,
   Modal,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View, ScrollView, FlatList} from 'react-native';
+import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
-import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {useIsFocused} from '@react-navigation/native';
 
-export default function FoodStore(props) {
+export default function TravelList(props) {
   const context = React.useContext(AppContext);
   const [filterVisible, setFilterVisible] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
+  const [travel, setTravel] = React.useState([]);
   const [orderType, setOrderType] = React.useState(0);
-  const [store, setStore] = React.useState([]);
   const [category, setCategory] = React.useState([]);
   const isFocused = useIsFocused();
-
-  React.useEffect(() => {
-    isFocused && getTravelList();
-  }, [isFocused, activeTab]);
-
+  let title;
+  switch (props.route.params.faCode) {
+    case 1:
+      title = '추천코스';
+      break;
+    case 2:
+      title = '맛집';
+      break;
+    case 3:
+      title = '관광지';
+      break;
+    case 4:
+      title = '체험';
+      break;
+    default:
+      break;
+  }
   const getTravelList = () => {
     Axios.post('travelList', {
-      faCode: 2,
+      faCode: props.route.params.faCode,
       code: activeTab,
       orderType: orderType,
       lat: global.address.coords.latitude,
       lon: global.address.coords.longitude,
     })
       .then((res) => {
-        logApi('travelList 2', res.data);
-        setStore(res.data.facility);
-        setCategory(res.data.category);
+        logApi('travelList', props.route.params.faCode, res.data);
+        setTravel(res.data.facility);
+        res.data.category && setCategory(res.data.category);
       })
       .catch((err) => {
-        logApi('travelList 2 error', err.response);
+        logApi('travelList error', props.route.params.faCode, err.response);
       });
   };
+  React.useEffect(() => {
+    isFocused && getTravelList();
+  }, [isFocused, activeTab]);
   const renderItem = ({item, index}) => {
     return (
       <ListItem
         onPress={() =>
-          props.navigation.navigate('TourCourseView', {faPk: item.faPk})
+          props.navigation.navigate('TravelView', {faPk: item.faPk})
         }
         item={item}
         index={index}
         scrapOn={scrapOn}
         scrapOff={scrapOff}
+        showScrap={false}
       />
     );
   };
@@ -70,9 +86,9 @@ export default function FoodStore(props) {
     })
       .then((res) => {
         logApi('scrapOn', res.data);
-        const temp = [...store];
+        const temp = [...travel];
         temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
-        setStore(temp);
+        setTravel(temp);
       })
       .catch((err) => {
         logApi('scrapOn error', err.response);
@@ -85,9 +101,9 @@ export default function FoodStore(props) {
     })
       .then((res) => {
         logApi('scrapOff', res.data);
-        const temp = [...store];
+        const temp = [...travel];
         temp[index].faScrapType = temp[index].faScrapType === 'Y' ? 'N' : 'Y';
-        setStore(temp);
+        setTravel(temp);
       })
       .catch((err) => {
         logApi('scrapOff error', err.response);
@@ -97,6 +113,8 @@ export default function FoodStore(props) {
     <Container>
       <Header
         left={'close'}
+        title={title}
+        navigation={props.navigation}
         rightComponent={
           <TouchableOpacity
             onPress={() => setFilterVisible(true)}
@@ -111,49 +129,56 @@ export default function FoodStore(props) {
             <Text text={'필터'} color={custom.themeColor} fontSize={17} />
           </TouchableOpacity>
         }
-        title={'맛집'}
-        navigation={props.navigation}
-        containerStyle={{borderBottomWidth: 0}}
+        containerStyle={
+          props.route.params.faCode === 2
+            ? {borderBottomWidth: 0}
+            : {borderBottomWidth: 1}
+        }
       />
-      <View>
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{
-            paddingLeft: 10,
-            borderBottomColor: 'lightgray',
-            borderBottomWidth: 1,
-          }}>
-          <TouchableOpacity
-            onPress={() => setActiveTab(0)}
+      {props.route.params.faCode === 2 ? (
+        <View>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
             style={{
-              paddingVertical: 15,
-              paddingHorizontal: 10,
-              borderBottomWidth: 3,
-              borderBottomColor: activeTab === 0 ? custom.themeColor : 'white',
+              paddingLeft: 10,
+              borderBottomColor: 'lightgray',
+              borderBottomWidth: 1,
             }}>
-            <Text text={'전체'} fontSize={17} color={'gray'} />
-          </TouchableOpacity>
-          {category.map((e, i) => {
-            return (
-              <TouchableOpacity
-                key={e.code}
-                onPress={() => setActiveTab(e.code)}
-                style={{
-                  paddingVertical: 15,
-                  paddingHorizontal: 10,
-                  borderBottomWidth: 3,
-                  borderBottomColor:
-                    activeTab === e.code ? custom.themeColor : 'white',
-                }}>
-                <Text text={e.name} fontSize={17} color={'gray'} />
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
+            <TouchableOpacity
+              onPress={() => setActiveTab(0)}
+              style={{
+                paddingVertical: 15,
+                paddingHorizontal: 10,
+                borderBottomWidth: 3,
+                borderBottomColor:
+                  activeTab === 0 ? custom.themeColor : 'white',
+              }}>
+              <Text text={'전체'} fontSize={17} color={'gray'} />
+            </TouchableOpacity>
+            {category.map((e, i) => {
+              return (
+                <TouchableOpacity
+                  key={e.code}
+                  onPress={() => setActiveTab(e.code)}
+                  style={{
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    borderBottomWidth: 3,
+                    borderBottomColor:
+                      activeTab === e.code ? custom.themeColor : 'white',
+                  }}>
+                  <Text text={e.name} fontSize={17} color={'gray'} />
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      ) : (
+        <Seperator height={20} />
+      )}
       <FlatList
-        data={store}
+        data={travel}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}

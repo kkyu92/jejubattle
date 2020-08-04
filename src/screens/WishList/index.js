@@ -53,6 +53,7 @@ export default function WishList(props) {
         scrapOn={scrapOn}
         scrapOff={scrapOff}
         handleCheck={handleCheck}
+        showScrap={false}
       />
     );
   };

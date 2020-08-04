@@ -25,7 +25,7 @@ import {AppContext} from '../../context';
 
 const initialLayout = {width: screenWidth};
 
-export default function TourCourseView(props) {
+export default function TravelView(props) {
   const context = React.useContext(AppContext);
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -161,7 +161,7 @@ export default function TourCourseView(props) {
         navigation={props.navigation}
         rightComponent={
           <HView>
-            {facility.faScrapType === 'N' ? (
+            {/* {facility.faScrapType === 'N' ? (
               <TouchableOpacity
                 onPress={() => scrapOn()}
                 style={{paddingHorizontal: 5, paddingVertical: 5}}>
@@ -177,7 +177,7 @@ export default function TourCourseView(props) {
                   color={custom.themeColor}
                 />
               </TouchableOpacity>
-            )}
+            )} */}
             <TouchableOpacity
               onPress={() =>
                 share(

@@ -21,7 +21,7 @@ import {screenWidth} from '../../styles';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 
-export default function TourInfo(props) {
+export default function Travel(props) {
   const [travel, setTravel] = React.useState([]);
   React.useEffect(() => {
     Axios.get('travel')
@@ -42,7 +42,9 @@ export default function TourInfo(props) {
         <HView style={{padding: 20}}>
           <TouchableOpacity
             style={{flex: 1, alignItems: 'center'}}
-            onPress={() => props.navigation.navigate('TourCourse')}>
+            onPress={() =>
+              props.navigation.navigate('TravelList', {faCode: 1})
+            }>
             <Image
               local
               uri={require('../../../assets/img/icon-bestcourse.png')}
@@ -54,7 +56,9 @@ export default function TourInfo(props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={{flex: 1, alignItems: 'center'}}
-            onPress={() => props.navigation.navigate('FoodStore')}>
+            onPress={() =>
+              props.navigation.navigate('TravelList', {faCode: 2})
+            }>
             <Image
               local
               uri={require('../../../assets/img/icon-gourmet.png')}
@@ -66,7 +70,9 @@ export default function TourInfo(props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={{flex: 1, alignItems: 'center'}}
-            onPress={() => null}>
+            onPress={() =>
+              props.navigation.navigate('TravelList', {faCode: 3})
+            }>
             <Image
               local
               uri={require('../../../assets/img/icon-sightseeing.png')}
@@ -78,7 +84,9 @@ export default function TourInfo(props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={{flex: 1, alignItems: 'center'}}
-            onPress={() => null}>
+            onPress={() =>
+              props.navigation.navigate('TravelList', {faCode: 4})
+            }>
             <Image
               local
               uri={require('../../../assets/img/icon-leisure.png')}
@@ -113,7 +121,7 @@ export default function TourInfo(props) {
           borderRadius={10}
           uri={item.faImgUrl}
           onPress={() =>
-            props.navigation.navigate('TourCourseView', {faPk: item.faPk})
+            props.navigation.navigate('TravelView', {faPk: item.faPk})
           }
           resizeMode={'cover'}
         />

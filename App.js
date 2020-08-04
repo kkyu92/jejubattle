@@ -90,7 +90,7 @@ const App: () => React$Node = () => {
           .getInitialLink()
           .then((link) => {
             console.log('dynamic link', link);
-            handleRoute(link.url);
+            link && handleRoute(link.url);
           });
       });
     }
@@ -104,7 +104,7 @@ const App: () => React$Node = () => {
       id && RootNavigation.navigate('FacilityView', {faPk: id});
     }
     if (url.includes('https://jejubattle.com/tourinfo/')) {
-      id && RootNavigation.navigate('TourCourseView', {faPk: id});
+      id && RootNavigation.navigate('TravelView', {faPk: id});
     }
   };
 

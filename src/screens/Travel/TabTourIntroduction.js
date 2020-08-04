@@ -34,7 +34,7 @@ export default function TabTourIntroduction(props) {
   const renderItem = ({item, index}) => {
     return (
       <ListItem
-        onPress={() => props.navigation.navigate('TourCourseView', {faPk: item.faPk})}
+        onPress={() => props.navigation.navigate('TravelView', {faPk: item.faPk})}
         item={item}
       />
     );

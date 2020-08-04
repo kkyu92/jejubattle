@@ -142,7 +142,7 @@ export default function Drawer(props) {
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate('TourInfoStack', {
-              screen: 'TourInfo',
+              screen: 'Travel',
             })
           }>
           <HView
