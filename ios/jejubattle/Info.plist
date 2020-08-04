@@ -28,6 +28,14 @@
 				<string>fb277258110177997</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakaoa9c548999f8cc42b37a3abced15f8406</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
@@ -36,10 +44,10 @@
 	<key>FacebookDisplayName</key>
 	<string>jejubattle</string>
 	<key>KAKAO_APP_KEY</key>
-	<string>4f9e332e4542802f6f7587f6294cff32</string>
+	<string>a9c548999f8cc42b37a3abced15f8406</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
+		<string>kakaoa9c548999f8cc42b37a3abced15f8406</string>
 		<string>kakaokompassauth</string>
 		<string>storykompassauth</string>
 		<string>fbapi</string>

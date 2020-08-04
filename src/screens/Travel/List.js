@@ -69,13 +69,16 @@ export default function TravelList(props) {
     return (
       <ListItem
         onPress={() =>
-          props.navigation.navigate('TravelView', {faPk: item.faPk})
+          props.navigation.navigate('TravelView', {
+            faPk: item.faPk,
+            showScrap: props.route.params.faCode === 1 ? false : true,
+          })
         }
         item={item}
         index={index}
         scrapOn={scrapOn}
         scrapOff={scrapOff}
-        showScrap={false}
+        showScrap={props.route.params.faCode === 1 ? false : true}
       />
     );
   };

@@ -18,6 +18,14 @@ import Axios from 'axios';
 import { logApi } from 'react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppContext } from '../../context';
+import RNKakaoLogins from '@react-native-seoul/kakao-login';
+import {
+  LoginManager,
+  AccessToken,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk';
+import Init from '../../commons/Init';
 
 export default function Login(props) {
   const context = React.useContext(AppContext);
@@ -38,12 +46,40 @@ export default function Login(props) {
         logApi('signin success', res.data);
         setLoading(false);
         await AsyncStorage.setItem('token', res.data.token);
+        await Init();
         context.dispatch({type: 'AUTHORIZED', data: res.data});
       })
       .catch((err) => {
         logApi('signin error', err?.response);
         setLoading(false);
         Alert.alert('로그인', err.response?.data?.message);
+      });
+  };
+  const startWithSNS = (userId, userCode) => {
+    setLoading(true);
+    Axios.post('snsSignin', {
+      userId: userId,
+      userCode: userCode,
+      userPushkey: global.fcmToken,
+    })
+      .then(async (res) => {
+        logApi('snsSignin', res.data);
+        setLoading(false);
+        await AsyncStorage.setItem('token', res.data.token);
+        await Init();
+        context.dispatch({type: 'AUTHORIZED', data: res.data});
+      })
+      .catch((err) => {
+        logApi('snsSignin error', err?.response);
+        setLoading(false);
+        if (err?.response.status === 403) {
+          props.navigation.navigate('Join', {
+            userId: userId,
+            userCode: userCode,
+          });
+        } else {
+          Alert.alert('로그인', err.response?.data?.message);
+        }
       });
   };
   const pwInquiry = () => {
@@ -61,7 +97,66 @@ export default function Login(props) {
         setLoading(false);
       });
   };
+  const startWithApple = () => {
+  };
+  const startWithNaver = () => {
+  };
+  const startWithKakao = () => {
+    RNKakaoLogins.login((err, res) => {
+      if (err) {
+        console.log('loginWithKakao Error', err);
+        return;
+      }
 
+      RNKakaoLogins.getProfile((profileErr, profile) => {
+        if (err) {
+          console.log('kakao getProfile', err);
+          return;
+        }
+        console.log('kakao getProfile', profile);
+        startWithSNS(profile.email, 3);
+      });
+    });
+  };
+  const startWithFacebook = () => {
+    LoginManager.logInWithPermissions(['public_profile', 'email'])
+      .then(
+        (result) => {
+          if (result.isCancelled) {
+            console.log('Login cancelled');
+          } else {
+            console.log('Login success with permissions: ', result);
+            return AccessToken.getCurrentAccessToken();
+          }
+        },
+        (error) => {
+          console.log('Login fail with error: ', error);
+        },
+      )
+      .then((data) => {
+        const responseInfoCallback = (error, result) => {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(result);
+            startWithSNS(result.email, 4);
+          }
+        };
+        const infoRequest = new GraphRequest(
+          '/me',
+          {
+            accessToken: data.accessToken,
+            parameters: {
+              fields: {
+                string: 'email, name',
+              },
+            },
+          },
+          responseInfoCallback,
+        );
+        new GraphRequestManager().addRequest(infoRequest).start();
+      });
+  };
   return (
     <Container
       backgroundImage={require('../../../assets/img/bg/img-background-login.png')}>
@@ -149,7 +244,8 @@ export default function Login(props) {
           </HView>
           <Seperator height={60} />
           <HView style={{justifyContent: 'space-evenly'}}>
-            <View
+            <TouchableOpacity
+              onPress={() => startWithKakao()}
               style={{
                 width: 60,
                 height: 60,
@@ -165,8 +261,9 @@ export default function Login(props) {
                 height={23}
                 resizeMode={'contain'}
               />
-            </View>
-            <View
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => startWithNaver()}
               style={{
                 width: 60,
                 height: 60,
@@ -182,8 +279,9 @@ export default function Login(props) {
                 height={23}
                 resizeMode={'contain'}
               />
-            </View>
-            <View
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => startWithFacebook()}
               style={{
                 width: 60,
                 height: 60,
@@ -199,7 +297,7 @@ export default function Login(props) {
                 height={23}
                 resizeMode={'contain'}
               />
-            </View>
+            </TouchableOpacity>
           </HView>
           <Seperator height={50} />
           <Button

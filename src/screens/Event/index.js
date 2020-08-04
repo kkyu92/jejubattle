@@ -45,12 +45,12 @@ export default function Event(props) {
           height={Math.floor((screenWidth - 40) * 0.4)}
           width={Math.floor(screenWidth - 40)}
           borderRadius={10}
-          uri={item.imgUrl}
+          uri={item.evImgUrl}
           onPress={() => props.navigation.navigate('EventView', {item: item})}
           resizeMode={'cover'}
         />
         <Seperator height={20} />
-        <Text text={item.evSubject} fontWeight={'bold'} fontSize={18} />
+        <Text text={item.evName} fontWeight={'bold'} fontSize={18} />
         <Seperator height={10} />
         <Text
           text={`기간: ${item.startDate} ~ ${item.endDate}`}
@@ -65,7 +65,7 @@ export default function Event(props) {
       <Header left={'close'} title={'이벤트'} navigation={props.navigation} />
       <FlatList
         data={events}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => JSON.stringify(item.evPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}

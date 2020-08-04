@@ -20,6 +20,7 @@ import Axios from 'axios';
 import {logApi, checkEmail, checkPassword} from 'react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
+import Init from '../../commons/Init';
 
 export default function Join(props) {
   const context = React.useContext(AppContext);
@@ -27,7 +28,7 @@ export default function Join(props) {
   const [name, setName] = React.useState('');
   const [mobile, setMobile] = React.useState('');
   const [gender, setGender] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState(props.route?.params?.userId || '');
   const [password, setPassword] = React.useState('');
   const [repassword, setRepassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -35,15 +36,18 @@ export default function Join(props) {
   const prePostUser = () => {
     const checkemail = checkEmail(email);
     const checkpassword = checkPassword(password, repassword);
-    if (!checkemail.valid) {
+    if (props.route?.params?.userCode === undefined && !checkemail.valid) {
       Alert.alert('이메일 오류', '이메일 형식이 아닙니다');
       return;
     }
-    if (password !== repassword) {
+    if (
+      props.route?.params?.userCode === undefined &&
+      password !== repassword
+    ) {
       Alert.alert('비밀번호 오류', '두 비밀번호가 서로 다릅니다');
       return;
     }
-    if (!checkpassword.valid) {
+    if (props.route?.params?.userCode === undefined && !checkpassword.valid) {
       Alert.alert('비밀번호 오류', '비밀번호는 문자와 숫자포함 6자 이상입니다');
       return;
     }
@@ -52,7 +56,7 @@ export default function Join(props) {
   const postUser = () => {
     setLoading(true);
     Axios.post('signup', {
-      userCode: 1,
+      userCode: props.route?.params?.userCode || 1,
       userId: email,
       userPwd: password,
       userName: name,
@@ -65,6 +69,7 @@ export default function Join(props) {
         logApi('postUser', res.data);
         if (res.data.token) {
           await AsyncStorage.setItem('token', res.data.token);
+          await Init();
           context.dispatch({type: 'AUTHORIZED', data: res.data});
         }
       })
@@ -278,32 +283,37 @@ export default function Join(props) {
             borderWidth={0}
             autoCapitalize={'none'}
             keyboardType={'email-address'}
+            editable={props.route?.params?.userCode === undefined}
             placeholder={'아이디로 사용할 이메일을 입력해주세요'}
           />
           <Seperator line />
 
-          <Seperator height={30} />
-          <Text text={'비밀번호'} fontSize={16} fontWeight={'500'} />
-          <Seperator height={10} />
-          <TextInput
-            value={password}
-            onChangeText={(e) => setPassword(e)}
-            showEye={true}
-            borderWidth={0}
-            placeholder={'비밀번호(영문숫자포함 6~12자)'}
-          />
-          <Seperator line />
+          {props.route?.params?.userCode === undefined && (
+            <>
+              <Seperator height={30} />
+              <Text text={'비밀번호'} fontSize={16} fontWeight={'500'} />
+              <Seperator height={10} />
+              <TextInput
+                value={password}
+                onChangeText={(e) => setPassword(e)}
+                showEye={true}
+                borderWidth={0}
+                placeholder={'비밀번호(영문숫자포함 6~12자)'}
+              />
+              <Seperator line />
 
-          <Seperator height={30} />
-          <Text text={'비밀번호 확인'} fontSize={16} fontWeight={'500'} />
-          <TextInput
-            value={repassword}
-            showEye={true}
-            onChangeText={(e) => setRepassword(e)}
-            borderWidth={0}
-            placeholder={'입력했던 비밀번호를 다시 입력해주세요'}
-          />
-          <Seperator line />
+              <Seperator height={30} />
+              <Text text={'비밀번호 확인'} fontSize={16} fontWeight={'500'} />
+              <TextInput
+                value={repassword}
+                showEye={true}
+                onChangeText={(e) => setRepassword(e)}
+                borderWidth={0}
+                placeholder={'입력했던 비밀번호를 다시 입력해주세요'}
+              />
+              <Seperator line />
+            </>
+          )}
           <Seperator height={20} />
           <Checkbox
             label={'약관에 동의하였습니다'}

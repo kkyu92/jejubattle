@@ -157,27 +157,28 @@ export default function TravelView(props) {
     <Container>
       <Header
         left={'close'}
-        title={'추천코스'}
+        // title={'추천코스'}
         navigation={props.navigation}
         rightComponent={
           <HView>
-            {/* {facility.faScrapType === 'N' ? (
-              <TouchableOpacity
-                onPress={() => scrapOn()}
-                style={{paddingHorizontal: 5, paddingVertical: 5}}>
-                <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => scrapOff()}
-                style={{paddingHorizontal: 5, paddingVertical: 5}}>
-                <Icons
-                  name={'icon-bookmark-s-20'}
-                  size={20}
-                  color={custom.themeColor}
-                />
-              </TouchableOpacity>
-            )} */}
+            {props.route.params.showScrap &&
+              (facility.faScrapType === 'N' ? (
+                <TouchableOpacity
+                  onPress={() => scrapOn()}
+                  style={{paddingHorizontal: 5, paddingVertical: 5}}>
+                  <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => scrapOff()}
+                  style={{paddingHorizontal: 5, paddingVertical: 5}}>
+                  <Icons
+                    name={'icon-bookmark-s-20'}
+                    size={20}
+                    color={custom.themeColor}
+                  />
+                </TouchableOpacity>
+              ))}
             <TouchableOpacity
               onPress={() =>
                 share(
@@ -224,7 +225,7 @@ export default function TravelView(props) {
           </HView>
           <View style={{paddingHorizontal: 20}}>
             <Text
-              text={facility.faSubject.replace(/<br>/g, '\n')}
+              text={facility.faSubject?.replace(/<br>/g, '\n')}
               fontSize={18}
               color={'dimgray'}
             />

@@ -18,10 +18,14 @@ import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
 import { AppContext } from '../../context';
+import AsyncStorage from '@react-native-community/async-storage';
+import Init from '../../commons/Init';
 
 export default function Setting(props) {
   const context = React.useContext(AppContext);
-  const signout = () => {
+  const signout = async () => {
+    await AsyncStorage.removeItem('token');
+    await Init();
     context.dispatch({type: 'UNAUTHORIZED'});
   };
   return (
