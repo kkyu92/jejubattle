@@ -17,7 +17,21 @@
 ## 2. Release Notes
 
 ####  Android Internal Test Links
-  >
+  > https://play.google.com/apps/internaltest/4700794782783427988
+
+####  2020.08.05
+  > android (1.0.0.4)
+
+  -join permission
+  - join validation
+  - event api
+  - kakao login
+  - text bug 수정
+  - travel refactoring
+  - dynamic link
+  - wishDelete
+  - add dynamiclink
+- scrap api
 
 ####  2020.07.31
   > android (1.0.0.3)
