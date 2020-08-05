@@ -5,14 +5,12 @@ import {ShadowStyle} from '../../styles';
 import Icons from '../../commons/Icons';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
-import ActionSheet from 'react-native-actions-sheet';
-
-const actionSheetRef = React.createRef();
 
 export default function FullMap(props) {
   const [keyword, setKeyword] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState({});
   const [result, setResult] = React.useState([]);
+  const [detailInfoComponent, setDetailInfoComponent] = React.useState(null);
 
   React.useEffect(() => {
     aroundme();
@@ -30,11 +28,10 @@ export default function FullMap(props) {
       .then((res) => {
         logApi('aroundme', res.data);
         const temp = res.data.map((e) => ({
-          faPk: e.faPk,
+          ...e,
           coords: {latitude: e.faLat, longitude: e.falon},
           title: e.faName,
-          // description: e.faSubject,
-          markerComponent: require('../../../assets/img/icon-soccer.png'),
+          markerComponent: require('../../../assets/img/icon-mylocation.png'),
         }));
         setResult(temp);
       })
@@ -46,6 +43,16 @@ export default function FullMap(props) {
     console.log('Fullmap selected marker', e);
     actionSheetRef.current?.setModalVisible();
   };
+  const markerOnSelect = (e) => {
+    setDetailInfoComponent(
+      <View style={{position: 'absolute', bottom: 0, width: screenWidth, padding: 20}}>
+        <Text text={e.title} fontSize={14} />
+      </View>
+    );
+  }
+  const markerOnDeselect = (e) => {
+    setDetailInfoComponent(null);
+  }
   return (
     <View style={{flex: 1}}>
       <Map
@@ -55,7 +62,6 @@ export default function FullMap(props) {
         showCurrent={true}
         markers={result}
         getCurrentPosition={(e) => setCurrentLocation(e)}
-        showActionSheet={() => showActionSheet()}
         customCenter={
           <Image
             local
@@ -65,6 +71,9 @@ export default function FullMap(props) {
             resizeMode={'cover'}
           />
         }
+        detailInfoComponent={detailInfoComponent}
+        markerOnSelect={markerOnSelect}
+        markerOnDeselect={markerOnDeselect}
       />
       <View style={{position: 'absolute', top: 0, left: 0, right: 0}}>
         <Seperator top />
@@ -128,15 +137,6 @@ export default function FullMap(props) {
           </TouchableOpacity>
         </HView>
       </View>
-      <ActionSheet
-        ref={actionSheetRef}
-        headerAlwaysVisible={true}
-        footerAlwaysVisible={true}
-        gestureEnabled={true}
-        bounceOnOpen={true}>
-        <View>
-        </View>
-      </ActionSheet>
     </View>
   );
 }
