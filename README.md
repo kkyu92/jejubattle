@@ -20,6 +20,11 @@
   > https://play.google.com/apps/internaltest/4700794782783427988
 
 ####  2020.08.05
+  > android (1.0.0.5)
+
+  - facebook app id 변경
+
+####  2020.08.05
   > android (1.0.0.4)
 
   -join permission
