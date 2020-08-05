@@ -13,7 +13,6 @@ import {
 import {TouchableOpacity, View, ScrollView, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
-import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';

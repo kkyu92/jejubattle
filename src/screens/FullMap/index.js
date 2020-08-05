@@ -1,16 +1,28 @@
 import React from 'react';
-import {Map, Seperator, HView, TextInput, Image, Text} from 'react-native-nuno-ui';
+import {
+  Map,
+  Seperator,
+  HView,
+  TextInput,
+  Image,
+  Text,
+  Button,
+} from 'react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
+import {custom} from '../../config';
+import ActionSheet from 'react-native-actions-sheet';
+
+const actionSheetRef = React.createRef();
 
 export default function FullMap(props) {
   const [keyword, setKeyword] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState({});
   const [result, setResult] = React.useState([]);
-  const [detailInfoComponent, setDetailInfoComponent] = React.useState(null);
+  const [actionSheetComponent, setActionSheetComponent] = React.useState(null);
 
   React.useEffect(() => {
     aroundme();
@@ -40,20 +52,69 @@ export default function FullMap(props) {
       });
   };
   const markerOnSelect = (e) => {
-    setDetailInfoComponent(
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          width: screenWidth,
-          padding: 20,
-        }}>
-        <Text text={e.title} fontSize={14} />
-      </View>,
-    );
-  };
-  const markerOnDeselect = (e) => {
-    setDetailInfoComponent(null);
+    setActionSheetComponent(
+      <>
+        <HView
+          style={{
+            padding: 20,
+            width: screenWidth,
+          }}>
+          <Image
+            height={100}
+            width={100}
+            borderRadius={4}
+            uri={e.faImgUrl}
+            onPress={props.onPress}
+            resizeMode={'cover'}
+          />
+          <Seperator width={10} />
+          <View style={{flex: 1, paddingVertical: 10}}>
+            <Text text={e.faName} fontSize={16} fontWeight={'bold'} />
+            <Seperator height={10} />
+            <Text
+              text={e.faSubject?.replace(/<br>/g, '\n')}
+              fontSize={14}
+              ellipsizeMode={'tail'}
+              numberOfLines={2}
+              color={'gray'}
+            />
+            <Seperator height={10} />
+            <HView>
+              <Icons
+                name={'icon-star-12'}
+                size={12}
+                color={custom.themeColor}
+              />
+              <Seperator width={5} />
+              <Text
+                text={`${e.faScopeCnt} / 5.0`}
+                fontSize={13}
+                color={'gray'}
+              />
+              <Seperator width={5} />
+              <Icons name={'icon-like-12'} size={12} color={'gray'} />
+              <Seperator width={5} />
+              <Text text={e.faLikeCnt} fontSize={13} color={'gray'} />
+              <Seperator width={5} />
+              <Icons name={'icon-reply-12'} size={12} color={'gray'} />
+              <Seperator width={5} />
+              <Text text={e.faReplyCnt} fontSize={13} color={'gray'} />
+            </HView>
+          </View>
+        </HView>
+        <View style={{paddingHorizontal: 20}}>
+          <Button
+            text={'공유하기'}
+            size={'large'}
+            onPress={() => null}
+            stretch
+            color={custom.themeColor}
+          />
+          <Seperator bottom />
+        </View>
+      </>
+    )
+    actionSheetRef.current?.setModalVisible();
   };
   return (
     <View style={{flex: 1}}>
@@ -73,9 +134,7 @@ export default function FullMap(props) {
             resizeMode={'cover'}
           />
         }
-        detailInfoComponent={detailInfoComponent}
         markerOnSelect={markerOnSelect}
-        markerOnDeselect={markerOnDeselect}
       />
       <View style={{position: 'absolute', top: 0, left: 0, right: 0}}>
         <Seperator top />
@@ -139,6 +198,14 @@ export default function FullMap(props) {
           </TouchableOpacity>
         </HView>
       </View>
+      <ActionSheet
+        ref={actionSheetRef}
+        gestureEnabled={true}
+        // keyboardShouldPersistTaps={'always'}
+        defaultOverlayOpacity={0}
+        bounceOnOpen={true}>
+        {actionSheetComponent}
+      </ActionSheet>
     </View>
   );
 }

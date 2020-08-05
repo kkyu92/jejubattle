@@ -10,7 +10,7 @@ import {
   Modal,
   Checkbox,
 } from 'react-native-nuno-ui';
-import {View, Alert} from 'react-native';
+import {View, Alert, Platform} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -20,6 +20,7 @@ import {logApi} from 'react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
 import RNKakaoLogins from '@react-native-seoul/kakao-login';
+import {NaverLogin, getProfile} from '@react-native-seoul/naver-login';
 import {
   LoginManager,
   AccessToken,
@@ -110,7 +111,28 @@ export default function Login(props) {
       });
   };
   const startWithApple = () => {};
-  const startWithNaver = () => {};
+  const startWithNaver = () => {
+    NaverLogin.login(
+      {
+        kConsumerKey: '93lujQArHjePL4C80iwL',
+        kConsumerSecret: 'SnqwiyTXhI',
+        kServiceAppName: '제주배틀',
+      },
+      async (err, token) => {
+        console.log(`Naver Login : ${token}`);
+        if (err) {
+          console.log('Naver Login error');
+          return;
+        }
+        const profile = await getProfile(token);
+        if (profile.resultcode === '024') {
+          Alert.alert('Naver getProfile fail', profile.message);
+          return;
+        }
+        startWithSNS(profile.email, 2);
+      },
+    );
+  };
   const startWithKakao = () => {
     RNKakaoLogins.login((err, res) => {
       if (err) {
