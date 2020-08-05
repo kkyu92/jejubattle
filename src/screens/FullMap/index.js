@@ -1,7 +1,7 @@
 import React from 'react';
-import {Map, Seperator, HView, TextInput, Image} from 'react-native-nuno-ui';
+import {Map, Seperator, HView, TextInput, Image, Text} from 'react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
-import {ShadowStyle} from '../../styles';
+import {ShadowStyle, screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
@@ -39,20 +39,22 @@ export default function FullMap(props) {
         logApi('aroundme error', err.response);
       });
   };
-  const showActionSheet = (e) => {
-    console.log('Fullmap selected marker', e);
-    actionSheetRef.current?.setModalVisible();
-  };
   const markerOnSelect = (e) => {
     setDetailInfoComponent(
-      <View style={{position: 'absolute', bottom: 0, width: screenWidth, padding: 20}}>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          width: screenWidth,
+          padding: 20,
+        }}>
         <Text text={e.title} fontSize={14} />
-      </View>
+      </View>,
     );
-  }
+  };
   const markerOnDeselect = (e) => {
     setDetailInfoComponent(null);
-  }
+  };
   return (
     <View style={{flex: 1}}>
       <Map
