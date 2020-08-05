@@ -36,33 +36,33 @@ export default function Search(props) {
     setRecentKeywords(temp);
   };
   const getList = (key) => {
-    Axios.post('gojiKeywordList', {
+    Axios.post('search', {
       keyword: key,
     })
       .then(async (res) => {
-        logApi('gojiKeywordList', res.data);
+        logApi('search', res.data);
         let temp = [];
         let stickyIndex = [];
-        if (res.data.facility.length > 0) {
+        if (res.data.goji.length > 0) {
           temp.push({
             faPk: 1000000,
             title: '운동시설',
-            cnt: res.data.facility.length,
+            cnt: res.data.goji.length,
           });
-          temp = temp.concat(res.data.facility);
+          temp = temp.concat(res.data.goji);
           stickyIndex.push(0);
         }
-        if (res.data.recommand.length > 0) {
+        if (res.data.recommend.length > 0) {
           temp.push({
             faPk: 1000001,
             title: '추천코스',
-            cnt: res.data.recommand.length,
+            cnt: res.data.recommend.length,
           });
-          temp = temp.concat(res.data.recommand);
+          temp = temp.concat(res.data.recommend);
           if (stickyIndex.length === 0) {
             stickyIndex.push(0);
           } else {
-            stickyIndex.push(res.data.facility.length + 1);
+            stickyIndex.push(res.data.goji.length + 1);
           }
         }
         setResult(temp);
@@ -72,7 +72,7 @@ export default function Search(props) {
         setRecentKeywords(k);
       })
       .catch((err) => {
-        logApi('gojiKeywordList error', err.response);
+        logApi('search error', err.response);
       });
   };
 

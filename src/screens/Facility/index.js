@@ -140,7 +140,7 @@ export default function Facility(props) {
                     onPress={() =>
                       props.navigation.navigate('FacilityList', {
                         title: '건강운동',
-                        endpoint: '',
+                        endpoint: 'healthList',
                         code: e.code,
                         tablist: sports2,
                       })

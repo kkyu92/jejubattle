@@ -23,7 +23,7 @@ import { AppContext } from '../../context';
 export default function FacilityList(props) {
   const context = React.useContext(AppContext);
   const [filterVisible, setFilterVisible] = React.useState(false);
-  const [tab] = React.useState(props.route.params.tablist || []);
+  const [category, setCategory] = React.useState([]);
   const [activeTab, setActiveTab] = React.useState(props.route.params.code);
   const [filter1, setFilter1] = React.useState(0);
   const [filter2, setFilter2] = React.useState(0);
@@ -43,7 +43,8 @@ export default function FacilityList(props) {
     })
       .then((res) => {
         logApi(props.route.params.endpoint, res.data);
-        setList(res.data);
+        setList(res.data.facility);
+        setCategory(res.data.category);
       })
       .catch((err) => {
         logApi(props.route.params.endpoint + ' error', err.response);
@@ -142,7 +143,7 @@ export default function FacilityList(props) {
               fontWeight={activeTab === 0 ? 'bold' : undefined}
             />
           </TouchableOpacity>
-          {tab.map((e) => {
+          {category.map((e) => {
             return (
               <TouchableOpacity
                 key={e.code}
