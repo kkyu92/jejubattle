@@ -15,15 +15,23 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
-import { AppContext } from '../../context';
+import {AppContext} from '../../context';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import {sports1Table} from '../../constants';
 
 export default function EditProfile(props) {
   const context = React.useContext(AppContext);
-  const [userName, setUserName] = React.useState(context.me.userName || '');
+  const [introduce, setIntroduce] = React.useState('');
+  const [introduceModal, setIntroduceModal] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [repassword, setRepassword] = React.useState('');
+  const [sports, setSports] = React.useState([]);
+  const [selectedSports, setSelectedSports] = React.useState([]);
   const [modalIntroduce, setModalIntroduce] = React.useState(false);
   const [modalPassword, setModalPassword] = React.useState(false);
   let provider = '';
-  switch(context.me.userCode) {
+  switch (context.me.userCode) {
     case 1:
       provider = '없음';
       break;
@@ -37,6 +45,30 @@ export default function EditProfile(props) {
       provider = '연동완료(페이스북)';
       break;
   }
+  React.useEffect(() => {
+    Axios.post('sportsList', {})
+      .then((res) => {
+        logApi('sportsList success', res.data);
+        let temp = [...res.data.gojiList];
+        temp = temp.map((e, i) => {
+          return {...e, icon: sports1Table[i].icon};
+        });
+        setSports(temp);
+      })
+      .catch((err) => {
+        logApi('sportsList error', err.response);
+      });
+  }, []);
+  const handleSports = (e) => {
+    const temp = [...selectedSports];
+    const found = temp.indexOf(e);
+    if (found === -1) {
+      temp.push(e);
+    } else {
+      temp.splice(found, 1);
+    }
+    setSelectedSports(temp);
+  };
   return (
     <Container>
       <Header left={'close'} title={'정보수정'} navigation={props.navigation} />
@@ -77,28 +109,30 @@ export default function EditProfile(props) {
               />
             </View>
           </HView>
-          <HView style={{paddingVertical: 10}}>
-            <View style={{flex: 0.2}}>
-              <Text text={'이메일'} fontSize={18} fontWeight={'500'} />
-            </View>
-            <View style={{flex: 0.6}}>
-              <Text
-                text={context.me.userId}
-                color={'gray'}
-                fontSize={18}
-                fontWeight={'500'}
-              />
-            </View>
-            <View style={{flex: 0.2}}>
-              <Button
-                text={'인증'}
-                size={'medium'}
-                borderRadius={20}
-                color={'white'}
-                stretch
-              />
-            </View>
-          </HView>
+          {context.me.userCode === 1 && (
+            <HView style={{paddingVertical: 10}}>
+              <View style={{flex: 0.2}}>
+                <Text text={'이메일'} fontSize={18} fontWeight={'500'} />
+              </View>
+              <View style={{flex: 0.6}}>
+                <Text
+                  text={context.me.userId}
+                  color={'gray'}
+                  fontSize={18}
+                  fontWeight={'500'}
+                />
+              </View>
+              <View style={{flex: 0.2}}>
+                <Button
+                  text={'인증'}
+                  size={'medium'}
+                  borderRadius={20}
+                  color={'white'}
+                  stretch
+                />
+              </View>
+            </HView>
+          )}
           <HView style={{paddingVertical: 10}}>
             <View style={{flex: 0.2}}>
               <Text text={'성별'} fontSize={18} fontWeight={'500'} />
@@ -125,139 +159,71 @@ export default function EditProfile(props) {
               />
             </View>
           </HView>
-          <HView style={{paddingVertical: 10}}>
+          <HView style={{paddingVertical: 10, alignItems: 'flex-start'}}>
             <View style={{flex: 0.2}}>
               <Text text={'소개'} fontSize={18} fontWeight={'500'} />
             </View>
-            <View style={{flex: 0.6}}>
+            <View style={{flex: 0.7}}>
               <Text
-                text={'잘 부탁드립니다.'}
+                text={introduce || '잘 부탁드립니다.'}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
               />
             </View>
-            <View style={{flex: 0.2}}>
-              <TouchableOpacity onPress={() => setModalIntroduce(true)}>
+            <View style={{flex: 0.1, alignItems: 'flex-end'}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIntroduceModal(introduce);
+                  setModalIntroduce(true);
+                }}>
                 <Icons name={'icon-pencil-12'} size={16} />
               </TouchableOpacity>
             </View>
           </HView>
-          <HView style={{paddingVertical: 10}}>
-            <View style={{flex: 0.2}}>
-              <Text text={'비밀번호'} fontSize={18} fontWeight={'500'} />
-            </View>
-            <View style={{flex: 0.8}}>
-              <Button
-                text={'비밀번호 변경'}
-                size={'medium'}
-                borderRadius={20}
-                color={custom.themeColor}
-                onPress={() => setModalPassword(true)}
-              />
-            </View>
-          </HView>
+          {context.me.userCode === 1 && (
+            <HView style={{paddingVertical: 10}}>
+              <View style={{flex: 0.2}}>
+                <Text text={'비밀번호'} fontSize={18} fontWeight={'500'} />
+              </View>
+              <View style={{flex: 0.8}}>
+                <Button
+                  text={'비밀번호 변경'}
+                  size={'medium'}
+                  borderRadius={20}
+                  color={custom.themeColor}
+                  onPress={() => setModalPassword(true)}
+                />
+              </View>
+            </HView>
+          )}
 
           <Seperator height={40} />
           <Text text={'선호 종목 선정'} fontSize={18} fontWeight={'bold'} />
           <Seperator height={20} />
           <HView style={{flexWrap: 'wrap'}}>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-soccer.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'축구'} fontSize={14} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-basketball.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'농구'} fontSize={14} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-baseball.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'야구'} fontSize={14} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-golf.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'골프'} fontSize={14} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-tennis.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'테니스'} fontSize={14} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-badminton.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'배드민턴'} fontSize={14} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-billards.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'당구'} fontSize={14} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Image
-                local
-                height={Math.floor((screenWidth - 140) / 5)}
-                width={Math.floor((screenWidth - 140) / 5)}
-                uri={require('../../../assets/img/icon-balling.png')}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-              <Seperator height={10} />
-              <Text text={'볼링'} fontSize={14} />
-            </View>
+            {sports.map((e, i) => {
+              return (
+                <TouchableOpacity onPress={() => handleSports(e)} key={i}>
+                  <View
+                    style={{
+                      padding: 10,
+                      alignItems: 'center',
+                      opacity: selectedSports.indexOf(e) === -1 ? 0.3 : 1,
+                    }}>
+                    <Image
+                      local
+                      height={Math.floor((screenWidth - 140) / 5)}
+                      width={Math.floor((screenWidth - 140) / 5)}
+                      uri={e.icon}
+                      resizeMode={'contain'}
+                    />
+                    <Seperator height={10} />
+                    <Text text={e.name} fontSize={14} />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </HView>
         </View>
       </ScrollView>
@@ -303,8 +269,8 @@ export default function EditProfile(props) {
               multiline={true}
               maxLength={50}
               showRemain={true}
-              value={''}
-              onChangeText={() => null}
+              value={introduceModal}
+              onChangeText={(e) => setIntroduceModal(e)}
               placeholder={'최대 50자 까지 작성 가능합니다.'}
             />
           </View>
@@ -314,7 +280,9 @@ export default function EditProfile(props) {
               <Button
                 text={'취소'}
                 color={'gray'}
-                onPress={() => null}
+                onPress={() => {
+                  setModalIntroduce(false);
+                }}
                 size={'large'}
                 stretch
               />
@@ -324,7 +292,10 @@ export default function EditProfile(props) {
               <Button
                 text={'완료'}
                 color={custom.themeColor}
-                onPress={() => null}
+                onPress={() => {
+                  setIntroduce(introduceModal);
+                  setModalIntroduce(false);
+                }}
                 size={'large'}
                 stretch
               />

@@ -12,31 +12,12 @@ import Icons from '../../commons/Icons';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
+import { sports1Table, sports2Table } from '../../constants';
 
 export default function Facility(props) {
   const [sports1, setSports1] = React.useState([]);
   const [sports2, setSports2] = React.useState([]);
-  const sports1Table = [
-    {code: 1, icon: require('../../../assets/img/icon-soccer.png')},
-    {code: 2, icon: require('../../../assets/img/icon-futsal.png')},
-    {code: 3, icon: require('../../../assets/img/icon-basketball.png')},
-    {code: 4, icon: require('../../../assets/img/icon-baseball.png')},
-    {code: 5, icon: require('../../../assets/img/icon-badminton.png')},
-    {code: 6, icon: require('../../../assets/img/icon-tennis.png')},
-    {code: 7, icon: require('../../../assets/img/icon-billards.png')},
-    {code: 8, icon: require('../../../assets/img/icon-balling.png')},
-    {code: 9, icon: require('../../../assets/img/icon-soccer.png')},
-    {code: 10, icon: require('../../../assets/img/icon-golf.png')},
-    {code: 11, icon: require('../../../assets/img/icon-moreetc.png')},
-  ];
-  const sports2Table = [
-    {code: 1, icon: require('../../../assets/img/icons-gymcenter.png')},
-    {code: 2, icon: require('../../../assets/img/icons-pilates.png')},
-    {code: 3, icon: require('../../../assets/img/icons-diet.png')},
-    {code: 4, icon: require('../../../assets/img/icons-fighter.png')},
-    {code: 5, icon: require('../../../assets/img/icons-yoga.png')},
-    {code: 6, icon: require('../../../assets/img/icons-etcmore.png')},
-  ];
+
   React.useEffect(() => {
     Axios.post('sportsList', {})
       .then((res) => {

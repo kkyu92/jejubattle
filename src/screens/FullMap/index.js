@@ -15,6 +15,7 @@ import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import {custom} from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
+import ListItem from '../../commons/ListItem';
 
 const actionSheetRef = React.createRef();
 
@@ -54,54 +55,7 @@ export default function FullMap(props) {
   const markerOnSelect = (e) => {
     setActionSheetComponent(
       <>
-        <HView
-          style={{
-            padding: 20,
-            width: screenWidth,
-          }}>
-          <Image
-            height={100}
-            width={100}
-            borderRadius={4}
-            uri={e.faImgUrl}
-            onPress={props.onPress}
-            resizeMode={'cover'}
-          />
-          <Seperator width={10} />
-          <View style={{flex: 1, paddingVertical: 10}}>
-            <Text text={e.faName} fontSize={16} fontWeight={'bold'} />
-            <Seperator height={10} />
-            <Text
-              text={e.faSubject?.replace(/<br>/g, '\n')}
-              fontSize={14}
-              ellipsizeMode={'tail'}
-              numberOfLines={2}
-              color={'gray'}
-            />
-            <Seperator height={10} />
-            <HView>
-              <Icons
-                name={'icon-star-12'}
-                size={12}
-                color={custom.themeColor}
-              />
-              <Seperator width={5} />
-              <Text
-                text={`${e.faScopeCnt} / 5.0`}
-                fontSize={13}
-                color={'gray'}
-              />
-              <Seperator width={5} />
-              <Icons name={'icon-like-12'} size={12} color={'gray'} />
-              <Seperator width={5} />
-              <Text text={e.faLikeCnt} fontSize={13} color={'gray'} />
-              <Seperator width={5} />
-              <Icons name={'icon-reply-12'} size={12} color={'gray'} />
-              <Seperator width={5} />
-              <Text text={e.faReplyCnt} fontSize={13} color={'gray'} />
-            </HView>
-          </View>
-        </HView>
+        <ListItem onPress={() => null} item={e} showScrap={false} />
         <View style={{paddingHorizontal: 20}}>
           <Button
             text={'공유하기'}
@@ -112,8 +66,8 @@ export default function FullMap(props) {
           />
           <Seperator bottom />
         </View>
-      </>
-    )
+      </>,
+    );
     actionSheetRef.current?.setModalVisible();
   };
   return (

@@ -2927,7 +2927,7 @@ domexception@^2.0.1:
   dependencies:
     webidl-conversions "^5.0.0"
 
-dooboolab-welcome@^1.1.0, dooboolab-welcome@^1.1.1:
+dooboolab-welcome@^1.1.0, dooboolab-welcome@^1.1.1, dooboolab-welcome@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/dooboolab-welcome/-/dooboolab-welcome-1.2.0.tgz#295818ce85a8e97dc90c0ec0510b4008e2d722dc"
   integrity sha512-XgEbjJHAsKLge/e8jtuHsv84Ovg1Gx0GvnOTOmOlVGV1643nduTAkT3fyo/mxKbzvyXBr47RHaJAY4R2toI0UA==
@@ -6383,6 +6383,13 @@ react-native-gesture-handler@^1.6.1:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-iap@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.5.2.tgz#323e1d8b54b3ecd8c96133c4b64b7d570e12f949"
+  integrity sha512-GH8TpIcmJZczQHWinJ1cSqRJONjrlzAQnqi/bdrSpmFuArJPYGJFhyWJa8AlGjCw9QB7GG745SNmngIs3kss1w==
+  dependencies:
+    dooboolab-welcome "^1.2.0"
 
 react-native-image-crop-picker@^0.32.0:
   version "0.32.0"
