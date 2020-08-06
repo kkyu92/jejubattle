@@ -29,6 +29,7 @@ export default function FacilityList(props) {
   const [keyword, setKeyword] = React.useState('');
   const [list, setList] = React.useState([]);
   const isFocused = useIsFocused();
+  const scrollViewRef = React.useRef();
 
   React.useEffect(() => {
     isFocused && getList();
@@ -119,8 +120,16 @@ export default function FacilityList(props) {
       />
       <View>
         <ScrollView
+          ref={scrollViewRef}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
+          onContentSizeChange={() => {
+            scrollViewRef.current.scrollTo({
+              x: activeTab > 3 ? 40 * activeTab : 0,
+              y: 0,
+              animated: true,
+            });
+          }}
           style={{
             paddingLeft: 10,
             borderBottomColor: 'lightgray',
@@ -163,6 +172,7 @@ export default function FacilityList(props) {
               </TouchableOpacity>
             );
           })}
+          <Seperator width={20} />
         </ScrollView>
       </View>
       <FlatList
