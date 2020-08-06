@@ -117,6 +117,7 @@ export default function Login(props) {
         kConsumerKey: '93lujQArHjePL4C80iwL',
         kConsumerSecret: 'SnqwiyTXhI',
         kServiceAppName: '제주배틀',
+        kServiceAppUrlScheme: Platform.OS === 'ios' ? 'jejubattle' : undefined, // ios only
       },
       async (err, token) => {
         console.log(`Naver Login : ${token}`);

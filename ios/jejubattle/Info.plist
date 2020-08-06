@@ -36,6 +36,14 @@
 				<string>kakaoa9c548999f8cc42b37a3abced15f8406</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>jejubattle</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
@@ -47,8 +55,8 @@
 	<string>a9c548999f8cc42b37a3abced15f8406</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-    <string>naversearchapp</string>
-    <string>naversearchthirdlogin</string>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
 		<string>kakaoa9c548999f8cc42b37a3abced15f8406</string>
 		<string>kakaokompassauth</string>
 		<string>storykompassauth</string>

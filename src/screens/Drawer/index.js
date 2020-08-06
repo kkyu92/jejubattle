@@ -36,7 +36,7 @@ export default function Drawer(props) {
         // navigation={props.navigation}
         containerStyle={{borderBottomWidth: 0}}
       />
-      <Seperator height={35} />
+      <Seperator height={25} />
       <TouchableOpacity
         onPress={() =>
           props.navigation.navigate('MyInfoStack', {screen: 'MyInfo'})
@@ -103,10 +103,9 @@ export default function Drawer(props) {
       <Seperator height={10} />
       <Seperator height={11} color={'whitesmoke'} />
 
-      <Seperator height={20} />
-
       {/* menu list */}
       <ScrollView>
+        <Seperator height={20} />
         <TouchableOpacity onPress={() => props.navigation.navigate('FullMap')}>
           <HView
             style={{
@@ -117,7 +116,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-mylocation-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'내 주변 살펴보기'} fontSize={18} color={'dimgray'} />
+              <Text text={'내 주변 살펴보기'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -133,7 +132,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-mybattle-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'나의 배틀'} fontSize={18} color={'dimgray'} />
+              <Text text={'나의 배틀'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -154,7 +153,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-tripinfo-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'여행정보'} fontSize={18} color={'dimgray'} />
+              <Text text={'여행정보'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -170,7 +169,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-wishlist-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'위시리스트'} fontSize={18} color={'dimgray'} />
+              <Text text={'위시리스트'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -186,7 +185,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-listbox-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'보관함'} fontSize={18} color={'dimgray'} />
+              <Text text={'보관함'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -207,7 +206,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-event-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'이벤트'} fontSize={18} color={'dimgray'} />
+              <Text text={'이벤트'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -223,7 +222,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-notice-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'공지사항'} fontSize={18} color={'dimgray'} />
+              <Text text={'공지사항'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -240,7 +239,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-cs-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'고객센터'} fontSize={18} color={'dimgray'} />
+              <Text text={'고객센터'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>
@@ -256,7 +255,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-setting-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'설정'} fontSize={18} color={'dimgray'} />
+              <Text text={'설정'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>

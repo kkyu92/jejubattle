@@ -1,0 +1,62 @@
+// battle table
+"battle": {
+  "baPk": 1, // type: number, battle 의 pk
+
+  // 팀정보
+  "teamA": {
+    /*
+     * team A의 이름, 1:1 일때는 공백
+     * 팀전과 개인전의 구별은 name값의 유무로 구분
+     * 팀전일경우 디폴트로 'A'
+     */
+    "name": "",
+
+    /*
+     * team A의 멤버
+     * 0번 index가 팀장이며 개설자
+     * 입장한 순서대로 배열에 추가
+     * 1:1 일때는 배열사이즈가 1
+     */
+    "member": [
+      {
+        "userPk": 1,
+
+        /* 응답으로 필요, user table과 조인 */
+        "userName": "",
+        "userImgUrl": "",
+      }
+    ],
+  },
+  "teamB": {
+    /*
+     * team B의 이름, 1:1 일때는 공백
+     * 팀전과 개인전의 구별은 name값의 유무로 구분
+     * 팀전일경우 디폴트로 'B'
+     */
+     "name": "",
+
+    /*
+     * team B의 멤버
+     * 0번 index가 팀장이며 최초입장자
+     * 입장한 순서대로 배열에 추가
+     * 1:1 일때는 배열사이즈가 1
+     */
+    "member": [
+      {
+        "userPk": 1,
+
+        /* 응답으로 필요, user table과 조인 */
+        "userName": "",
+        "userImgUrl": "",
+      }
+    ],
+  }
+}
+
+// message table
+"message": {
+  "baPk": 1, // battle 의 fk,
+  "userPk": 1, // message를 보낸 사람의 user fk,
+  "text": "", // chat message
+  "createdAt": "" // 메세지를 전송한 시간
+}

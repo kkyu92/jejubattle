@@ -79,8 +79,8 @@ export default function Facility(props) {
                 <View style={{padding: 10, alignItems: 'center'}} key={i}>
                   <Image
                     local
-                    height={Math.floor((screenWidth - 180) / 5)}
-                    width={Math.floor((screenWidth - 180) / 5)}
+                    height={Math.floor((screenWidth - 180) / 5) - 1}
+                    width={Math.floor((screenWidth - 180) / 5) - 1}
                     uri={e.icon}
                     onPress={() =>
                       props.navigation.navigate('FacilityList', {

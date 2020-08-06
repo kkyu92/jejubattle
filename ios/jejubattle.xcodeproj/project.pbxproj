@@ -63,6 +63,7 @@
 		59E670C7ED17AFBDCA6C12BD /* libPods-jejubattle-jejubattleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-jejubattle-jejubattleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F2E7F2625E571D00B4961F2 /* Pods-jejubattle-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jejubattle-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-jejubattle-tvOSTests/Pods-jejubattle-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		6F44560624DBE8350073FF59 /* libRNNaverLogin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNNaverLogin.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FA07B1B24B5BCC70063B017 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = jejubattle/BootSplash.storyboard; sourceTree = "<group>"; };
 		6FAEFC4E24AC94C9006F9953 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = icomoon.ttf; sourceTree = "<group>"; };
 		A5964AEF8103489EAC5D6751 /* Pods-jejubattle-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jejubattle-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-jejubattle-tvOSTests/Pods-jejubattle-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -162,6 +163,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6F44560624DBE8350073FF59 /* libRNNaverLogin.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				DB1581EA3DD999D8B1A99DD8 /* libPods-jejubattle.a */,

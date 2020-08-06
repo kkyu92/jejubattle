@@ -9,6 +9,7 @@
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <React/RCTLinkingManager.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -56,6 +57,8 @@ static void InitializeFlipper(UIApplication *application) {
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // <- initialization using the storyboard file name
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [[NaverThirdPartyLoginConnection getSharedInstance] setIsNaverAppOauthEnable:YES];
   return YES;
 }
 
@@ -75,15 +78,45 @@ static void InitializeFlipper(UIApplication *application) {
     return [KOSession handleOpenURL:url];
   }
 
-    // facebook login
+  // facebook login
   if ([[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options]) {
+    return true;
+  }
+
+  // naver login
+//  if ([self handleWithUrl:url]) {
+  if ([[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options]) {
     return true;
   }
 
   if ([RCTLinkingManager application:application openURL:url options:options]) {
     return true;
   }
+  
   return false;
+}
+
+- (BOOL)handleWithUrl:(NSURL *)url {
+  NSLog(@"url : %@", url);
+  NSLog(@"url scheme : %@", url.scheme);
+  //NSLog(@"url scheme : %@", kServiceAppUrlScheme);
+  // NSLog(@"result - %d", [url.scheme isEqualToString:kServiceAppUrlScheme]);
+
+  
+      // 네이버앱으로부터 전달받은 url값을 NaverThirdPartyLoginConnection의 인스턴스에 전달
+      NaverThirdPartyLoginConnection *thirdConnection = [NaverThirdPartyLoginConnection getSharedInstance];
+      THIRDPARTYLOGIN_RECEIVE_TYPE resultType = [thirdConnection receiveAccessToken:url];
+
+      if (SUCCESS == resultType) {
+        NSLog(@"Getting auth code from NaverApp success!");
+      } else {
+        NSLog(@"  Error  ::  %u", resultType);
+        // 앱에서 resultType에 따라 실패 처리한다.
+        /*  SUCCESS = 0, PARAMETERNOTSET = 1, CANCELBYUSER = 2, NAVERAPPNOTINSTALLED = 3 , NAVERAPPVERSIONINVALID = 4,
+         .  OAUTHMETHODNOTSET = 5, INVALIDREQUEST = 6, CLIENTNETWORKPROBLEM = 7, UNAUTHORIZEDCLIENT = 8,
+         .  UNSUPPORTEDRESPONSETYPE = 9, NETWORKERROR = 10, UNKNOWNERROR = 11 */
+      }
+  return YES;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
