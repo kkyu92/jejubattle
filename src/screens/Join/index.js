@@ -11,13 +11,13 @@ import {
   Checkbox,
   Picker,
 } from 'react-native-nuno-ui';
-import {View, TouchableOpacity, Alert} from 'react-native';
+import {View, TouchableOpacity, Alert, Linking} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {custom} from '../../config';
+import {custom, API_URL} from '../../config';
 import Icons from '../../commons/Icons';
 import ImagePicker from 'react-native-image-crop-picker';
 import Axios from 'axios';
-import {logApi, checkEmail, checkPassword} from 'react-native-nuno-ui/funcs';
+import {logApi, checkEmail, checkPassword, getQueryParam} from 'react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';
@@ -28,7 +28,9 @@ export default function Join(props) {
   const [name, setName] = React.useState('');
   const [mobile, setMobile] = React.useState('');
   const [gender, setGender] = React.useState('');
+  const [uid, setUid] = React.useState(props.route?.params?.uid || '');
   const [email, setEmail] = React.useState(props.route?.params?.userId || '');
+  const [userAuthkey, setUserAuthkey] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [repassword, setRepassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -38,9 +40,50 @@ export default function Join(props) {
   const [agreement3, setAgreement3] = React.useState(false);
   const [agreement4, setAgreement4] = React.useState(false);
 
+  React.useEffect(() => {
+    Linking.getInitialURL()
+      .then((url) => {
+        if (url) {
+          handleOpenURL(url);
+        }
+      })
+      .catch((err) => {});
+    Linking.addEventListener('url', handleOpenURL);
+    return () => Linking.removeEventListener('url', handleOpenURL);
+  }, []);
+  const handleOpenURL = (e) => {
+    const temp = e.url.split('/');
+    const param = temp[temp.length - 1];
+    console.log('handleOpenURL', e.url, param);
+    setMobile(param);
+  };
+  const verifyEmail = () => {
+    if (!email) {
+      Alert.alert('인증을 위한 이메일을 입력해주세요');
+      return;
+    }
+    Axios.post('idCheck', {
+      userId: email,
+    })
+      .then(async (res) => {
+        logApi('idCheck', res.data);
+        setUserAuthkey(res.data.userAuthkey);
+        Alert.alert(
+          '이메일인증',
+          '입력하신 이메일로 인증메일을 보냈습니다. 이메일을 확인하여 인증을 완료해주세요',
+        );
+      })
+      .catch((err) => {
+        logApi('idCheck error', err?.response);
+      });
+  };
   const prePostUser = () => {
     const checkemail = checkEmail(email);
     const checkpassword = checkPassword(password, repassword);
+    if (props.route?.params?.userCode === undefined && !userAuthkey) {
+      Alert.alert('이메일 인증요청을 해주세요');
+      return;
+    }
     if (props.route?.params?.userCode === undefined && !checkemail.valid) {
       Alert.alert('이메일 오류', '이메일 형식이 아닙니다');
       return;
@@ -58,37 +101,96 @@ export default function Join(props) {
     }
     postUser();
   };
-  const postUser = () => {
+  const postUser = async () => {
     setLoading(true);
-    Axios.post('signup', {
-      userCode: props.route?.params?.userCode || 1,
-      userId: email,
-      userPwd: password,
-      userName: name,
-      userSex: gender,
-      userPhone: mobile,
-      userPushkey: global.fcmToken,
-    })
-      .then(async (res) => {
-        setLoading(false);
-        logApi('postUser', res.data);
-        if (res.data.token) {
-          await AsyncStorage.setItem('token', res.data.token);
-          await Init();
-          context.dispatch({type: 'AUTHORIZED', data: res.data});
-        }
+    if (props.route?.params?.userCode) {
+      const formData = new FormData();
+      formData.append('userCode', props.route?.params?.userCode);
+      formData.append('userId', uid);
+      formData.append('userName', name);
+      formData.append('userEmail', email);
+      formData.append('userSex', gender);
+      formData.append('userPhone', mobile);
+      formData.append('userPushkey', global.fcmToken);
+      if (photo) {
+        const response = await fetch(photo);
+        const blob = await response.blob();
+
+        formData.append('file', {
+          uri: photo,
+          name: blob.data.name,
+          type: blob.data.type,
+        });
+      }
+      Axios({
+        url: API_URL + 'snsSignup',
+        method: 'POST',
+        data: formData,
+        headers: {
+          Accept: 'application/json',
+          token: global.token,
+          'Content-Type': 'multipart/form-data',
+        },
       })
-      .catch((err) => {
-        setLoading(false);
-        logApi('postUser', err?.response);
-        // email duplication check
-        // if (
-        //   err.response?.data?.code === '23505' &&
-        //   err.response?.data?.field?.email
-        // ) {
-        //   Alert.alert('이메일 오류', '이미 사용중인 이메일입니다.');
-        // }
-      });
+        .then(async (res) => {
+          setLoading(false);
+          logApi('snsSignup', res.data);
+          if (res.data.token) {
+            await AsyncStorage.setItem('token', res.data.token);
+            await Init();
+            context.dispatch({type: 'AUTHORIZED', data: res.data});
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          logApi('snsSignup error', err?.response);
+          Alert.alert(err.response?.data?.message);
+        });
+    } else {
+      const formData = new FormData();
+      formData.append('userCode', 1);
+      formData.append('userId', email);
+      formData.append('userPwd', password);
+      formData.append('userName', name);
+      formData.append('userSex', gender);
+      formData.append('userPhone', mobile);
+      formData.append('userPushkey', global.fcmToken);
+      formData.append('userAuthkey', userAuthkey);
+      if (photo) {
+        const response = await fetch(photo);
+        const blob = await response.blob();
+
+        formData.append('file', {
+          uri: photo,
+          name: blob.data.name,
+          type: blob.data.type,
+        });
+      }
+      Axios({
+        url: API_URL + 'signup',
+        method: 'POST',
+        data: formData,
+        headers: {
+          Accept: 'application/json',
+          token: global.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+        .then(async (res) => {
+          setLoading(false);
+          logApi('signup', res.data);
+          if (res.data.token) {
+            await AsyncStorage.setItem('token', res.data.token);
+            await Init();
+            context.dispatch({type: 'AUTHORIZED', data: res.data});
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          logApi('signup error', err?.response);
+          Alert.alert(err.response?.data?.message);
+        });
+    }
   };
   const getPhoto = (index) => {
     ImagePicker.openPicker({
@@ -109,7 +211,7 @@ export default function Join(props) {
 
   return (
     <Container>
-      <Header left={'back'} navigation={props.navigation} title={'회원가입'} />
+      <Header left={'close'} navigation={props.navigation} title={'회원가입'} />
       <KeyboardAwareScrollView keyboardShouldPersistTaps={'handled'}>
         <Seperator height={30} />
         <View style={{padding: 20}}>
@@ -180,64 +282,79 @@ export default function Join(props) {
           </HView>
 
           <Seperator height={30} />
-          <Text text={'휴대폰 인증'} fontSize={16} fontWeight={'500'} />
+          <HView style={{justifyContent: 'space-between'}}>
+            <Text text={'휴대폰 인증'} fontSize={16} fontWeight={'500'} />
+            <Button
+              text={mobile ? '인증완료' : '인증요청'}
+              size={'medium'}
+              onPress={
+                () => Linking.openURL('https://kangmin.shop/nice/main')
+                // () =>
+                //   props.navigation.navigate('Webview', {
+                //     url: 'https://kangmin.shop/nice/main',
+                //     title: '본인인증',
+                //   })
+              }
+              // textColor={'dimgray'}
+              color={mobile ? custom.themeColor : 'white'}
+              borderRadius={20}
+            />
+          </HView>
+
+          <Seperator height={30} />
+          <Text text={'아이디'} fontSize={16} fontWeight={'500'} />
           <Seperator height={10} />
-          <View>
-            <HView>
-              <View style={{width: 100}}>
-                <Picker
-                  items={[]}
-                  value={''}
-                  placeholder={'통신사'}
-                  onPress={() => null}
-                  closeBar={true}
-                />
-              </View>
-              <Seperator width={10} />
-              <View style={{flex: 1}}>
-                <HView>
-                  <View style={{flex: 1}}>
-                    <TextInput
-                      value={mobile}
-                      onChangeText={(e) => setMobile(e)}
-                      borderWidth={0}
-                      keyboardType={'number-pad'}
-                      placeholder={'전화번호를 입력해주세요'}
-                    />
-                  </View>
-                  <Button
-                    text={'인증요청'}
-                    onPress={() => null}
-                    textColor={'dimgray'}
-                    color={'white'}
-                    borderRadius={20}
-                  />
-                </HView>
-                <Seperator line />
-              </View>
-            </HView>
-            <Seperator height={10} />
-            <HView>
-              <View style={{flex: 1}}>
-                <TextInput
-                  value={''}
-                  onChangeText={(e) => null}
-                  borderWidth={0}
-                  keyboardType={'number-pad'}
-                  placeholder={'인증번호를 입력해주세요'}
-                />
-              </View>
+          <HView>
+            <View style={{flex: 1}}>
+              <TextInput
+                value={email}
+                onChangeText={(e) => setEmail(e)}
+                borderWidth={0}
+                autoCapitalize={'none'}
+                keyboardType={'email-address'}
+                editable={props.route?.params?.userCode === undefined}
+                placeholder={'아이디로 사용할 이메일을 입력해주세요'}
+              />
+            </View>
+            {props.route?.params?.userCode === undefined && (
               <Button
-                text={'인증'}
-                onPress={() => null}
+                text={'인증요청'}
+                size={'medium'}
+                onPress={() => verifyEmail()}
                 textColor={'dimgray'}
                 color={'white'}
                 borderRadius={20}
               />
-            </HView>
-            <Seperator line />
-          </View>
+            )}
+          </HView>
+          <Seperator line />
 
+          {props.route?.params?.userCode === undefined && (
+            <>
+              <Seperator height={30} />
+              <Text text={'비밀번호'} fontSize={16} fontWeight={'500'} />
+              <Seperator height={10} />
+              <TextInput
+                value={password}
+                onChangeText={(e) => setPassword(e)}
+                showEye={true}
+                borderWidth={0}
+                placeholder={'비밀번호(영문숫자포함 6~12자)'}
+              />
+              <Seperator line />
+
+              <Seperator height={30} />
+              <Text text={'비밀번호 확인'} fontSize={16} fontWeight={'500'} />
+              <TextInput
+                value={repassword}
+                showEye={true}
+                onChangeText={(e) => setRepassword(e)}
+                borderWidth={0}
+                placeholder={'입력했던 비밀번호를 다시 입력해주세요'}
+              />
+              <Seperator line />
+            </>
+          )}
           <Seperator height={20} />
           {/* 약관동의 */}
           <HView>
@@ -278,47 +395,6 @@ export default function Join(props) {
               />
             </View>
           </HView>
-
-          <Seperator height={30} />
-          <Text text={'아이디'} fontSize={16} fontWeight={'500'} />
-          <Seperator height={10} />
-          <TextInput
-            value={email}
-            onChangeText={(e) => setEmail(e)}
-            borderWidth={0}
-            autoCapitalize={'none'}
-            keyboardType={'email-address'}
-            editable={props.route?.params?.userCode === undefined}
-            placeholder={'아이디로 사용할 이메일을 입력해주세요'}
-          />
-          <Seperator line />
-
-          {props.route?.params?.userCode === undefined && (
-            <>
-              <Seperator height={30} />
-              <Text text={'비밀번호'} fontSize={16} fontWeight={'500'} />
-              <Seperator height={10} />
-              <TextInput
-                value={password}
-                onChangeText={(e) => setPassword(e)}
-                showEye={true}
-                borderWidth={0}
-                placeholder={'비밀번호(영문숫자포함 6~12자)'}
-              />
-              <Seperator line />
-
-              <Seperator height={30} />
-              <Text text={'비밀번호 확인'} fontSize={16} fontWeight={'500'} />
-              <TextInput
-                value={repassword}
-                showEye={true}
-                onChangeText={(e) => setRepassword(e)}
-                borderWidth={0}
-                placeholder={'입력했던 비밀번호를 다시 입력해주세요'}
-              />
-              <Seperator line />
-            </>
-          )}
           <Seperator height={20} />
           <Checkbox
             label={'약관에 동의하였습니다'}

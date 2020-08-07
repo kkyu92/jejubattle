@@ -406,6 +406,8 @@ PODS:
     - React
   - react-native-safe-area-context (3.0.7):
     - React
+  - react-native-webview (10.4.0):
+    - React
   - React-RCTActionSheet (0.62.2):
     - React-Core/RCTActionSheetHeaders (= 0.62.2)
   - React-RCTAnimation (0.62.2):
@@ -489,7 +491,7 @@ PODS:
     - Firebase/DynamicLinks (~> 6.28.1)
     - React
     - RNFBApp
-  - RNFBMessaging (7.2.1):
+  - RNFBMessaging (7.6.1):
     - Firebase/Analytics (~> 6.28.1)
     - Firebase/Messaging (~> 6.28.1)
     - React
@@ -571,6 +573,7 @@ DEPENDENCIES:
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -682,6 +685,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -793,6 +798,7 @@ SPEC CHECKSUMS:
   react-native-google-maps: 0a989abda71059db2caa98b9dacca7a8f38a47d0
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
   react-native-safe-area-context: ef6f16c66b0797ecae1bf86c103dfb3dc16fc33d
+  react-native-webview: 1ad70b21fb9e44811e33a99e43a4b68b94806a6d
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
   React-RCTAnimation: 49ab98b1c1ff4445148b72a3d61554138565bad0
   React-RCTBlob: a332773f0ebc413a0ce85942a55b064471587a71
@@ -812,7 +818,7 @@ SPEC CHECKSUMS:
   RNFastImage: 35ae972d6727c84ee3f5c6897e07f84d0a3445e9
   RNFBApp: d55b3a69d199cff25ecf4f3bf41a86c47aa37d57
   RNFBDynamicLinks: fd4c16a951c04442881578a0c33d58034008b4e4
-  RNFBMessaging: c33505c42229932bb2128d5f89c9932f32de8d68
+  RNFBMessaging: 3bb7dcf398789ce359a9f6b97b83472a3090f65a
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNIap: e7fe0e9b31260fbefb7def5bb6a7911345a6a04e
   RNImageCropPicker: fc4b4d2a4d7176eeb6442fa191ba56493c14b6d6

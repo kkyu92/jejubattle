@@ -10,19 +10,21 @@ import {
   Button,
   Modal,
 } from 'react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import {View, ScrollView, TouchableOpacity, FlatList, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
-import {custom} from '../../config';
+import {custom, API_URL} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import {sports1Table} from '../../constants';
 
 export default function EditProfile(props) {
   const context = React.useContext(AppContext);
-  const [introduce, setIntroduce] = React.useState('');
+  const [photo, setPhoto] = React.useState(context.me.userImgUrl || '');
+  const [introduce, setIntroduce] = React.useState(context.me.userIntro || '');
   const [introduceModal, setIntroduceModal] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [repassword, setRepassword] = React.useState('');
@@ -30,6 +32,8 @@ export default function EditProfile(props) {
   const [selectedSports, setSelectedSports] = React.useState([]);
   const [modalIntroduce, setModalIntroduce] = React.useState(false);
   const [modalPassword, setModalPassword] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
   let provider = '';
   switch (context.me.userCode) {
     case 1:
@@ -69,11 +73,75 @@ export default function EditProfile(props) {
     }
     setSelectedSports(temp);
   };
+  const getPhoto = (index) => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      mediaType: 'photo',
+      smartAlbums: ['UserLibrary'],
+      cropping: true,
+    })
+      .then(async (res) => {
+        console.log('ImagePicker openPicker', res);
+        setPhoto(res.path);
+      })
+      .catch((err) => {
+        console.log('ImagePicker openPicker error', err);
+      });
+  };
+
+  const updateUser = async () => {
+    const formData = new FormData();
+    formData.append('userPwd', password);
+    formData.append('userIntro', introduce);
+    formData.append('userSport', selectedSports);
+    if (photo) {
+      const response = await fetch(photo);
+      const blob = await response.blob();
+
+      formData.append('file', {
+        uri: photo,
+        name: blob.data.name,
+        type: blob.data.type,
+      });
+    }
+    Axios({
+      url: API_URL + 'userUpdate',
+      method: 'POST',
+      data: formData,
+      headers: {
+        Accept: 'application/json',
+        token: global.token,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(async (res) => {
+        setLoading(false);
+        logApi('userUpdate', res.data);
+        props.navigation.goBack();
+      })
+      .catch((err) => {
+        setLoading(false);
+        logApi('userUpdate error', err?.response);
+        Alert.alert(err.response?.data?.message);
+      });
+  };
   return (
     <Container>
       <Header left={'close'} title={'정보수정'} navigation={props.navigation} />
       <ScrollView>
         <View style={{padding: 20}}>
+          {photo ? (
+            <Image uri={photo} width={72} height={72} borderRadius={36} />
+          ) : (
+            <Image
+              local
+              uri={require('../../../assets/img/img-user1.png')}
+              width={72}
+              height={72}
+              borderRadius={36}
+            />
+          )}
           <HView style={{paddingVertical: 30}}>
             <View style={{flex: 0.2}}>
               <Text text={'이름'} fontSize={18} fontWeight={'500'} />
@@ -104,7 +172,7 @@ export default function EditProfile(props) {
                 text={'인증'}
                 size={'medium'}
                 borderRadius={20}
-                color={'white'}
+                color={custom.themeColor}
                 stretch
               />
             </View>
@@ -236,7 +304,7 @@ export default function EditProfile(props) {
         }}>
         <Button
           text={'수정하기'}
-          onPress={() => null}
+          onPress={() => updateUser()}
           color={custom.themeColor}
           disable={false}
           loading={false}

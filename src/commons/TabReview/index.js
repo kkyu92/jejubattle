@@ -16,6 +16,9 @@ import {AppContext} from '../../context';
 
 export default function TabReview(props) {
   const context = React.useContext(AppContext);
+  const delReview = (rePk) => {
+    props.refresh();
+  };
   return (
     <Container>
       <View style={{padding: 20}}>
@@ -154,20 +157,29 @@ export default function TabReview(props) {
               </HView>
               <Seperator height={10} />
               {e.userPk === context.me.userPk && (
-                <Button
-                  text={'수정'}
-                  size={'medium'}
-                  color={'white'}
-                  onPress={() =>
-                    props.navigation.navigate('ReviewEdit', {
-                      rePk: e.rePk,
-                      reScope: e.reScope,
-                      reContent: e.reContent,
-                      file: e.reImgUrl,
-                      refresh: props.refresh,
-                    })
-                  }
-                />
+                <HView>
+                  <Button
+                    text={'수정'}
+                    size={'medium'}
+                    color={'white'}
+                    onPress={() =>
+                      props.navigation.navigate('ReviewEdit', {
+                        rePk: e.rePk,
+                        reScope: e.reScope,
+                        reContent: e.reContent,
+                        file: e.reImgUrl,
+                        refresh: props.refresh,
+                      })
+                    }
+                  />
+                  <Seperator width={10} />
+                  <Button
+                    text={'삭제'}
+                    size={'medium'}
+                    color={'white'}
+                    onPress={() => delReview(e.rePk)}
+                  />
+                </HView>
               )}
             </View>
           </HView>

@@ -66,7 +66,7 @@ export default function Login(props) {
         Alert.alert('로그인', err.response?.data?.message);
       });
   };
-  const startWithSNS = (userId, userCode) => {
+  const startWithSNS = (userId, userEmail, userCode) => {
     setLoading(true);
     Axios.post('snsSignin', {
       userId: userId,
@@ -86,7 +86,8 @@ export default function Login(props) {
         if (err?.response.status === 403) {
           gotoJoin(() =>
             props.navigation.navigate('Join', {
-              userId: userId,
+              uid: userId,
+              userId: userEmail,
               userCode: userCode,
             }),
           );
@@ -114,23 +115,23 @@ export default function Login(props) {
   const startWithNaver = () => {
     NaverLogin.login(
       {
-        kConsumerKey: '93lujQArHjePL4C80iwL',
-        kConsumerSecret: 'SnqwiyTXhI',
+        kConsumerKey: '0bje5MBfj02OLYYq102o',
+        kConsumerSecret: '2Z62bOJe_U',
         kServiceAppName: '제주배틀',
         kServiceAppUrlScheme: Platform.OS === 'ios' ? 'jejubattle' : undefined, // ios only
       },
       async (err, token) => {
-        console.log(`Naver Login : ${token}`);
+        console.log(`Naver Login : ${token.accessToken}`);
         if (err) {
           console.log('Naver Login error');
           return;
         }
-        const profile = await getProfile(token);
+        const profile = await getProfile(token.accessToken);
         if (profile.resultcode === '024') {
           Alert.alert('Naver getProfile fail', profile.message);
           return;
         }
-        startWithSNS(profile.email, 2);
+        startWithSNS(profile.response.id, profile.response.email, 2);
       },
     );
   };
@@ -147,7 +148,7 @@ export default function Login(props) {
           return;
         }
         console.log('kakao getProfile', profile);
-        startWithSNS(profile.email, 3);
+        startWithSNS(profile.id, profile.email, 3);
       });
     });
   };
@@ -167,12 +168,12 @@ export default function Login(props) {
         },
       )
       .then((data) => {
-        const responseInfoCallback = (error, result) => {
+        const responseInfoCallback = (error, profile) => {
           if (error) {
             console.log(error);
           } else {
-            console.log(result);
-            startWithSNS(result.email, 4);
+            console.log(profile);
+            startWithSNS(profile.id, profile.email, 4);
           }
         };
         const infoRequest = new GraphRequest(

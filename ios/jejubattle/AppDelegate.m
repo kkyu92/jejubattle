@@ -84,11 +84,10 @@ static void InitializeFlipper(UIApplication *application) {
   }
 
   // naver login
-//  if ([self handleWithUrl:url]) {
   if ([[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options]) {
     return true;
   }
-
+  
   if ([RCTLinkingManager application:application openURL:url options:options]) {
     return true;
   }
