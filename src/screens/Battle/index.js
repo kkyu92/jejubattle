@@ -10,39 +10,60 @@ import {
   Modal,
   Checkbox,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View, FlatList} from 'react-native';
+import {TouchableOpacity, View, FlatList, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import {ShadowStyle, screenWidth} from '../../styles';
 import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function Battle(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
   const [showMyBattle, setShowMyBattle] = React.useState(true);
-  const data = [
-    {id: 'e', title: '내가 만든 배틀', foldable: true},
-    {id: '0', status: 'waiting', level: '중수', foldable: true},
-    {id: '1', status: 'playing', level: '고수', foldable: true},
-    {id: 'e', title: '배틀 목록'},
-    {id: '2', status: 'done', level: '프로', win: true},
-    {id: '3', status: 'waiting', level: '프로', win: false},
-    {id: '4', status: 'waiting', level: '프로', win: true},
-    {id: '5', status: 'waiting', level: '프로', win: true},
-    {id: '6', status: 'waiting', level: '프로', win: true},
-    {id: 's', status: 'waiting', level: '프로', win: true},
-  ];
+  const [battles, setBattles] = React.useState([]);
+  const [mybattles, setMybattles] = React.useState([]);
+  const [list, setList] = React.useState([]);
+  const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([]);
+  const [pullToRefresh, setPullToRefresh] = React.useState(true);
+
   React.useEffect(() => {
+    pullToRefresh && get();
+  }, [pullToRefresh]);
+  const get = () => {
     Axios.get('battle')
       .then((res) => {
         logApi('battle', res.data);
+        setMybattles(res.data.myBattle);
+        setBattles(res.data.battle);
+        let tempList = [];
+        let stickyIndices = [];
+        if (res.data.myBattle.length > 0) {
+          stickyIndices.push(0);
+          tempList.push({
+            baPk: 1000000000,
+            title: '내가 만든 배틀',
+            foldable: true,
+          });
+          tempList = tempList.concat(
+            res.data.myBattle.map((e) => ({...e, foldable: true})),
+          );
+        }
+        if (res.data.battle.length > 0) {
+          stickyIndices.push(tempList.length);
+          tempList.push({baPk: 2000000000, title: '배틀 목록'});
+          tempList = tempList.concat(res.data.battle);
+        }
+        setList(tempList);
+        setStickyHeaderIndices(stickyIndices);
+        setPullToRefresh(false);
       })
       .catch((err) => {
         logApi('battle error', err.response);
+        setPullToRefresh(false);
       });
-  }, []);
+  };
   const renderItem = ({item, index}) => {
     if (item.title) {
       return (
@@ -127,19 +148,25 @@ export default function Battle(props) {
       />
       {/* <Seperator height={20} /> */}
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={list}
+        keyExtractor={(item) => JSON.stringify(item.baPk)}
         renderItem={renderItem}
-        stickyHeaderIndices={[0, 3]}
+        stickyHeaderIndices={
+          Platform.OS === 'ios' ? stickyHeaderIndices : undefined
+        }
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
-        // refreshing={pullToRefresh}
-        // onRefresh={() => {
-        //   setIsLast(false);
-        //   setPullToRefresh(true);
-        // }}
+        refreshing={pullToRefresh}
+        onRefresh={() => {
+          // setIsLast(false);
+          setPullToRefresh(true);
+        }}
       />
-      <FloatingButton onPress={() => props.navigation.navigate('BattleEdit')} />
+      <FloatingButton
+        onPress={() =>
+          props.navigation.navigate('BattleEdit', {refresh: () => get()})
+        }
+      />
       <Modal
         isVisible={filterVisible}
         onBackdropPress={() => setFilterVisible(false)}>

@@ -21,10 +21,21 @@ token: {{token}}
 
 ###
 
-POST {{host}}travelList HTTP/1.1
+POST {{host}}insertBattle HTTP/1.1
 Content-Type: application/json
 token: {{token}}
 
 {
-  "faCode": 1,
+  "baSubject":"ㅈㄷㄱㅈㄷㄱ",
+  "baPwd":"",
+  "bcCode":1,
+  "bzCode":1,
+  "btCode":1,
+  "blCode":2,
+  "baDate":"2020-08-11",
+  "baContent":"",
+  "teamA":
+    {"name":"","member":[5]},
+  "teamB":
+    {"name":"","member":[]}
 }

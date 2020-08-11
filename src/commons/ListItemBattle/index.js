@@ -7,7 +7,7 @@ import {
   Checkbox,
   Button,
 } from 'react-native-nuno-ui';
-import Icons from '../Icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {custom} from '../../config';
 import {TouchableOpacity, View} from 'react-native';
 import {ShadowStyle} from '../../styles';
@@ -27,22 +27,26 @@ export default function ListItemBattle(props) {
           <HView style={{justifyContent: 'space-between'}}>
             <HView>
               <Text
-                text={'[1] 배드민턴 하자 드루와라'}
+                text={props.item.baSubject}
                 fontSize={16}
                 fontWeight={'bold'}
               />
               <Seperator width={9} />
               <Button
-                text={props.item.level}
+                text={props.item.blName}
                 size={'small'}
                 textColor={custom.themeColor}
                 borderColor={custom.themeColor}
               />
             </HView>
             <HView>
-              <Icons name={'icon-lock-12'} size={12} color={'dimgray'} />
+              {props.item.baPrivate === 'Y' ? (
+                <MaterialIcons name={'lock'} color={'dimgray'} size={12} />
+              ) : (
+                <MaterialIcons name={'lock-open'} color={'dimgray'} size={12} />
+              )}
               <Seperator width={9} />
-              <Text text={'2 / 2'} fontSize={13} color={'dimgray'} />
+              <Text text={props.item.btName} fontSize={13} color={'dimgray'} />
             </HView>
           </HView>
           <Seperator height={20} />
@@ -52,35 +56,37 @@ export default function ListItemBattle(props) {
                 <View style={{flex: 0.2}}>
                   <Text text={'종목'} fontSize={14} color={'gray'} />
                 </View>
-                <View style={{flex: 0.5}}>
-                  <Text text={'축구'} fontSize={14} color={'gray'} />
+                <View style={{flex: 0.8}}>
+                  <Text
+                    text={props.item.baSubject}
+                    fontSize={14}
+                    color={'gray'}
+                  />
                 </View>
               </HView>
               <HView style={{paddingVertical: 4}}>
                 <View style={{flex: 0.2}}>
                   <Text text={'날짜'} fontSize={14} color={'gray'} />
                 </View>
-                <View style={{flex: 0.5}}>
-                  <Text text={'2020-05-23'} fontSize={14} color={'gray'} />
+                <View style={{flex: 0.8}}>
+                  <Text text={props.item.baDate} fontSize={14} color={'gray'} />
                 </View>
               </HView>
               <HView style={{paddingVertical: 4}}>
                 <View style={{flex: 0.2}}>
                   <Text text={'지역'} fontSize={14} color={'gray'} />
                 </View>
-                <View style={{flex: 0.5}}>
-                  <Text text={'2020-05-23'} fontSize={14} color={'gray'} />
+                <View style={{flex: 0.8}}>
+                  <Text text={props.item.bzName} fontSize={14} color={'gray'} />
                 </View>
               </HView>
               <HView style={{paddingVertical: 4, alignItems: 'flex-start'}}>
                 <View style={{flex: 0.2}}>
                   <Text text={'메모'} fontSize={14} color={'gray'} />
                 </View>
-                <View style={{flex: 0.5}}>
+                <View style={{flex: 0.8}}>
                   <Text
-                    text={
-                      '메모입니다 메모입니다 메모입니다 메모입니다 메모입니다 메모입니다'
-                    }
+                    text={props.item.baContent}
                     fontSize={14}
                     color={'gray'}
                   />
@@ -88,7 +94,7 @@ export default function ListItemBattle(props) {
               </HView>
             </View>
             <View>
-              {props.item.status === 'waiting' && (
+              {props.item.baState === '대기중' && (
                 <>
                   <Button
                     text={'대기중'}
@@ -107,7 +113,7 @@ export default function ListItemBattle(props) {
                   />
                 </>
               )}
-              {props.item.status === 'playing' && (
+              {props.item.baState === 'playing' && (
                 <Button
                   text={'배틀중'}
                   size={'medium'}
@@ -115,7 +121,7 @@ export default function ListItemBattle(props) {
                   borderRadius={20}
                 />
               )}
-              {props.item.status === 'done' && (
+              {props.item.baState === 'done' && (
                 <>
                   {props.item.win ? (
                     <Image

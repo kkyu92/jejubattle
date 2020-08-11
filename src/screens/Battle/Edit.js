@@ -64,7 +64,7 @@ export default function BattleEdit(props) {
       baContent: memo,
       teamA: {
         name: '',
-        member: [context.me.userPk],
+        member: [{userPk: context.me.userPk}],
       },
       teamB: {
         name: '',
@@ -74,6 +74,7 @@ export default function BattleEdit(props) {
       .then((res) => {
         logApi('InsertBattle', res.data);
         setLoading(false);
+        props.route?.params?.refresh();
         props.navigation.goBack();
       })
       .catch((err) => {

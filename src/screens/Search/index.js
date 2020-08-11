@@ -8,7 +8,7 @@ import {
   Seperator,
   TextInput,
 } from 'react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import {View, ScrollView, TouchableOpacity, FlatList, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
@@ -44,29 +44,25 @@ export default function Search(props) {
         let temp = [];
         let stickyIndex = [];
         if (res.data.goji.length > 0) {
+          stickyIndex.push(0);
           temp.push({
-            faPk: 1000000,
+            faPk: 1000000000,
             title: '운동시설',
             cnt: res.data.goji.length,
           });
           temp = temp.concat(res.data.goji);
-          stickyIndex.push(0);
         }
         if (res.data.recommend.length > 0) {
+          stickyIndex.push(temp.length);
           temp.push({
-            faPk: 1000001,
+            faPk: 2000000000,
             title: '추천코스',
             cnt: res.data.recommend.length,
           });
           temp = temp.concat(res.data.recommend);
-          if (stickyIndex.length === 0) {
-            stickyIndex.push(0);
-          } else {
-            stickyIndex.push(res.data.goji.length + 1);
-          }
         }
         setResult(temp);
-        // setStickyHeaderIndices(stickyIndex);
+        setStickyHeaderIndices(stickyIndex);
 
         const k = await saveRecentKeyword(key, 5);
         setRecentKeywords(k);
@@ -195,7 +191,9 @@ export default function Search(props) {
         data={result}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItems}
-        stickyHeaderIndices={stickyHeaderIndices}
+        stickyHeaderIndices={
+          Platform.OS === 'ios' ? stickyHeaderIndices : undefined
+        }
         ItemSeparatorComponent={(e) => {
           console.log('ItemSeparatorComponent', e);
           if (e.leadingItem.title) {
