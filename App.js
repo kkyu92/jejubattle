@@ -120,7 +120,7 @@ const App: () => React$Node = () => {
     <NavigationContainer theme={theme} ref={navigationRef}>
       <AppContext.Provider value={{...state, dispatch}}>
         <Stack.Navigator headerMode="none">
-          {state.me ? (
+          {state.me.userPk ? (
             <Stack.Screen name="App" component={AppStackScreen} />
           ) : (
             <Stack.Screen name="Auth" component={AuthStackScreen} />

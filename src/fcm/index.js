@@ -40,6 +40,9 @@ export async function getFcmToken() {
   if (granted) {
     const token = await messaging().getToken();
     global.fcmToken = token;
+    console.groupCollapsed('[FCM]');
+    console.info(token);
+    console.groupEnd();
     await AsyncStorage.setItem('fcmToken', token);
   }
 }

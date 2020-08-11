@@ -16,6 +16,8 @@ import {custom} from '../../config';
 import {ShadowStyle, screenWidth} from '../../styles';
 import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
 export default function Battle(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
@@ -32,6 +34,15 @@ export default function Battle(props) {
     {id: '6', status: 'waiting', level: '프로', win: true},
     {id: 's', status: 'waiting', level: '프로', win: true},
   ];
+  React.useEffect(() => {
+    Axios.get('battle')
+      .then((res) => {
+        logApi('battle', res.data);
+      })
+      .catch((err) => {
+        logApi('battle error', err.response);
+      });
+  }, []);
   const renderItem = ({item, index}) => {
     if (item.title) {
       return (

@@ -14,7 +14,7 @@ export const useAppReducer = () => {
         case 'UNAUTHORIZED':
           return {
             ...prevState,
-            me: null,
+            me: {},
           };
         case 'UPDATEME':
           const prevMe = prevState.me;
@@ -30,7 +30,7 @@ export const useAppReducer = () => {
       }
     },
     {
-      me: null,
+      me: {},
       noti: [],
     },
   );
