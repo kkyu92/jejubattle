@@ -107,7 +107,9 @@ export default function Battle(props) {
       } else {
         return (
           <ListItemBattle
-            onPress={() => props.navigation.navigate('BattleView')}
+            onPress={() =>
+              props.navigation.navigate('BattleView', {baPk: item.baPk})
+            }
             item={item}
           />
         );

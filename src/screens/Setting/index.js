@@ -60,6 +60,7 @@ export default function Setting(props) {
     })
       .then(async (res) => {
         logApi('userUpdate', res.data);
+        context.dispatch({type: 'UPDATEME', data: res.data});
       })
       .catch((err) => {
         logApi('userUpdate error', err?.response);

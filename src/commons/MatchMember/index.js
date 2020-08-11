@@ -1,41 +1,114 @@
 import React from 'react';
-import {HView, Seperator, Text, Modal, Button, Image} from 'react-native-nuno-ui';
+import {
+  HView,
+  Seperator,
+  Text,
+  Modal,
+  Button,
+  Image,
+} from 'react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
-import { custom } from '../../config';
+import {custom} from '../../config';
 import StarRating from 'react-native-star-rating';
 import Icons from '../Icons';
+import {AppContext} from '../../context';
 
 export default function MatchMember(props) {
+  const context = React.useContext(AppContext);
   const [memberModal, setMemberModal] = React.useState(false);
+  const [memberModalTeam, setMemberModalTeam] = React.useState();
   return (
-    <HView style={{justifyContent: 'center'}}>
-      <View style={{alignItems: 'center'}}>
-        <Image
-          local
-          uri={require('../../../assets/img/user_boy.png')}
-          width={72}
-          height={72}
-          borderRadius={36}
-          onPress={() => setMemberModal(true)}
-        />
-        <Seperator height={10} />
-        <Text text={'소소한유리병'} fontWeight={'500'} fontSize={16} />
-      </View>
-      <View style={{padding: 30}}>
-        <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
-      </View>
-      <View style={{alignItems: 'center'}}>
-        <Image
-          local
-          uri={require('../../../assets/img/user_girl.png')}
-          width={72}
-          height={72}
-          borderRadius={36}
-          onPress={() => setMemberModal(true)}
-        />
-        <Seperator height={10} />
-        <Text text={'게으른슈퍼맨'} fontWeight={'500'} fontSize={16} />
-      </View>
+    <View>
+      {props.teamA.name === '' ? (
+        <HView style={{justifyContent: 'center'}}>
+          <View style={{alignItems: 'center'}}>
+            <Image
+              local
+              uri={
+                props.teamA.member[0]?.userImgUrl || context.me.userSex === 'M'
+                  ? require('../../../assets/img/user_boy.png')
+                  : require('../../../assets/img/user_girl.png')
+              }
+              width={72}
+              height={72}
+              borderRadius={36}
+              onPress={() => {
+                if (props.teamA.member.length > 0) {
+                  setMemberModalTeam(props.teamA);
+                  setMemberModal(true);
+                }
+              }}
+            />
+            <Seperator height={10} />
+            <Text
+              text={props.teamA.member[0]?.userName}
+              fontWeight={'500'}
+              fontSize={16}
+            />
+          </View>
+          <View style={{padding: 30}}>
+            <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <Image
+              local
+              uri={
+                props.teamB.member[0]?.userImgUrl ||
+                require('../../../assets/img/user_boy.png')
+              }
+              width={72}
+              height={72}
+              borderRadius={36}
+              onPress={() => {
+                if (props.teamB.member.length > 0) {
+                  setMemberModalTeam(props.teamB);
+                  setMemberModal(true);
+                }
+              }}
+            />
+            <Seperator height={10} />
+            <Text
+              text={props.teamB.member[0]?.userName}
+              fontWeight={'500'}
+              fontSize={16}
+            />
+          </View>
+        </HView>
+      ) : (
+        <HView style={{justifyContent: 'center'}}>
+          <View style={{alignItems: 'center'}}>
+            <Image
+              local
+              uri={props.teamA.require('../../../assets/img/user_boy.png')}
+              width={72}
+              height={72}
+              borderRadius={36}
+              onPress={() => {
+                setMemberModalTeam(props.teamB);
+                setMemberModal(true);
+              }}
+            />
+            <Seperator height={10} />
+            <Text text={'소소한유리병'} fontWeight={'500'} fontSize={16} />
+          </View>
+          <View style={{padding: 30}}>
+            <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <Image
+              local
+              uri={require('../../../assets/img/user_girl.png')}
+              width={72}
+              height={72}
+              borderRadius={36}
+              onPress={() => setMemberModal(true)}
+            />
+            <Seperator height={10} />
+            <Text text={'게으른슈퍼맨'} fontWeight={'500'} fontSize={16} />
+          </View>
+        </HView>
+      )}
+
       <Modal
         isVisible={memberModal}
         onBackdropPress={() => setMemberModal(false)}>
@@ -48,7 +121,10 @@ export default function MatchMember(props) {
           }}>
           <Image
             local
-            uri={require('../../../assets/img/user_girl.png')}
+            uri={
+              memberModalTeam?.member[0]?.userImgUrl ||
+              require('../../../assets/img/user_girl.png')
+            }
             width={72}
             height={72}
             borderRadius={36}
@@ -57,7 +133,7 @@ export default function MatchMember(props) {
             <StarRating
               disabled={true}
               maxStars={5}
-              rating={5}
+              rating={memberModalTeam?.member[0]?.userScope}
               starSize={11}
               emptyStarColor={custom.themeColor}
               halfStarEnabled={true}
@@ -69,44 +145,70 @@ export default function MatchMember(props) {
             fontSize={18}
             fontWeight={'bold'}
             color={'black'}
-            text={'게으른 슈퍼맨'}
+            text={memberModalTeam?.member[0]?.userName}
           />
           <Seperator height={10} />
-          <Text
-            fontSize={14}
-            color={'gray'}
-            text={'대표종목: 축구, 배드민턴, 농구'}
-          />
+          <HView>
+            <Text fontSize={14} color={'gray'} text={'대표종목: '} />
+            {memberModalTeam?.member[0]?.userSport?.map((e, i) => {
+              return (
+                <Text
+                  key={i}
+                  fontSize={14}
+                  color={'gray'}
+                  text={
+                    e.name +
+                    (i !== memberModalTeam.member[0].userSport.length - 1
+                      ? ', '
+                      : '')
+                  }
+                />
+              );
+            })}
+          </HView>
           <Seperator height={20} />
           <Text
             fontSize={14}
             // color={'gray'}
-            text={'전체 승률: 53.3% (000전 00승 000패)'}
+            text={`전체 승률: ${memberModalTeam?.member[0]?.winrate}% (${memberModalTeam?.member[0]?.ago}전 ${memberModalTeam?.member[0]?.win}승 ${memberModalTeam?.member[0]?.lose}패)`}
           />
           <Seperator height={10} />
           <Text
             fontSize={14}
             // color={'gray'}
-            text={'소개: 잘 부탁드립니다~'}
+            text={`소개: ${memberModalTeam?.member[0]?.userIntro}`}
           />
 
           <Seperator height={50} />
           <Button
             text={'확인'}
+            size={'large'}
             color={custom.themeColor}
-            onPress={() => null}
+            onPress={() => {
+              setMemberModalTeam();
+              setMemberModal(false);
+            }}
             stretch
           />
           {/* 신고 */}
           <View style={{position: 'absolute', top: 20, right: 20}}>
-            <TouchableOpacity onPress={() => null} style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Icons name={'icon-declare-15'} color={custom.themeColor} size={15} />
+            <TouchableOpacity
+              onPress={() => {
+                setMemberModal(false);
+                props.navigation.navigate('Report');
+              }}
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Icons
+                name={'icon-declare-15'}
+                color={custom.themeColor}
+                size={15}
+              />
               <Seperator width={9} />
               <Text text={'신고'} fontSize={15} color={'gray'} />
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </HView>
+    </View>
   );
 }

@@ -10,7 +10,13 @@ import {
   Button,
   Modal,
 } from 'react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList, Alert} from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  Alert,
+} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, API_URL} from '../../config';
 import ListItem from '../../commons/ListItem';
@@ -18,7 +24,7 @@ import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import ImagePicker from 'react-native-image-crop-picker';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, checkPassword} from 'react-native-nuno-ui/funcs';
 import {sports1Table} from '../../constants';
 
 export default function EditProfile(props) {
@@ -26,8 +32,10 @@ export default function EditProfile(props) {
   const [photo, setPhoto] = React.useState(context.me.userImgUrl || '');
   const [introduce, setIntroduce] = React.useState(context.me.userIntro || '');
   const [introduceModal, setIntroduceModal] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [repassword, setRepassword] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
+  const [currentPassword, setCurrentPassword] = React.useState('');
+  const [passwordModal, setPasswordModal] = React.useState('');
+  const [repasswordModal, setRepasswordModal] = React.useState('');
   const [sports, setSports] = React.useState([]);
   const [selectedSports, setSelectedSports] = React.useState([]);
   const [modalIntroduce, setModalIntroduce] = React.useState(false);
@@ -89,10 +97,31 @@ export default function EditProfile(props) {
         console.log('ImagePicker openPicker error', err);
       });
   };
-
+  const pwdCheck = (cpw, npw, nrpw) => {
+    if (npw !== nrpw) {
+      Alert.alert('두개의 새 비밀번호가 서로 다릅니다');
+      return;
+    }
+    if (!checkPassword(npw, nrpw).valid) {
+      Alert.alert('비밀번호는 문자와 숫자포함 6자 이상입니다');
+      return;
+    }
+    Axios.post('pwdCheck', {
+      userPwd: cpw,
+    })
+      .then((res) => {
+        logApi('pwdCheck', res.data);
+        setNewPassword(npw);
+        setModalPassword(false);
+      })
+      .catch((err) => {
+        logApi('pwdCheck error', err.response?.data?.message);
+        Alert.alert(err.response?.data?.message);
+      });
+  };
   const updateUser = async () => {
     const formData = new FormData();
-    formData.append('userPwd', password);
+    formData.append('userPwd', newPassword);
     formData.append('userIntro', introduce);
     formData.append('userSport', selectedSports);
     if (photo) {
@@ -118,6 +147,7 @@ export default function EditProfile(props) {
       .then(async (res) => {
         setLoading(false);
         logApi('userUpdate', res.data);
+        context.dispatch({type: 'UPDATEME', data: res.data});
         props.navigation.goBack();
       })
       .catch((err) => {
@@ -131,17 +161,26 @@ export default function EditProfile(props) {
       <Header left={'close'} title={'정보수정'} navigation={props.navigation} />
       <ScrollView>
         <View style={{padding: 20}}>
-          {photo ? (
-            <Image uri={photo} width={72} height={72} borderRadius={36} />
-          ) : (
-            <Image
-              local
-              uri={require('../../../assets/img/img-user1.png')}
-              width={72}
-              height={72}
-              borderRadius={36}
-            />
-          )}
+          <HView>
+            {photo ? (
+              <Image
+                uri={photo}
+                width={72}
+                height={72}
+                borderRadius={36}
+                onPress={() => getPhoto()}
+              />
+            ) : (
+              <Image
+                local
+                uri={require('../../../assets/img/img-user1.png')}
+                width={72}
+                height={72}
+                borderRadius={36}
+                onPress={() => getPhoto()}
+              />
+            )}
+          </HView>
           <HView style={{paddingVertical: 30}}>
             <View style={{flex: 0.2}}>
               <Text text={'이름'} fontSize={18} fontWeight={'500'} />
@@ -195,7 +234,7 @@ export default function EditProfile(props) {
                   text={'인증'}
                   size={'medium'}
                   borderRadius={20}
-                  color={'white'}
+                  color={custom.themeColor}
                   stretch
                 />
               </View>
@@ -214,19 +253,21 @@ export default function EditProfile(props) {
               />
             </View>
           </HView>
-          <HView style={{paddingVertical: 10}}>
-            <View style={{flex: 0.2}}>
-              <Text text={'SNS연동'} fontSize={18} fontWeight={'500'} />
-            </View>
-            <View style={{flex: 0.8}}>
-              <Text
-                text={provider}
-                color={'gray'}
-                fontSize={18}
-                fontWeight={'500'}
-              />
-            </View>
-          </HView>
+          {context.me.userCode !== 1 && (
+            <HView style={{paddingVertical: 10}}>
+              <View style={{flex: 0.2}}>
+                <Text text={'SNS연동'} fontSize={18} fontWeight={'500'} />
+              </View>
+              <View style={{flex: 0.8}}>
+                <Text
+                  text={provider}
+                  color={'gray'}
+                  fontSize={18}
+                  fontWeight={'500'}
+                />
+              </View>
+            </HView>
+          )}
           <HView style={{paddingVertical: 10, alignItems: 'flex-start'}}>
             <View style={{flex: 0.2}}>
               <Text text={'소개'} fontSize={18} fontWeight={'500'} />
@@ -393,25 +434,28 @@ export default function EditProfile(props) {
           <View>
             <TextInput
               title={'현재 비밀번호'}
-              value={''}
-              onChangeText={() => null}
+              value={currentPassword}
+              onChangeText={(e) => setCurrentPassword(e)}
               borderWidth={0}
+              showEye={true}
               placeholder={'비밀번호 (영문숫자포함 6~12)'}
             />
             <Seperator line marginBottom={20} />
             <TextInput
               title={'새 비밀번호'}
-              value={''}
-              onChangeText={() => null}
+              value={passwordModal}
+              onChangeText={(e) => setPasswordModal(e)}
               borderWidth={0}
+              showEye={true}
               placeholder={'비밀번호 (영문숫자포함 6~12)'}
             />
             <Seperator line marginBottom={20} />
             <TextInput
               title={'비밀번호 확인'}
-              value={''}
-              onChangeText={() => null}
+              value={repasswordModal}
+              onChangeText={(e) => setRepasswordModal(e)}
               borderWidth={0}
+              showEye={true}
               placeholder={'입력했던 비밀번호를 다시 입력해주세요'}
             />
             <Seperator line />
@@ -422,7 +466,7 @@ export default function EditProfile(props) {
               <Button
                 text={'취소'}
                 color={'gray'}
-                onPress={() => null}
+                onPress={() => setModalPassword(false)}
                 size={'large'}
                 stretch
               />
@@ -432,7 +476,7 @@ export default function EditProfile(props) {
               <Button
                 text={'완료'}
                 color={custom.themeColor}
-                onPress={() => null}
+                onPress={() => pwdCheck(currentPassword, passwordModal, repasswordModal)}
                 size={'large'}
                 stretch
               />

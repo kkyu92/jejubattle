@@ -57,11 +57,7 @@ export default function ListItemBattle(props) {
                   <Text text={'종목'} fontSize={14} color={'gray'} />
                 </View>
                 <View style={{flex: 0.8}}>
-                  <Text
-                    text={props.item.baSubject}
-                    fontSize={14}
-                    color={'gray'}
-                  />
+                  <Text text={props.item.bcName} fontSize={14} color={'gray'} />
                 </View>
               </HView>
               <HView style={{paddingVertical: 4}}>

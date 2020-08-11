@@ -55,7 +55,7 @@ export default function BattleComponent(props) {
           </View>
         </View>
         <Seperator height={25} />
-        <MatchMember />
+        {/* <MatchMember /> */}
         <Seperator height={25} />
         <HView>
           <View style={{alignItems: 'center', flex: 1}}>
