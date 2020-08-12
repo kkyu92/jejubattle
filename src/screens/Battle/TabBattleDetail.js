@@ -13,7 +13,7 @@ import {
   Modal,
   Image,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View, FlatList} from 'react-native';
+import {TouchableOpacity, View, FlatList, ScrollView} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -46,118 +46,121 @@ export default function TabBattleDetail(props) {
   };
   return (
     <Container>
-      <HView
-        style={{
-          justifyContent: 'space-evenly',
-          paddingVertical: 30,
-          paddingHorizontal: 20,
-        }}>
-        <TouchableOpacity
-          style={{flex: 1, alignItems: 'center'}}
-          onPress={() => props.navigation.navigate('Report')}>
-          <Icons name={'icon-report-30'} size={30} color={'silver'} />
-          <Seperator height={10} />
-          <Text
-            text={'신고하기'}
-            fontSize={13}
-            fontWeight={'500'}
-            color={'gray'}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{flex: 1, alignItems: 'center'}}
-          onPress={() => setModalSetting(true)}>
-          <Icons name={'icon-setting-30'} size={30} color={'silver'} />
-          <Seperator height={10} />
-          <Text
-            text={'필수설정'}
-            fontSize={13}
-            fontWeight={'500'}
-            color={'gray'}
-          />
-        </TouchableOpacity>
-        <View style={{flex: 1, alignItems: 'center'}}>
-          <Icons name={'icon-guide-30'} size={30} color={'silver'} />
-          <Seperator height={10} />
-          <Text
-            text={'가이드'}
-            fontSize={13}
-            fontWeight={'500'}
-            color={'gray'}
-          />
-        </View>
-      </HView>
-      <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
-        <View style={{flex: 0.1}}>
-          <Text
-            text={'방장'}
-            fontSize={14}
-            fontWeight={'bold'}
-            color={'gray'}
-          />
-        </View>
-        <View style={{flex: 0.4}}>
-          <Text
-            text={props.info.teamA?.member[0]?.userName}
-            fontSize={14}
-            color={'gray'}
-          />
-        </View>
-        <View style={{flex: 0.1}}>
-          <Text
-            text={'종목'}
-            fontSize={14}
-            fontWeight={'bold'}
-            color={'gray'}
-          />
-        </View>
-        <View style={{flex: 0.4}}>
-          <Text text={props.info.bcName} fontSize={14} color={'gray'} />
-        </View>
-      </HView>
-      <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
-        <View style={{flex: 0.1}}>
-          <Text
-            text={'지역'}
-            fontSize={14}
-            fontWeight={'bold'}
-            color={'gray'}
-          />
-        </View>
-        <View style={{flex: 0.4}}>
-          <Text text={props.info.bzName} fontSize={14} color={'gray'} />
-        </View>
-        <View style={{flex: 0.1}}>
-          <Text
-            text={'인원'}
-            fontSize={14}
-            fontWeight={'bold'}
-            color={'gray'}
-          />
-        </View>
-        <View style={{flex: 0.4}}>
-          <Text text={props.info.btName} fontSize={14} color={'gray'} />
-        </View>
-      </HView>
-      <HView
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          alignItems: 'flex-start',
-        }}>
-        <View style={{flex: 0.1}}>
-          <Text
-            text={'메모'}
-            fontSize={14}
-            fontWeight={'bold'}
-            color={'gray'}
-          />
-        </View>
-        <View style={{flex: 0.9}}>
-          <Text text={props.info.baContent} fontSize={14} color={'gray'} />
-        </View>
-      </HView>
-      <View style={{flex: 1}} />
+      <ScrollView>
+
+        <HView
+          style={{
+            justifyContent: 'space-evenly',
+            paddingVertical: 30,
+            paddingHorizontal: 20,
+          }}>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center'}}
+            onPress={() => props.navigation.navigate('Report')}>
+            <Icons name={'icon-report-30'} size={30} color={'silver'} />
+            <Seperator height={10} />
+            <Text
+              text={'신고하기'}
+              fontSize={13}
+              fontWeight={'500'}
+              color={'gray'}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center'}}
+            onPress={() => setModalSetting(true)}>
+            <Icons name={'icon-setting-30'} size={30} color={'silver'} />
+            <Seperator height={10} />
+            <Text
+              text={'필수설정'}
+              fontSize={13}
+              fontWeight={'500'}
+              color={'gray'}
+            />
+          </TouchableOpacity>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <Icons name={'icon-guide-30'} size={30} color={'silver'} />
+            <Seperator height={10} />
+            <Text
+              text={'가이드'}
+              fontSize={13}
+              fontWeight={'500'}
+              color={'gray'}
+            />
+          </View>
+        </HView>
+        <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
+          <View style={{flex: 0.1}}>
+            <Text
+              text={'방장'}
+              fontSize={14}
+              fontWeight={'bold'}
+              color={'gray'}
+            />
+          </View>
+          <View style={{flex: 0.4}}>
+            <Text
+              text={props.info.teamA?.member[0]?.userName}
+              fontSize={14}
+              color={'gray'}
+            />
+          </View>
+          <View style={{flex: 0.1}}>
+            <Text
+              text={'종목'}
+              fontSize={14}
+              fontWeight={'bold'}
+              color={'gray'}
+            />
+          </View>
+          <View style={{flex: 0.4}}>
+            <Text text={props.info.bcName} fontSize={14} color={'gray'} />
+          </View>
+        </HView>
+        <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
+          <View style={{flex: 0.1}}>
+            <Text
+              text={'지역'}
+              fontSize={14}
+              fontWeight={'bold'}
+              color={'gray'}
+            />
+          </View>
+          <View style={{flex: 0.4}}>
+            <Text text={props.info.bzName} fontSize={14} color={'gray'} />
+          </View>
+          <View style={{flex: 0.1}}>
+            <Text
+              text={'인원'}
+              fontSize={14}
+              fontWeight={'bold'}
+              color={'gray'}
+            />
+          </View>
+          <View style={{flex: 0.4}}>
+            <Text text={props.info.btName} fontSize={14} color={'gray'} />
+          </View>
+        </HView>
+        <HView
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            alignItems: 'flex-start',
+          }}>
+          <View style={{flex: 0.1}}>
+            <Text
+              text={'메모'}
+              fontSize={14}
+              fontWeight={'bold'}
+              color={'gray'}
+            />
+          </View>
+          <View style={{flex: 0.9}}>
+            <Text text={props.info.baContent} fontSize={14} color={'gray'} />
+          </View>
+        </HView>
+        {/* <View style={{flex: 1}} /> */}
+      </ScrollView>
       <HView
         style={{
           paddingHorizontal: 20,

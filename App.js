@@ -61,7 +61,7 @@ const App: () => React$Node = () => {
 
   let init = async () => {
     // …do multiple async tasks
-    // await registerAppWithFCM();
+    // await registerAppWithFCM(); // auto registration firebase.json
     await requestPermission();
     await getFcmToken();
     await Init();

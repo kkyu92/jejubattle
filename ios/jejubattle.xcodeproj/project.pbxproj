@@ -63,6 +63,7 @@
 		6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F44560624DBE8350073FF59 /* libRNNaverLogin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNNaverLogin.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FA07B1B24B5BCC70063B017 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = jejubattle/BootSplash.storyboard; sourceTree = "<group>"; };
+		6FA8F51B24E3C4ED000B5DEE /* 제주배틀.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "제주배틀.entitlements"; path = "jejubattle/제주배틀.entitlements"; sourceTree = "<group>"; };
 		6FAEFC4E24AC94C9006F9953 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = icomoon.ttf; sourceTree = "<group>"; };
 		7CCC7A2B709AB589E6612247 /* Pods-jejubattle.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jejubattle.release.xcconfig"; path = "Target Support Files/Pods-jejubattle/Pods-jejubattle.release.xcconfig"; sourceTree = "<group>"; };
 		979CE5F05893A022056D100B /* Pods-jejubattle-jejubattleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jejubattle-jejubattleTests.release.xcconfig"; path = "Target Support Files/Pods-jejubattle-jejubattleTests/Pods-jejubattle-jejubattleTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -132,6 +133,7 @@
 		13B07FAE1A68108700A75B9A /* jejubattle */ = {
 			isa = PBXGroup;
 			children = (
+				6FA8F51B24E3C4ED000B5DEE /* 제주배틀.entitlements */,
 				6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -315,6 +317,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = ZP3SF2A2ZT;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -813,7 +816,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "jejubattle/제주배틀.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -840,7 +845,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "jejubattle/제주배틀.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				INFOPLIST_FILE = jejubattle/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
