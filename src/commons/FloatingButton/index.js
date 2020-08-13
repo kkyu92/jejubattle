@@ -3,6 +3,7 @@ import {View, TouchableOpacity} from 'react-native';
 import { custom } from '../../config';
 import { Text } from 'react-native-nuno-ui';
 import { ShadowStyle } from '../../styles';
+import Feather from 'react-native-vector-icons/Feather';
 
 export default function FloatingButton({onPress}) {
   return (
@@ -21,12 +22,7 @@ export default function FloatingButton({onPress}) {
         borderRadius: 30,
         ...ShadowStyle,
       }}>
-      <Text
-        text={'+'}
-        fontSize={40}
-        color={'white'}
-        style={{letterSpacing: -1}}
-      />
+      <Feather name={'plus'} color={'white'} size={30} />
     </TouchableOpacity>
   );
 }

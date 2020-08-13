@@ -15,7 +15,7 @@ import {
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, API_URL} from '../../config';
-import ListItem from '../../commons/ListItem';
+import DeviceInfo from 'react-native-device-info';
 import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -69,124 +69,126 @@ export default function Setting(props) {
   return (
     <Container>
       <Header left={'close'} title={'설정'} navigation={props.navigation} />
-      <Seperator height={20} />
-      <HView
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          justifyContent: 'space-between',
-        }}>
-        <Text
-          text={'이벤트 및 마케팅 활용 동의'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-        <Switch
-          checked={userTermsEvent === 'Y'}
-          onPress={() => setUserTermsEvent(userTermsEvent === 'Y' ? 'N' : 'Y')}
-        />
-      </HView>
-      <HView
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          justifyContent: 'space-between',
-        }}>
-        <Text
-          text={'알림 푸쉬 허용'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-        <Switch
-          checked={userTermsPush === 'Y'}
-          onPress={() => setUserTermsPush(userTermsPush === 'Y' ? 'N' : 'Y')}
-        />
-      </HView>
-      <Seperator height={20} />
-      <TouchableOpacity
-        style={{paddingHorizontal: 20, paddingVertical: 15}}
-        onPress={() => null}>
-        <Text
-          text={'개인정보 처리 방침'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{paddingHorizontal: 20, paddingVertical: 15}}
-        onPress={() => null}>
-        <Text
-          text={'서비스 이용 약관'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{paddingHorizontal: 20, paddingVertical: 15}}
-        onPress={() => null}>
-        <Text
-          text={'위치정보 이용 약관'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{paddingHorizontal: 20, paddingVertical: 15}}
-        onPress={() => null}>
-        <Text
-          text={'오픈소스 라이선스'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-      </TouchableOpacity>
-      <HView
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical: 15,
-          justifyContent: 'space-between',
-        }}>
-        <Text
-          text={'버전 정보'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-        <Text
-          text={'v.1.0.20'}
-          fontSize={16}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-      </HView>
+      <ScrollView>
+        <Seperator height={20} />
+        <HView
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            justifyContent: 'space-between',
+          }}>
+          <Text
+            text={'이벤트 및 마케팅 활용 동의'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+          <Switch
+            checked={userTermsEvent === 'Y'}
+            onPress={() => setUserTermsEvent(userTermsEvent === 'Y' ? 'N' : 'Y')}
+          />
+        </HView>
+        <HView
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            justifyContent: 'space-between',
+          }}>
+          <Text
+            text={'알림 푸쉬 허용'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+          <Switch
+            checked={userTermsPush === 'Y'}
+            onPress={() => setUserTermsPush(userTermsPush === 'Y' ? 'N' : 'Y')}
+          />
+        </HView>
+        <Seperator height={20} />
+        <TouchableOpacity
+          style={{paddingHorizontal: 20, paddingVertical: 15}}
+          onPress={() => null}>
+          <Text
+            text={'개인정보 처리 방침'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{paddingHorizontal: 20, paddingVertical: 15}}
+          onPress={() => null}>
+          <Text
+            text={'서비스 이용 약관'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{paddingHorizontal: 20, paddingVertical: 15}}
+          onPress={() => null}>
+          <Text
+            text={'위치정보 이용 약관'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{paddingHorizontal: 20, paddingVertical: 15}}
+          onPress={() => null}>
+          <Text
+            text={'오픈소스 라이선스'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+        </TouchableOpacity>
+        <HView
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 15,
+            justifyContent: 'space-between',
+          }}>
+          <Text
+            text={'버전 정보'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+          <Text
+            text={`${DeviceInfo.getVersion()}.${DeviceInfo.getBuildNumber()}`}
+            fontSize={16}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+        </HView>
 
-      <Seperator height={50} />
+        <Seperator height={50} />
 
-      <TouchableOpacity
-        style={{paddingHorizontal: 20, paddingVertical: 15}}
-        onPress={() => signout()}>
-        <Text
-          text={'로그아웃'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{paddingHorizontal: 20, paddingVertical: 15}}
-        onPress={() => null}>
-        <Text
-          text={'회원탈퇴'}
-          fontSize={18}
-          fontWeight={'500'}
-          color={'dimgray'}
-        />
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={{paddingHorizontal: 20, paddingVertical: 15}}
+          onPress={() => signout()}>
+          <Text
+            text={'로그아웃'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{paddingHorizontal: 20, paddingVertical: 15}}
+          onPress={() => null}>
+          <Text
+            text={'회원탈퇴'}
+            fontSize={18}
+            fontWeight={'500'}
+            color={'dimgray'}
+          />
+        </TouchableOpacity>
+      </ScrollView>
     </Container>
   );
 }

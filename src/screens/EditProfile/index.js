@@ -165,9 +165,9 @@ export default function EditProfile(props) {
       <ScrollView>
         <View style={{padding: 20}}>
           <HView>
-            {context.me.userImgUrl ? (
+            {context.me.userImgUrl || photo ? (
               <Image
-                uri={context.me.userImgUrl}
+                uri={context.me.userImgUrl || photo}
                 width={72}
                 height={72}
                 borderRadius={36}
