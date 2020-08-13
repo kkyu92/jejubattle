@@ -47,7 +47,6 @@ export default function TabBattleDetail(props) {
   return (
     <Container>
       <ScrollView>
-
         <HView
           style={{
             justifyContent: 'space-evenly',
@@ -182,7 +181,7 @@ export default function TabBattleDetail(props) {
           <Button
             text={'배틀시작'}
             onPress={() => {
-              if (!props.info.baPlace || !baStartTime) {
+              if (!props.info.baPlace || !props.info.baStartTime) {
                 setModalSettingAlert(true);
                 return;
               }

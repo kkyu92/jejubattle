@@ -21,6 +21,8 @@ import {
   IOS_STORE_ID,
   FIREBASE_WEB_API,
   custom,
+  ANDROID_PLAY_STORE,
+  IOS_APP_STORE,
 } from './src/config';
 import { AppContext, useAppReducer } from './src/context';
 import AppStackScreen from './src/navigations/AppStack';
@@ -45,6 +47,8 @@ Nuno.init({
   PACKAGE_NAME: PACKAGE_NAME,
   BUNDLE_ID: BUNDLE_ID,
   GEOCODE_API: GEOCODE_API,
+  ANDROID_PLAY_STORE: ANDROID_PLAY_STORE,
+  IOS_APP_STORE: IOS_APP_STORE,
 });
 
 const App: () => React$Node = () => {

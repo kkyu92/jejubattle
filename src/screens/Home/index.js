@@ -17,9 +17,10 @@ import BattleComponent from './BattleComponent';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, gotoStore} from 'react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
+import DeviceInfo from 'react-native-device-info';
 
 export default function Home(props) {
   const context = React.useContext(AppContext);
@@ -40,11 +41,30 @@ export default function Home(props) {
         logApi('mainList error', err?.response);
       });
 
-    // setShowUpdateModal(true);
-    // setAertTitle('업데이트 알림');
-    // setAlertText(
-    //   '제주배틀박스 앱이 v.1.0.2 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!',
-    // );
+    Axios.post('version', {})
+      .then(async (res) => {
+        const version = DeviceInfo.getVersion();
+        // const buildNumber = DeviceInfo.getBuildNumber();
+        console.log(`Device Version ${version}`);
+        console.log(`Store Version ${res.data.appVersion}`);
+        if (version !== res.data.appVersion) {
+          setShowUpdateModal(true);
+          setAertTitle('업데이트 알림');
+          setAlertText(
+            `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
+          );
+        }
+        // if (res.data.build_no !== buildNumber) {
+        //   setShowUpdateModal(true);
+        //   setAertTitle('업데이트 알림');
+        //   setAlertText(
+        //     `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
+        //   );
+        // }
+      })
+      .catch((err) => {
+        console.log('Version error', err.response);
+      });
   }, []);
   return (
     <Container
@@ -52,7 +72,10 @@ export default function Home(props) {
       alertText={alertText}
       alertVisible={showUpdateModal}
       onBackdropPress={() => setShowUpdateModal(false)}
-      onConfirm={() => setShowUpdateModal(false)}
+      onConfirm={() => {
+        setShowUpdateModal(false);
+        gotoStore();
+      }}
       onCancel={() => setShowUpdateModal(false)}>
       <Header
         leftComponent={
@@ -93,7 +116,13 @@ export default function Home(props) {
             <BattleComponent />,
           ]}
           dotColor={custom.themeColor}
-          paginationContainerStyle={{bottom: 0}}
+          paginationContainerStyle={{
+            position: 'absolute',
+            bottom: 20,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+          }}
         />
 
         <Seperator height={30} />

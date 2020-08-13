@@ -13,6 +13,7 @@ import StarRating from 'react-native-star-rating';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
 import { AppContext } from '../../context';
+import MySports from '../../commons/MySports';
 
 export default function Drawer(props) {
   const context = React.useContext(AppContext);
@@ -42,22 +43,31 @@ export default function Drawer(props) {
           props.navigation.navigate('MyInfoStack', {screen: 'MyInfo'})
         }>
         <HView style={{paddingHorizontal: 20}}>
-          <Image
-            local
-            uri={require('../../../assets/img/img-user2.png')}
-            width={68}
-            height={68}
-            borderRadius={34}
-          />
-          <Seperator width={22} />
-          <View>
-            <Text fontSize={21} text={context.me?.userName} fontWeight={'bold'} />
-            <Seperator height={10} />
-            <Text
-              fontSize={15}
-              text={'대표종목: 축구, 배드민턴, 농구'}
-              color={'gray'}
+          {context.me.userImgUrl ? (
+            <Image
+              uri={context.me.userImgUrl}
+              width={68}
+              height={68}
+              borderRadius={34}
             />
+          ) : (
+            <Image
+              local
+              uri={require('../../../assets/img/img-user2.png')}
+              width={68}
+              height={68}
+              borderRadius={34}
+            />
+          )}
+          <Seperator width={22} />
+          <View style={{flex: 1}}>
+            <Text
+              fontSize={21}
+              text={context.me?.userName}
+              fontWeight={'bold'}
+            />
+            <Seperator height={10} />
+            <MySports userSport={context.me.userSport} />
           </View>
         </HView>
       </TouchableOpacity>

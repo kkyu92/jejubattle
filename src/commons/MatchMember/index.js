@@ -12,6 +12,7 @@ import {custom} from '../../config';
 import StarRating from 'react-native-star-rating';
 import Icons from '../Icons';
 import {AppContext} from '../../context';
+import MySports from '../MySports';
 
 export default function MatchMember(props) {
   const context = React.useContext(AppContext);
@@ -148,24 +149,7 @@ export default function MatchMember(props) {
             text={memberModalTeam?.member[0]?.userName}
           />
           <Seperator height={10} />
-          <HView>
-            <Text fontSize={14} color={'gray'} text={'대표종목: '} />
-            {memberModalTeam?.member[0]?.userSport?.map((e, i) => {
-              return (
-                <Text
-                  key={i}
-                  fontSize={14}
-                  color={'gray'}
-                  text={
-                    e.name +
-                    (i !== memberModalTeam.member[0].userSport.length - 1
-                      ? ', '
-                      : '')
-                  }
-                />
-              );
-            })}
-          </HView>
+          <MySports userSport={memberModalTeam?.member[0]?.userSport} />
           <Seperator height={20} />
           <Text
             fontSize={14}

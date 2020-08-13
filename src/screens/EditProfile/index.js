@@ -29,15 +29,17 @@ import {sports1Table} from '../../constants';
 
 export default function EditProfile(props) {
   const context = React.useContext(AppContext);
-  const [photo, setPhoto] = React.useState(context.me.userImgUrl || '');
-  const [introduce, setIntroduce] = React.useState(context.me.userIntro || '');
+  const [photo, setPhoto] = React.useState('');
+  const [introduce, setIntroduce] = React.useState('');
   const [introduceModal, setIntroduceModal] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
   const [currentPassword, setCurrentPassword] = React.useState('');
   const [passwordModal, setPasswordModal] = React.useState('');
   const [repasswordModal, setRepasswordModal] = React.useState('');
   const [sports, setSports] = React.useState([]);
-  const [selectedSports, setSelectedSports] = React.useState([]);
+  const [selectedSports, setSelectedSports] = React.useState(
+    context.me.userSport || [],
+  );
   const [modalIntroduce, setModalIntroduce] = React.useState(false);
   const [modalPassword, setModalPassword] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -60,7 +62,7 @@ export default function EditProfile(props) {
   React.useEffect(() => {
     Axios.post('sportsList', {})
       .then((res) => {
-        logApi('sportsList success', res.data);
+        logApi('sportsList', res.data);
         let temp = [...res.data.gojiList];
         temp = temp.map((e, i) => {
           return {...e, icon: sports1Table[i].icon};
@@ -73,7 +75,7 @@ export default function EditProfile(props) {
   }, []);
   const handleSports = (e) => {
     const temp = [...selectedSports];
-    const found = temp.indexOf(e);
+    const found = temp.map((t) => t.code).indexOf(e.code);
     if (found === -1) {
       temp.push(e);
     } else {
@@ -120,10 +122,11 @@ export default function EditProfile(props) {
       });
   };
   const updateUser = async () => {
+    setLoading(true);
     const formData = new FormData();
-    formData.append('userPwd', newPassword);
-    formData.append('userIntro', introduce);
-    formData.append('userSport', selectedSports);
+    newPassword && formData.append('userPwd', newPassword);
+    introduce && formData.append('userIntro', introduce);
+    formData.append('userSport', JSON.stringify(selectedSports));
     if (photo) {
       const response = await fetch(photo);
       const blob = await response.blob();
@@ -162,9 +165,9 @@ export default function EditProfile(props) {
       <ScrollView>
         <View style={{padding: 20}}>
           <HView>
-            {photo ? (
+            {context.me.userImgUrl ? (
               <Image
-                uri={photo}
+                uri={context.me.userImgUrl}
                 width={72}
                 height={72}
                 borderRadius={36}
@@ -274,7 +277,7 @@ export default function EditProfile(props) {
             </View>
             <View style={{flex: 0.7}}>
               <Text
-                text={introduce || '잘 부탁드립니다.'}
+                text={context.me.userIntro || '잘 부탁드립니다.'}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
@@ -318,7 +321,10 @@ export default function EditProfile(props) {
                     style={{
                       padding: 10,
                       alignItems: 'center',
-                      opacity: selectedSports.indexOf(e) === -1 ? 0.3 : 1,
+                      opacity:
+                        selectedSports.map((s) => s.code).indexOf(e.code) === -1
+                          ? 0.3
+                          : 1,
                     }}>
                     <Image
                       local
@@ -348,7 +354,7 @@ export default function EditProfile(props) {
           onPress={() => updateUser()}
           color={custom.themeColor}
           disable={false}
-          loading={false}
+          loading={loading}
           size={'large'}
           stretch
         />

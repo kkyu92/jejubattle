@@ -5,6 +5,8 @@ export const FIREBASE_WEB_API = 'AIzaSyA1YDEatBC9m11UqOGyrzV6AJXwJDff1fI';
 export const IOS_STORE_ID = '';
 export const PACKAGE_NAME = 'com.jejubattle';
 export const BUNDLE_ID = 'com.jejubattle';
+export const ANDROID_PLAY_STORE = 'market://details?id=com.jejubattle';
+export const IOS_APP_STORE = 'https://apps.apple.com/app/';
 
 export const custom = {
   themeColor: '#F4A100',
