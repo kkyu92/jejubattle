@@ -19,6 +19,30 @@
 ####  Android Internal Test Links
   > https://play.google.com/apps/internaltest/4700794782783427988
 
+####  2020.08.18
+  > android (2.0.0.7)
+  > ios (2.0.0.1)
+
+  - android appscheme
+
+####  2020.08.18
+  > android (2.0.0.6)
+  > ios (2.0.0.1)
+
+  - notification setting for ios
+  - battle api
+  - battle update
+  - context me 초기값 변경
+  - battle api 추가
+  - 본인인증
+  - 회원가입 수정
+  - 가로스크롤 자동스크롤
+  - naver login ios setting
+  - add react-native-iap
+  - editProfile 수정
+  - FullMap 수정
+
+
 ####  2020.08.05
   > android (1.0.0.5)
 

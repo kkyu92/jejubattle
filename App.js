@@ -8,7 +8,7 @@
 
 import 'react-native-gesture-handler';
 import React from 'react';
-import {useColorScheme} from 'react-native';
+import {useColorScheme, AppState} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
@@ -24,15 +24,16 @@ import {
   ANDROID_PLAY_STORE,
   IOS_APP_STORE,
 } from './src/config';
-import { AppContext, useAppReducer } from './src/context';
+import {AppContext, useAppReducer} from './src/context';
 import AppStackScreen from './src/navigations/AppStack';
 import AuthStackScreen from './src/navigations/AuthStack';
 import {requestPermission, getFcmToken} from './src/fcm';
 import RNBootSplash from 'react-native-bootsplash';
 import Init from './src/commons/Init';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import {logApi} from 'react-native-nuno-ui/funcs';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+import messaging from '@react-native-firebase/messaging';
 
 const Stack = createStackNavigator();
 
@@ -96,9 +97,129 @@ const App: () => React$Node = () => {
             console.log('dynamic link', link);
             link && handleRoute(link.url);
           });
+
+        const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+          console.log('Receiving FCM Message Data:', remoteMessage.data);
+
+          // getPushInfo()
+          //   .then((res) => {
+          //     console.log('getPushInfo res', res.data);
+          //     if (res.status === 200) {
+          //       dispatch({type: 'UPDATE_NOTI', data: res.data});
+          //     } else {
+          //       Alert.alert(res.data.message);
+          //     }
+          //   })
+          //   .catch((err) => {
+          //     console.log('getPushInfo error', err);
+          //     Alert.alert(err);
+          //   });
+        });
+
+        // background > foreground
+        messaging().onNotificationOpenedApp((remoteMessage) => {
+          console.log(
+            'Notification caused app to open from background state:',
+            remoteMessage,
+          );
+          // getPushInfo()
+          //   .then((res) => {
+          //     console.log('getPushInfo res', res.data);
+          //     if (res.status === 200) {
+          //       dispatch({type: 'UPDATE_NOTI', data: res.data});
+          //     } else {
+          //       Alert.alert(res.data.message);
+          //     }
+          //   })
+          //   .catch((err) => {
+          //     console.log('getPushInfo error', err);
+          //     Alert.alert(err);
+          //   });
+          handleNotification(remoteMessage.data);
+        });
+
+        // closed > foreground
+        messaging()
+          .getInitialNotification()
+          .then((remoteMessage) => {
+            if (remoteMessage) {
+              console.log(
+                'Notification caused app to open from quit state:',
+                remoteMessage,
+              );
+              // getPushInfo()
+              //   .then((res) => {
+              //     console.log('getPushInfo res', res.data);
+              //     if (res.status === 200) {
+              //       dispatch({type: 'UPDATE_NOTI', data: res.data});
+              //     } else {
+              //       Alert.alert(res.data.message);
+              //     }
+              //   })
+              //   .catch((err) => {
+              //     console.log('getPushInfo error', err);
+              //     Alert.alert(err);
+              //   });
+              handleNotification(remoteMessage.data);
+            }
+          });
+        return unsubscribe;
       });
     }
   }, []);
+  // Suspend > Resume Logic
+  React.useEffect(() => {
+    AppState.addEventListener('change', handleAppState);
+
+    return () => {
+      AppState.removeEventListener('change', handleAppState);
+    };
+  }, []);
+
+  const handleAppState = (newState) => {
+    if (newState === 'active') {
+      // getPushInfo()
+      //   .then(res => {
+      //     console.log('getPushInfo res', res.data);
+      //     if (res.status === 200) {
+      //       dispatch({type: 'UPDATE_NOTI', data: res.data});
+      //     } else {
+      //       Alert.alert(res.data.message);
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log('getPushInfo error', err);
+      //     Alert.alert(err);
+      //   });
+    }
+  };
+
+  const handleNotification = ({screen, param, order_id}) => {
+    if (screen === '001') {
+      RootNavigation.navigate('Delivery');
+      RootNavigation.navigate('OrderViewStack', {
+        screen: 'OrderView',
+        params: {
+          order_id: order_id,
+        },
+      });
+      // } else {
+      //   RootNavigation.navigate('Delivery');
+      // }
+    }
+    if (param === '002') {
+      RootNavigation.navigate('Mart');
+      RootNavigation.navigate('OrderViewStack', {
+        screen: 'OrderView',
+        params: {
+          order_id: order_id,
+        },
+      });
+      // } else {
+      //   RootNavigation.navigate('Mart');
+      // }
+    }
+  };
 
   const handleRoute = (url) => {
     const splitArray = url.split('/');

@@ -64,6 +64,7 @@ export default function Join(props) {
     }
     Axios.post('idCheck', {
       userId: email,
+      userPushkey: global.fcmToken,
     })
       .then(async (res) => {
         logApi('idCheck', res.data);

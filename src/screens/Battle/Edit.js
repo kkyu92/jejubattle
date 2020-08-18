@@ -137,6 +137,7 @@ export default function BattleEdit(props) {
             placeholder={'선택해 주세요'}
             borderWidth={0}
             onChange={(e) => setDate(e)}
+            closeBar
           />
           <Seperator line />
           <Seperator height={30} />

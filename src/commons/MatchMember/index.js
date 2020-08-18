@@ -23,23 +23,34 @@ export default function MatchMember(props) {
       {props.teamA.name === '' ? (
         <HView style={{justifyContent: 'center'}}>
           <View style={{alignItems: 'center'}}>
-            <Image
-              local
-              uri={
-                props.teamA.member[0]?.userImgUrl || context.me.userSex === 'M'
-                  ? require('../../../assets/img/user_boy.png')
-                  : require('../../../assets/img/user_girl.png')
-              }
-              width={72}
-              height={72}
-              borderRadius={36}
-              onPress={() => {
-                if (props.teamA.member.length > 0) {
-                  setMemberModalTeam(props.teamA);
-                  setMemberModal(true);
-                }
-              }}
-            />
+            {props.teamA.member[0]?.userImgUrl ? (
+              <Image
+                uri={props.teamA.member[0]?.userImgUrl}
+                width={72}
+                height={72}
+                borderRadius={36}
+                onPress={() => {
+                  if (props.teamA.member.length > 0) {
+                    setMemberModalTeam(props.teamA);
+                    setMemberModal(true);
+                  }
+                }}
+              />
+            ) : (
+              <Image
+                local
+                uri={require('../../../assets/img/user_boy.png')}
+                width={72}
+                height={72}
+                borderRadius={36}
+                onPress={() => {
+                  if (props.teamA.member.length > 0) {
+                    setMemberModalTeam(props.teamA);
+                    setMemberModal(true);
+                  }
+                }}
+              />
+            )}
             <Seperator height={10} />
             <Text
               text={props.teamA.member[0]?.userName}
@@ -51,22 +62,34 @@ export default function MatchMember(props) {
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
           </View>
           <View style={{alignItems: 'center'}}>
-            <Image
-              local
-              uri={
-                props.teamB.member[0]?.userImgUrl ||
-                require('../../../assets/img/user_boy.png')
-              }
-              width={72}
-              height={72}
-              borderRadius={36}
-              onPress={() => {
-                if (props.teamB.member.length > 0) {
-                  setMemberModalTeam(props.teamB);
-                  setMemberModal(true);
-                }
-              }}
-            />
+            {props.teamB.member[0]?.userImgUrl ? (
+              <Image
+                uri={props.teamB.member[0]?.userImgUrl}
+                width={72}
+                height={72}
+                borderRadius={36}
+                onPress={() => {
+                  if (props.teamB.member.length > 0) {
+                    setMemberModalTeam(props.teamB);
+                    setMemberModal(true);
+                  }
+                }}
+              />
+            ) : (
+              <Image
+                local
+                uri={require('../../../assets/img/user_boy.png')}
+                width={72}
+                height={72}
+                borderRadius={36}
+                onPress={() => {
+                  if (props.teamB.member.length > 0) {
+                    setMemberModalTeam(props.teamB);
+                    setMemberModal(true);
+                  }
+                }}
+              />
+            )}
             <Seperator height={10} />
             <Text
               text={props.teamB.member[0]?.userName}
