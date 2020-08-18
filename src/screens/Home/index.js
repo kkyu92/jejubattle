@@ -101,8 +101,19 @@ export default function Home(props) {
         navigation={props.navigation}
       />
       <ScrollView>
-        <ImageCarousel data={banner} height={170} onPress={() => null} />
-
+        <ImageCarousel
+          data={banner}
+          height={170}
+          onPress={() => null}
+          dotColor={'white'}
+          paginationContainerStyle={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+          }}
+        />
         {/* View Carousel */}
         <Carousel
           data={[

@@ -33,6 +33,7 @@ export default function Join(props) {
   const [userAuthkey, setUserAuthkey] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [repassword, setRepassword] = React.useState('');
+  const [emailVerified, setEmailVerified] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [agreement, setAgreement] = React.useState(false);
   const [agreement1, setAgreement1] = React.useState(false);
@@ -51,6 +52,17 @@ export default function Join(props) {
     Linking.addEventListener('url', handleOpenURL);
     return () => Linking.removeEventListener('url', handleOpenURL);
   }, []);
+  React.useEffect(() => {
+    const count = context.noti.filter(
+      (e) =>
+        e.screen === 'join' &&
+        e.param === 'email_approved' &&
+        e.email === email,
+    ).length;
+    if (count > 0) {
+      setEmailVerified(true);
+    }
+  }, [context.noti]);
   const handleOpenURL = (e) => {
     const temp = e.url.split('/');
     const param = temp[temp.length - 1];
@@ -319,11 +331,11 @@ export default function Join(props) {
             </View>
             {props.route?.params?.userCode === undefined && (
               <Button
-                text={'인증요청'}
+                text={emailVerified ? '인증완료' : '인증요청'}
                 size={'medium'}
                 onPress={() => verifyEmail()}
-                textColor={'dimgray'}
-                color={'white'}
+                // textColor={'dimgray'}
+                color={emailVerified ? custom.themeColor : 'white'}
                 borderRadius={20}
               />
             )}

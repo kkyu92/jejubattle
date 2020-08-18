@@ -20,6 +20,12 @@
   > https://play.google.com/apps/internaltest/4700794782783427988
 
 ####  2020.08.18
+  > android (2.0.0.8)
+  > ios (2.0.0.1)
+
+  - email verify
+
+####  2020.08.18
   > android (2.0.0.7)
   > ios (2.0.0.1)
 

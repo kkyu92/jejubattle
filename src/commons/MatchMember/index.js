@@ -143,16 +143,22 @@ export default function MatchMember(props) {
             borderRadius: 10,
             alignItems: 'center',
           }}>
-          <Image
-            local
-            uri={
-              memberModalTeam?.member[0]?.userImgUrl ||
-              require('../../../assets/img/user_girl.png')
-            }
-            width={72}
-            height={72}
-            borderRadius={36}
-          />
+          {memberModalTeam?.member[0]?.userImgUrl ? (
+            <Image
+              uri={memberModalTeam?.member[0]?.userImgUrl}
+              width={72}
+              height={72}
+              borderRadius={36}
+            />
+          ) : (
+            <Image
+              local
+              uri={require('../../../assets/img/user_girl.png')}
+              width={72}
+              height={72}
+              borderRadius={36}
+            />
+          )}
           <View style={{paddingVertical: 8}}>
             <StarRating
               disabled={true}

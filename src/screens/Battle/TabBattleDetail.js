@@ -20,6 +20,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Axios from 'axios';
 import { logApi } from 'react-native-nuno-ui/funcs';
+import moment from 'moment';
 
 export default function TabBattleDetail(props) {
   const [modalExit, setModalExit] = React.useState(false);
@@ -28,12 +29,13 @@ export default function TabBattleDetail(props) {
   const [modalSettingAlert, setModalSettingAlert] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [place, setPlace] = React.useState('');
+  const [date, setDate] = React.useState(new Date(props.info.baDate));
   const [startTime, setStartTime] = React.useState(new Date());
 
   const updateBattle = () => {
     Axios.post('updateBattle', {
-      baPlace: '',
-      baStartTime: startTime,
+      baPlace: place,
+      baStartTime: moment(startTime).format('HH:MM'),
     })
       .then((res) => {
         logApi('updateBattle', res.data);
@@ -401,8 +403,8 @@ export default function TabBattleDetail(props) {
           <View>
             <Text text={'장소설정'} fontSize={14} fontWeight={'bold'} />
             <TextInput
-              value={''}
-              onChangeText={() => null}
+              value={place}
+              onChangeText={(e) => setPlace(e)}
               borderWidth={0}
               placeholder={'장소이름'}
             />
@@ -419,9 +421,9 @@ export default function TabBattleDetail(props) {
             <Seperator line marginBottom={20} />
             <Text text={'날짜선택'} fontSize={14} fontWeight={'bold'} />
             <DateTime
-              value={startTime}
+              value={date}
               closeBar
-              onChange={(e) => setStartTime(e)}
+              onChange={(e) => setDate(e)}
               borderWidth={0}
               placeholder={'자세한시간'}
             />

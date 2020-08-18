@@ -70,6 +70,7 @@ const App: () => React$Node = () => {
     await requestPermission();
     await getFcmToken();
     await Init();
+    await getPush();
     // await locationInit();
     if (global.token) {
       await Axios.post('getme', {})
@@ -101,65 +102,29 @@ const App: () => React$Node = () => {
         const unsubscribe = messaging().onMessage(async (remoteMessage) => {
           console.log('Receiving FCM Message Data:', remoteMessage.data);
 
-          // getPushInfo()
-          //   .then((res) => {
-          //     console.log('getPushInfo res', res.data);
-          //     if (res.status === 200) {
-          //       dispatch({type: 'UPDATE_NOTI', data: res.data});
-          //     } else {
-          //       Alert.alert(res.data.message);
-          //     }
-          //   })
-          //   .catch((err) => {
-          //     console.log('getPushInfo error', err);
-          //     Alert.alert(err);
-          //   });
+          await getPush();
         });
 
         // background > foreground
-        messaging().onNotificationOpenedApp((remoteMessage) => {
+        messaging().onNotificationOpenedApp(async (remoteMessage) => {
           console.log(
             'Notification caused app to open from background state:',
             remoteMessage,
           );
-          // getPushInfo()
-          //   .then((res) => {
-          //     console.log('getPushInfo res', res.data);
-          //     if (res.status === 200) {
-          //       dispatch({type: 'UPDATE_NOTI', data: res.data});
-          //     } else {
-          //       Alert.alert(res.data.message);
-          //     }
-          //   })
-          //   .catch((err) => {
-          //     console.log('getPushInfo error', err);
-          //     Alert.alert(err);
-          //   });
+          await getPush();
           handleNotification(remoteMessage.data);
         });
 
         // closed > foreground
         messaging()
           .getInitialNotification()
-          .then((remoteMessage) => {
+          .then(async (remoteMessage) => {
             if (remoteMessage) {
               console.log(
                 'Notification caused app to open from quit state:',
                 remoteMessage,
               );
-              // getPushInfo()
-              //   .then((res) => {
-              //     console.log('getPushInfo res', res.data);
-              //     if (res.status === 200) {
-              //       dispatch({type: 'UPDATE_NOTI', data: res.data});
-              //     } else {
-              //       Alert.alert(res.data.message);
-              //     }
-              //   })
-              //   .catch((err) => {
-              //     console.log('getPushInfo error', err);
-              //     Alert.alert(err);
-              //   });
+              await getPush();
               handleNotification(remoteMessage.data);
             }
           });
@@ -176,21 +141,36 @@ const App: () => React$Node = () => {
     };
   }, []);
 
+  const getPush = () => {
+    Axios.get(`getPush/${global.fcmToken}`)
+      .then((res) => {
+        logApi('getPush', res.data);
+        dispatch({
+          type: 'UPDATENOTI',
+          data: res.data.message.map((e) => ({...e.data})),
+        });
+      })
+      .catch((err) => {
+        logApi('getPush error', err.response);
+      });
+    // getPushInfo()
+    //   .then(res => {
+    //     console.log('getPushInfo res', res.data);
+    //     if (res.status === 200) {
+    //       dispatch({type: 'UPDATE_NOTI', data: res.data});
+    //     } else {
+    //       Alert.alert(res.data.message);
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log('getPushInfo error', err);
+    //     Alert.alert(err);
+    //   });
+  };
+
   const handleAppState = (newState) => {
     if (newState === 'active') {
-      // getPushInfo()
-      //   .then(res => {
-      //     console.log('getPushInfo res', res.data);
-      //     if (res.status === 200) {
-      //       dispatch({type: 'UPDATE_NOTI', data: res.data});
-      //     } else {
-      //       Alert.alert(res.data.message);
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log('getPushInfo error', err);
-      //     Alert.alert(err);
-      //   });
+      global.fcmToken && getPush();
     }
   };
 

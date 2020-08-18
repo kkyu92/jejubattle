@@ -127,14 +127,16 @@ export default function BattleView(props) {
         />
       )}
       <Seperator height={20} />
-      <TabView
-        lazy
-        renderTabBar={renderTabBar}
-        navigationState={{index, routes}}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={initialLayout}
-      />
+      {info.baDate && (
+        <TabView
+          lazy
+          renderTabBar={renderTabBar}
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
+        />
+      )}
     </Container>
   );
 }

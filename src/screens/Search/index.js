@@ -64,8 +64,10 @@ export default function Search(props) {
         setResult(temp);
         setStickyHeaderIndices(stickyIndex);
 
-        const k = await saveRecentKeyword(key, 5);
-        setRecentKeywords(k);
+        if (key) {
+          const k = await saveRecentKeyword(key, 5);
+          setRecentKeywords(k);
+        }
       })
       .catch((err) => {
         logApi('search error', err.response);
