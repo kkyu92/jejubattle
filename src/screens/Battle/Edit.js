@@ -63,11 +63,17 @@ export default function BattleEdit(props) {
       baDate: moment(date).format('YYYY-MM-DD'),
       baContent: memo,
       teamA: {
-        name: '',
-        member: [{userPk: context.me.userPk}],
+        name: type > 1 ? 'A' : '',
+        member: [
+          {
+            userPk: context.me.userPk,
+            ready: 'N',
+            regdate: new Date(),
+          },
+        ],
       },
       teamB: {
-        name: '',
+        name: type > 1 ? 'B' : '',
         member: [],
       },
     })

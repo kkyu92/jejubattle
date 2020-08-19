@@ -19,33 +19,58 @@ import {custom} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import {logApi, getDateFromHours} from 'react-native-nuno-ui/funcs';
 import moment from 'moment';
+import {AppContext} from '../../context';
 
 export default function TabBattleDetail(props) {
+  const context = React.useContext(AppContext);
   const [modalExit, setModalExit] = React.useState(false);
+  const [modalExit2, setModalExit2] = React.useState(false);
   const [modalStart, setModalStart] = React.useState(false);
   const [modalSetting, setModalSetting] = React.useState(false);
   const [modalSettingAlert, setModalSettingAlert] = React.useState(false);
+  const [modalDateAlert, setModalDateAlert] = React.useState(false);
+  const [modalEditBattleOwner, setModalEditBattleOwner] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [place, setPlace] = React.useState('');
+  const [place, setPlace] = React.useState(props.info.baPlace || '');
   const [date, setDate] = React.useState(new Date(props.info.baDate));
-  const [startTime, setStartTime] = React.useState(new Date());
+  const [startTime, setStartTime] = React.useState(
+    new Date(getDateFromHours(props.info.baStartTime || '00:00')),
+  );
+  // const [role, setRole] = React.useState('');
 
-  const updateBattle = () => {
+  const updateBattle = (data) => {
+    setLoading(true);
     Axios.post('updateBattle', {
-      baPlace: place,
-      baStartTime: moment(startTime).format('HH:MM'),
+      baPk: props.info.baPk,
+      ...data,
     })
       .then((res) => {
         logApi('updateBattle', res.data);
         setLoading(false);
+        setModalSetting(false);
+        props.refreshBattleView && props.refreshBattleView();
       })
       .catch((err) => {
         logApi('updateBattle error', err.response);
         setLoading(false);
       });
   };
+  const deleteBattle = () => {
+    Axios.get(`deleteBattle/${props.info.baPk}`)
+      .then((res) => {
+        logApi('deleteBattle', res.data);
+        // setLoading(false);
+        props.refresh && props.refresh();
+        props.navigation.goBack();
+      })
+      .catch((err) => {
+        logApi('deleteBattle error', err.response);
+        // setLoading(false);
+      });
+  };
+
   return (
     <Container>
       <ScrollView>
@@ -73,7 +98,11 @@ export default function TabBattleDetail(props) {
             <Icons name={'icon-setting-30'} size={30} color={'silver'} />
             <Seperator height={10} />
             <Text
-              text={'필수설정'}
+              text={
+                context.me.userPk === props.info.teamA.member[0].userPk
+                  ? '필수설정'
+                  : '배틀조건확인'
+              }
               fontSize={13}
               fontWeight={'500'}
               color={'gray'}
@@ -171,7 +200,13 @@ export default function TabBattleDetail(props) {
         }}>
         <Button
           text={'나가기'}
-          onPress={() => setModalExit(true)}
+          onPress={() => {
+            if (context.me.userPk === props.info.teamA.member[0].userPk) {
+              setModalExit(true);
+            } else {
+              setModalExit2(true);
+            }
+          }}
           color={'white'}
           disable={false}
           loading={false}
@@ -181,25 +216,64 @@ export default function TabBattleDetail(props) {
         <Seperator width={20} />
         <View style={{flex: 1}}>
           <Button
-            text={'배틀시작'}
+            text={
+              context.me.userPk === props.info.teamA.member[0].userPk
+                ? '배틀시작'
+                : '배틀준비'
+            }
             onPress={() => {
-              if (!props.info.baPlace || !props.info.baStartTime) {
-                setModalSettingAlert(true);
-                return;
+              if (context.me.userPk === props.info.teamA.member[0].userPk) {
+                if (!props.info.baPlace || !props.info.baStartTime) {
+                  setModalSettingAlert(true);
+                  return;
+                }
+                if (new Date(props.info.baDate) > new Date()) {
+                  setModalDateAlert(true);
+                  return;
+                }
+                setModalStart(true);
+              } else {
+                if (
+                  props.info.teamA.member.length >=
+                  props.info.teamB.member.length
+                ) {
+                  const team = {...props.info.teamB};
+                  team.member.push({
+                    userPk: context.me.userPk,
+                    ready: 'Y',
+                    regdate: new Date(),
+                  });
+                  updateBattle({teamB: team});
+                } else {
+                  const team = {...props.info.teamA};
+                  team.member.push({
+                    userPk: context.me.userPk,
+                    ready: 'Y',
+                    regdate: new Date(),
+                  });
+                  updateBattle({teamA: team});
+                }
               }
-              setModalStart(true);
             }}
             color={custom.themeColor}
             disable={false}
-            loading={false}
+            loading={loading}
             size={'large'}
             stretch
           />
         </View>
       </HView>
       <Seperator bottom />
-      {/* 나가기 버튼 */}
-      <Modal isVisible={modalExit} onBackdropPress={() => setModalExit(false)}>
+      {/* 방장 나가기 버튼 */}
+      <Modal
+        isVisible={modalExit}
+        onBackdropPress={() => setModalExit(false)}
+        onModalHide={() => console.log('modal hide')}
+        // onModalHide={() => {
+        //   console.log('modal hide');
+        //   setModalEditBattleOwner(true);
+        // }}
+      >
         <View
           style={{
             padding: 20,
@@ -226,7 +300,9 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'위임하기'}
                 color={'gray'}
-                onPress={() => null}
+                onPress={() => {
+                  setModalExit(false);
+                }}
                 size={'large'}
                 stretch
               />
@@ -236,7 +312,10 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'삭제'}
                 color={custom.themeColor}
-                onPress={() => null}
+                onPress={() => {
+                  setModalExit(false);
+                  deleteBattle();
+                }}
                 size={'large'}
                 stretch
               />
@@ -257,6 +336,74 @@ export default function TabBattleDetail(props) {
             }}>
             <AntDesign name={'close'} size={30} color={'dimgray'} />
           </TouchableOpacity>
+        </View>
+      </Modal>
+      {/* 팀장 팀원 나가기 버튼 */}
+      <Modal
+        isVisible={modalExit2}
+        onBackdropPress={() => setModalExit2(false)}
+        onModalHide={() => console.log('modal hide')}
+        // onModalHide={() => {
+        //   console.log('modal hide');
+        //   setModalEditBattleOwner(true);
+        // }}
+      >
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          <Text
+            fontSize={18}
+            fontWeight={'bold'}
+            color={'black'}
+            text={'해당 방을 나가겠습니까?'}
+          />
+          <Seperator height={50} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'아니오'}
+                color={custom.themeColor}
+                onPress={() => {
+                  setModalExit2(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'예'}
+                color={'gray'}
+                onPress={() => {
+                  const foundedAtTeamA = props.info.teamA.member
+                    .map((e) => e.userPk)
+                    .indexOf(context.me.userPk);
+                  const foundedAtTeamB = props.info.teamB.member
+                    .map((e) => e.userPk)
+                    .indexOf(context.me.userPk);
+                  if (foundedAtTeamA !== -1) {
+                    const team = {...props.info.teamA};
+                    team.member.splice(foundedAtTeamA, 1);
+                    updateBattle({teamA: team});
+                  }
+                  if (foundedAtTeamB !== -1) {
+                    const team = {...props.info.teamB};
+                    team.member.splice(foundedAtTeamB, 1);
+                    updateBattle({teamB: team});
+                  }
+                  setModalExit2(false);
+                  props.navigation.goBack();
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
         </View>
       </Modal>
       {/* 배틀시작 버튼 */}
@@ -381,6 +528,45 @@ export default function TabBattleDetail(props) {
           />
         </View>
       </Modal>
+      {/* 배틀시작일이 현재 날짜와 같지 않을경우  */}
+      <Modal
+        isVisible={modalDateAlert}
+        onBackdropPress={() => setModalDateAlert(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+          }}>
+          <View style={{alignItems: 'center', paddingVertical: 10}}>
+            <Text
+              fontSize={18}
+              fontWeight={'bold'}
+              color={'black'}
+              text={'알림'}
+            />
+          </View>
+          <Seperator height={30} />
+          <View style={{alignItems: 'center'}}>
+            <Text
+              fontSize={16}
+              style={{textAlign: 'center'}}
+              color={'dimgray'}
+              text={
+                '배틀시작 일자가 아닙니다.\n날짜를 변경하거나, 해당 배틀일자에 실행해주세요.'
+              }
+            />
+          </View>
+          <Seperator height={30} />
+          <Button
+            text={'확인'}
+            size={'large'}
+            onPress={() => setModalDateAlert(false)}
+            stretch
+            color={custom.themeColor}
+          />
+        </View>
+      </Modal>
       {/* 필수설정 버튼 */}
       <Modal
         isVisible={modalSetting}
@@ -445,9 +631,64 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'적용'}
                 color={custom.themeColor}
-                onPress={() => updateBattle()}
+                onPress={() =>
+                  updateBattle({
+                    baPlace: place,
+                    baStartTime: moment(startTime).format('HH:MM'),
+                  })
+                }
+                size={'large'}
+                loading={loading}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
+      <Modal
+        isVisible={modalEditBattleOwner}
+        onBackdropPress={() => setModalEditBattleOwner(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          <View style={{alignItems: 'center', paddingVertical: 10}}>
+            <Text
+              fontSize={18}
+              fontWeight={'bold'}
+              color={'black'}
+              text={'A팀'}
+            />
+          </View>
+          <Seperator height={30} />
+          <Seperator height={20} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setModalEditBattleOwner(false);
+                }}
                 size={'large'}
                 stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'완료'}
+                color={custom.themeColor}
+                onPress={() => {
+                  updateBattle();
+                  setModalEditBattleOwner(false);
+                }}
+                size={'large'}
+                stretch
+                loading={loading}
               />
             </View>
           </HView>

@@ -11,6 +11,7 @@ import {
   DateTime,
   Checkbox,
   Image,
+  Modal,
 } from 'react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -47,6 +48,20 @@ export default function BattleView(props) {
         logApi('getBattle error', err.response);
       });
   };
+  const updateBattle = () => {
+    Axios.post('updateBattle', {
+      teamA: {...props.teamA},
+      teamB: {...props.teamB},
+    })
+      .then((res) => {
+        logApi('updateBattle', res.data);
+        // setLoading(false);
+      })
+      .catch((err) => {
+        logApi('updateBattle error', err.response);
+        // setLoading(false);
+      });
+  };
   const renderTabBar = (tabprops) => {
     return (
       <HView
@@ -81,7 +96,14 @@ export default function BattleView(props) {
   const renderScene = ({route}) => {
     switch (route.key) {
       case '1':
-        return <TabBattleDetail navigation={props.navigation} info={info} />;
+        return (
+          <TabBattleDetail
+            navigation={props.navigation}
+            info={info}
+            refresh={props.route.params.refresh}
+            refreshBattleView={() => get()}
+          />
+        );
       case '2':
         return <TabBattleChat navigation={props.navigation} info={info} />;
     }
@@ -121,9 +143,9 @@ export default function BattleView(props) {
       </View>
       {showMatchMember && info.teamA && (
         <MatchMember
-          teamA={info.teamA}
-          teamB={info.teamB}
+          info={info}
           navigation={props.navigation}
+          refreshBattleView={() => get()}
         />
       )}
       <Seperator height={20} />

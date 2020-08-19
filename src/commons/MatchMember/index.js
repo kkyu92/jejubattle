@@ -6,6 +6,7 @@ import {
   Modal,
   Button,
   Image,
+  TextInput,
 } from 'react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
 import {custom} from '../../config';
@@ -13,25 +14,49 @@ import StarRating from 'react-native-star-rating';
 import Icons from '../Icons';
 import {AppContext} from '../../context';
 import MySports from '../MySports';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function MatchMember(props) {
   const context = React.useContext(AppContext);
   const [memberModal, setMemberModal] = React.useState(false);
+  const [editNameModal, setEditNameModal] = React.useState(false);
+  const [name, setName] = React.useState('');
+  const [selectedTeam, setSelectedTeam] = React.useState('A');
   const [memberModalTeam, setMemberModalTeam] = React.useState();
+  const [loading, setLoading] = React.useState(false);
+
+  const updateBattle = (data) => {
+    Axios.post('updateBattle', {
+      baPk: props.info.baPk,
+      ...data,
+    })
+      .then((res) => {
+        logApi('updateBattle', res.data);
+        setLoading(false);
+        setName('');
+        props.refreshBattleView && props.refreshBattleView();
+      })
+      .catch((err) => {
+        logApi('updateBattle error', err.response);
+        setLoading(false);
+      });
+  };
   return (
     <View>
-      {props.teamA.name === '' ? (
+      {props.info.teamA.name === '' ? (
         <HView style={{justifyContent: 'center'}}>
           <View style={{alignItems: 'center'}}>
-            {props.teamA.member[0]?.userImgUrl ? (
+            {props.info.teamA.member[0]?.userImgUrl ? (
               <Image
-                uri={props.teamA.member[0]?.userImgUrl}
+                uri={props.info.teamA.member[0]?.userImgUrl}
                 width={72}
                 height={72}
                 borderRadius={36}
                 onPress={() => {
-                  if (props.teamA.member.length > 0) {
-                    setMemberModalTeam(props.teamA);
+                  if (props.info.teamA.member.length > 0) {
+                    setMemberModalTeam(props.info.teamA);
                     setMemberModal(true);
                   }
                 }}
@@ -44,8 +69,8 @@ export default function MatchMember(props) {
                 height={72}
                 borderRadius={36}
                 onPress={() => {
-                  if (props.teamA.member.length > 0) {
-                    setMemberModalTeam(props.teamA);
+                  if (props.info.teamA.member.length > 0) {
+                    setMemberModalTeam(props.info.teamA);
                     setMemberModal(true);
                   }
                 }}
@@ -53,7 +78,7 @@ export default function MatchMember(props) {
             )}
             <Seperator height={10} />
             <Text
-              text={props.teamA.member[0]?.userName}
+              text={props.info.teamA.member[0]?.userName}
               fontWeight={'500'}
               fontSize={16}
             />
@@ -62,15 +87,15 @@ export default function MatchMember(props) {
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
           </View>
           <View style={{alignItems: 'center'}}>
-            {props.teamB.member[0]?.userImgUrl ? (
+            {props.info.teamB.member[0]?.userImgUrl ? (
               <Image
-                uri={props.teamB.member[0]?.userImgUrl}
+                uri={props.info.teamB.member[0]?.userImgUrl}
                 width={72}
                 height={72}
                 borderRadius={36}
                 onPress={() => {
-                  if (props.teamB.member.length > 0) {
-                    setMemberModalTeam(props.teamB);
+                  if (props.info.teamB.member.length > 0) {
+                    setMemberModalTeam(props.info.teamB);
                     setMemberModal(true);
                   }
                 }}
@@ -83,8 +108,8 @@ export default function MatchMember(props) {
                 height={72}
                 borderRadius={36}
                 onPress={() => {
-                  if (props.teamB.member.length > 0) {
-                    setMemberModalTeam(props.teamB);
+                  if (props.info.teamB.member.length > 0) {
+                    setMemberModalTeam(props.info.teamB);
                     setMemberModal(true);
                   }
                 }}
@@ -92,7 +117,7 @@ export default function MatchMember(props) {
             )}
             <Seperator height={10} />
             <Text
-              text={props.teamB.member[0]?.userName}
+              text={props.info.teamB.member[0]?.userName}
               fontWeight={'500'}
               fontSize={16}
             />
@@ -100,38 +125,188 @@ export default function MatchMember(props) {
         </HView>
       ) : (
         <HView style={{justifyContent: 'center'}}>
-          <View style={{alignItems: 'center'}}>
-            <Image
-              local
-              uri={props.teamA.require('../../../assets/img/user_boy.png')}
-              width={72}
-              height={72}
-              borderRadius={36}
-              onPress={() => {
-                setMemberModalTeam(props.teamB);
-                setMemberModal(true);
-              }}
+          <View
+            style={{
+              alignItems: 'center',
+              padding: 10,
+              borderWidth: 1,
+              borderColor: 'lightgray',
+              borderRadius: 10,
+            }}>
+            <Text
+              text={'Team'}
+              fontSize={16}
+              color={'#FE7262'}
+              fontWeight={'500'}
             />
             <Seperator height={10} />
-            <Text text={'소소한유리병'} fontWeight={'500'} fontSize={16} />
+            <Text
+              text={props.info.teamA.name}
+              fontSize={36}
+              color={'#FE7262'}
+              fontWeight={'bold'}
+            />
+            <Seperator height={10} />
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedTeam('A');
+                setEditNameModal(true);
+              }}
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderWidth: 1,
+                borderColor: 'lightgray',
+                borderRadius: 20,
+              }}>
+              <MaterialCommunityIcons
+                name={'lead-pencil'}
+                size={14}
+                color={'gray'}
+              />
+              <Seperator width={10} />
+              <Text text={'이름 수정'} fontSize={14} color={'gray'} />
+            </TouchableOpacity>
+            <Seperator height={10} />
+            <Text
+              text={`참가인원 ${props.info.teamA.member.length}명`}
+              fontSize={14}
+              fontWeight={'500'}
+            />
           </View>
           <View style={{padding: 30}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
+            <Seperator height={20} />
+            <TouchableOpacity onPress={() => null}>
+              <Image
+                local
+                uri={require('../../../assets/img/icon-change.png')}
+                width={26}
+                height={26}
+              />
+            </TouchableOpacity>
           </View>
-          <View style={{alignItems: 'center'}}>
-            <Image
-              local
-              uri={require('../../../assets/img/user_girl.png')}
-              width={72}
-              height={72}
-              borderRadius={36}
-              onPress={() => setMemberModal(true)}
+          <View
+            style={{
+              alignItems: 'center',
+              padding: 10,
+              borderWidth: 1,
+              borderColor: 'lightgray',
+              borderRadius: 10,
+            }}>
+            <Text
+              text={'Team'}
+              fontSize={16}
+              color={'#0752AB'}
+              fontWeight={'500'}
             />
             <Seperator height={10} />
-            <Text text={'게으른슈퍼맨'} fontWeight={'500'} fontSize={16} />
+            <Text
+              text={props.info.teamB.name}
+              fontSize={36}
+              color={'#0752AB'}
+              fontWeight={'bold'}
+            />
+            <Seperator height={10} />
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedTeam('B');
+                setEditNameModal(true);
+              }}
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderWidth: 1,
+                borderColor: 'lightgray',
+                borderRadius: 20,
+              }}>
+              <MaterialCommunityIcons
+                name={'lead-pencil'}
+                size={14}
+                color={'gray'}
+              />
+              <Seperator width={10} />
+              <Text text={'이름 수정'} fontSize={14} color={'gray'} />
+            </TouchableOpacity>
+            <Seperator height={10} />
+            <Text
+              text={`참가인원 ${props.info.teamB.member.length}명`}
+              fontSize={14}
+              fontWeight={'500'}
+            />
           </View>
         </HView>
       )}
+
+      <Modal
+        isVisible={editNameModal}
+        onBackdropPress={() => setEditNameModal(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            // alignItems: 'center',
+          }}>
+          <View style={{alignItems: 'center', paddingVertical: 10}}>
+            <Text
+              fontSize={18}
+              fontWeight={'bold'}
+              color={'black'}
+              text={'이름 수정'}
+            />
+          </View>
+          <Seperator height={30} />
+          <View>
+            <TextInput
+              maxLength={15}
+              value={name}
+              onChangeText={(e) => setName(e)}
+              placeholder={'수정할 팀이름을 입력해주세요'}
+            />
+          </View>
+          <Seperator height={20} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setEditNameModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'완료'}
+                color={custom.themeColor}
+                onPress={() => {
+                  if (selectedTeam === 'A') {
+                    const team = {...props.info.teamA};
+                    team.name = name;
+                    updateBattle({teamA: team});
+                  }
+                  if (selectedTeam === 'B') {
+                    const team = {...props.info.teamB};
+                    team.name = name;
+                    updateBattle({teamB: team});
+                  }
+                  setEditNameModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
 
       <Modal
         isVisible={memberModal}
