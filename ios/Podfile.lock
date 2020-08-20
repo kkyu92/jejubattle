@@ -516,8 +516,6 @@ PODS:
     - React
   - RNScreens (2.9.0):
     - React
-  - RNStompWS (1.0.0):
-    - React
   - RNVectorIcons (6.6.0):
     - React
   - SDWebImage (5.8.4):
@@ -603,7 +601,6 @@ DEPENDENCIES:
   - "RNNaverLogin (from `../node_modules/@react-native-seoul/naver-login`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNStompWS (from `../node_modules/react-native-stomp-websocket/ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -742,8 +739,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  RNStompWS:
-    :path: "../node_modules/react-native-stomp-websocket/ios"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -830,7 +825,6 @@ SPEC CHECKSUMS:
   RNNaverLogin: e3c76c8f589f3751f7d7e6f79dbacbfb080c91a4
   RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
-  RNStompWS: 0a3c2ada21dc8514bcc43a76041d73345b4315c0
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   SDWebImageWebPCoder: 36f8f47bd9879a8aea6044765c1351120fd8e3a8

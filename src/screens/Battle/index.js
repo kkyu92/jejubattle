@@ -21,6 +21,7 @@ import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function Battle(props) {
   const [filterVisible, setFilterVisible] = React.useState(false);
+  const [enteranceAlert, setEnteranceAlert] = React.useState(false);
   const [showMyBattle, setShowMyBattle] = React.useState(true);
   const [battles, setBattles] = React.useState([]);
   const [mybattles, setMybattles] = React.useState([]);
@@ -107,12 +108,16 @@ export default function Battle(props) {
       } else {
         return (
           <ListItemBattle
-            onPress={() =>
-              props.navigation.navigate('BattleView', {
-                baPk: item.baPk,
-                refresh: () => get(),
-              })
-            }
+            onPress={() => {
+              if (item.maxRow === item.roomRow) {
+                setEnteranceAlert(true);
+              } else {
+                props.navigation.navigate('BattleView', {
+                  baPk: item.baPk,
+                  refresh: () => get(),
+                });
+              }
+            }}
             item={item}
           />
         );
@@ -172,6 +177,25 @@ export default function Battle(props) {
           props.navigation.navigate('BattleEdit', {refresh: () => get()})
         }
       />
+      <Modal
+        isVisible={enteranceAlert}
+        onBackdropPress={() => setEnteranceAlert(false)}>
+        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
+          <View style={{padding: 20}}>
+            <View style={{alignItems: 'center'}}>
+              <Text text={'인원이 가득 찼습니다.'} fontWeight={'bold'} fontSize={18} />
+            </View>
+          </View>
+          <Seperator height={40} />
+          <Button
+            text={'확인'}
+            size={'large'}
+            onPress={() => setEnteranceAlert(false)}
+            stretch
+            color={custom.themeColor}
+          />
+        </View>
+      </Modal>
       <Modal
         isVisible={filterVisible}
         onBackdropPress={() => setFilterVisible(false)}>
