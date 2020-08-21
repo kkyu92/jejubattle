@@ -136,8 +136,8 @@ export default function ReviewEdit(props) {
               rating={reScope}
               starSize={40}
               emptyStarColor={'gray'}
-              // halfStarEnabled={true}
-              // halfStarColor={custom.themeColor}
+              halfStarEnabled={true}
+              halfStarColor={custom.themeColor}
               fullStarColor={custom.themeColor}
               selectedStar={(e) => setReScope(e)}
             />

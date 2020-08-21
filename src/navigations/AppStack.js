@@ -27,6 +27,8 @@ import MyBattle from '../screens/MyBattle';
 import BattleView from '../screens/Battle/View';
 import ReviewEdit from '../screens/Review/edit';
 import Webview from '../screens/Webview';
+import BattleFilter from '../screens/Battle/Filter';
+import FullMapFilter from '../screens/FullMap/Filter';
 
 const LeftDrawerStack = createDrawerNavigator();
 function LeftDrawerStackScreen() {
@@ -128,6 +130,8 @@ export default function AppStackScreen() {
       <Stack.Screen name="Setting" component={Setting} />
       <Stack.Screen name="FullMap" component={FullMap} />
       <Stack.Screen name="Webview" component={Webview} />
+      <Stack.Screen name="BattleFilter" component={BattleFilter} />
+      <Stack.Screen name="FullMapFilter" component={FullMapFilter} />
     </Stack.Navigator>
   );
 }

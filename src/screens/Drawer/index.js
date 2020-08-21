@@ -97,7 +97,11 @@ export default function Drawer(props) {
             borderRadius={10}
           />
           <Seperator width={10} />
-          <Text fontSize={13} text={'2 coin'} color={'gray'} />
+          <Text
+            fontSize={13}
+            text={`${context.me.userCoin} coin`}
+            color={'gray'}
+          />
           <Seperator width={20} />
           <Image
             local
@@ -107,7 +111,11 @@ export default function Drawer(props) {
             borderRadius={10}
           />
           <Seperator width={10} />
-          <Text fontSize={13} text={'3 point'} color={'gray'} />
+          <Text
+            fontSize={13}
+            text={`${context.me.userPoint} point`}
+            color={'gray'}
+          />
         </HView>
       </HView>
       <Seperator height={10} />

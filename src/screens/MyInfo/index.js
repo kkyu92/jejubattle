@@ -7,19 +7,19 @@ import {
   HView,
   Seperator,
   Button,
+  Modal,
 } from 'react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity} from 'react-native';
 import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';
-import { custom } from '../../config';
-import ActionSheet from 'react-native-actions-sheet';
-import { AppContext } from '../../context';
+import {custom} from '../../config';
+import {AppContext} from '../../context';
 import MySports from '../../commons/MySports';
-
-const actionSheetRef = React.createRef();
 
 export default function MyInfo(props) {
   const context = React.useContext(AppContext);
+  const [modalVisible, setModalVisible] = React.useState(false);
+
   return (
     <Container>
       <Header left={'close'} navigation={props.navigation} title={'내정보'} />
@@ -71,7 +71,7 @@ export default function MyInfo(props) {
               borderRadius={10}
             />
             <Seperator width={10} />
-            <Text fontSize={13} text={'2 coin'} />
+            <Text fontSize={13} text={`${context.me.userCoin} coin`} />
             <Seperator width={20} />
             <Image
               local
@@ -81,12 +81,12 @@ export default function MyInfo(props) {
               borderRadius={10}
             />
             <Seperator width={10} />
-            <Text fontSize={13} text={'3 point'} />
+            <Text fontSize={13} text={`${context.me.userPoint} point`} />
           </HView>
         </View>
         <HView style={{padding: 50, justifyContent: 'space-around'}}>
           <TouchableOpacity
-            onPress={() => actionSheetRef.current?.setModalVisible()}
+            onPress={() => setModalVisible(true)}
             style={{alignItems: 'center'}}>
             <Image
               local
@@ -123,16 +123,14 @@ export default function MyInfo(props) {
           </TouchableOpacity>
         </HView>
       </ScrollView>
-      <ActionSheet
-        ref={actionSheetRef}
-        headerAlwaysVisible={true}
-        footerAlwaysVisible={true}
-        gestureEnabled={true}
-        bounceOnOpen={true}>
-        <View>
-          <View style={{padding: 20}}>
-            <Text text={'전적'} fontWeight={'bold'} fontSize={22} />
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={() => setModalVisible(false)}>
+        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
+          <View style={{alignItems: 'center'}}>
+            <Text text={'전적'} fontWeight={'bold'} fontSize={18} />
           </View>
+          <Seperator height={30} />
           <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
             <HView>
               <View style={{flex: 0.3}}>
@@ -238,16 +236,15 @@ export default function MyInfo(props) {
             </HView>
           </View>
           <Seperator height={50} />
-          <View style={{paddingHorizontal: 10}}>
-            <Button
-              text={'확인'}
-              onPress={() => null}
-              color={custom.themeColor}
-              stretch
-            />
-          </View>
+          <Button
+            text={'확인'}
+            onPress={() => setModalVisible(false)}
+            color={custom.themeColor}
+            stretch
+            size={'large'}
+          />
         </View>
-      </ActionSheet>
+      </Modal>
     </Container>
   );
 }

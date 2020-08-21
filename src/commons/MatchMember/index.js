@@ -383,7 +383,12 @@ export default function MatchMember(props) {
             <TouchableOpacity
               onPress={() => {
                 setMemberModal(false);
-                props.navigation.navigate('Report');
+                props.navigation.navigate('Report', {
+                  type: 1,
+                  userPk: '',
+                  userName: '',
+                  userImgUrl: '',
+                });
               }}
               style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icons

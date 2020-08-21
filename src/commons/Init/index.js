@@ -3,6 +3,8 @@ import {API_URL} from '../../config';
 import axios from 'axios';
 import {Platform, NativeModules} from 'react-native';
 import {logApi, getCurrentLocation} from 'react-native-nuno-ui/funcs';
+import moment from 'moment';
+import 'moment/locale/ko';
 
 export default async () => {
   const lang = await AsyncStorage.getItem('lang');
@@ -25,6 +27,8 @@ export default async () => {
     global.lang = lang;
   }
 
+  moment.locale(global.lang);
+
   // location
   global.address = await getCurrentLocation(lang);
   console.log('location', global.address);
@@ -36,6 +40,10 @@ export default async () => {
   axios.defaults.headers.common['token'] = token;
   axios.defaults.headers.common['os'] = Platform.OS === 'android' ? 1 : 2;
   axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+  // 각종 asyncstorage global value
+  const hideFilterGuide = await AsyncStorage.getItem('hideFilterGuide');
+  global.hideFilterGuide = hideFilterGuide;
 
   await axios
     .post('version', {})

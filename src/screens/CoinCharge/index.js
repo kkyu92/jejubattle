@@ -12,8 +12,10 @@ import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
+import {AppContext} from '../../context';
 
 export default function CoinCharge(props) {
+  const context = React.useContext(AppContext);
   return (
     <Container>
       <Header
@@ -34,10 +36,13 @@ export default function CoinCharge(props) {
         navigation={props.navigation}
       />
       <ScrollView>
-
         <Seperator height={20} />
         <View style={{padding: 20}}>
-          <Text text={'현재 내 코인&포인트'} fontSize={18} fontWeight={'bold'} />
+          <Text
+            text={'현재 내 코인&포인트'}
+            fontSize={18}
+            fontWeight={'bold'}
+          />
         </View>
         <HView style={{paddingHorizontal: 20}}>
           <HView style={{flex: 0.5, padding: 20, alignItems: 'center'}}>
@@ -49,7 +54,11 @@ export default function CoinCharge(props) {
               resizeMode={'cover'}
             />
             <Seperator width={10} />
-            <Text text={'배틀코인 2개'} fontSize={13} color={'dimgray'} />
+            <Text
+              text={`배틀코인 ${context.me.userCoin}개`}
+              fontSize={13}
+              color={'dimgray'}
+            />
           </HView>
           <HView style={{flex: 0.5, padding: 20, alignItems: 'center'}}>
             <Image
@@ -60,7 +69,11 @@ export default function CoinCharge(props) {
               resizeMode={'cover'}
             />
             <Seperator width={10} />
-            <Text text={'배틀코인 2개'} fontSize={13} color={'dimgray'} />
+            <Text
+              text={`배틀포인트 ${context.me.userPoint}개`}
+              fontSize={13}
+              color={'dimgray'}
+            />
           </HView>
         </HView>
 
@@ -103,7 +116,11 @@ export default function CoinCharge(props) {
                 <Text text={'배틀코인 1개'} fontSize={18} />
               </HView>
               <HView style={{alignItems: 'flex-end'}}>
-                <Text text={'1,200 원'} fontSize={23} style={{textDecorationLine: 'line-through'}} />
+                <Text
+                  text={'1,200 원'}
+                  fontSize={23}
+                  style={{textDecorationLine: 'line-through'}}
+                />
                 <Text text={'1,200 원'} fontSize={23} />
               </HView>
             </View>
@@ -123,7 +140,11 @@ export default function CoinCharge(props) {
                 <Text text={'배틀코인 1개'} fontSize={18} />
               </HView>
               <HView style={{alignItems: 'flex-end'}}>
-                <Text text={'1,200 원'} fontSize={23} style={{textDecorationLine: 'line-through'}} />
+                <Text
+                  text={'1,200 원'}
+                  fontSize={23}
+                  style={{textDecorationLine: 'line-through'}}
+                />
                 <Text text={'1,200 원'} fontSize={23} />
               </HView>
             </View>

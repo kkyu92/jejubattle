@@ -8,14 +8,17 @@ import {
   Text,
   Button,
 } from 'react-native-nuno-ui';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Platform} from 'react-native';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
+import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import {custom} from '../../config';
+import Entypo from 'react-native-vector-icons/Entypo';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
+import {getStatusBarHeight, getBottomSpace} from 'react-native-iphone-x-helper';
 
 const actionSheetRef = React.createRef();
 
@@ -24,6 +27,9 @@ export default function FullMap(props) {
   const [currentLocation, setCurrentLocation] = React.useState({});
   const [result, setResult] = React.useState([]);
   const [actionSheetComponent, setActionSheetComponent] = React.useState(null);
+  const [hideFilterGuide, setHideFilterGuide] = React.useState(
+    global.hideFilterGuide,
+  );
 
   React.useEffect(() => {
     aroundme();
@@ -137,6 +143,7 @@ export default function FullMap(props) {
           </HView>
           <Seperator width={20} />
           <TouchableOpacity
+            onPress={() => props.navigation.navigate('FullMapFilter')}
             style={{
               backgroundColor: 'white',
               width: 40,
@@ -152,6 +159,40 @@ export default function FullMap(props) {
           </TouchableOpacity>
         </HView>
       </View>
+      {!hideFilterGuide && (
+        <View
+          style={{
+            backgroundColor: '#303441',
+            borderRadius: 5,
+            paddingHorizontal: 20,
+            paddingTop: 20,
+            position: 'absolute',
+            top: (Platform.OS === 'ios' ? getStatusBarHeight() : 0) + 80,
+            right: 20,
+            alignItems: 'center',
+          }}>
+          <Text
+            text={'필터를 통해 원하는 시설을 찾으세요!'}
+            color={'white'}
+            fontSize={16}
+          />
+          <TouchableOpacity
+            onPress={async () => {
+              await AsyncStorage.setItem(
+                'hideFilterGuide',
+                JSON.stringify(true),
+              );
+              setHideFilterGuide(true);
+              global.hideFilterGuide = true;
+            }}
+            style={{padding: 15}}>
+            <Text text={'X 다시보지않기'} color={'lightgray'} fontSize={12} />
+          </TouchableOpacity>
+          <View style={{position: 'absolute', top: -18, right: 10}}>
+            <Entypo name={'triangle-up'} color={'#303441'} size={26} />
+          </View>
+        </View>
+      )}
       <ActionSheet
         ref={actionSheetRef}
         gestureEnabled={true}

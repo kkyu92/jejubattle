@@ -13,82 +13,129 @@ import {
 } from 'react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import Icons from '../../commons/Icons';
-import StarRating from 'react-native-star-rating';
-import {custom} from '../../config';
+import ImageCropPicker from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import { API_URL } from '../../config';
+import { screenWidth } from '../../styles';
 
 export default function Report(props) {
   const [modalWarning, setModalWarning] = React.useState(false);
+  const [items, setItems] = React.useState([]);
+  const [code, setCode] = React.useState('');
+  const [text, setText] = React.useState('');
+  const [file, setFile] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    Axios.get(`getReport/${props.route.params.type}`)
+      .then((res) => {
+        logApi('getReport', res.data);
+        setItems(res.data);
+      })
+      .catch((err) => {
+        logApi('getReport error', err.response);
+      });
+  }, []);
+  const save = async () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('target', props.route.params.userPk);
+    formData.append('code', code);
+    formData.append('text', text);
+    formData.append('rePk', props.route.params.rePk);
+    formData.append('reContent', props.route.params.reContent);
+    formData.append('reDate', props.route.params.reDate);
+    if (file) {
+      const response = await fetch(file);
+      const blob = await response.blob();
+
+      formData.append('file', {
+        uri: file,
+        name: blob.data.name,
+        type: blob.data.type,
+      });
+    }
+    Axios({
+      url: API_URL + 'report',
+      method: 'POST',
+      data: formData,
+      headers: {
+        Accept: 'application/json',
+        token: global.token,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then((res) => {
+        setLoading(false);
+        logApi('report', res.data);
+        setModalWarning(false);
+        props.navigation.goBack();
+      })
+      .catch((err) => {
+        setLoading(false);
+        logApi('report error', err.response);
+      });
+  };
+  const getPhoto = (index) => {
+    ImageCropPicker.openPicker({
+      width: 300,
+      height: 300,
+      mediaType: 'photo',
+      smartAlbums: ['UserLibrary'],
+      cropping: true,
+    })
+      .then(async (res) => {
+        console.log('ImagePicker openPicker', res);
+        setFile(res.path);
+        // setFile({path: res.path, mime: res.mime});
+      })
+      .catch((err) => {
+        console.log('ImagePicker openPicker error', err);
+      });
+  };
   return (
     <Container>
       <Header left={'back'} title={'신고하기'} navigation={props.navigation} />
       <KeyboardAwareScrollView>
         <View style={{paddingVertical: 50, alignItems: 'center'}}>
-          <Image
-            local
-            uri={require('../../../assets/img/img-user2.png')}
-            width={68}
-            height={68}
-            borderRadius={34}
-          />
+          {props.route.params.userImgUrl ? (
+            <Image
+              uri={props.route.params.userImgUrl}
+              width={68}
+              height={68}
+              borderRadius={34}
+            />
+          ) : (
+            <Image
+              local
+              uri={require('../../../assets/img/img-user2.png')}
+              width={68}
+              height={68}
+              borderRadius={34}
+            />
+          )}
           <Seperator height={10} />
-          <Text text={'소소한***'} fontSize={13} color={'gray'} />
+          <Text
+            text={props.route.params.userName}
+            fontSize={13}
+            color={'gray'}
+          />
         </View>
         <View style={{paddingHorizontal: 40}}>
-          <View style={{paddingVertical: 10}}>
-            <Checkbox
-              value={''}
-              onPress={() => null}
-              label={'노 쇼 (No Show)'}
-              checked={true}
-              size={'large'}
-            />
-          </View>
-          <View style={{paddingVertical: 10}}>
-            <Checkbox
-              value={''}
-              onPress={() => null}
-              label={'비매너 플레이 및 언행'}
-              checked={false}
-              size={'large'}
-            />
-          </View>
-          <View style={{paddingVertical: 10}}>
-            <Checkbox
-              value={''}
-              onPress={() => null}
-              label={'악의적인 승부 조작'}
-              checked={false}
-              size={'large'}
-            />
-          </View>
-          <View style={{paddingVertical: 10}}>
-            <Checkbox
-              value={''}
-              onPress={() => null}
-              label={'욕설, 폭력, 협박 등의 형사상의 문제'}
-              checked={false}
-              size={'large'}
-            />
-          </View>
-          <View style={{paddingVertical: 10}}>
-            <Checkbox
-              value={''}
-              onPress={() => null}
-              label={'성희롱, 성추행 등의 성적 불쾌감 형성'}
-              checked={false}
-              size={'large'}
-            />
-          </View>
-          <View style={{paddingVertical: 10}}>
-            <Checkbox
-              value={''}
-              onPress={() => null}
-              label={'사행성, 불법 광고 홍보 및 전파'}
-              checked={false}
-              size={'large'}
-            />
-          </View>
+          {items.map((e, i) => {
+            return (
+              <View style={{paddingVertical: 10}} key={i}>
+                <Checkbox
+                  onPress={() => setCode(e.code)}
+                  label={e.name}
+                  checked={e.code === code}
+                  // size={'large'}
+                />
+              </View>
+            );
+          })}
         </View>
         <Seperator height={20} />
         <View style={{padding: 20}}>
@@ -101,8 +148,8 @@ export default function Report(props) {
           <TextInput
             multiline={true}
             placeholder={'신고하실 내용을 자세하게 적어주세요.'}
-            value={''}
-            onChangeText={() => null}
+            value={text}
+            onChangeText={(e) => setText(e)}
             showRemain={true}
             maxLength={5000}
             backgroundColor={'whitesmoke'}
@@ -110,18 +157,30 @@ export default function Report(props) {
           />
         </View>
         <HView style={{paddingHorizontal: 20, marginBottom: 20}}>
-          <TouchableOpacity
-            onPress={() => null}
-            style={{
-              padding: 10,
-              alignItems: 'center',
-              borderWidth: 1,
-              borderColor: 'lightgray',
-              borderRadius: 5,
-            }}>
-            <Icons name={'icon-camera-20'} size={20} color={'dimgray'} />
-            <Seperator height={5} />
-            <Text text={'사진'} fontSize={14} color={'dimgray'} />
+          <TouchableOpacity onPress={() => getPhoto()}>
+            {file ? (
+              <Image
+                width={Math.floor(screenWidth / 4)}
+                height={Math.floor(screenWidth / 4)}
+                borderRadius={5}
+                // onPress={() => null}
+                uri={file}
+              />
+            ) : (
+              <View
+                style={{
+                  padding: 10,
+                  paddingHorizontal: 20,
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderColor: 'lightgray',
+                  borderRadius: 5,
+                }}>
+                <Icons name={'icon-camera-20'} size={20} color={'dimgray'} />
+                <Seperator height={5} />
+                <Text text={'사진'} fontSize={14} color={'dimgray'} />
+              </View>
+            )}
           </TouchableOpacity>
         </HView>
       </KeyboardAwareScrollView>
@@ -162,7 +221,9 @@ export default function Report(props) {
           <Text
             fontSize={16}
             color={'#303441'}
-            text={'본 신고는 해당 유저의 사용 패널티를 부과하기 위한 신고입니다.\n형사상, 민사상의 문제는 경찰에 직접 신고하여 주시기 바랍니다.\n\n(무고한 사람을 신고할 시 패널티를 받으실 수 있습니다.)'}
+            text={
+              '본 신고는 해당 유저의 사용 패널티를 부과하기 위한 신고입니다.\n형사상, 민사상의 문제는 경찰에 직접 신고하여 주시기 바랍니다.\n\n(무고한 사람을 신고할 시 패널티를 받으실 수 있습니다.)'
+            }
             style={{textAlign: 'center'}}
           />
           <Seperator height={50} />
@@ -171,7 +232,7 @@ export default function Report(props) {
               <Button
                 text={'취소'}
                 color={'gray'}
-                onPress={() => null}
+                onPress={() => setModalWarning(false)}
                 size={'large'}
                 stretch
               />
@@ -181,9 +242,10 @@ export default function Report(props) {
               <Button
                 text={'신고'}
                 color={'#FE7262'}
-                onPress={() => null}
+                onPress={() => save()}
                 size={'large'}
                 stretch
+                loading={loading}
               />
             </View>
           </HView>

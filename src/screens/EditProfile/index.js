@@ -30,7 +30,7 @@ import {sports1Table} from '../../constants';
 export default function EditProfile(props) {
   const context = React.useContext(AppContext);
   const [photo, setPhoto] = React.useState('');
-  const [introduce, setIntroduce] = React.useState('');
+  const [introduce, setIntroduce] = React.useState(context.me.userIntro || '');
   const [introduceModal, setIntroduceModal] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
   const [currentPassword, setCurrentPassword] = React.useState('');
@@ -277,7 +277,7 @@ export default function EditProfile(props) {
             </View>
             <View style={{flex: 0.7}}>
               <Text
-                text={context.me.userIntro || '잘 부탁드립니다.'}
+                text={introduce || '잘 부탁드립니다.'}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}

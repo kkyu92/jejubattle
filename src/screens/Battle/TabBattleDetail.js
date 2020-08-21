@@ -82,7 +82,14 @@ export default function TabBattleDetail(props) {
           }}>
           <TouchableOpacity
             style={{flex: 1, alignItems: 'center'}}
-            onPress={() => props.navigation.navigate('Report')}>
+            onPress={() =>
+              props.navigation.navigate('Report', {
+                type: 1,
+                userPk: '',
+                userName: '',
+                userImgUrl: '',
+              })
+            }>
             <Icons name={'icon-report-30'} size={30} color={'silver'} />
             <Seperator height={10} />
             <Text
@@ -233,25 +240,22 @@ export default function TabBattleDetail(props) {
                 }
                 setModalStart(true);
               } else {
-                if (
-                  props.info.teamA.member.length >=
-                  props.info.teamB.member.length
-                ) {
-                  const team = {...props.info.teamB};
-                  team.member.push({
-                    userPk: context.me.userPk,
-                    ready: 'Y',
-                    regdate: new Date(),
-                  });
-                  updateBattle({teamB: team});
-                } else {
+                const foundedAtTeamA = props.info.teamA.member
+                  .map((e) => e.userPk)
+                  .indexOf(context.me.userPk);
+                const foundedAtTeamB = props.info.teamB.member
+                  .map((e) => e.userPk)
+                  .indexOf(context.me.userPk);
+                if (foundedAtTeamA !== -1) {
                   const team = {...props.info.teamA};
-                  team.member.push({
-                    userPk: context.me.userPk,
-                    ready: 'Y',
-                    regdate: new Date(),
-                  });
+                  team.member[foundedAtTeamA].ready = 'Y';
                   updateBattle({teamA: team});
+                }
+
+                if (foundedAtTeamB !== -1) {
+                  const team = {...props.info.teamB};
+                  team.member[foundedAtTeamB].ready = 'Y';
+                  updateBattle({teamB: team});
                 }
               }
             }}

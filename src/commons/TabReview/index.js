@@ -133,7 +133,17 @@ export default function TabReview(props) {
                   <Seperator width={20} />
                   {e.userPk !== context.me.userPk && (
                     <TouchableOpacity
-                      onPress={() => props.navigation.navigate('Report')}
+                      onPress={() =>
+                        props.navigation.navigate('Report', {
+                          type: 2,
+                          userPk: e.userPk,
+                          userName: e.userName,
+                          userImgUrl: e.userImgUrl,
+                          rePk: e.rePk,
+                          reContent: e.reContent,
+                          reDate: e.reUpdatetime,
+                        })
+                      }
                       style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Icons
                         name={'icon-declare-15'}

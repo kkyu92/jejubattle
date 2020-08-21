@@ -18,20 +18,41 @@ import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
+import {AppContext} from '../../context';
+import {sports1Table} from '../../constants';
 
 export default function Battle(props) {
+  const context = React.useContext(AppContext);
   const [filterVisible, setFilterVisible] = React.useState(false);
   const [enteranceAlert, setEnteranceAlert] = React.useState(false);
   const [showMyBattle, setShowMyBattle] = React.useState(true);
   const [battles, setBattles] = React.useState([]);
   const [mybattles, setMybattles] = React.useState([]);
   const [list, setList] = React.useState([]);
+  const [sports, setSports] = React.useState([]);
+  const [selectedSports, setSelectedSports] = React.useState(
+    context.me.userSport || [],
+  );
   const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([]);
   const [pullToRefresh, setPullToRefresh] = React.useState(true);
 
   React.useEffect(() => {
     pullToRefresh && get();
   }, [pullToRefresh]);
+  React.useEffect(() => {
+    Axios.post('sportsList', {})
+      .then((res) => {
+        logApi('sportsList', res.data);
+        let temp = [...res.data.gojiList];
+        temp = temp.map((e, i) => {
+          return {...e, icon: sports1Table[i].icon};
+        });
+        setSports(temp);
+      })
+      .catch((err) => {
+        logApi('sportsList error', err.response);
+      });
+  }, []);
   const get = () => {
     Axios.get('battle')
       .then((res) => {
@@ -63,6 +84,25 @@ export default function Battle(props) {
       .catch((err) => {
         logApi('battle error', err.response);
         setPullToRefresh(false);
+      });
+  };
+  const handleSports = (e) => {
+    const temp = [...selectedSports];
+    const found = temp.map((t) => t.code).indexOf(e.code);
+    if (found === -1) {
+      temp.push(e);
+    } else {
+      temp.splice(found, 1);
+    }
+    setSelectedSports(temp);
+  };
+  const updateBattle = async (data) => {
+    await Axios.post('updateBattle', data)
+      .then((res) => {
+        logApi('updateBattle', res.data);
+      })
+      .catch((err) => {
+        logApi('updateBattle error', err.response);
       });
   };
   const renderItem = ({item, index}) => {
@@ -108,10 +148,50 @@ export default function Battle(props) {
       } else {
         return (
           <ListItemBattle
-            onPress={() => {
-              if (item.maxRow === item.roomRow) {
-                setEnteranceAlert(true);
+            onPress={async () => {
+              // 내가 이미 방에 참여중인지 확인
+              if (
+                item.teamA.member.filter((e) => e.userPk === context.me.userPk)
+                  .length === 0 &&
+                item.teamB.member.filter((e) => e.userPk === context.me.userPk)
+                  .length === 0
+              ) {
+                // 참여하지 않는다면
+                // 방이 만원인지 확인
+                if (
+                  item.teamA.member.length >=
+                    JSON.parse(item.btName.split(' ')[0]) &&
+                  item.teamB.member.length >=
+                    JSON.parse(item.btName.split(' ')[0])
+                ) {
+                  setEnteranceAlert(true);
+                } else {
+                  // 만원이 아니면
+                  // 방에 몇명이 찼는지 확인하고 적절한 방으로 들어감
+                  if (item.teamA.member.length >= item.teamB.member.length) {
+                    const team = {...item.teamB};
+                    team.member.push({
+                      userPk: context.me.userPk,
+                      ready: 'N',
+                      regdate: new Date(),
+                    });
+                    await updateBattle({baPk: item.baPk, teamB: team});
+                  } else {
+                    const team = {...item.teamA};
+                    team.member.push({
+                      userPk: context.me.userPk,
+                      ready: 'N',
+                      regdate: new Date(),
+                    });
+                    await updateBattle({baPk: item.baPk, teamA: team});
+                  }
+                  props.navigation.navigate('BattleView', {
+                    baPk: item.baPk,
+                    refresh: () => get(),
+                  });
+                }
               } else {
+                // 이미 배틀방에 참여하고 있다면
                 props.navigation.navigate('BattleView', {
                   baPk: item.baPk,
                   refresh: () => get(),
@@ -143,7 +223,7 @@ export default function Battle(props) {
         navigation={props.navigation}
         rightComponent={
           <TouchableOpacity
-            onPress={() => setFilterVisible(true)}
+            onPress={() => props.navigation.navigate('BattleFilter')}
             style={{
               paddingHorizontal: 20,
               paddingVertical: 5,
@@ -183,7 +263,11 @@ export default function Battle(props) {
         <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
           <View style={{padding: 20}}>
             <View style={{alignItems: 'center'}}>
-              <Text text={'인원이 가득 찼습니다.'} fontWeight={'bold'} fontSize={18} />
+              <Text
+                text={'인원이 가득 찼습니다.'}
+                fontWeight={'bold'}
+                fontSize={18}
+              />
             </View>
           </View>
           <Seperator height={40} />
@@ -194,52 +278,6 @@ export default function Battle(props) {
             stretch
             color={custom.themeColor}
           />
-        </View>
-      </Modal>
-      <Modal
-        isVisible={filterVisible}
-        onBackdropPress={() => setFilterVisible(false)}>
-        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
-          <View style={{padding: 20}}>
-            <View style={{alignItems: 'center'}}>
-              <Text text={'필터'} fontWeight={'bold'} fontSize={18} />
-            </View>
-            <Seperator height={20} />
-            <HView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'등록순'} checked={true} />
-              </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'추천순'} checked={false} />
-              </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'내 위치순'} checked={false} />
-              </View>
-              <View style={{paddingVertical: 10}}>
-                <Checkbox label={'평점순'} checked={false} />
-              </View>
-            </HView>
-          </View>
-          <HView style={{padding: 10}}>
-            <View style={{flex: 1}}>
-              <Button
-                text={'취소'}
-                onPress={() => setFilterVisible(false)}
-                color={'gray'}
-                stretch
-              />
-            </View>
-            <Seperator width={10} />
-            <View style={{flex: 1}}>
-              <Button
-                text={'적용하기'}
-                onPress={() => null}
-                color={custom.themeColor}
-                stretch
-                disable={false}
-              />
-            </View>
-          </HView>
         </View>
       </Modal>
     </Container>

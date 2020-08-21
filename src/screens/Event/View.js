@@ -12,12 +12,13 @@ import {
   Modal,
   ImageCarousel,
 } from 'react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import {View, ScrollView, TouchableOpacity, FlatList, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, API_URL} from '../../config';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import {getBottomSpace} from 'react-native-iphone-x-helper';
 import {screenWidth} from '../../styles';
 import {share, logApi} from 'react-native-nuno-ui/funcs';
 import Axios from 'axios';
@@ -286,8 +287,10 @@ export default function EventView(props) {
           color={'gray'}
         />
       </HView>
-      <KeyboardSpacer />
       <Seperator bottom />
+      {Platform.OS === 'ios' && (
+        <KeyboardSpacer topSpacing={-getBottomSpace()} />
+      )}
       {/* </View> */}
     </Container>
   );

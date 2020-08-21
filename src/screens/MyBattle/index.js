@@ -15,9 +15,27 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
+import Axios from 'axios';
+import {logApi} from 'react-native-nuno-ui/funcs';
+import { AppContext } from '../../context';
 
 export default function MyBattle(props) {
-  const [filterVisible, setFilterVisible] = React.useState(false);
+  const context = React.useContext(AppContext);
+  const [mybattle, setMybattle] = React.useState([]);
+
+  React.useEffect(() => {
+    get();
+  }, []);
+  const get = () => {
+    Axios.get('myBattle')
+      .then((res) => {
+        logApi('myBattle', res.data);
+        setMybattle(res.data);
+      })
+      .catch((err) => {
+        logApi('myBattle error', err.response);
+      });
+  };
   const data = [
     {id: '0', status: 'waiting', level: '중수'},
     {id: '1', status: 'playing', level: '고수'},
@@ -30,7 +48,15 @@ export default function MyBattle(props) {
   ];
   const renderItem = ({item, index}) => {
     return (
-      <ListItemBattle onPress={() => props.navigation.navigate('BattleView')} item={item} />
+      <ListItemBattle
+        onPress={async () => {
+          props.navigation.navigate('BattleView', {
+            baPk: item.baPk,
+            refresh: () => get(),
+          });
+        }}
+        item={item}
+      />
     );
   };
   return (
@@ -53,8 +79,8 @@ export default function MyBattle(props) {
         }
       />
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={mybattle}
+        keyExtractor={(item) => JSON.stringify(item.baPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
