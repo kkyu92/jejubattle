@@ -13,11 +13,20 @@ import {custom} from '../../config';
 import Icons from '../Icons';
 import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
+import Axios from 'axios';
+import { logApi } from 'react-native-nuno-ui/funcs';
 
 export default function TabReview(props) {
   const context = React.useContext(AppContext);
   const delReview = (rePk) => {
-    props.refresh();
+    Axios.delete(`reply/${rePk}`)
+      .then((res) => {
+        logApi('delete reply', res.data);
+        props.refresh();
+      })
+      .catch((err) => {
+        logApi('delete reply error', err.response);
+      });
   };
   return (
     <Container>

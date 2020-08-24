@@ -23,8 +23,10 @@ import {screenWidth} from '../../styles';
 import {share, logApi} from 'react-native-nuno-ui/funcs';
 import Axios from 'axios';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { AppContext } from '../../context';
 
 export default function EventView(props) {
+  const context = React.useContext(AppContext);
   const [event, setEvent] = React.useState({});
   const [eventImgList, setEventImgList] = React.useState([]);
   const [replyList, setReplyList] = React.useState([]);
@@ -46,6 +48,16 @@ export default function EventView(props) {
       })
       .catch((err) => {
         logApi('eventInfo error', err.response);
+      });
+  };
+  const delReview = (rePk) => {
+    Axios.delete(`eventReply/${rePk}`)
+      .then((res) => {
+        logApi('delete eventReply', res.data);
+        get();
+      })
+      .catch((err) => {
+        logApi('delete eventReply error', err.response);
       });
   };
   const likeOn = () => {
@@ -181,6 +193,15 @@ export default function EventView(props) {
             <Text text={item.erContent} fontSize={15} />
             <Seperator height={5} />
             <Text text={item.erDatetime} color={'gray'} fontSize={14} />
+            <Seperator height={5} />
+            {context.me.userPk === item.userPk && (
+              <Button
+                text={'삭제'}
+                size={'medium'}
+                color={'white'}
+                onPress={() => delReview(item.erPk)}
+              />
+            )}
           </View>
           <Seperator width={20} />
           <View style={{alignItems: 'center'}}>

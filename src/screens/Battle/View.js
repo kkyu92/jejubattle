@@ -142,13 +142,15 @@ export default function BattleView(props) {
         </TouchableOpacity>
       </View>
       {showMatchMember && info.teamA && (
-        <MatchMember
-          info={info}
-          navigation={props.navigation}
-          refreshBattleView={() => get()}
-        />
+        <View style={{height: 150}}>
+          <MatchMember
+            info={info}
+            navigation={props.navigation}
+            refreshBattleView={() => get()}
+          />
+        </View>
       )}
-      <Seperator height={20} />
+      {/* <Seperator height={50} /> */}
       {info.baDate && (
         <TabView
           lazy

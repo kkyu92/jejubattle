@@ -7,16 +7,25 @@ import {
   TextInput,
   Modal,
   Button,
+  Checkbox,
 } from 'react-native-nuno-ui';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {custom} from '../../config';
-import {Alert, TouchableOpacity, View} from 'react-native';
+import {Alert, TouchableOpacity, View, CheckBox} from 'react-native';
 import {ShadowStyle} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 
-export default function ListItemBattle({item, navigation, refresh}) {
+export default function ListItemBattle({
+  item,
+  navigation,
+  refresh,
+  editMode,
+  handleCheck,
+  index,
+  deleteBattle,
+}) {
   const context = React.useContext(AppContext);
   const [enteranceAlert, setEnteranceAlert] = React.useState(false);
   const [passwordModal, setPasswordModal] = React.useState(false);
@@ -165,14 +174,26 @@ export default function ListItemBattle({item, navigation, refresh}) {
                     borderRadius={20}
                   />
                   <Seperator height={5} />
-                  <Button
-                    text={'삭제'}
-                    size={'medium'}
-                    color={'white'}
-                    textColor={'gray'}
-                    borderRadius={20}
-                    stretch
-                  />
+                  {editMode ? (
+                    <View style={{alignItems: 'center'}}>
+                      <Checkbox
+                        multiple
+                        checked={item.checked}
+                        onPress={() => handleCheck(index)}
+                        size={'large'}
+                      />
+                    </View>
+                  ) : (
+                    <Button
+                      text={'삭제'}
+                      size={'medium'}
+                      color={'white'}
+                      textColor={'gray'}
+                      borderRadius={20}
+                      onPress={() => deleteBattle([{baPk: item.baPk}])}
+                      stretch
+                    />
+                  )}
                 </>
               )}
               {item.baState === 'playing' && (

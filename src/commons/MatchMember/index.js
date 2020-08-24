@@ -19,6 +19,9 @@ import MySports from '../MySports';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
+import ActionSheet from 'react-native-actions-sheet';
+
+const actionSheetRef = React.createRef();
 
 export default function MatchMember(props) {
   const context = React.useContext(AppContext);
@@ -149,6 +152,7 @@ export default function MatchMember(props) {
               fontWeight={'500'}
               fontSize={16}
             />
+            {/* <View style={{height: 150}} /> */}
           </View>
           <View style={{padding: 30}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
@@ -274,6 +278,7 @@ export default function MatchMember(props) {
                 setSelectedTeam('A');
                 setMemberModalTeam(props.info.teamA);
                 setTeamMemberModal(true);
+                // actionSheetRef.current?.setModalVisible();
               }}
               style={{paddingVertical: 10, paddingHorizontal: 20}}>
               <Text
@@ -615,6 +620,25 @@ export default function MatchMember(props) {
                         />
                       </View>
                     )}
+                    {e.ready === 'Y' && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image
+                          local
+                          uri={require('../../../assets/img/icon-readymark.png')}
+                          width={30}
+                          height={30}
+                        />
+                      </View>
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -718,6 +742,150 @@ export default function MatchMember(props) {
           </HView>
         </View>
       </Modal>
+      <ActionSheet
+        ref={actionSheetRef}
+        gestureEnabled={true}
+        // keyboardShouldPersistTaps={'always'}
+        defaultOverlayOpacity={0}
+        bounceOnOpen={true}>
+        <View style={{padding: 20}}>
+          <View style={{alignItems: 'center'}}>
+            {selectedTeam === 'A' ? (
+              <Text text={'A팀'} fontSize={18} fontWeight={'bold'} />
+            ) : (
+              <Text text={'B팀'} fontSize={18} fontWeight={'bold'} />
+            )}
+          </View>
+
+          <Seperator height={30} />
+          <View>
+            <HView style={{flexWrap: 'wrap', justifyContent: 'flex-start'}}>
+              {memberModalTeam?.member.map((e, i) => {
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => {
+                      setMemberModalTeam(props.info.teamA);
+                      setMemberModal(true);
+                    }}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      backgroundColor: 'whitesmoke',
+                      padding: 12,
+                      borderRadius: 5,
+                      marginRight: 10,
+                      marginBottom: 10,
+                    }}>
+                    <Text
+                      text={e.userName}
+                      fontSize={14}
+                      fontWeight={'500'}
+                      color={'dimgray'}
+                    />
+                    {i !== 0 &&
+                      (context.me.userPk ===
+                        props.info?.teamA?.member[0].userPk ||
+                        context.me.userPk ===
+                          props.info?.teamB?.member[0].userPk) && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (selectedTeam === 'A') {
+                              const teamA = {...memberModalTeam};
+                              const foundedIndex = teamA.member
+                                .map((f) => f.userPk)
+                                .indexOf(e.userPk);
+                              if (foundedIndex !== -1) {
+                                teamA.member.splice(foundedIndex, 1);
+                                updateBattle({teamA: teamA}, true);
+                              }
+                            }
+                            if (selectedTeam === 'B') {
+                              const teamB = {...memberModalTeam};
+                              const foundedIndex = teamB.member
+                                .map((f) => f.userPk)
+                                .indexOf(e.userPk);
+                              if (foundedIndex !== -1) {
+                                teamB.member.splice(foundedIndex, 1);
+                                updateBattle({teamB: teamB}, true);
+                              }
+                            }
+                          }}
+                          style={{paddingLeft: 20}}>
+                          <AntDesign
+                            name={'close'}
+                            size={13}
+                            color={'dimgray'}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    {i === 0 && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: -15,
+                          right: -7,
+                          backgroundColor: custom.themeColor,
+                          borderRadius: 5,
+                          padding: 5,
+                        }}>
+                        <Text
+                          text={selectedTeam === 'A' ? '팀장' : '방장'}
+                          fontSize={12}
+                          color={'white'}
+                        />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </HView>
+          </View>
+          <Seperator height={30} />
+
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                size={'large'}
+                color={custom.themeColor}
+                onPress={() => {
+                  setMemberModalTeam();
+                  setTeamMemberModal(false);
+                }}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'확인'}
+                color={custom.themeColor}
+                onPress={() => {
+                  setMemberModalTeam();
+                  setTeamMemberModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+          {/* 팀장위임 */}
+          {context.me.userPk === memberModalTeam?.member[0].userPk && (
+            <View style={{position: 'absolute', top: 20, right: 20}}>
+              <TouchableOpacity
+                onPress={() => {}}
+                style={{paddingVertical: 2, paddingHorizontal: 20}}>
+                <Text
+                  text={'팀장 위임'}
+                  fontSize={16}
+                  color={custom.themeColor}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </ActionSheet>
     </Container>
   );
 }
