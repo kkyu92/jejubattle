@@ -66,7 +66,13 @@ export default function FullMap(props) {
           <Button
             text={'공유하기'}
             size={'large'}
-            onPress={() => null}
+            onPress={() => {
+              if (props.route.params.share) {
+                actionSheetRef.current?.setModalVisible(false);
+                props.route.params.share(e);
+                props.navigation.goBack();
+              }
+            }}
             stretch
             color={custom.themeColor}
           />

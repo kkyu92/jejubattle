@@ -40,9 +40,9 @@ export default function TabBattleDetail(props) {
   );
   // const [role, setRole] = React.useState('');
 
-  const updateBattle = (data) => {
+  const updateBattle = async (data, update) => {
     setLoading(true);
-    Axios.post('updateBattle', {
+    await Axios.post('updateBattle', {
       baPk: props.info.baPk,
       ...data,
     })
@@ -50,7 +50,9 @@ export default function TabBattleDetail(props) {
         logApi('updateBattle', res.data);
         setLoading(false);
         setModalSetting(false);
-        props.refreshBattleView && props.refreshBattleView();
+        if (update && props.refreshBattleView) {
+          props.refreshBattleView();
+        }
       })
       .catch((err) => {
         logApi('updateBattle error', err.response);
@@ -228,7 +230,7 @@ export default function TabBattleDetail(props) {
                 ? '배틀시작'
                 : '배틀준비'
             }
-            onPress={() => {
+            onPress={async () => {
               if (context.me.userPk === props.info.teamA.member[0].userPk) {
                 if (!props.info.baPlace || !props.info.baStartTime) {
                   setModalSettingAlert(true);
@@ -249,13 +251,13 @@ export default function TabBattleDetail(props) {
                 if (foundedAtTeamA !== -1) {
                   const team = {...props.info.teamA};
                   team.member[foundedAtTeamA].ready = 'Y';
-                  updateBattle({teamA: team});
+                  await updateBattle({teamA: team}, true);
                 }
 
                 if (foundedAtTeamB !== -1) {
                   const team = {...props.info.teamB};
                   team.member[foundedAtTeamB].ready = 'Y';
-                  updateBattle({teamB: team});
+                  await updateBattle({teamB: team}, true);
                 }
               }
             }}
@@ -383,7 +385,7 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'예'}
                 color={'gray'}
-                onPress={() => {
+                onPress={async () => {
                   const foundedAtTeamA = props.info.teamA.member
                     .map((e) => e.userPk)
                     .indexOf(context.me.userPk);
@@ -393,14 +395,15 @@ export default function TabBattleDetail(props) {
                   if (foundedAtTeamA !== -1) {
                     const team = {...props.info.teamA};
                     team.member.splice(foundedAtTeamA, 1);
-                    updateBattle({teamA: team});
+                    await updateBattle({teamA: team}, false);
                   }
                   if (foundedAtTeamB !== -1) {
                     const team = {...props.info.teamB};
                     team.member.splice(foundedAtTeamB, 1);
-                    updateBattle({teamB: team});
+                    await updateBattle({teamB: team}, false);
                   }
                   setModalExit2(false);
+                  props.refresh && props.refresh();
                   props.navigation.goBack();
                 }}
                 size={'large'}
@@ -586,7 +589,11 @@ export default function TabBattleDetail(props) {
               fontSize={18}
               fontWeight={'bold'}
               color={'black'}
-              text={'필수설정'}
+              text={
+                context.me.userPk === props.info.teamA.member[0].userPk
+                  ? '필수설정'
+                  : '배틀조건확인'
+              }
             />
           </View>
           <Seperator height={50} />
@@ -597,6 +604,7 @@ export default function TabBattleDetail(props) {
               onChangeText={(e) => setPlace(e)}
               borderWidth={0}
               placeholder={'장소이름'}
+              editable={context.me.userPk === props.info.teamA.member[0].userPk}
             />
             <Seperator line marginBottom={20} />
             <Text text={'시간'} fontSize={14} fontWeight={'bold'} />
@@ -607,6 +615,7 @@ export default function TabBattleDetail(props) {
               onChange={(e) => setStartTime(e)}
               borderWidth={0}
               placeholder={'자세한시간'}
+              disable={context.me.userPk !== props.info.teamA.member[0].userPk}
             />
             <Seperator line marginBottom={20} />
             <Text text={'날짜선택'} fontSize={14} fontWeight={'bold'} />
@@ -616,37 +625,51 @@ export default function TabBattleDetail(props) {
               onChange={(e) => setDate(e)}
               borderWidth={0}
               placeholder={'자세한시간'}
+              disable={context.me.userPk !== props.info.teamA.member[0].userPk}
             />
             <Seperator line />
           </View>
           <Seperator height={50} />
-          <HView>
-            <View style={{flex: 1}}>
-              <Button
-                text={'취소'}
-                color={'gray'}
-                onPress={() => setModalSetting(false)}
-                size={'large'}
-                stretch
-              />
-            </View>
-            <Seperator width={20} />
-            <View style={{flex: 1}}>
-              <Button
-                text={'적용'}
-                color={custom.themeColor}
-                onPress={() =>
-                  updateBattle({
-                    baPlace: place,
-                    baStartTime: moment(startTime).format('HH:MM'),
-                  })
-                }
-                size={'large'}
-                loading={loading}
-                stretch
-              />
-            </View>
-          </HView>
+          {context.me.userPk === props.info.teamA.member[0].userPk ? (
+            <HView>
+              <View style={{flex: 1}}>
+                <Button
+                  text={'취소'}
+                  color={'gray'}
+                  onPress={() => setModalSetting(false)}
+                  size={'large'}
+                  stretch
+                />
+              </View>
+              <Seperator width={20} />
+              <View style={{flex: 1}}>
+                <Button
+                  text={'적용'}
+                  color={custom.themeColor}
+                  onPress={async () =>
+                    await updateBattle(
+                      {
+                        baPlace: place,
+                        baStartTime: moment(startTime).format('HH:MM'),
+                      },
+                      true,
+                    )
+                  }
+                  size={'large'}
+                  loading={loading}
+                  stretch
+                />
+              </View>
+            </HView>
+          ) : (
+            <Button
+              text={'확인'}
+              size={'large'}
+              onPress={() => setModalSetting(false)}
+              stretch
+              color={custom.themeColor}
+            />
+          )}
         </View>
       </Modal>
       <Modal
@@ -686,8 +709,8 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'완료'}
                 color={custom.themeColor}
-                onPress={() => {
-                  updateBattle();
+                onPress={async () => {
+                  await updateBattle();
                   setModalEditBattleOwner(false);
                 }}
                 size={'large'}

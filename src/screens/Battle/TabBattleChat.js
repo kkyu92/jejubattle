@@ -69,20 +69,19 @@ export default function TabBattleChat({info, navigation}) {
         if (msgs.length < 40) {
           setMoredone(true);
         }
-        let temp = [...messages];
-        temp = temp.concat(
-          msgs.map((f) => ({
-            ...f,
-            id: f.userPk,
-            index: JSON.stringify(f.msgPk),
-          })),
-        );
+        const temp = msgs.map((f) => ({
+          ...f,
+          id: f.userPk,
+          index: JSON.stringify(f.msgPk),
+        }));
         setPage(page + 1);
-        setMessages(temp);
+        setMessages((old) => [...temp, ...old]);
       });
       stompClient.current.send(`/in/${info.baPk}`, {});
     });
-    return connection;
+    return () => {
+      stompClient.current.disconnect();
+    };
   }, []);
   // return stompClient.disconnect((e) => {
   //   console.log('Socket disconnected', e);
@@ -121,7 +120,16 @@ export default function TabBattleChat({info, navigation}) {
         fontSize={16}
         leftComponent={
           <TouchableOpacity
-            onPress={() => null}
+            onPress={() =>
+              navigation.navigate('FullMap', {
+                share: (data) => {
+                  send({
+                    text: data.faName,
+                    avatar: context.me.userImgUrl || '',
+                  });
+                },
+              })
+            }
             style={{paddingRight: 10, paddingVertical: 5}}>
             <Entypo name={'location-pin'} size={26} color={custom.themeColor} />
           </TouchableOpacity>

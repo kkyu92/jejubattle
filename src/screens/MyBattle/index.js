@@ -22,40 +22,30 @@ import { AppContext } from '../../context';
 export default function MyBattle(props) {
   const context = React.useContext(AppContext);
   const [mybattle, setMybattle] = React.useState([]);
+  const [pullToRefresh, setPullToRefresh] = React.useState(true);
 
   React.useEffect(() => {
-    get();
-  }, []);
+    pullToRefresh && get();
+  }, [pullToRefresh]);
+
   const get = () => {
     Axios.get('myBattle')
       .then((res) => {
         logApi('myBattle', res.data);
         setMybattle(res.data);
+        setPullToRefresh(false);
       })
       .catch((err) => {
         logApi('myBattle error', err.response);
+        setPullToRefresh(false);
       });
   };
-  const data = [
-    {id: '0', status: 'waiting', level: '중수'},
-    {id: '1', status: 'playing', level: '고수'},
-    {id: '2', status: 'done', level: '프로', win: true},
-    {id: '3', status: 'done', level: '프로', win: false},
-    {id: '4', status: 'waiting', level: '프로', win: true},
-    {id: '5', status: 'waiting', level: '프로', win: true},
-    {id: '6', status: 'waiting', level: '프로', win: true},
-    {id: 's', status: 'waiting', level: '프로', win: true},
-  ];
   const renderItem = ({item, index}) => {
     return (
       <ListItemBattle
-        onPress={async () => {
-          props.navigation.navigate('BattleView', {
-            baPk: item.baPk,
-            refresh: () => get(),
-          });
-        }}
         item={item}
+        navigation={props.navigation}
+        refresh={() => get()}
       />
     );
   };
@@ -84,11 +74,11 @@ export default function MyBattle(props) {
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
-        // refreshing={pullToRefresh}
-        // onRefresh={() => {
-        //   setIsLast(false);
-        //   setPullToRefresh(true);
-        // }}
+        refreshing={pullToRefresh}
+        onRefresh={() => {
+          // setIsLast(false);
+          setPullToRefresh(true);
+        }}
       />
     </Container>
   );

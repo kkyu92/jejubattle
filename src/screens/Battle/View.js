@@ -48,20 +48,20 @@ export default function BattleView(props) {
         logApi('getBattle error', err.response);
       });
   };
-  const updateBattle = () => {
-    Axios.post('updateBattle', {
-      teamA: {...props.teamA},
-      teamB: {...props.teamB},
-    })
-      .then((res) => {
-        logApi('updateBattle', res.data);
-        // setLoading(false);
-      })
-      .catch((err) => {
-        logApi('updateBattle error', err.response);
-        // setLoading(false);
-      });
-  };
+  // const updateBattle = () => {
+  //   Axios.post('updateBattle', {
+  //     teamA: {...props.teamA},
+  //     teamB: {...props.teamB},
+  //   })
+  //     .then((res) => {
+  //       logApi('updateBattle', res.data);
+  //       // setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       logApi('updateBattle error', err.response);
+  //       // setLoading(false);
+  //     });
+  // };
   const renderTabBar = (tabprops) => {
     return (
       <HView
