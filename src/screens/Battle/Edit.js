@@ -76,6 +76,7 @@ export default function BattleEdit(props) {
         name: type > 1 ? 'B' : '',
         member: [],
       },
+      history: [],
     })
       .then((res) => {
         logApi('InsertBattle', res.data);

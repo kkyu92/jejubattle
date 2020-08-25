@@ -33,31 +33,39 @@ export default function TabBattleDetail(props) {
   const [modalDateAlert, setModalDateAlert] = React.useState(false);
   const [modalEditBattleOwner, setModalEditBattleOwner] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [place, setPlace] = React.useState(props.info.baPlace || '');
+  const [place, setPlace] = React.useState(props.info.baPlace || '장소이름');
   const [date, setDate] = React.useState(new Date(props.info.baDate));
   const [startTime, setStartTime] = React.useState(
     new Date(getDateFromHours(props.info.baStartTime || '00:00')),
   );
   // const [role, setRole] = React.useState('');
 
-  const updateBattle = async (data, update) => {
-    setLoading(true);
-    await Axios.post('updateBattle', {
-      baPk: props.info.baPk,
-      ...data,
-    })
-      .then((res) => {
-        logApi('updateBattle', res.data);
-        setLoading(false);
-        setModalSetting(false);
-        if (update && props.refreshBattleView) {
-          props.refreshBattleView();
-        }
-      })
-      .catch((err) => {
-        logApi('updateBattle error', err.response);
-        setLoading(false);
-      });
+  const updateBattle = (data, update) => {
+    props.socket.send(
+      `/battle/${props.info.baPk}`,
+      {},
+      JSON.stringify({
+        baPk: props.info.baPk,
+        ...data,
+      }),
+    );
+    // setLoading(true);
+    // await Axios.post('updateBattle', {
+    //   baPk: props.info.baPk,
+    //   ...data,
+    // })
+    //   .then((res) => {
+    //     logApi('updateBattle', res.data);
+    //     setLoading(false);
+    //     setModalSetting(false);
+    //     if (update && props.refreshBattleView) {
+    //       props.refreshBattleView();
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     logApi('updateBattle error', err.response);
+    //     setLoading(false);
+    //   });
   };
   const deleteBattle = () => {
     Axios.get(`deleteBattle/${props.info.baPk}`)
@@ -85,11 +93,8 @@ export default function TabBattleDetail(props) {
           <TouchableOpacity
             style={{flex: 1, alignItems: 'center'}}
             onPress={() =>
-              props.navigation.navigate('Report', {
-                type: 1,
-                userPk: '',
-                userName: '',
-                userImgUrl: '',
+              props.navigation.navigate('BattleMemberReport', {
+                info: props.info,
               })
             }>
             <Icons name={'icon-report-30'} size={30} color={'silver'} />
@@ -394,13 +399,21 @@ export default function TabBattleDetail(props) {
                     .indexOf(context.me.userPk);
                   if (foundedAtTeamA !== -1) {
                     const team = {...props.info.teamA};
+                    const history = [
+                      ...props.info.history.map((e) => ({userPk: e.userPk})),
+                    ];
+                    history.push({userPk: context.me.userPk});
                     team.member.splice(foundedAtTeamA, 1);
-                    await updateBattle({teamA: team}, false);
+                    await updateBattle({teamA: team, history: history}, false);
                   }
                   if (foundedAtTeamB !== -1) {
                     const team = {...props.info.teamB};
+                    const history = [
+                      ...props.info.history.map((e) => ({userPk: e.userPk})),
+                    ];
+                    history.push({userPk: context.me.userPk});
                     team.member.splice(foundedAtTeamB, 1);
-                    await updateBattle({teamB: team}, false);
+                    await updateBattle({teamB: team, history: history}, false);
                   }
                   setModalExit2(false);
                   props.refresh && props.refresh();
@@ -599,13 +612,27 @@ export default function TabBattleDetail(props) {
           <Seperator height={50} />
           <View>
             <Text text={'장소설정'} fontSize={14} fontWeight={'bold'} />
-            <TextInput
-              value={place}
-              onChangeText={(e) => setPlace(e)}
-              borderWidth={0}
-              placeholder={'장소이름'}
-              editable={context.me.userPk === props.info.teamA.member[0].userPk}
-            />
+            <HView>
+              <View style={{padding: 10, flex: 1}}>
+                <Text text={place} fontSize={14} color={'dimgray'} />
+              </View>
+              <Button
+                text={'설정하기'}
+                color={'white'}
+                borderRadius={20}
+                paddingVertical={5}
+                onPress={() => {
+                  setModalSetting(false);
+                  props.navigation.navigate('FullMap', {
+                    share: (data) => {
+                      setModalSetting(true);
+                      setPlace(data.faPk);
+                    },
+                  });
+                }}
+                size={'medium'}
+              />
+            </HView>
             <Seperator line marginBottom={20} />
             <Text text={'시간'} fontSize={14} fontWeight={'bold'} />
             <DateTime
@@ -646,15 +673,16 @@ export default function TabBattleDetail(props) {
                 <Button
                   text={'적용'}
                   color={custom.themeColor}
-                  onPress={async () =>
-                    await updateBattle(
+                  onPress={async () => {
+                    updateBattle(
                       {
-                        baPlace: place,
+                        faPk: place,
                         baStartTime: moment(startTime).format('HH:MM'),
                       },
                       true,
-                    )
-                  }
+                    );
+                    setModalSetting(false);
+                  }}
                   size={'large'}
                   loading={loading}
                   stretch

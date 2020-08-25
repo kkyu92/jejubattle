@@ -21,13 +21,13 @@ export default async () => {
       await AsyncStorage.setItem('lang', deviceLanguage);
     }
     // header.member_lang = deviceLanguage;
-    global.lang = deviceLanguage;
+    global.lang = deviceLanguage.substring(0, 2);
   } else {
     // header.member_lang = lang;
     global.lang = lang;
   }
 
-  moment.locale(global.lang);
+  moment.locale('ko');
 
   // location
   global.address = await getCurrentLocation(lang);

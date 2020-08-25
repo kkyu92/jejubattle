@@ -20,6 +20,8 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TabView} from 'react-native-tab-view';
 import {screenWidth} from '../../styles';
 import TabBattleDetail from './TabBattleDetail';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 import TabBattleChat from './TabBattleChat';
 import MatchMember from '../../commons/MatchMember';
 import Axios from 'axios';
@@ -35,8 +37,78 @@ export default function BattleView(props) {
     {key: '1', title: '배틀상세내용'},
     {key: '2', title: '배틀 톡'},
   ]);
+  const [messages, setMessages] = React.useState([]);
+  const [page, setPage] = React.useState(2);
+  const [moredone, setMoredone] = React.useState(false);
+  const stompClient = React.useRef();
+
   React.useEffect(() => {
     get();
+    const sock = new SockJS('http://15.164.101.169:8080/stompWebSocket');
+    stompClient.current = Stomp.over(sock);
+    sock.onopen = function () {
+      console.log('open');
+    };
+    stompClient.current.connect({}, function (frame) {
+      console.log('Connected: ' + frame);
+      //subscribing path
+      stompClient.current.subscribe(
+        `/topic/in/${props.route.params.baPk}`,
+        (e) => {
+          const msgs = JSON.parse(e.body);
+          console.log('subscribe in', msgs);
+          if (msgs.length < 40) {
+            setMoredone(true);
+          }
+          setMessages(
+            msgs.map((f) => ({
+              ...f,
+              id: f.userPk,
+              index: JSON.stringify(f.msgPk),
+            })),
+          );
+        },
+      );
+      stompClient.current.subscribe(
+        `/topic/msg/${props.route.params.baPk}`,
+        (e) => {
+          const msgs = JSON.parse(e.body);
+          console.log('subscribe msg', msgs);
+          setMessages((old) => [
+            {...msgs, id: msgs.userPk, index: JSON.stringify(msgs.msgPk)},
+            ...old,
+          ]);
+        },
+      );
+      stompClient.current.subscribe(
+        `/topic/msgmore/${props.route.params.baPk}`,
+        (e) => {
+          const msgs = JSON.parse(e.body);
+          console.log('subscribe msgmore', msgs);
+          if (msgs.length < 40) {
+            setMoredone(true);
+          }
+          const temp = msgs.map((f) => ({
+            ...f,
+            id: f.userPk,
+            index: JSON.stringify(f.msgPk),
+          }));
+          setPage(page + 1);
+          setMessages((old) => [...old, ...temp]);
+        },
+      );
+      stompClient.current.subscribe(
+        `/topic/battle/${props.route.params.baPk}`,
+        (e) => {
+          const battle = JSON.parse(e.body);
+          setInfo(battle);
+        },
+      );
+      stompClient.current.send(`/in/${props.route.params.baPk}`, {});
+    });
+    return () => {
+      stompClient.current && stompClient.current.disconnect();
+    };
   }, []);
   const get = () => {
     Axios.get(`getBattle/${props.route.params.baPk}`)
@@ -48,20 +120,6 @@ export default function BattleView(props) {
         logApi('getBattle error', err.response);
       });
   };
-  // const updateBattle = () => {
-  //   Axios.post('updateBattle', {
-  //     teamA: {...props.teamA},
-  //     teamB: {...props.teamB},
-  //   })
-  //     .then((res) => {
-  //       logApi('updateBattle', res.data);
-  //       // setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       logApi('updateBattle error', err.response);
-  //       // setLoading(false);
-  //     });
-  // };
   const renderTabBar = (tabprops) => {
     return (
       <HView
@@ -69,6 +127,7 @@ export default function BattleView(props) {
           justifyContent: 'space-between',
           borderBottomColor: 'lightgray',
           borderBottomWidth: 1,
+          backgroundColor: 'white',
         }}>
         {tabprops.navigationState.routes.map((route, i) => {
           return (
@@ -102,10 +161,20 @@ export default function BattleView(props) {
             info={info}
             refresh={props.route.params.refresh}
             refreshBattleView={() => get()}
+            socket={stompClient.current}
           />
         );
       case '2':
-        return <TabBattleChat navigation={props.navigation} info={info} />;
+        return (
+          <TabBattleChat
+            navigation={props.navigation}
+            info={info}
+            messages={messages}
+            page={page}
+            moredone={moredone}
+            socket={stompClient.current}
+          />
+        );
     }
   };
   return (
@@ -121,34 +190,22 @@ export default function BattleView(props) {
           onPress={() => setShowMatchMember(!showMatchMember)}>
           <Text text={'접기'} fontWeight={'500'} fontSize={14} />
           <Seperator width={10} />
-          {/* <Icons name={'icon-folding-27'} size={23} color={'dimgray'} /> */}
-          {showMatchMember ? (
-            <Image
-              local
-              uri={require('../../../assets/img/icon-fold.png')}
-              height={27}
-              width={27}
-              resizeMode={'cover'}
-            />
-          ) : (
-            <Image
-              local
-              uri={require('../../../assets/img/icon-fold.png')}
-              height={27}
-              width={27}
-              resizeMode={'cover'}
-            />
-          )}
+          <Image
+            local
+            uri={require('../../../assets/img/icon-fold.png')}
+            height={27}
+            width={27}
+            resizeMode={'cover'}
+          />
         </TouchableOpacity>
       </View>
       {showMatchMember && info.teamA && (
-        <View style={{height: 150}}>
-          <MatchMember
-            info={info}
-            navigation={props.navigation}
-            refreshBattleView={() => get()}
-          />
-        </View>
+        <MatchMember
+          info={info}
+          navigation={props.navigation}
+          refreshBattleView={() => get()}
+          socket={stompClient.current}
+        />
       )}
       {/* <Seperator height={50} /> */}
       {info.baDate && (

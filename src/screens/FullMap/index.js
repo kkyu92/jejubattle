@@ -13,18 +13,22 @@ import {ShadowStyle, screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, share, sleep} from 'react-native-nuno-ui/funcs';
 import {custom} from '../../config';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
 import {getStatusBarHeight, getBottomSpace} from 'react-native-iphone-x-helper';
+// import deviceInfoModule from 'react-native-device-info';
 
 const actionSheetRef = React.createRef();
 
 export default function FullMap(props) {
   const [keyword, setKeyword] = React.useState('');
-  const [currentLocation, setCurrentLocation] = React.useState({});
+  const [currentLocation, setCurrentLocation] = React.useState({
+    latitude: props.route?.params?.latitude || undefined,
+    longitude: props.route?.params?.longitude || undefined,
+  });
   const [result, setResult] = React.useState([]);
   const [actionSheetComponent, setActionSheetComponent] = React.useState(null);
   const [hideFilterGuide, setHideFilterGuide] = React.useState(
@@ -50,7 +54,7 @@ export default function FullMap(props) {
           ...e,
           coords: {latitude: e.faLat, longitude: e.falon},
           title: e.faName,
-          markerComponent: require('../../../assets/img/icon-mylocation.png'),
+          // markerComponent: require('../../../assets/img/icon-mylocation.png'),
         }));
         setResult(temp);
       })
@@ -61,16 +65,25 @@ export default function FullMap(props) {
   const markerOnSelect = (e) => {
     setActionSheetComponent(
       <>
-        <ListItem onPress={() => null} item={e} showScrap={false} />
-        <View style={{paddingHorizontal: 20}}>
+        <ListItem
+          onPress={() =>
+            props.navigation.navigate('FacilityView', {faPk: e.faPk})
+          }
+          item={e}
+          showScrap={false}
+        />
+        <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
           <Button
             text={'공유하기'}
             size={'large'}
-            onPress={() => {
-              if (props.route.params.share) {
+            onPress={async () => {
+              if (props.route?.params?.share) {
                 actionSheetRef.current?.setModalVisible(false);
-                props.route.params.share(e);
+                await sleep(500);
                 props.navigation.goBack();
+                props.route.params.share(e);
+              } else {
+                share(`https://jejubattle.com/facility/${e.faPk}`, '');
               }
             }}
             stretch
@@ -85,8 +98,8 @@ export default function FullMap(props) {
   return (
     <View style={{flex: 1}}>
       <Map
-        latitude={37.55375859999999}
-        longitude={126.9809696}
+        latitude={currentLocation.latitude}
+        longitude={currentLocation.longitude}
         showZoom={true}
         showCurrent={true}
         markers={result}

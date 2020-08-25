@@ -14,7 +14,6 @@ import FacilityList from '../screens/Facility/List';
 import BattleEdit from '../screens/Battle/Edit';
 import BattleView from '../screens/Battle/View';
 import FacilityView from '../screens/Facility/View';
-import Report from '../screens/Report';
 import MyBattle from '../screens/MyBattle';
 import RandomBox from '../screens/Battle/RandomBox';
 import WishList from '../screens/WishList';
@@ -115,7 +114,6 @@ export default function BottomTabStackScreen() {
       <BottomTabStack.Screen name="BattleView" component={BattleView} />
       <BottomTabStack.Screen name="RandomBox" component={RandomBox} />
       <BottomTabStack.Screen name="WishList" component={WishList} />
-      <BottomTabStack.Screen name="Report" component={Report} />
     </BottomTabStack.Navigator>
   );
 }

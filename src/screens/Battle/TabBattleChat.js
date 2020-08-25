@@ -22,72 +22,17 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import {AppContext} from '../../context';
 
-export default function TabBattleChat({info, navigation}) {
+export default function TabBattleChat({
+  info,
+  navigation,
+  messages,
+  page,
+  moredone,
+  socket,
+}) {
   const context = React.useContext(AppContext);
-  const [messages, setMessages] = React.useState([]);
-  const [page, setPage] = React.useState(2);
-  const [moredone, setMoredone] = React.useState(false);
-  const stompClient = React.useRef();
-
-  React.useEffect(() => {
-    const sock = new SockJS('http://15.164.101.169:8080/stompWebSocket');
-    stompClient.current = Stomp.over(sock);
-    sock.onopen = function () {
-      console.log('open');
-    };
-    const connection = stompClient.current.connect({}, function (frame) {
-      console.log('Connected: ' + frame);
-      //subscribing path
-      stompClient.current.subscribe(`/topic/in/${info.baPk}`, (e) => {
-        const msgs = JSON.parse(e.body);
-        console.log('subscribe in', msgs);
-        if (msgs.length < 40) {
-          setMoredone(true);
-        }
-        setMessages(
-          msgs.map((f) => ({
-            ...f,
-            id: f.userPk,
-            index: JSON.stringify(f.msgPk),
-          })),
-        );
-      });
-      stompClient.current.subscribe(`/topic/msg/${info.baPk}`, (e) => {
-        const msgs = JSON.parse(e.body);
-        console.log('subscribe msg', msgs);
-        setMessages(
-          msgs.map((f) => ({
-            ...f,
-            id: f.userPk,
-            index: JSON.stringify(f.msgPk),
-          })),
-        );
-      });
-      stompClient.current.subscribe(`/topic/msgmore/${info.baPk}`, (e) => {
-        const msgs = JSON.parse(e.body);
-        console.log('subscribe msgmore', msgs);
-        if (msgs.length < 40) {
-          setMoredone(true);
-        }
-        const temp = msgs.map((f) => ({
-          ...f,
-          id: f.userPk,
-          index: JSON.stringify(f.msgPk),
-        }));
-        setPage(page + 1);
-        setMessages((old) => [...temp, ...old]);
-      });
-      stompClient.current.send(`/in/${info.baPk}`, {});
-    });
-    return () => {
-      stompClient.current.disconnect();
-    };
-  }, []);
-  // return stompClient.disconnect((e) => {
-  //   console.log('Socket disconnected', e);
-  // });
   const send = (data) => {
-    stompClient.current.send(
+    socket.send(
       `/msg/${info.baPk}`,
       {},
       JSON.stringify({
@@ -97,17 +42,16 @@ export default function TabBattleChat({info, navigation}) {
     );
   };
   const more = () => {
-    stompClient.current.send(
-      `/msgmore/${info.baPk}`,
-      {},
-      JSON.stringify({pageNum: page}),
-    );
+    socket.send(`/msgmore/${info.baPk}`, {}, JSON.stringify({pageNum: page}));
   };
   return (
     <Container>
       <Chat
         messages={messages}
         onSend={send}
+        openMap={(e) =>
+          navigation.navigate('FullMap', {latitude: e.lat, longitude: e.lng})
+        }
         emptyAvatar={require('../../../assets/img/user_boy.png')}
         me={{
           id: context.me.userPk,
@@ -125,6 +69,8 @@ export default function TabBattleChat({info, navigation}) {
                 share: (data) => {
                   send({
                     text: data.faName,
+                    lat: data.faLat,
+                    lon: data.falon,
                     avatar: context.me.userImgUrl || '',
                   });
                 },

@@ -19,9 +19,6 @@ import MySports from '../MySports';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
-import ActionSheet from 'react-native-actions-sheet';
-
-const actionSheetRef = React.createRef();
 
 export default function MatchMember(props) {
   const context = React.useContext(AppContext);
@@ -37,21 +34,29 @@ export default function MatchMember(props) {
   const [memberModalTeam, setMemberModalTeam] = React.useState();
   const [loading, setLoading] = React.useState(false);
 
-  const updateBattle = async (data) => {
-    await Axios.post('updateBattle', {
-      baPk: props.info.baPk,
-      ...data,
-    })
-      .then((res) => {
-        logApi('updateBattle', res.data);
-        setLoading(false);
-        setName('');
-        props.refreshBattleView && props.refreshBattleView();
-      })
-      .catch((err) => {
-        logApi('updateBattle error', err.response);
-        setLoading(false);
-      });
+  const updateBattle = (data) => {
+    props.socket.send(
+      `/battle/${props.info.baPk}`,
+      {},
+      JSON.stringify({
+        baPk: props.info.baPk,
+        ...data,
+      }),
+    );
+    // await Axios.post('updateBattle', {
+    //   baPk: props.info.baPk,
+    //   ...data,
+    // })
+    //   .then((res) => {
+    //     logApi('updateBattle', res.data);
+    //     setLoading(false);
+    //     setName('');
+    //     props.refreshBattleView && props.refreshBattleView();
+    //   })
+    //   .catch((err) => {
+    //     logApi('updateBattle error', err.response);
+    //     setLoading(false);
+    //   });
   };
   const memberSwitch = async () => {
     const foundedAtTeamA = props.info.teamA.member
@@ -83,7 +88,7 @@ export default function MatchMember(props) {
       teamB.member.push(teamA.member[foundedAtTeamA]);
       teamA.member.splice(foundedAtTeamA, 1);
 
-      await updateBattle({teamA: teamA, teamB: teamB}, true);
+      await updateBattle({teamA: teamA, teamB: teamB});
     }
 
     if (foundedAtTeamB !== -1) {
@@ -98,7 +103,7 @@ export default function MatchMember(props) {
       teamA.member.push(teamB.member[foundedAtTeamB]);
       teamB.member.splice(foundedAtTeamB, 1);
 
-      await updateBattle({teamA: teamA, teamB: teamB}, true);
+      await updateBattle({teamA: teamA, teamB: teamB});
     }
   };
   return (
@@ -115,7 +120,7 @@ export default function MatchMember(props) {
             style={{
               alignItems: 'center',
               width: 100,
-              height: 100,
+              // height: 100,
               paddingTop: 14,
             }}>
             {props.info.teamA?.member[0]?.userImgUrl ? (
@@ -161,7 +166,7 @@ export default function MatchMember(props) {
             style={{
               alignItems: 'center',
               width: 100,
-              height: 100,
+              // height: 100,
               paddingTop: 14,
             }}>
             {props.info.teamB?.member[0]?.userImgUrl ? (
@@ -192,7 +197,7 @@ export default function MatchMember(props) {
                 }}
               />
             )}
-            {props.info.teamB?.member[0].ready === 'Y' && (
+            {props.info.teamB?.member[0]?.ready === 'Y' && (
               <View style={{position: 'absolute', top: 0, left: 0}}>
                 <Image
                   local
@@ -277,8 +282,11 @@ export default function MatchMember(props) {
               onPress={() => {
                 setSelectedTeam('A');
                 setMemberModalTeam(props.info.teamA);
-                setTeamMemberModal(true);
-                // actionSheetRef.current?.setModalVisible();
+                // setTeamMemberModal(true);
+                props.navigation.navigate('BattleTeamMember', {
+                  teamSide: 'A',
+                  team: props.info.teamA,
+                });
               }}
               style={{paddingVertical: 10, paddingHorizontal: 20}}>
               <Text
@@ -322,7 +330,8 @@ export default function MatchMember(props) {
               fontWeight={'bold'}
             />
             <Seperator height={10} />
-            {context.me.userPk === props.info?.teamB?.member[0]?.userPk && (
+            {(context.me.userPk === props.info?.teamB?.member[0]?.userPk ||
+              context.me.userPk === props.info?.teamA?.member[0]?.userPk) && (
               <TouchableOpacity
                 onPress={() => {
                   setSelectedTeam('B');
@@ -349,9 +358,16 @@ export default function MatchMember(props) {
             <Seperator height={10} />
             <TouchableOpacity
               onPress={() => {
-                setSelectedTeam('B');
-                setMemberModalTeam(props.info.teamB);
-                setTeamMemberModal(true);
+                if (props.info.teamB.member.length > 0) {
+                  setSelectedTeam('B');
+                  setMemberModalTeam(props.info.teamB);
+                  // setTeamMemberModal(true);
+                  props.navigation.navigate('BattleTeamMember', {
+                    teamSide: 'B',
+                    team: props.info.teamB,
+                    updateBattle: updateBattle,
+                  });
+                }
               }}
               style={{paddingVertical: 10, paddingHorizontal: 20}}>
               <Text
@@ -508,9 +524,9 @@ export default function MatchMember(props) {
                   setMemberModal(false);
                   props.navigation.navigate('Report', {
                     type: 1,
-                    userPk: '',
-                    userName: '',
-                    userImgUrl: '',
+                    userPk: memberModalTeam?.member[0]?.userPk,
+                    userName: memberModalTeam?.member[0]?.userName,
+                    userImgUrl: memberModalTeam?.member[0]?.userImgUrl,
                   });
                 }}
                 style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -545,7 +561,7 @@ export default function MatchMember(props) {
           </View>
 
           <Seperator height={30} />
-          <View>
+          {/* <View>
             <HView style={{flexWrap: 'wrap', justifyContent: 'flex-start'}}>
               {memberModalTeam?.member.map((e, i) => {
                 return (
@@ -580,8 +596,17 @@ export default function MatchMember(props) {
                                 .map((f) => f.userPk)
                                 .indexOf(e.userPk);
                               if (foundedIndex !== -1) {
+                                const history = [
+                                  ...props.info.history.map((h) => ({
+                                    userPk: h.userPk,
+                                  })),
+                                ];
+                                history.push({
+                                  userPk: teamA.member[foundedIndex].userPk,
+                                });
                                 teamA.member.splice(foundedIndex, 1);
-                                updateBattle({teamA: teamA}, true);
+
+                                updateBattle({teamA: teamA, history: history});
                               }
                             }
                             if (selectedTeam === 'B') {
@@ -590,8 +615,16 @@ export default function MatchMember(props) {
                                 .map((f) => f.userPk)
                                 .indexOf(e.userPk);
                               if (foundedIndex !== -1) {
+                                const history = [
+                                  ...props.info.history.map((h) => ({
+                                    userPk: h.userPk,
+                                  })),
+                                ];
+                                history.push({
+                                  userPk: teamB.member[foundedIndex].userPk,
+                                });
                                 teamB.member.splice(foundedIndex, 1);
-                                updateBattle({teamB: teamB}, true);
+                                updateBattle({teamB: teamB, history: history});
                               }
                             }
                           }}
@@ -643,7 +676,7 @@ export default function MatchMember(props) {
                 );
               })}
             </HView>
-          </View>
+          </View> */}
           <Seperator height={30} />
 
           <HView>
@@ -731,8 +764,14 @@ export default function MatchMember(props) {
                 color={custom.themeColor}
                 onPress={async () => {
                   const teamB = {...props.info.teamB};
+                  const history = [
+                    ...props.info.history.map((h) => ({
+                      userPk: h.userPk,
+                    })),
+                  ];
+                  history.push({userPk: teamB.member[0].userPk});
                   teamB.member = [];
-                  await updateBattle({teamB: teamB});
+                  await updateBattle({teamB: teamB, history: history});
                   setMemberOutModal(false);
                 }}
                 size={'large'}
@@ -742,150 +781,6 @@ export default function MatchMember(props) {
           </HView>
         </View>
       </Modal>
-      <ActionSheet
-        ref={actionSheetRef}
-        gestureEnabled={true}
-        // keyboardShouldPersistTaps={'always'}
-        defaultOverlayOpacity={0}
-        bounceOnOpen={true}>
-        <View style={{padding: 20}}>
-          <View style={{alignItems: 'center'}}>
-            {selectedTeam === 'A' ? (
-              <Text text={'A팀'} fontSize={18} fontWeight={'bold'} />
-            ) : (
-              <Text text={'B팀'} fontSize={18} fontWeight={'bold'} />
-            )}
-          </View>
-
-          <Seperator height={30} />
-          <View>
-            <HView style={{flexWrap: 'wrap', justifyContent: 'flex-start'}}>
-              {memberModalTeam?.member.map((e, i) => {
-                return (
-                  <TouchableOpacity
-                    key={i}
-                    onPress={() => {
-                      setMemberModalTeam(props.info.teamA);
-                      setMemberModal(true);
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      backgroundColor: 'whitesmoke',
-                      padding: 12,
-                      borderRadius: 5,
-                      marginRight: 10,
-                      marginBottom: 10,
-                    }}>
-                    <Text
-                      text={e.userName}
-                      fontSize={14}
-                      fontWeight={'500'}
-                      color={'dimgray'}
-                    />
-                    {i !== 0 &&
-                      (context.me.userPk ===
-                        props.info?.teamA?.member[0].userPk ||
-                        context.me.userPk ===
-                          props.info?.teamB?.member[0].userPk) && (
-                        <TouchableOpacity
-                          onPress={() => {
-                            if (selectedTeam === 'A') {
-                              const teamA = {...memberModalTeam};
-                              const foundedIndex = teamA.member
-                                .map((f) => f.userPk)
-                                .indexOf(e.userPk);
-                              if (foundedIndex !== -1) {
-                                teamA.member.splice(foundedIndex, 1);
-                                updateBattle({teamA: teamA}, true);
-                              }
-                            }
-                            if (selectedTeam === 'B') {
-                              const teamB = {...memberModalTeam};
-                              const foundedIndex = teamB.member
-                                .map((f) => f.userPk)
-                                .indexOf(e.userPk);
-                              if (foundedIndex !== -1) {
-                                teamB.member.splice(foundedIndex, 1);
-                                updateBattle({teamB: teamB}, true);
-                              }
-                            }
-                          }}
-                          style={{paddingLeft: 20}}>
-                          <AntDesign
-                            name={'close'}
-                            size={13}
-                            color={'dimgray'}
-                          />
-                        </TouchableOpacity>
-                      )}
-                    {i === 0 && (
-                      <View
-                        style={{
-                          position: 'absolute',
-                          top: -15,
-                          right: -7,
-                          backgroundColor: custom.themeColor,
-                          borderRadius: 5,
-                          padding: 5,
-                        }}>
-                        <Text
-                          text={selectedTeam === 'A' ? '팀장' : '방장'}
-                          fontSize={12}
-                          color={'white'}
-                        />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </HView>
-          </View>
-          <Seperator height={30} />
-
-          <HView>
-            <View style={{flex: 1}}>
-              <Button
-                text={'취소'}
-                size={'large'}
-                color={custom.themeColor}
-                onPress={() => {
-                  setMemberModalTeam();
-                  setTeamMemberModal(false);
-                }}
-                stretch
-              />
-            </View>
-            <Seperator width={20} />
-            <View style={{flex: 1}}>
-              <Button
-                text={'확인'}
-                color={custom.themeColor}
-                onPress={() => {
-                  setMemberModalTeam();
-                  setTeamMemberModal(false);
-                }}
-                size={'large'}
-                stretch
-              />
-            </View>
-          </HView>
-          {/* 팀장위임 */}
-          {context.me.userPk === memberModalTeam?.member[0].userPk && (
-            <View style={{position: 'absolute', top: 20, right: 20}}>
-              <TouchableOpacity
-                onPress={() => {}}
-                style={{paddingVertical: 2, paddingHorizontal: 20}}>
-                <Text
-                  text={'팀장 위임'}
-                  fontSize={16}
-                  color={custom.themeColor}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      </ActionSheet>
     </Container>
   );
 }

@@ -17,8 +17,8 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
-import { API_URL } from '../../config';
-import { screenWidth } from '../../styles';
+import {API_URL} from '../../config';
+import {screenWidth} from '../../styles';
 
 export default function Report(props) {
   const [modalWarning, setModalWarning] = React.useState(false);
@@ -44,9 +44,11 @@ export default function Report(props) {
     formData.append('target', props.route.params.userPk);
     formData.append('code', code);
     formData.append('text', text);
-    formData.append('rePk', props.route.params.rePk);
-    formData.append('reContent', props.route.params.reContent);
-    formData.append('reDate', props.route.params.reDate);
+    props.route.params.rePk && formData.append('rePk', props.route.params.rePk);
+    props.route.params.reContent &&
+      formData.append('reContent', props.route.params.reContent);
+    props.route.params.reDate &&
+      formData.append('reDate', props.route.params.reDate);
     if (file) {
       const response = await fetch(file);
       const blob = await response.blob();
@@ -97,7 +99,7 @@ export default function Report(props) {
   };
   return (
     <Container>
-      <Header left={'back'} title={'신고하기'} navigation={props.navigation} />
+      <Header left={'close'} title={'신고하기'} navigation={props.navigation} />
       <KeyboardAwareScrollView>
         <View style={{paddingVertical: 50, alignItems: 'center'}}>
           {props.route.params.userImgUrl ? (
