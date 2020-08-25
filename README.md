@@ -19,6 +19,14 @@
 ####  Android Internal Test Links
   > https://play.google.com/apps/internaltest/4700794782783427988
 
+####  2020.08.25
+  > android (2.0.0.14)
+  > ios (2.0.0.3)
+
+  - battle api 적용
+  - socket 통신을 통한 chatting 구현
+  - 기타 기존 api 수정 및 버그 수정
+
 ####  2020.08.18
   > android (2.0.0.8)
   > ios (2.0.0.1)
