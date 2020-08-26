@@ -26,13 +26,17 @@ export default function BattleTeamMember(props) {
   const context = React.useContext(AppContext);
   const [memberModal, setMemberModal] = React.useState(false);
   const [selectedMember, setSelectedMember] = React.useState({});
+  const selectedTeam =
+    props.route.params.teamSide === 'A'
+      ? props.route.params.info.teamA
+      : props.route.params.info.teamB;
 
   React.useEffect(() => {}, []);
   return (
     <Container>
       <Header
         left={'close'}
-        title={`${props.route.params.team.name} 팀`}
+        title={`${selectedTeam.name} 팀`}
         navigation={props.navigation}
         rightComponent={
           <TouchableOpacity
@@ -56,7 +60,7 @@ export default function BattleTeamMember(props) {
       <ScrollView>
         <View style={{padding: 20}}>
           <HView style={{flexWrap: 'wrap', justifyContent: 'flex-start'}}>
-            {props.route.params.team?.member.map((e, i) => {
+            {selectedTeam?.member.map((e, i) => {
               return (
                 <TouchableOpacity
                   key={i}
@@ -79,21 +83,24 @@ export default function BattleTeamMember(props) {
                     fontWeight={'500'}
                     color={'dimgray'}
                   />
+                  {/* 팀장이 아니고 (i !== 0)
+                   * 내가 (context.me.userPk) 선택한 팀의 팀장이거나 A팀의 방장인경우에
+                   * 삭제 버튼을 보여준다.
+                   */}
                   {i !== 0 &&
-                    (context.me.userPk ===
-                      props.info?.teamA?.member[0].userPk ||
+                    (context.me.userPk === selectedTeam?.member[0].userPk ||
                       context.me.userPk ===
-                        props.info?.teamB?.member[0].userPk) && (
+                        props.route.params.info.teamA.member[0].userPk) && (
                       <TouchableOpacity
                         onPress={() => {
                           if (props.route.params.teamSide === 'A') {
-                            const teamA = {...props.route.params.team};
+                            const teamA = {...selectedTeam};
                             const foundedIndex = teamA.member
                               .map((f) => f.userPk)
                               .indexOf(e.userPk);
                             if (foundedIndex !== -1) {
                               const history = [
-                                ...props.info.history.map((h) => ({
+                                ...props.route.params.info.history.map((h) => ({
                                   userPk: h.userPk,
                                 })),
                               ];
@@ -102,20 +109,20 @@ export default function BattleTeamMember(props) {
                               });
                               teamA.member.splice(foundedIndex, 1);
 
-                              props.updateBattle({
+                              props.route.params?.updateBattle({
                                 teamA: teamA,
                                 history: history,
                               });
                             }
                           }
                           if (props.route.params.teamSide === 'B') {
-                            const teamB = {...props.route.params.team};
+                            const teamB = {...selectedTeam};
                             const foundedIndex = teamB.member
                               .map((f) => f.userPk)
                               .indexOf(e.userPk);
                             if (foundedIndex !== -1) {
                               const history = [
-                                ...props.info.history.map((h) => ({
+                                ...props.route.params.info.history.map((h) => ({
                                   userPk: h.userPk,
                                 })),
                               ];
@@ -123,7 +130,7 @@ export default function BattleTeamMember(props) {
                                 userPk: teamB.member[foundedIndex].userPk,
                               });
                               teamB.member.splice(foundedIndex, 1);
-                              props.updateBattle({
+                              props.route.params?.updateBattle({
                                 teamB: teamB,
                                 history: history,
                               });
@@ -146,7 +153,7 @@ export default function BattleTeamMember(props) {
                       }}>
                       <Text
                         text={
-                          props.route.params.teamSide === 'A' ? '팀장' : '방장'
+                          props.route.params.teamSide === 'A' ? '방장' : '팀장'
                         }
                         fontSize={12}
                         color={'white'}

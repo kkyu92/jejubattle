@@ -253,11 +253,16 @@ export default function MatchMember(props) {
               fontWeight={'bold'}
             />
             <Seperator height={10} />
-            {context.me.userPk === props.info?.teamA?.member[0]?.userPk && (
+            {(context.me.userPk === props.info?.teamA?.member[0]?.userPk ||
+              context.me.userPk === props.info?.teamB?.member[0]?.userPk) && (
               <TouchableOpacity
                 onPress={() => {
-                  setSelectedTeam('A');
-                  setEditNameModal(true);
+                  if (
+                    context.me.userPk === props.info?.teamA?.member[0]?.userPk
+                  ) {
+                    setSelectedTeam('A');
+                    setEditNameModal(true);
+                  }
                 }}
                 style={{
                   paddingHorizontal: 10,
@@ -285,7 +290,8 @@ export default function MatchMember(props) {
                 // setTeamMemberModal(true);
                 props.navigation.navigate('BattleTeamMember', {
                   teamSide: 'A',
-                  team: props.info.teamA,
+                  info: props.info,
+                  updateBattle: updateBattle,
                 });
               }}
               style={{paddingVertical: 10, paddingHorizontal: 20}}>
@@ -364,7 +370,7 @@ export default function MatchMember(props) {
                   // setTeamMemberModal(true);
                   props.navigation.navigate('BattleTeamMember', {
                     teamSide: 'B',
-                    team: props.info.teamB,
+                    info: props.info,
                     updateBattle: updateBattle,
                   });
                 }

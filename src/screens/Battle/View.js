@@ -13,9 +13,9 @@ import {
   Image,
   Modal,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View, FlatList} from 'react-native';
+import {TouchableOpacity, View, FlatList, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
-import {custom} from '../../config';
+import {custom, SOCKET_URL} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TabView} from 'react-native-tab-view';
 import {screenWidth} from '../../styles';
@@ -44,68 +44,72 @@ export default function BattleView(props) {
 
   React.useEffect(() => {
     get();
-    const sock = new SockJS('http://15.164.101.169:8080/stompWebSocket');
+    const sock = new SockJS(SOCKET_URL);
     stompClient.current = Stomp.over(sock);
-    sock.onopen = function () {
-      console.log('open');
-    };
-    stompClient.current.connect({}, function (frame) {
-      console.log('Connected: ' + frame);
-      //subscribing path
-      stompClient.current.subscribe(
-        `/topic/in/${props.route.params.baPk}`,
-        (e) => {
-          const msgs = JSON.parse(e.body);
-          console.log('subscribe in', msgs);
-          if (msgs.length < 40) {
-            setMoredone(true);
-          }
-          setMessages(
-            msgs.map((f) => ({
+    stompClient.current.connect(
+      {},
+      function (frame) {
+        // console.log('Connected: ' + frame);
+        // alert(frame);
+        //subscribing path
+        stompClient.current.subscribe(
+          `/topic/in/${props.route.params.baPk}`,
+          (e) => {
+            const msgs = JSON.parse(e.body);
+            console.log('subscribe in', msgs);
+            if (msgs.length < 40) {
+              setMoredone(true);
+            }
+            setMessages(
+              msgs.map((f) => ({
+                ...f,
+                id: f.userPk,
+                index: JSON.stringify(f.msgPk),
+              })),
+            );
+          },
+        );
+        stompClient.current.subscribe(
+          `/topic/msg/${props.route.params.baPk}`,
+          (e) => {
+            const msgs = JSON.parse(e.body);
+            console.log('subscribe msg', msgs);
+            setMessages((old) => [
+              {...msgs, id: msgs.userPk, index: JSON.stringify(msgs.msgPk)},
+              ...old,
+            ]);
+          },
+        );
+        stompClient.current.subscribe(
+          `/topic/msgmore/${props.route.params.baPk}`,
+          (e) => {
+            const msgs = JSON.parse(e.body);
+            console.log('subscribe msgmore', msgs);
+            if (msgs.length < 40) {
+              setMoredone(true);
+            }
+            const temp = msgs.map((f) => ({
               ...f,
               id: f.userPk,
               index: JSON.stringify(f.msgPk),
-            })),
-          );
-        },
-      );
-      stompClient.current.subscribe(
-        `/topic/msg/${props.route.params.baPk}`,
-        (e) => {
-          const msgs = JSON.parse(e.body);
-          console.log('subscribe msg', msgs);
-          setMessages((old) => [
-            {...msgs, id: msgs.userPk, index: JSON.stringify(msgs.msgPk)},
-            ...old,
-          ]);
-        },
-      );
-      stompClient.current.subscribe(
-        `/topic/msgmore/${props.route.params.baPk}`,
-        (e) => {
-          const msgs = JSON.parse(e.body);
-          console.log('subscribe msgmore', msgs);
-          if (msgs.length < 40) {
-            setMoredone(true);
-          }
-          const temp = msgs.map((f) => ({
-            ...f,
-            id: f.userPk,
-            index: JSON.stringify(f.msgPk),
-          }));
-          setPage(page + 1);
-          setMessages((old) => [...old, ...temp]);
-        },
-      );
-      stompClient.current.subscribe(
-        `/topic/battle/${props.route.params.baPk}`,
-        (e) => {
-          const battle = JSON.parse(e.body);
-          setInfo(battle);
-        },
-      );
-      stompClient.current.send(`/in/${props.route.params.baPk}`, {});
-    });
+            }));
+            setPage(page + 1);
+            setMessages((old) => [...old, ...temp]);
+          },
+        );
+        stompClient.current.subscribe(
+          `/topic/battle/${props.route.params.baPk}`,
+          (e) => {
+            const battle = JSON.parse(e.body);
+            setInfo(battle);
+          },
+        );
+        stompClient.current.send(`/in/${props.route.params.baPk}`, {});
+      },
+      // (fail) => {
+      //   alert(fail);
+      // },
+    );
     return () => {
       stompClient.current && stompClient.current.disconnect();
     };
