@@ -24,6 +24,7 @@ const actionSheetRef = React.createRef();
 export default function FullMapFilter(props) {
   const [sports, setSports] = React.useState([]);
   const [selectedSports, setSelectedSports] = React.useState([]);
+  const [checkAll, setCheckAll] = React.useState(false);
 
   React.useEffect(() => {
     Axios.post('sportsList', {})
@@ -45,6 +46,14 @@ export default function FullMapFilter(props) {
     }
     setSelectedSports(temp);
   };
+  React.useEffect(() => {
+    if (checkAll) {
+      const temp = [...sports.map((e) => e.code)];
+      setSelectedSports(temp);
+    } else {
+      setSelectedSports([]);
+    }
+  }, [checkAll]);
   return (
     <Container>
       <Header
@@ -64,8 +73,8 @@ export default function FullMapFilter(props) {
                 size={'medium'}
                 paddingHorizontal={30}
                 paddingVertical={15}
-                color={'white'}
-                onPress={() => null}
+                color={checkAll ? custom.themeColor : 'white'}
+                onPress={() => setCheckAll(!checkAll)}
               />
             </View>
             {sports.map((e, i) => {
