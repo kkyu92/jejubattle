@@ -280,7 +280,7 @@ export default function BattleTeamMember(props) {
             size={'large'}
             color={custom.themeColor}
             onPress={() => {
-              setSelectedMember();
+              setSelectedMember({});
               setMemberModal(false);
             }}
             stretch

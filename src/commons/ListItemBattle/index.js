@@ -24,7 +24,7 @@ export default function ListItemBattle({
   editMode,
   handleCheck,
   index,
-  deleteBattle,
+  deleteMyBattle,
 }) {
   const context = React.useContext(AppContext);
   const [enteranceAlert, setEnteranceAlert] = React.useState(false);
@@ -190,7 +190,11 @@ export default function ListItemBattle({
                       color={'white'}
                       textColor={'gray'}
                       borderRadius={20}
-                      onPress={() => deleteBattle([{baPk: item.baPk}])}
+                      onPress={() =>
+                        deleteMyBattle
+                          ? deleteMyBattle([{baPk: item.baPk}])
+                          : null
+                      }
                       stretch
                     />
                   )}

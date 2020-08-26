@@ -19,6 +19,19 @@
 ####  Android Internal Test Links
   > https://play.google.com/apps/internaltest/4700794782783427988
 
+####  2020.08.26
+  > android (2.0.0.16)
+  > ios (2.0.0.5)
+
+  - socket url 변경
+
+
+####  2020.08.26
+  > android (2.0.0.15)
+  > ios (2.0.0.4)
+
+  - socket url 변경
+
 ####  2020.08.25
   > android (2.0.0.14)
   > ios (2.0.0.3)

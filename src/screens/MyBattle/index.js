@@ -41,19 +41,17 @@ export default function MyBattle(props) {
         setPullToRefresh(false);
       });
   };
-  const deleteBattle = (data) => {
+  const deleteMyBattle = (data) => {
     if (!data) {
       data = mybattle.filter((e) => e.checked).map((e) => ({baPk: e.baPk}));
     }
     Axios.post('myBattleDelete', data)
       .then((res) => {
         logApi('myBattleDelete', res.data);
-        setMybattle(res.data);
-        setPullToRefresh(false);
+        get();
       })
       .catch((err) => {
         logApi('myBattleDelete error', err.response);
-        setPullToRefresh(false);
       });
   };
   const handleCheck = (index) => {
@@ -70,6 +68,7 @@ export default function MyBattle(props) {
         handleCheck={handleCheck}
         navigation={props.navigation}
         refresh={() => get()}
+        deleteMyBattle={deleteMyBattle}
       />
     );
   };
@@ -103,7 +102,6 @@ export default function MyBattle(props) {
           // setIsLast(false);
           setPullToRefresh(true);
         }}
-        deleteBattle={deleteBattle}
       />
       {edit && (
         <View>
@@ -120,7 +118,7 @@ export default function MyBattle(props) {
               <Button
                 text={'삭제'}
                 color={custom.themeColor}
-                onPress={() => deleteBattle()}
+                onPress={() => deleteMyBattle()}
                 size={'large'}
                 stretch
               />
