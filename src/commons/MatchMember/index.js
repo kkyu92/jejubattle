@@ -432,17 +432,19 @@ export default function MatchMember(props) {
                 text={'완료'}
                 color={custom.themeColor}
                 onPress={async () => {
-                  if (selectedTeam === 'A') {
-                    const team = {...props.info.teamA};
-                    team.name = name;
-                    await updateBattle({teamA: team});
+                  if (name.length > 0) {
+                    if (selectedTeam === 'A') {
+                      const team = {...props.info.teamA};
+                      team.name = name;
+                      await updateBattle({teamA: team});
+                    }
+                    if (selectedTeam === 'B') {
+                      const team = {...props.info.teamB};
+                      team.name = name;
+                      await updateBattle({teamB: team});
+                    }
+                    setEditNameModal(false);
                   }
-                  if (selectedTeam === 'B') {
-                    const team = {...props.info.teamB};
-                    team.name = name;
-                    await updateBattle({teamB: team});
-                  }
-                  setEditNameModal(false);
                 }}
                 size={'large'}
                 stretch
