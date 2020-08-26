@@ -333,7 +333,16 @@ export default function Join(props) {
               <Button
                 text={emailVerified ? '인증완료' : '인증요청'}
                 size={'medium'}
-                onPress={() => verifyEmail()}
+                onPress={() => {
+                  if (email) {
+                    const checkemail = checkEmail(email);
+                    if (!checkemail.valid) {
+                      Alert.alert('이메일 오류', '이메일 형식이 아닙니다');
+                      return;
+                    }
+                    verifyEmail();
+                  }
+                }}
                 // textColor={'dimgray'}
                 color={emailVerified ? custom.themeColor : 'white'}
                 borderRadius={20}
