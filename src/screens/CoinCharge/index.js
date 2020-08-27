@@ -36,7 +36,7 @@ export default function CoinCharge(props) {
         navigation={props.navigation}
       />
       <ScrollView>
-        <Seperator height={20} />
+        {/* <Seperator height={20} /> */}
         <View style={{padding: 20}}>
           <Text
             text={'현재 내 코인&포인트'}
@@ -45,7 +45,7 @@ export default function CoinCharge(props) {
           />
         </View>
         <HView style={{paddingHorizontal: 20}}>
-          <HView style={{flex: 0.5, padding: 20, alignItems: 'center'}}>
+          <HView style={{flex: 0.5, padding: 10, alignItems: 'center'}}>
             <Image
               local
               uri={require('../../../assets/img/icon-coinmoney.png')}
@@ -77,13 +77,13 @@ export default function CoinCharge(props) {
           </HView>
         </HView>
 
-        <Seperator height={50} />
+        <Seperator height={10} />
 
         <View style={{padding: 20}}>
           <Text text={'유료 구매하기'} fontSize={18} fontWeight={'bold'} />
         </View>
         <View style={{paddingHorizontal: 20}}>
-          <HView style={{paddingVertical: 20, paddingHorizontal: 20}}>
+          <HView style={{padding: 10}}>
             <Image
               local
               uri={require('../../../assets/img/icon-coinmoney.png')}
@@ -102,7 +102,7 @@ export default function CoinCharge(props) {
             </View>
           </HView>
           <Seperator line />
-          <HView style={{paddingVertical: 20, paddingHorizontal: 20}}>
+          <HView style={{padding: 10}}>
             <Image
               local
               uri={require('../../../assets/img/icon-fivecoins.png')}
@@ -126,7 +126,7 @@ export default function CoinCharge(props) {
             </View>
           </HView>
           <Seperator line />
-          <HView style={{paddingVertical: 20, paddingHorizontal: 20}}>
+          <HView style={{padding: 10}}>
             <Image
               local
               uri={require('../../../assets/img/icon-tencoins.png')}
@@ -151,13 +151,13 @@ export default function CoinCharge(props) {
           </HView>
         </View>
 
-        <Seperator height={30} />
+        <Seperator height={10} />
 
         <View style={{padding: 20}}>
           <Text text={'포인트로 구매하기'} fontSize={18} fontWeight={'bold'} />
         </View>
         <View style={{paddingHorizontal: 20}}>
-          <HView style={{paddingVertical: 20, paddingHorizontal: 20}}>
+          <HView style={{padding: 10}}>
             <Image
               local
               uri={require('../../../assets/img/icon-coinmoney.png')}
@@ -176,7 +176,7 @@ export default function CoinCharge(props) {
             </View>
           </HView>
           <Seperator line />
-          <HView style={{paddingVertical: 20, paddingHorizontal: 20}}>
+          <HView style={{padding: 10}}>
             <Image
               local
               uri={require('../../../assets/img/icon-fivecoins.png')}

@@ -26,21 +26,22 @@ export default function BattleTeamMember(props) {
   const context = React.useContext(AppContext);
   const [memberModal, setMemberModal] = React.useState(false);
   const [selectedMember, setSelectedMember] = React.useState({});
-  const selectedTeam =
+  const [mode, setMode] = React.useState('');
+  const [selectedTeam, setSelectedTeam] = React.useState(
     props.route.params.teamSide === 'A'
       ? props.route.params.info.teamA
-      : props.route.params.info.teamB;
+      : props.route.params.info.teamB,
+  );
 
-  React.useEffect(() => {}, []);
   return (
     <Container>
       <Header
         left={'close'}
-        title={`${selectedTeam.name} 팀`}
+        title={`${selectedTeam?.name} 팀`}
         navigation={props.navigation}
         rightComponent={
           <TouchableOpacity
-            onPress={() => null}
+            onPress={() => setMode('select')}
             style={{
               paddingHorizontal: 20,
               paddingVertical: 5,
@@ -49,7 +50,11 @@ export default function BattleTeamMember(props) {
             }}>
             <Text
               text={
-                props.route.params.teamSide === 'A' ? '팀장위임' : '방장위임'
+                selectedTeam.member[0].userPk === context.me.userPk
+                  ? props.route.params.teamSide === 'A'
+                    ? '방장위임'
+                    : '팀장위임'
+                  : ''
               }
               color={custom.themeColor}
               fontSize={17}
@@ -62,85 +67,134 @@ export default function BattleTeamMember(props) {
           <HView style={{flexWrap: 'wrap', justifyContent: 'flex-start'}}>
             {selectedTeam?.member.map((e, i) => {
               return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => {
-                    setSelectedMember(e);
-                    setMemberModal(true);
-                  }}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: 'whitesmoke',
-                    padding: 12,
-                    borderRadius: 5,
-                    marginRight: 10,
-                    marginBottom: 10,
-                  }}>
-                  <Text
+                <View key={i} style={{marginRight: 10, marginBottom: 10}}>
+                  <Button
                     text={e.userName}
-                    fontSize={14}
-                    fontWeight={'500'}
-                    color={'dimgray'}
+                    onPress={() => {
+                      if (mode === 'select') {
+                        if (i !== 0) {
+                          const temp = {...selectedTeam};
+                          temp.member.map((t, ti) => {
+                            if (ti === i) {
+                              t.selected = true;
+                            } else {
+                              t.selected = false;
+                            }
+                          });
+                          setSelectedTeam(temp);
+                        }
+                      } else {
+                        setSelectedMember(e);
+                        setMemberModal(true);
+                      }
+                    }}
+                    color={
+                      mode === 'select' && e.selected
+                        ? custom.themeColor
+                        : 'whitesmoke'
+                    }
+                    size={'medium'}
+                    textColor={
+                      mode === 'select' && e.selected ? 'white' : 'dimgray'
+                    }
+                    paddingVertical={10}
+                    paddingHorizontal={20}
                   />
                   {/* 팀장이 아니고 (i !== 0)
                    * 내가 (context.me.userPk) 선택한 팀의 팀장이거나 A팀의 방장인경우에
                    * 삭제 버튼을 보여준다.
                    */}
                   {i !== 0 &&
+                    mode === '' &&
                     (context.me.userPk === selectedTeam?.member[0].userPk ||
                       context.me.userPk ===
                         props.route.params.info.teamA.member[0].userPk) && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (props.route.params.teamSide === 'A') {
-                            const teamA = {...selectedTeam};
-                            const foundedIndex = teamA.member
-                              .map((f) => f.userPk)
-                              .indexOf(e.userPk);
-                            if (foundedIndex !== -1) {
-                              const history = [
-                                ...props.route.params.info.history.map((h) => ({
-                                  userPk: h.userPk,
-                                })),
-                              ];
-                              history.push({
-                                userPk: teamA.member[foundedIndex].userPk,
-                              });
-                              teamA.member.splice(foundedIndex, 1);
+                      <View
+                        style={{
+                          position: 'absolute',
+                          right: -30,
+                          top: 0,
+                          bottom: 0,
+                        }}>
+                        <Button
+                          text={'X'}
+                          size={'medium'}
+                          textColor={'dimgray'}
+                          paddingVertical={10}
+                          paddingHorizontal={20}
+                          color={'whitesmoke'}
+                          onPress={() => {
+                            if (props.route.params.teamSide === 'A') {
+                              const teamA = {...selectedTeam};
+                              const foundedIndex = teamA.member
+                                .map((f) => f.userPk)
+                                .indexOf(e.userPk);
+                              if (foundedIndex !== -1) {
+                                const localHistory = [
+                                  ...props.route.params.info.history.map(
+                                    (h) => ({
+                                      userPk: h.userPk,
+                                    }),
+                                  ),
+                                ];
+                                if (
+                                  localHistory
+                                    .map((m) => m.userPk)
+                                    .indexOf(
+                                      teamA.member[foundedIndex].userPk,
+                                    ) === -1
+                                ) {
+                                  localHistory.push({
+                                    userPk: teamA.member[foundedIndex].userPk,
+                                  });
+                                }
+                                teamA.member.splice(foundedIndex, 1);
 
-                              props.route.params?.updateBattle({
-                                teamA: teamA,
-                                history: history,
-                              });
+                                props.route.params?.updateBattle({
+                                  teamA: teamA,
+                                  history: localHistory,
+                                });
+                                setSelectedTeam(teamA);
+                              }
                             }
-                          }
-                          if (props.route.params.teamSide === 'B') {
-                            const teamB = {...selectedTeam};
-                            const foundedIndex = teamB.member
-                              .map((f) => f.userPk)
-                              .indexOf(e.userPk);
-                            if (foundedIndex !== -1) {
-                              const history = [
-                                ...props.route.params.info.history.map((h) => ({
-                                  userPk: h.userPk,
-                                })),
-                              ];
-                              history.push({
-                                userPk: teamB.member[foundedIndex].userPk,
-                              });
-                              teamB.member.splice(foundedIndex, 1);
-                              props.route.params?.updateBattle({
-                                teamB: teamB,
-                                history: history,
-                              });
+                            if (props.route.params.teamSide === 'B') {
+                              const teamB = {...selectedTeam};
+                              const foundedIndex = teamB.member
+                                .map((f) => f.userPk)
+                                .indexOf(e.userPk);
+                              if (foundedIndex !== -1) {
+                                const localHistory = [
+                                  ...props.route.params.info.history.map(
+                                    (h) => ({
+                                      userPk: h.userPk,
+                                    }),
+                                  ),
+                                ];
+                                if (
+                                  localHistory
+                                    .map((m) => m.userPk)
+                                    .indexOf(
+                                      teamB.member[foundedIndex].userPk,
+                                    ) === -1
+                                ) {
+                                  localHistory.push({
+                                    userPk: teamB.member[foundedIndex].userPk,
+                                  });
+                                }
+                                teamB.member.splice(foundedIndex, 1);
+                                props.route.params?.updateBattle({
+                                  teamB: teamB,
+                                  history: localHistory,
+                                });
+                                setSelectedTeam(teamB);
+                              }
                             }
-                          }
-                        }}
-                        style={{paddingLeft: 20}}>
-                        <AntDesign name={'close'} size={13} color={'dimgray'} />
-                      </TouchableOpacity>
+                          }}
+                        />
+                      </View>
                     )}
+
+                  {/* 방장/팀장 표시 */}
                   {i === 0 && (
                     <View
                       style={{
@@ -160,8 +214,14 @@ export default function BattleTeamMember(props) {
                       />
                     </View>
                   )}
-                  {e.ready === 'Y' && (
-                    <View
+
+                  {/* Ready 상태 표시 */}
+                  {e.ready === 'Y' && mode === '' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedMember(e);
+                        setMemberModal(true);
+                      }}
                       style={{
                         position: 'absolute',
                         left: 0,
@@ -170,6 +230,7 @@ export default function BattleTeamMember(props) {
                         bottom: 0,
                         alignItems: 'center',
                         justifyContent: 'center',
+                        opacity: 0.8,
                       }}>
                       <Image
                         local
@@ -177,43 +238,84 @@ export default function BattleTeamMember(props) {
                         width={30}
                         height={30}
                       />
-                    </View>
+                    </TouchableOpacity>
                   )}
-                </TouchableOpacity>
+                </View>
               );
             })}
           </HView>
         </View>
       </ScrollView>
-      <HView
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          borderTopWidth: 1,
-          borderTopColor: 'lightgray',
-        }}>
-        <View style={{flex: 1}}>
+      {mode === 'select' ? (
+        <HView
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderTopWidth: 1,
+            borderTopColor: 'lightgray',
+          }}>
+          <View style={{flex: 1}}>
+            <Button
+              text={'취소'}
+              color={'gray'}
+              onPress={() => {
+                const temp = {...selectedTeam};
+                temp.member.map((e) => {
+                  e.selected = false;
+                });
+                setSelectedTeam(temp);
+                setMode('');
+              }}
+              size={'large'}
+              stretch
+            />
+          </View>
+          <Seperator width={20} />
+          <View style={{flex: 1}}>
+            <Button
+              text={'위임하기'}
+              color={custom.themeColor}
+              onPress={() => {
+                const foundedIndex = selectedTeam.member
+                  .map((e) => e.selected)
+                  .indexOf(true);
+                if (foundedIndex !== -1) {
+                  const temp = {...selectedTeam};
+
+                  // array member swapping
+                  temp.member.splice(
+                    0,
+                    1,
+                    temp.member.splice(foundedIndex, 1, temp.member[0])[0],
+                  );
+                  props.route.params?.updateBattle({
+                    teamB: temp,
+                  });
+                  props.navigation.goBack();
+                }
+              }}
+              size={'large'}
+              stretch
+            />
+          </View>
+        </HView>
+      ) : (
+        <View
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderTopWidth: 1,
+            borderTopColor: 'lightgray',
+          }}>
           <Button
-            text={'취소'}
-            color={'gray'}
-            onPress={() => {
-              props.navigation.goBack();
-            }}
-            size={'large'}
-            stretch
-          />
-        </View>
-        <Seperator width={20} />
-        <View style={{flex: 1}}>
-          <Button
-            text={'완료'}
+            text={'확인'}
             color={custom.themeColor}
-            onPress={() => null}
+            onPress={() => props.navigation.goBack()}
             size={'large'}
             stretch
           />
         </View>
-      </HView>
+      )}
       <Seperator bottom />
       <Modal
         isVisible={memberModal}

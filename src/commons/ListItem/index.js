@@ -75,7 +75,7 @@ export default function ListItem(props) {
                 onPress={() => props.scrapOff(props.item, props.index)}>
                 <Icons
                   name="icon-bookmark-s-20"
-                  size={20}
+                  size={24}
                   color={custom.themeColor}
                 />
               </TouchableOpacity>

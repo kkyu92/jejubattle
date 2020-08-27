@@ -23,7 +23,7 @@ import TabReview from '../../commons/TabReview';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
 import {logApi, share} from 'react-native-nuno-ui/funcs';
-import { AppContext } from '../../context';
+import {AppContext} from '../../context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const initialLayout = {width: screenWidth};
@@ -181,7 +181,7 @@ export default function FacilityView(props) {
                 style={{paddingHorizontal: 5, paddingVertical: 5}}>
                 <Icons
                   name={'icon-bookmark-s-20'}
-                  size={20}
+                  size={24}
                   color={custom.themeColor}
                 />
               </TouchableOpacity>
@@ -211,19 +211,23 @@ export default function FacilityView(props) {
         <Seperator height={20} />
         <HView style={{padding: 20, justifyContent: 'space-between'}}>
           <Text text={facility.faName} fontWeight={'bold'} fontSize={21} />
-          <HView style={{paddingHorizontal: 20, justifyContent: 'flex-end'}}>
+          <TouchableOpacity
+            onPress={() => (facility.faLikeType === 'N' ? likeOn() : likeOff())}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 20,
+              justifyContent: 'flex-end',
+              paddingVertical: 10,
+            }}>
             {facility.faLikeType === 'N' ? (
-              <TouchableOpacity onPress={() => likeOn()}>
-                <AntDesign name={'like2'} size={20} color={'gray'} />
-              </TouchableOpacity>
+              <AntDesign name={'like2'} size={20} color={'gray'} />
             ) : (
-              <TouchableOpacity onPress={() => likeOff()}>
-                <AntDesign name={'like1'} size={20} color={custom.themeColor} />
-              </TouchableOpacity>
+              <AntDesign name={'like1'} size={20} color={custom.themeColor} />
             )}
             <Seperator width={5} />
             <Text text={facility.faLikeCnt} fontSize={14} color={'gray'} />
-          </HView>
+          </TouchableOpacity>
         </HView>
         <View style={{padding: 20}}>
           <Text text={facility.faSubject} color={'dimgray'} fontSize={18} />

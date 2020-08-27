@@ -31,10 +31,15 @@ export default function Setting(props) {
   const [userTermsPush, setUserTermsPush] = React.useState(
     context.me.userTermsPush,
   );
+  const [alertTitle, setAlertTitle] = React.useState('');
+  const [alertText, setAlertText] = React.useState('');
+  const [showLogoutDone, setShowLogoutDone] = React.useState(false);
+
   const signout = async () => {
     await AsyncStorage.removeItem('token');
-    await Init();
-    context.dispatch({type: 'UNAUTHORIZED'});
+    setAlertTitle('로그아웃');
+    setAlertText('로그아웃 되엇습니다.');
+    setShowLogoutDone(true);
   };
   const firstUpdate = React.useRef(true);
   React.useLayoutEffect(() => {
@@ -67,7 +72,15 @@ export default function Setting(props) {
       });
   };
   return (
-    <Container>
+    <Container
+      alertTitle={alertTitle}
+      alertText={alertText}
+      alertVisible={showLogoutDone}
+      onConfirm={async () => {
+        setShowLogoutDone(false);
+        await Init();
+        context.dispatch({type: 'UNAUTHORIZED'});
+      }}>
       <Header left={'close'} title={'설정'} navigation={props.navigation} />
       <ScrollView>
         <Seperator height={20} />

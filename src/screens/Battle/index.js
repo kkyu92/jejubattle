@@ -21,23 +21,21 @@ import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function Battle(props) {
   // const context = React.useContext(AppContext);
   const [showMyBattle, setShowMyBattle] = React.useState(true);
-  // const [battles, setBattles] = React.useState([]);
-  // const [mybattles, setMybattles] = React.useState([]);
   const [list, setList] = React.useState([]);
-  // const [sports, setSports] = React.useState([]);
-  // const [selectedSports, setSelectedSports] = React.useState(
-  //   context.me.userSport || [],
-  // );
   const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([]);
   const [pullToRefresh, setPullToRefresh] = React.useState(true);
+  const isFocused = useIsFocused();
 
   React.useEffect(() => {
-    pullToRefresh && get();
-  }, [pullToRefresh]);
+    if (isFocused || pullToRefresh) {
+      get();
+    }
+  }, [pullToRefresh, isFocused]);
   // React.useEffect(() => {
   //   Axios.post('sportsList', {})
   //     .then((res) => {
@@ -140,7 +138,7 @@ export default function Battle(props) {
           <ListItemBattle
             item={item}
             navigation={props.navigation}
-            refresh={() => get()}
+            // refresh={() => get()}
           />
         );
       }
@@ -194,11 +192,7 @@ export default function Battle(props) {
           setPullToRefresh(true);
         }}
       />
-      <FloatingButton
-        onPress={() =>
-          props.navigation.navigate('BattleEdit', {refresh: () => get()})
-        }
-      />
+      <FloatingButton onPress={() => props.navigation.navigate('BattleEdit')} />
     </Container>
   );
 }

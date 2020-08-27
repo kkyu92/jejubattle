@@ -274,6 +274,7 @@ export default function FacilityList(props) {
                 onPress={() => setFilterVisible(false)}
                 color={'gray'}
                 stretch
+                size={'large'}
               />
             </View>
             <Seperator width={10} />
@@ -286,6 +287,7 @@ export default function FacilityList(props) {
                 }}
                 color={custom.themeColor}
                 stretch
+                size={'large'}
                 disable={false}
               />
             </View>

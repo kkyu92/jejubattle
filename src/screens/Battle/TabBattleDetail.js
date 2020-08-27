@@ -72,7 +72,7 @@ export default function TabBattleDetail(props) {
       .then((res) => {
         logApi('deleteBattle', res.data);
         // setLoading(false);
-        props.refresh && props.refresh();
+        // props.refresh && props.refresh();
         props.navigation.goBack();
       })
       .catch((err) => {
@@ -80,7 +80,35 @@ export default function TabBattleDetail(props) {
         // setLoading(false);
       });
   };
-
+  const handleExit = () => {
+    const foundedAtTeamA = props.info.teamA.member
+      .map((e) => e.userPk)
+      .indexOf(context.me.userPk);
+    const foundedAtTeamB = props.info.teamB.member
+      .map((e) => e.userPk)
+      .indexOf(context.me.userPk);
+    if (foundedAtTeamA !== -1) {
+      const localTeam = {...props.info.teamA};
+      let localHistory = props.info.history.map((e) => ({userPk: e.userPk}));
+      if (localHistory.map((e) => e.userPk).indexOf(context.me.userPk) === -1) {
+        localHistory.push({userPk: context.me.userPk});
+      }
+      localTeam.member.splice(foundedAtTeamA, 1);
+      updateBattle({teamA: localTeam, history: localHistory}, false);
+    }
+    if (foundedAtTeamB !== -1) {
+      const localTeam = {...props.info.teamB};
+      let localHistory = props.info.history.map((e) => ({userPk: e.userPk}));
+      if (localHistory.map((e) => e.userPk).indexOf(context.me.userPk) === -1) {
+        localHistory.push({userPk: context.me.userPk});
+      }
+      localTeam.member.splice(foundedAtTeamB, 1);
+      updateBattle({teamB: localTeam, history: localHistory}, false);
+    }
+    setModalExit2(false);
+    // props.refresh && props.refresh();
+    props.navigation.goBack();
+  };
   return (
     <Container>
       <ScrollView>
@@ -235,7 +263,7 @@ export default function TabBattleDetail(props) {
                 ? '배틀시작'
                 : '배틀준비'
             }
-            onPress={async () => {
+            onPress={() => {
               if (context.me.userPk === props.info.teamA.member[0].userPk) {
                 if (!props.info.baPlace || !props.info.baStartTime) {
                   setModalSettingAlert(true);
@@ -256,13 +284,13 @@ export default function TabBattleDetail(props) {
                 if (foundedAtTeamA !== -1) {
                   const team = {...props.info.teamA};
                   team.member[foundedAtTeamA].ready = 'Y';
-                  await updateBattle({teamA: team}, true);
+                  updateBattle({teamA: team}, true);
                 }
 
                 if (foundedAtTeamB !== -1) {
                   const team = {...props.info.teamB};
                   team.member[foundedAtTeamB].ready = 'Y';
-                  await updateBattle({teamB: team}, true);
+                  updateBattle({teamB: team}, true);
                 }
               }
             }}
@@ -390,35 +418,7 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'예'}
                 color={'gray'}
-                onPress={async () => {
-                  const foundedAtTeamA = props.info.teamA.member
-                    .map((e) => e.userPk)
-                    .indexOf(context.me.userPk);
-                  const foundedAtTeamB = props.info.teamB.member
-                    .map((e) => e.userPk)
-                    .indexOf(context.me.userPk);
-                  if (foundedAtTeamA !== -1) {
-                    const team = {...props.info.teamA};
-                    const history = [
-                      ...props.info.history.map((e) => ({userPk: e.userPk})),
-                    ];
-                    history.push({userPk: context.me.userPk});
-                    team.member.splice(foundedAtTeamA, 1);
-                    await updateBattle({teamA: team, history: history}, false);
-                  }
-                  if (foundedAtTeamB !== -1) {
-                    const team = {...props.info.teamB};
-                    const history = [
-                      ...props.info.history.map((e) => ({userPk: e.userPk})),
-                    ];
-                    history.push({userPk: context.me.userPk});
-                    team.member.splice(foundedAtTeamB, 1);
-                    await updateBattle({teamB: team, history: history}, false);
-                  }
-                  setModalExit2(false);
-                  props.refresh && props.refresh();
-                  props.navigation.goBack();
-                }}
+                onPress={() => handleExit()}
                 size={'large'}
                 stretch
               />
@@ -673,7 +673,7 @@ export default function TabBattleDetail(props) {
                 <Button
                   text={'적용'}
                   color={custom.themeColor}
-                  onPress={async () => {
+                  onPress={() => {
                     updateBattle(
                       {
                         faPk: place,
@@ -737,8 +737,8 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'완료'}
                 color={custom.themeColor}
-                onPress={async () => {
-                  await updateBattle();
+                onPress={() => {
+                  updateBattle();
                   setModalEditBattleOwner(false);
                 }}
                 size={'large'}

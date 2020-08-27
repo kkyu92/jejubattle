@@ -20,7 +20,7 @@ import {logApi} from 'react-native-nuno-ui/funcs';
 export default function ListItemBattle({
   item,
   navigation,
-  refresh,
+  // refresh,
   editMode,
   handleCheck,
   index,
@@ -69,7 +69,7 @@ export default function ListItemBattle({
       // 이미 배틀방에 참여하고 있다면
       navigation.navigate('BattleView', {
         baPk: item.baPk,
-        refresh: refresh,
+        // refresh: refresh,
       });
     }
   };
@@ -93,11 +93,11 @@ export default function ListItemBattle({
     }
     navigation.navigate('BattleView', {
       baPk: item.baPk,
-      refresh: refresh,
+      // refresh: refresh,
     });
   };
   return (
-    <View>
+    <View keyboardShouldPersistTaps={'handled'}>
       <View style={{padding: 20}}>
         <TouchableOpacity
           onPress={onPress}

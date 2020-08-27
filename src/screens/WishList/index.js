@@ -112,14 +112,14 @@ export default function WishList(props) {
           <HView>
             <TouchableOpacity
               onPress={() => props.navigation.navigate('FullMap')}
-              style={{paddingHorizontal: 5, paddingVertical: 5}}>
+              style={{paddingHorizontal: 20, paddingVertical: 5}}>
               <Icons
                 name={'icon-map-24'}
                 size={20}
                 color={edit ? 'gray' : 'black'}
               />
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={!edit ? () => setEdit(true) : null}
               activeOpacity={edit ? 1 : 0.5}
               style={{paddingRight: 20, paddingLeft: 10, paddingVertical: 5}}>
@@ -129,7 +129,7 @@ export default function WishList(props) {
                 fontWeight={'500'}
                 color={edit ? 'gray' : 'black'}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </HView>
         }
         navigation={props.navigation}

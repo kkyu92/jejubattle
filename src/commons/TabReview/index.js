@@ -6,6 +6,7 @@ import {
   Button,
   Seperator,
   Image,
+  ImageCarousel,
 } from 'react-native-nuno-ui';
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import StarRating from 'react-native-star-rating';
@@ -121,12 +122,11 @@ export default function TabReview(props) {
               </HView>
               <Seperator height={5} />
               {e.reImgUrl && (
-                <Image
+                <ImageCarousel
+                  data={[e.reImgUrl]}
                   height={Math.floor(screenWidth - 110) * 0.6}
                   width={Math.floor(screenWidth - 110)}
                   borderRadius={5}
-                  uri={e.reImgUrl}
-                  resizeMode={'cover'}
                 />
               )}
               <Seperator height={6} />

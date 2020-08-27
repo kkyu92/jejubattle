@@ -10,6 +10,7 @@ import {
   Button,
   Checkbox,
   Modal,
+  ImageCarousel,
 } from 'react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -174,7 +175,7 @@ export default function TravelView(props) {
                   style={{paddingHorizontal: 5, paddingVertical: 5}}>
                   <Icons
                     name={'icon-bookmark-s-20'}
-                    size={20}
+                    size={24}
                     color={custom.themeColor}
                   />
                 </TouchableOpacity>
@@ -194,34 +195,35 @@ export default function TravelView(props) {
       />
       <ScrollView /*stickyHeaderIndices={[1]}*/>
         <View>
-          <Image
+          <ImageCarousel
+            data={[facility.faImgUrl]}
             height={Math.floor(screenWidth * 0.6)}
             width={screenWidth}
-            // borderRadius={0}
-            uri={facility.faImgUrl}
-            // onPress={props.onPress}
-            resizeMode={'cover'}
           />
           <Seperator height={20} />
+
           <HView style={{padding: 20, justifyContent: 'space-between'}}>
             <Text text={facility.faName} fontSize={21} fontWeight={'bold'} />
-            <HView style={{paddingHorizontal: 20, justifyContent: 'flex-end'}}>
+
+            <TouchableOpacity
+              onPress={() =>
+                facility.faLikeType === 'N' ? likeOn() : likeOff()
+              }
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: 20,
+                justifyContent: 'flex-end',
+                paddingVertical: 10,
+              }}>
               {facility.faLikeType === 'N' ? (
-                <TouchableOpacity onPress={() => likeOn()}>
-                  <AntDesign name={'like2'} size={20} color={'gray'} />
-                </TouchableOpacity>
+                <AntDesign name={'like2'} size={20} color={'gray'} />
               ) : (
-                <TouchableOpacity onPress={() => likeOff()}>
-                  <AntDesign
-                    name={'like1'}
-                    size={20}
-                    color={custom.themeColor}
-                  />
-                </TouchableOpacity>
+                <AntDesign name={'like1'} size={20} color={custom.themeColor} />
               )}
               <Seperator width={5} />
               <Text text={facility.faLikeCnt} fontSize={14} color={'gray'} />
-            </HView>
+            </TouchableOpacity>
           </HView>
           <View style={{paddingHorizontal: 20}}>
             <Text

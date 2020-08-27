@@ -144,23 +144,29 @@ export default function EventView(props) {
         <View style={{padding: 20}}>
           <ImageCarousel
             data={eventImgList.map((e) => e.evImgUrl)}
-            height={Math.floor((screenWidth - 40) * 1.6)}
+            height={undefined}
             width={Math.floor(screenWidth - 40)}
           />
         </View>
-        <HView style={{paddingHorizontal: 20, justifyContent: 'flex-end'}}>
+
+        <TouchableOpacity
+          onPress={() => (event.evLikeType === 'N' ? likeOn() : likeOff())}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 20,
+            justifyContent: 'flex-end',
+            paddingVertical: 10,
+          }}>
           {event.evLikeType === 'N' ? (
-            <TouchableOpacity onPress={() => likeOn()}>
-              <AntDesign name={'like2'} size={20} color={'gray'} />
-            </TouchableOpacity>
+            <AntDesign name={'like2'} size={20} color={'gray'} />
           ) : (
-            <TouchableOpacity onPress={() => likeOff()}>
-              <AntDesign name={'like1'} size={20} color={custom.themeColor} />
-            </TouchableOpacity>
+            <AntDesign name={'like1'} size={20} color={custom.themeColor} />
           )}
           <Seperator width={5} />
           <Text text={event.evLikeCnt} fontSize={14} color={'gray'} />
-        </HView>
+        </TouchableOpacity>
+
         <Seperator marginTop={20} line />
         <View style={{padding: 20}}>
           <HView>
@@ -181,12 +187,11 @@ export default function EventView(props) {
           }}>
           <View style={{flex: 1}}>
             {item.erImgUrl && (
-              <Image
+              <ImageCarousel
+                data={[item.erImgUrl]}
                 height={Math.floor(screenWidth - 110) * 0.6}
                 width={Math.floor(screenWidth - 110)}
                 borderRadius={5}
-                uri={item.erImgUrl}
-                resizeMode={'cover'}
               />
             )}
             <Seperator height={5} />

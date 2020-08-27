@@ -213,7 +213,7 @@ export default function BattleFilter(props) {
           </HView>
 
           <Seperator height={20} />
-          <Text text={'공개여부'} fontWeight={'bold'} fontSize={16} />
+          <Text text={'공개여부'} fontWeight={'bold'} fontSize={16} />
           <Seperator height={10} />
           <HView style={{flexWrap: 'wrap'}}>
             <View style={{paddingVertical: 10, paddingRight: 20}}>

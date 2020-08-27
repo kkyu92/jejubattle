@@ -70,35 +70,21 @@ export default function BattleMemberReport(props) {
           </HView>
         </View>
       </ScrollView>
-      <HView
+      <View
         style={{
           paddingHorizontal: 20,
           paddingVertical: 10,
           borderTopWidth: 1,
           borderTopColor: 'lightgray',
         }}>
-        <View style={{flex: 1}}>
-          <Button
-            text={'취소'}
-            color={'gray'}
-            onPress={() => {
-              props.navigation.goBack();
-            }}
-            size={'large'}
-            stretch
-          />
-        </View>
-        <Seperator width={20} />
-        <View style={{flex: 1}}>
-          <Button
-            text={'완료'}
-            color={custom.themeColor}
-            onPress={() => null}
-            size={'large'}
-            stretch
-          />
-        </View>
-      </HView>
+        <Button
+          text={'확인'}
+          color={custom.themeColor}
+          onPress={() => props.navigation.goBack()}
+          size={'large'}
+          stretch
+        />
+      </View>
       <Seperator bottom />
     </Container>
   );

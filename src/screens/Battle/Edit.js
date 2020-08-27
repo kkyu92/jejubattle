@@ -81,7 +81,7 @@ export default function BattleEdit(props) {
       .then((res) => {
         logApi('InsertBattle', res.data);
         setLoading(false);
-        props.route?.params?.refresh();
+        // props.route?.params?.refresh();
         props.navigation.goBack();
       })
       .catch((err) => {

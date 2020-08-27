@@ -246,6 +246,7 @@ export default function TravelList(props) {
                 onPress={() => setFilterVisible(false)}
                 color={'lightgray'}
                 stretch
+                size={'large'}
               />
             </View>
             <Seperator width={10} />
@@ -258,6 +259,7 @@ export default function TravelList(props) {
                 }}
                 color={custom.themeColor}
                 stretch
+                size={'large'}
                 disable={false}
               />
             </View>
