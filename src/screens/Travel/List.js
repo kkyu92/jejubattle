@@ -206,31 +206,36 @@ export default function TravelList(props) {
               <Text text={'필터'} fontWeight={'bold'} fontSize={18} />
             </View>
             <Seperator height={30} />
-            <HView>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+            <HView style={{flexWrap: 'wrap'}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
+                <Checkbox
+                  label={'전체'}
+                  checked={orderType === 0}
+                  onPress={() => setOrderType(0)}
+                />
+              </View>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'등록순'}
                   checked={orderType === 1}
                   onPress={() => setOrderType(1)}
                 />
               </View>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'추천순'}
                   checked={orderType === 2}
                   onPress={() => setOrderType(2)}
                 />
               </View>
-            </HView>
-            <HView>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'내 위치순'}
                   checked={orderType === 3}
                   onPress={() => setOrderType(3)}
                 />
               </View>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'평점순'}
                   checked={orderType === 4}

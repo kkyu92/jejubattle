@@ -7,7 +7,7 @@ import {
   HView,
   Image,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View, ScrollView} from 'react-native';
+import {TouchableOpacity, View, ScrollView, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Axios from 'axios';
@@ -37,6 +37,52 @@ export default function Facility(props) {
         logApi('sportsList error', err.response);
       });
   }, []);
+  const renderItemCategory = ({item}) => {
+    return (
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <Image
+          local
+          height={Math.floor((screenWidth - 180) / 5)}
+          width={Math.floor((screenWidth - 180) / 5)}
+          uri={item.icon}
+          onPress={() =>
+            props.navigation.navigate('FacilityList', {
+              title: '구기종목',
+              endpoint: 'gojiList',
+              code: item.code,
+              tablist: sports1,
+            })
+          }
+          resizeMode={'contain'}
+        />
+        <Seperator height={10} />
+        <Text text={item.name} fontSize={14} />
+      </View>
+    );
+  };
+  const renderItemHealth = ({item}) => {
+    return (
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <Image
+          local
+          height={Math.floor((screenWidth - 180) / 5)}
+          width={Math.floor((screenWidth - 180) / 5)}
+          uri={item.icon}
+          onPress={() =>
+            props.navigation.navigate('FacilityList', {
+              title: '건강운동',
+              endpoint: 'healthList',
+              code: item.code,
+              tablist: sports2,
+            })
+          }
+          resizeMode={'contain'}
+        />
+        <Seperator height={10} />
+        <Text text={item.name} fontSize={14} />
+      </View>
+    );
+  };
   return (
     <Container>
       <Header
@@ -73,31 +119,12 @@ export default function Facility(props) {
           }}>
           <Text text={'구기종목'} fontWeight={'bold'} fontSize={21} />
           <Seperator height={30} />
-          <HView style={{flexWrap: 'wrap'}}>
-            {sports1.map((e, i) => {
-              return (
-                <View style={{padding: 10, alignItems: 'center'}} key={i}>
-                  <Image
-                    local
-                    height={Math.floor((screenWidth - 180) / 5) - 1}
-                    width={Math.floor((screenWidth - 180) / 5) - 1}
-                    uri={e.icon}
-                    onPress={() =>
-                      props.navigation.navigate('FacilityList', {
-                        title: '구기종목',
-                        endpoint: 'gojiList',
-                        code: e.code,
-                        tablist: sports1,
-                      })
-                    }
-                    resizeMode={'contain'}
-                  />
-                  <Seperator height={10} />
-                  <Text text={e.name} fontSize={14} />
-                </View>
-              );
-            })}
-          </HView>
+          <FlatList
+            data={sports1}
+            keyExtractor={(item) => JSON.stringify(item.code)}
+            renderItem={renderItemCategory}
+            numColumns={5}
+          />
         </View>
         <View
           style={{
@@ -109,31 +136,12 @@ export default function Facility(props) {
           }}>
           <Text text={'건강운동'} fontWeight={'bold'} fontSize={21} />
           <Seperator height={30} />
-          <HView style={{flexWrap: 'wrap'}}>
-            {sports2.map((e, i) => {
-              return (
-                <View style={{padding: 10, alignItems: 'center'}} key={i}>
-                  <Image
-                    local
-                    height={Math.floor((screenWidth - 180) / 5) - 2}
-                    width={Math.floor((screenWidth - 180) / 5) - 2}
-                    uri={e.icon}
-                    onPress={() =>
-                      props.navigation.navigate('FacilityList', {
-                        title: '건강운동',
-                        endpoint: 'healthList',
-                        code: e.code,
-                        tablist: sports2,
-                      })
-                    }
-                    resizeMode={'contain'}
-                  />
-                  <Seperator height={10} />
-                  <Text text={e.name} fontSize={14} />
-                </View>
-              );
-            })}
-          </HView>
+          <FlatList
+            data={sports2}
+            keyExtractor={(item) => JSON.stringify(item.code)}
+            renderItem={renderItemHealth}
+            numColumns={5}
+          />
         </View>
       </ScrollView>
     </Container>

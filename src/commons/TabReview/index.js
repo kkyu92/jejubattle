@@ -17,11 +17,10 @@ import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
+import ReviewComponent from './ReviewComponent';
 
 export default function TabReview(props) {
   const context = React.useContext(AppContext);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const [delReviewPk, setDelReviewPk] = React.useState(0);
 
   const delReview = (rePk) => {
     Axios.delete(`reply/${rePk}`)
@@ -84,132 +83,13 @@ export default function TabReview(props) {
       </HView>
       {props.data.map((e, i) => {
         return (
-          <HView style={{padding: 20, alignItems: 'flex-start'}} key={i}>
-            <View style={{marginTop: 10, alignItems: 'center'}}>
-              {e.userImgUrl ? (
-                <Image
-                  height={50}
-                  width={50}
-                  borderRadius={25}
-                  uri={e.userImgUrl}
-                  onPress={() => null}
-                  resizeMode={'cover'}
-                />
-              ) : (
-                <Image
-                  local
-                  uri={require('../../../assets/img/img-user2.png')}
-                  width={50}
-                  height={50}
-                  borderRadius={25}
-                  onPress={() => null}
-                />
-              )}
-              <Seperator height={5} />
-              <Text text={e.userName} fontSize={13} color={'gray'} />
-            </View>
-            <Seperator width={20} />
-            <View style={{flex: 1}}>
-              <HView>
-                <StarRating
-                  disabled={true}
-                  maxStars={5}
-                  rating={e.reScope}
-                  starSize={11}
-                  emptyStarColor={custom.themeColor}
-                  halfStarEnabled={true}
-                  halfStarColor={custom.themeColor}
-                  fullStarColor={custom.themeColor}
-                />
-                <Seperator width={5} />
-                <Text text={e.reScope} fontSize={14} color={'gray'} />
-              </HView>
-              <Seperator height={5} />
-              {e.reImgUrl && (
-                <ImageCarousel
-                  data={[e.reImgUrl]}
-                  height={Math.floor(screenWidth - 110) * 0.6}
-                  width={Math.floor(screenWidth - 110)}
-                  borderRadius={5}
-                />
-              )}
-              <Seperator height={6} />
-              <Text text={e.reContent} fontSize={15} color={'dimgray'} />
-              <Seperator height={6} />
-              <HView style={{justifyContent: 'space-between'}}>
-                <HView>
-                  <Text
-                    text={e.reUpdatetime}
-                    fontSize={14}
-                    color={'darkgray'}
-                  />
-                  <Seperator width={20} />
-                  {e.userPk !== context.me.userPk && (
-                    <TouchableOpacity
-                      onPress={() =>
-                        props.navigation.navigate('Report', {
-                          type: 2,
-                          userPk: e.userPk,
-                          userName: e.userName,
-                          userImgUrl: e.userImgUrl,
-                          rePk: e.rePk,
-                          reContent: e.reContent,
-                          reDate: e.reUpdatetime,
-                        })
-                      }
-                      style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Icons
-                        name={'icon-declare-15'}
-                        size={15}
-                        color={'orangered'}
-                      />
-                      <Seperator width={5} />
-                      <Text text={'신고'} fontSize={14} color={'darkgray'} />
-                    </TouchableOpacity>
-                  )}
-                </HView>
-                <TouchableOpacity
-                  onPress={() => null}
-                  style={{paddingRight: 10}}>
-                  <Text
-                    text={'+ 더보기'}
-                    fontSize={14}
-                    color={custom.themeColor}
-                  />
-                </TouchableOpacity>
-              </HView>
-              <Seperator height={10} />
-              {e.userPk === context.me.userPk && (
-                <HView>
-                  <Button
-                    text={'수정'}
-                    size={'medium'}
-                    color={'white'}
-                    onPress={() =>
-                      props.navigation.navigate('ReviewEdit', {
-                        rePk: e.rePk,
-                        reScope: e.reScope,
-                        reContent: e.reContent,
-                        file: e.reImgUrl,
-                        refresh: props.refresh,
-                      })
-                    }
-                  />
-                  <Seperator width={10} />
-                  <Button
-                    text={'삭제'}
-                    size={'medium'}
-                    color={'white'}
-                    onPress={() => {
-                      setDelReviewPk(e.rePk);
-                      setShowDeleteModal(true);
-                      // delReview(e.rePk);
-                    }}
-                  />
-                </HView>
-              )}
-            </View>
-          </HView>
+          <ReviewComponent
+            data={e}
+            key={i}
+            delReview={delReview}
+            navigation={props.navigation}
+            refresh={props.refresh}
+          />
         );
       })}
 
@@ -223,51 +103,13 @@ export default function TabReview(props) {
           />
         </View>
       )}
-      <Seperator bottom />
-      <Modal
-        isVisible={showDeleteModal}
-        onBackdropPress={() => {
-          setShowDeleteModal(false);
-        }}>
-        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
-          <View style={{padding: 20}}>
-            <View style={{alignItems: 'center'}}>
-              <Text text={'알림'} fontWeight={'bold'} fontSize={18} />
-            </View>
-          </View>
-          <Seperator height={10} />
-          <View style={{alignItems: 'center'}}>
-            <Text text={'리뷰를 삭제하시겠습니까?'} fontSize={16} />
-          </View>
-          <Seperator height={20} />
-          <HView>
-            <View style={{flex: 1}}>
-              <Button
-                text={'취소'}
-                color={'gray'}
-                onPress={() => {
-                  setShowDeleteModal(false);
-                }}
-                size={'large'}
-                stretch
-              />
-            </View>
-            <Seperator width={20} />
-            <View style={{flex: 1}}>
-              <Button
-                text={'확인'}
-                color={custom.themeColor}
-                onPress={() => {
-                  delReview(delReviewPk);
-                  setShowDeleteModal(false);
-                }}
-                size={'large'}
-                stretch
-              />
-            </View>
-          </HView>
+
+      {props.data.length === 0 && (
+        <View style={{padding: 20}}>
+          <Text text={'리뷰가 없습니다.'} fontSize={16} color={'dimgray'} />
         </View>
-      </Modal>
+      )}
+      <Seperator bottom />
     </Container>
   );
 }

@@ -16,8 +16,8 @@ import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
-import { useIsFocused } from '@react-navigation/native';
-import { AppContext } from '../../context';
+import {useIsFocused} from '@react-navigation/native';
+import {AppContext} from '../../context';
 
 export default function FacilityList(props) {
   const context = React.useContext(AppContext);
@@ -201,31 +201,36 @@ export default function FacilityList(props) {
               <Text text={'필터'} fontWeight={'bold'} fontSize={18} />
             </View>
             <Seperator height={20} />
-            <HView>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+            <HView style={{flexWrap: 'wrap'}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
+                <Checkbox
+                  label={'전체'}
+                  checked={filter1 === 0}
+                  onPress={() => setFilter1(0)}
+                />
+              </View>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'등록순'}
                   checked={filter1 === 1}
                   onPress={() => setFilter1(1)}
                 />
               </View>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'추천순'}
                   checked={filter1 === 2}
                   onPress={() => setFilter1(2)}
                 />
               </View>
-            </HView>
-            <HView>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'내 위치순'}
                   checked={filter1 === 3}
                   onPress={() => setFilter1(3)}
                 />
               </View>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'평점순'}
                   checked={filter1 === 4}
@@ -233,32 +238,39 @@ export default function FacilityList(props) {
                 />
               </View>
             </HView>
+
             <Seperator height={30} />
-            <HView>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+
+            <HView style={{flexWrap: 'wrap'}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
+                <Checkbox
+                  label={'전체'}
+                  checked={filter2 === 0}
+                  onPress={() => setFilter2(0)}
+                />
+              </View>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'학교운동장'}
                   checked={filter2 === 1}
                   onPress={() => setFilter2(1)}
                 />
               </View>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'체육공원'}
                   checked={filter2 === 2}
                   onPress={() => setFilter2(2)}
                 />
               </View>
-            </HView>
-            <HView>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'공공체육시설'}
                   checked={filter2 === 3}
                   onPress={() => setFilter2(3)}
                 />
               </View>
-              <View style={{paddingVertical: 10, flex: 0.5}}>
+              <View style={{paddingVertical: 10, paddingRight: 20}}>
                 <Checkbox
                   label={'사설체육시설'}
                   checked={filter2 === 4}
