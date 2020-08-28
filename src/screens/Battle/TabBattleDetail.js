@@ -19,7 +19,7 @@ import {custom} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Axios from 'axios';
-import {logApi, getDateFromHours} from 'react-native-nuno-ui/funcs';
+import {logApi, getDateFromHours, showToast} from 'react-native-nuno-ui/funcs';
 import moment from 'moment';
 import {AppContext} from '../../context';
 
@@ -341,6 +341,15 @@ export default function TabBattleDetail(props) {
                 color={'gray'}
                 onPress={() => {
                   setModalExit(false);
+                  if (props.info.teamA.member.length < 2) {
+                    showToast('위임할 유저가 없습니다');
+                  } else {
+                    props.navigation.navigate('BattleTeamMember', {
+                      teamSide: 'A',
+                      info: props.info,
+                      updateBattle: updateBattle,
+                    });
+                  }
                 }}
                 size={'large'}
                 stretch

@@ -13,7 +13,7 @@ import {
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, swap} from 'react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -283,14 +283,16 @@ export default function BattleTeamMember(props) {
                   const temp = {...selectedTeam};
 
                   // array member swapping
-                  temp.member.splice(
-                    0,
-                    1,
-                    temp.member.splice(foundedIndex, 1, temp.member[0])[0],
-                  );
-                  props.route.params?.updateBattle({
-                    teamB: temp,
-                  });
+                  temp.member = swap(temp.member, 0, foundedIndex);
+                  if (props.route.params.teamSide === 'A') {
+                    props.route.params?.updateBattle({
+                      teamA: temp,
+                    });
+                  } else {
+                    props.route.params?.updateBattle({
+                      teamB: temp,
+                    });
+                  }
                   props.navigation.goBack();
                 }
               }}

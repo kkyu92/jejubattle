@@ -70,8 +70,11 @@ export default function Battle(props) {
           );
         }
         if (res.data.battle.length > 0) {
+          if (tempList.length > 0) {
+            tempList.push({baPk: 2000000000, seperator: true});
+          }
           stickyIndices.push(tempList.length);
-          tempList.push({baPk: 2000000000, title: '배틀 목록'});
+          tempList.push({baPk: 3000000000, title: '배틀 목록'});
           tempList = tempList.concat(res.data.battle);
         }
         setList(tempList);
@@ -129,6 +132,17 @@ export default function Battle(props) {
             </TouchableOpacity>
           )}
         </HView>
+      );
+    } else if (item.seperator) {
+      return (
+        <View
+          style={{
+            marginTop: 20,
+            borderTopWidth: 1,
+            borderTopColor: 'lightgray',
+          }}>
+          <Seperator height={10} color={'whitesmoke'} />
+        </View>
       );
     } else {
       if (item.foldable && !showMyBattle) {

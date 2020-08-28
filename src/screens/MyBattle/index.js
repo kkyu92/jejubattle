@@ -15,6 +15,7 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Axios from 'axios';
 import {logApi} from 'react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
@@ -87,7 +88,12 @@ export default function MyBattle(props) {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text text={'일괄삭제'} color={'dimgray'} fontSize={17} />
+            {/* <Text text={'일괄삭제'} color={'dimgray'} fontSize={17} /> */}
+            <MaterialIcons
+              name={'delete'}
+              size={24}
+              color={custom.themeColor}
+            />
           </TouchableOpacity>
         }
       />

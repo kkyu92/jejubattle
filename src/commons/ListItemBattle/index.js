@@ -173,31 +173,6 @@ export default function ListItemBattle({
                     color={'#CECCCD'}
                     borderRadius={20}
                   />
-                  <Seperator height={5} />
-                  {editMode ? (
-                    <View style={{alignItems: 'center'}}>
-                      <Checkbox
-                        multiple
-                        checked={item.checked}
-                        onPress={() => handleCheck(index)}
-                        size={'large'}
-                      />
-                    </View>
-                  ) : (
-                    <Button
-                      text={'삭제'}
-                      size={'medium'}
-                      color={'white'}
-                      textColor={'gray'}
-                      borderRadius={20}
-                      onPress={() =>
-                        deleteMyBattle
-                          ? deleteMyBattle([{baPk: item.baPk}])
-                          : null
-                      }
-                      stretch
-                    />
-                  )}
                 </>
               )}
               {item.baState === 'playing' && (
@@ -235,14 +210,30 @@ export default function ListItemBattle({
                     borderRadius={20}
                   />
                   <Seperator height={5} />
-                  <Button
-                    text={'삭제'}
-                    size={'medium'}
-                    color={'white'}
-                    textColor={'gray'}
-                    borderRadius={20}
-                    stretch
-                  />
+                  {deleteMyBattle && editMode ? (
+                    <View style={{alignItems: 'center'}}>
+                      <Checkbox
+                        multiple
+                        checked={item.checked}
+                        onPress={() => handleCheck(index)}
+                        size={'large'}
+                      />
+                    </View>
+                  ) : (
+                    <Button
+                      text={'삭제'}
+                      size={'medium'}
+                      color={'white'}
+                      textColor={'gray'}
+                      borderRadius={20}
+                      onPress={() =>
+                        deleteMyBattle
+                          ? deleteMyBattle([{baPk: item.baPk}])
+                          : null
+                      }
+                      stretch
+                    />
+                  )}
                 </>
               )}
             </View>
