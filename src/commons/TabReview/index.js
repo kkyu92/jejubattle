@@ -7,6 +7,7 @@ import {
   Seperator,
   Image,
   ImageCarousel,
+  Modal,
 } from 'react-native-nuno-ui';
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import StarRating from 'react-native-star-rating';
@@ -15,10 +16,13 @@ import Icons from '../Icons';
 import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import {logApi} from 'react-native-nuno-ui/funcs';
 
 export default function TabReview(props) {
   const context = React.useContext(AppContext);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [delReviewPk, setDelReviewPk] = React.useState(0);
+
   const delReview = (rePk) => {
     Axios.delete(`reply/${rePk}`)
       .then((res) => {
@@ -196,7 +200,11 @@ export default function TabReview(props) {
                     text={'삭제'}
                     size={'medium'}
                     color={'white'}
-                    onPress={() => delReview(e.rePk)}
+                    onPress={() => {
+                      setDelReviewPk(e.rePk);
+                      setShowDeleteModal(true);
+                      // delReview(e.rePk);
+                    }}
                   />
                 </HView>
               )}
@@ -216,6 +224,50 @@ export default function TabReview(props) {
         </View>
       )}
       <Seperator bottom />
+      <Modal
+        isVisible={showDeleteModal}
+        onBackdropPress={() => {
+          setShowDeleteModal(false);
+        }}>
+        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
+          <View style={{padding: 20}}>
+            <View style={{alignItems: 'center'}}>
+              <Text text={'알림'} fontWeight={'bold'} fontSize={18} />
+            </View>
+          </View>
+          <Seperator height={10} />
+          <View style={{alignItems: 'center'}}>
+            <Text text={'리뷰를 삭제하시겠습니까?'} fontSize={16} />
+          </View>
+          <Seperator height={20} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setShowDeleteModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'확인'}
+                color={custom.themeColor}
+                onPress={() => {
+                  delReview(delReviewPk);
+                  setShowDeleteModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
     </Container>
   );
 }
