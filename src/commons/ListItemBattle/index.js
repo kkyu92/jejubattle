@@ -157,7 +157,7 @@ export default function ListItemBattle({
               </HView>
               <HView style={{paddingVertical: 4, alignItems: 'flex-start'}}>
                 <View style={{flex: 0.2}}>
-                  <Text text={'메모'} fontSize={14} color={'gray'} />
+                  <Text text={'소개'} fontSize={14} color={'gray'} />
                 </View>
                 <View style={{flex: 0.8}}>
                   <Text text={item.baContent} fontSize={14} color={'gray'} />

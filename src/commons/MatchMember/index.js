@@ -18,12 +18,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MySports from '../MySports';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, showToast} from 'react-native-nuno-ui/funcs';
+import {screenWidth} from '../../styles';
 
 export default function MatchMember(props) {
   const context = React.useContext(AppContext);
   const [memberModal, setMemberModal] = React.useState(false);
-  const [teamMemberModal, setTeamMemberModal] = React.useState(false);
   const [editNameModal, setEditNameModal] = React.useState(false);
   const [memberOutModal, setMemberOutModal] = React.useState(false);
   const [switchAlert, setSwitchAlert] = React.useState(false);
@@ -105,6 +105,7 @@ export default function MatchMember(props) {
 
       await updateBattle({teamA: teamA, teamB: teamB});
     }
+    showToast('팀이 변경되었습니다.');
   };
   return (
     <Container
@@ -115,13 +116,17 @@ export default function MatchMember(props) {
       onBackdropPress={() => setSwitchAlert(false)}
       nonFlex={true}>
       {props.info.teamA?.name === '' ? (
-        <HView style={{justifyContent: 'center', alignItems: 'flex-start'}}>
+        <HView
+          style={{
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            paddingHorizontal: 20,
+            paddingBottom: 10,
+          }}>
           <View
             style={{
+              flex: 0.4,
               alignItems: 'center',
-              width: 100,
-              // height: 100,
-              paddingTop: 14,
             }}>
             {props.info.teamA?.member[0]?.userImgUrl ? (
               <Image
@@ -157,17 +162,14 @@ export default function MatchMember(props) {
               fontWeight={'500'}
               fontSize={16}
             />
-            {/* <View style={{height: 150}} /> */}
           </View>
-          <View style={{padding: 30}}>
+          <View style={{flex: 0.2, alignItems: 'center', paddingTop: 30}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
           </View>
           <View
             style={{
+              flex: 0.4,
               alignItems: 'center',
-              width: 100,
-              // height: 100,
-              paddingTop: 14,
             }}>
             {props.info.teamB?.member[0]?.userImgUrl ? (
               <Image
@@ -230,9 +232,14 @@ export default function MatchMember(props) {
           </View>
         </HView>
       ) : (
-        <HView style={{justifyContent: 'center'}}>
+        <HView
+          style={{
+            justifyContent: 'center',
+            paddingHorizontal: 20,
+          }}>
           <View
             style={{
+              flex: 0.4,
               alignItems: 'center',
               padding: 10,
               borderWidth: 1,
@@ -301,7 +308,7 @@ export default function MatchMember(props) {
               />
             </TouchableOpacity>
           </View>
-          <View style={{padding: 30}}>
+          <View style={{flex: 0.2, alignItems: 'center'}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
             <Seperator height={20} />
             <TouchableOpacity onPress={() => memberSwitch()}>
@@ -315,6 +322,7 @@ export default function MatchMember(props) {
           </View>
           <View
             style={{
+              flex: 0.4,
               alignItems: 'center',
               padding: 10,
               borderWidth: 1,
@@ -405,7 +413,7 @@ export default function MatchMember(props) {
           <Seperator height={30} />
           <View>
             <TextInput
-              maxLength={15}
+              maxLength={8}
               value={name}
               onChangeText={(e) => setName(e)}
               placeholder={'수정할 팀이름을 입력해주세요'}

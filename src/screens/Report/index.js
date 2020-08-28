@@ -16,7 +16,7 @@ import Icons from '../../commons/Icons';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi, showToast} from 'react-native-nuno-ui/funcs';
 import {API_URL} from '../../config';
 import {screenWidth} from '../../styles';
 
@@ -74,6 +74,7 @@ export default function Report(props) {
         logApi('report', res.data);
         setModalWarning(false);
         props.navigation.goBack();
+        showToast('신고가 완료되었습니다');
       })
       .catch((err) => {
         setLoading(false);
@@ -82,8 +83,8 @@ export default function Report(props) {
   };
   const getPhoto = (index) => {
     ImageCropPicker.openPicker({
-      width: 300,
-      height: 300,
+      width: 500,
+      height: 500,
       mediaType: 'photo',
       smartAlbums: ['UserLibrary'],
       cropping: true,

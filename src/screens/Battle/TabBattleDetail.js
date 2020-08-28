@@ -221,7 +221,7 @@ export default function TabBattleDetail(props) {
           }}>
           <View style={{flex: 0.1}}>
             <Text
-              text={'메모'}
+              text={'소개'}
               fontSize={14}
               fontWeight={'bold'}
               color={'gray'}

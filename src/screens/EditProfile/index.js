@@ -24,7 +24,7 @@ import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import ImagePicker from 'react-native-image-crop-picker';
-import {logApi, checkPassword} from 'react-native-nuno-ui/funcs';
+import {logApi, checkPassword, showToast} from 'react-native-nuno-ui/funcs';
 import {sports1Table} from '../../constants';
 
 export default function EditProfile(props) {
@@ -115,6 +115,7 @@ export default function EditProfile(props) {
         logApi('pwdCheck', res.data);
         setNewPassword(npw);
         setModalPassword(false);
+        showToast('가장 하단에 있는 수정 완료 버튼을 눌러야 적용됩니다.');
       })
       .catch((err) => {
         logApi('pwdCheck error', err.response?.data?.message);
@@ -452,6 +453,7 @@ export default function EditProfile(props) {
               value={passwordModal}
               onChangeText={(e) => setPasswordModal(e)}
               borderWidth={0}
+              maxLength={12}
               showEye={true}
               placeholder={'비밀번호 (영문숫자포함 6~12)'}
             />
@@ -461,6 +463,7 @@ export default function EditProfile(props) {
               value={repasswordModal}
               onChangeText={(e) => setRepasswordModal(e)}
               borderWidth={0}
+              maxLength={12}
               showEye={true}
               placeholder={'입력했던 비밀번호를 다시 입력해주세요'}
             />
@@ -482,7 +485,9 @@ export default function EditProfile(props) {
               <Button
                 text={'완료'}
                 color={custom.themeColor}
-                onPress={() => pwdCheck(currentPassword, passwordModal, repasswordModal)}
+                onPress={() => {
+                  pwdCheck(currentPassword, passwordModal, repasswordModal);
+                }}
                 size={'large'}
                 stretch
               />

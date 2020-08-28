@@ -105,8 +105,8 @@ export default function ReviewEdit(props) {
   };
   const getPhoto = (index) => {
     ImageCropPicker.openPicker({
-      width: 300,
-      height: 300,
+      width: 500,
+      height: 500,
       mediaType: 'photo',
       smartAlbums: ['UserLibrary'],
       cropping: true,

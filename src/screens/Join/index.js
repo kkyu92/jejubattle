@@ -360,6 +360,7 @@ export default function Join(props) {
                 value={password}
                 onChangeText={(e) => setPassword(e)}
                 showEye={true}
+                maxLength={12}
                 borderWidth={0}
                 placeholder={'비밀번호(영문숫자포함 6~12자)'}
               />
@@ -370,6 +371,7 @@ export default function Join(props) {
               <TextInput
                 value={repassword}
                 showEye={true}
+                maxLength={12}
                 onChangeText={(e) => setRepassword(e)}
                 borderWidth={0}
                 placeholder={'입력했던 비밀번호를 다시 입력해주세요'}

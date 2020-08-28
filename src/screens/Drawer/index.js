@@ -42,82 +42,84 @@ export default function Drawer(props) {
         onPress={() =>
           props.navigation.navigate('MyInfoStack', {screen: 'MyInfo'})
         }>
-        <HView style={{paddingHorizontal: 20}}>
-          {context.me.userImgUrl ? (
-            <Image
-              uri={context.me.userImgUrl}
-              width={68}
-              height={68}
-              borderRadius={34}
+        <View>
+          <HView style={{paddingHorizontal: 20}}>
+            {context.me.userImgUrl ? (
+              <Image
+                uri={context.me.userImgUrl}
+                width={68}
+                height={68}
+                borderRadius={34}
+              />
+            ) : (
+              <Image
+                local
+                uri={require('../../../assets/img/img-user2.png')}
+                width={68}
+                height={68}
+                borderRadius={34}
+              />
+            )}
+            <Seperator width={22} />
+            <View style={{flex: 1}}>
+              <Text
+                fontSize={21}
+                text={context.me?.userName}
+                fontWeight={'bold'}
+              />
+              <Seperator height={10} />
+              <MySports userSport={context.me.userSport} />
+            </View>
+          </HView>
+        </View>
+        <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
+          <View
+            style={{
+              width: 68,
+            }}>
+            <StarRating
+              disabled={true}
+              maxStars={5}
+              rating={5}
+              starSize={11}
+              emptyStarColor={custom.themeColor}
+              halfStarEnabled={true}
+              halfStarColor={custom.themeColor}
+              fullStarColor={custom.themeColor}
             />
-          ) : (
+          </View>
+          <Seperator width={22} />
+          <HView>
             <Image
               local
-              uri={require('../../../assets/img/img-user2.png')}
-              width={68}
-              height={68}
-              borderRadius={34}
+              uri={require('../../../assets/img/icon-coinmoney.png')}
+              width={20}
+              height={20}
+              borderRadius={10}
             />
-          )}
-          <Seperator width={22} />
-          <View style={{flex: 1}}>
+            <Seperator width={10} />
             <Text
-              fontSize={21}
-              text={context.me?.userName}
-              fontWeight={'bold'}
+              fontSize={13}
+              text={`${context.me.userCoin} coin`}
+              color={'gray'}
             />
-            <Seperator height={10} />
-            <MySports userSport={context.me.userSport} />
-          </View>
+            <Seperator width={20} />
+            <Image
+              local
+              uri={require('../../../assets/img/icon-pointmoney.png')}
+              width={20}
+              height={20}
+              borderRadius={10}
+            />
+            <Seperator width={10} />
+            <Text
+              fontSize={13}
+              text={`${context.me.userPoint} point`}
+              color={'gray'}
+            />
+          </HView>
         </HView>
       </TouchableOpacity>
-      <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
-        <View
-          style={{
-            width: 68,
-          }}>
-          <StarRating
-            disabled={true}
-            maxStars={5}
-            rating={5}
-            starSize={11}
-            emptyStarColor={custom.themeColor}
-            halfStarEnabled={true}
-            halfStarColor={custom.themeColor}
-            fullStarColor={custom.themeColor}
-          />
-        </View>
-        <Seperator width={22} />
-        <HView>
-          <Image
-            local
-            uri={require('../../../assets/img/icon-coinmoney.png')}
-            width={20}
-            height={20}
-            borderRadius={10}
-          />
-          <Seperator width={10} />
-          <Text
-            fontSize={13}
-            text={`${context.me.userCoin} coin`}
-            color={'gray'}
-          />
-          <Seperator width={20} />
-          <Image
-            local
-            uri={require('../../../assets/img/icon-pointmoney.png')}
-            width={20}
-            height={20}
-            borderRadius={10}
-          />
-          <Seperator width={10} />
-          <Text
-            fontSize={13}
-            text={`${context.me.userPoint} point`}
-            color={'gray'}
-          />
-        </HView>
-      </HView>
       <Seperator height={10} />
       <Seperator height={11} color={'whitesmoke'} />
 

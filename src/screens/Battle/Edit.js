@@ -177,14 +177,16 @@ export default function BattleEdit(props) {
             title={'비밀번호 설정'}
             placeholder={'최대 8글자 숫자만 가능'}
             value={password}
+            maxLength={8}
+            keyboardType={'number-pad'}
             onChangeText={(e) => setPassword(e)}
             borderWidth={0}
           />
           <Seperator line />
           <Seperator height={30} />
           <TextInput
-            title={'메모'}
-            placeholder={'최대 8글자 숫자만 가능'}
+            title={'소개'}
+            placeholder={'최대 250글자만 가능'}
             value={memo}
             multiline={true}
             onChangeText={(e) => setMemo(e)}
