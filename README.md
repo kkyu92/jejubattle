@@ -19,6 +19,17 @@
 ####  Android Internal Test Links
   > https://play.google.com/apps/internaltest/4700794782783427988
 
+####  2020.08.27
+  > android (2.0.0.17)
+  > ios (2.0.0.6)
+
+  - bug fix
+  - update review delete
+  - fullmap filter 전체버튼동작
+  - 이름수정시 공백책크
+
+
+
 ####  2020.08.26
   > android (2.0.0.16)
   > ios (2.0.0.5)
