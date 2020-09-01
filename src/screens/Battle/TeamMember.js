@@ -67,7 +67,7 @@ export default function BattleTeamMember(props) {
           <HView style={{flexWrap: 'wrap', justifyContent: 'flex-start'}}>
             {selectedTeam?.member.map((e, i) => {
               return (
-                <View key={i} style={{marginRight: 10, marginBottom: 10}}>
+                <HView key={i} style={{marginRight: 10, marginBottom: 10}}>
                   <Button
                     text={e.userName}
                     onPress={() => {
@@ -100,8 +100,8 @@ export default function BattleTeamMember(props) {
                     paddingVertical={10}
                     paddingHorizontal={20}
                   />
-                  {/* 팀장이 아니고 (i !== 0)
-                   * 내가 (context.me.userPk) 선택한 팀의 팀장이거나 A팀의 방장인경우에
+                  {/* 팀장이 아닌멤버의경우 (i !== 0) 삭제버튼을 보여준다.
+                   * 대신 내가 (context.me.userPk) 팀장이거나 A팀의 방장인경우에만
                    * 삭제 버튼을 보여준다.
                    */}
                   {i !== 0 &&
@@ -111,16 +111,13 @@ export default function BattleTeamMember(props) {
                         props.route.params.info.teamA.member[0].userPk) && (
                       <View
                         style={{
-                          position: 'absolute',
-                          right: -30,
-                          top: 0,
-                          bottom: 0,
+                          marginLeft: -5,
                         }}>
                         <Button
                           text={'X'}
                           size={'medium'}
                           textColor={'dimgray'}
-                          paddingVertical={10}
+                          paddingVertical={9}
                           paddingHorizontal={20}
                           color={'whitesmoke'}
                           onPress={() => {
@@ -240,7 +237,7 @@ export default function BattleTeamMember(props) {
                       />
                     </TouchableOpacity>
                   )}
-                </View>
+                </HView>
               );
             })}
           </HView>

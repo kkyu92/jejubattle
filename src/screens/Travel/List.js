@@ -119,18 +119,24 @@ export default function TravelList(props) {
         title={title}
         navigation={props.navigation}
         rightComponent={
-          <TouchableOpacity
-            onPress={() => setFilterVisible(true)}
-            style={{
-              paddingHorizontal: 20,
-              paddingVertical: 5,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <Icons name="icon-filter-13" size={13} color={custom.themeColor} />
-            <Seperator width={5} />
-            <Text text={'필터'} color={custom.themeColor} fontSize={17} />
-          </TouchableOpacity>
+          props.route.params.faCode !== 1 && (
+            <TouchableOpacity
+              onPress={() => setFilterVisible(true)}
+              style={{
+                paddingHorizontal: 20,
+                paddingVertical: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Icons
+                name="icon-filter-13"
+                size={13}
+                color={custom.themeColor}
+              />
+              <Seperator width={5} />
+              <Text text={'필터'} color={custom.themeColor} fontSize={17} />
+            </TouchableOpacity>
+          )
         }
         containerStyle={
           props.route.params.faCode === 2

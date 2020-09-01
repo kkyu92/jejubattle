@@ -35,9 +35,9 @@ export default function FullMap(props) {
     global.hideFilterGuide,
   );
 
-  React.useEffect(() => {
+  const onMapReady = () => {
     aroundme();
-  }, []);
+  };
 
   const aroundme = () => {
     // 테스트 좌표
@@ -103,6 +103,7 @@ export default function FullMap(props) {
         showZoom={true}
         showCurrent={true}
         markers={result}
+        onMapReady={onMapReady}
         getCurrentPosition={(e) => setCurrentLocation(e)}
         customCenter={
           <Image

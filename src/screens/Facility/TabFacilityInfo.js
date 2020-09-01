@@ -1,8 +1,11 @@
 import React from 'react';
 import {Container, Text, Seperator, Image, HView} from 'react-native-nuno-ui';
 import {View, TouchableOpacity, Linking} from 'react-native';
+import Clipboard from '@react-native-community/clipboard';
 import {screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {showToast} from 'react-native-nuno-ui/funcs';
 
 export default function TabFacilityInfo(props) {
   return (
@@ -205,10 +208,36 @@ export default function TabFacilityInfo(props) {
       <View style={{padding: 20}}>
         <Text text={'주소'} fontSize={18} fontWeight={'bold'} />
       </View>
-      <HView style={{paddingHorizontal: 40, alignItems: 'flex-start'}}>
+      <HView
+        style={{
+          paddingHorizontal: 40,
+          paddingBottom: 20,
+          alignItems: 'flex-start',
+        }}>
         <Icons name={'icon-loaction-18'} size={20} color={'dimgray'} />
         <Seperator width={20} />
-        <Text text={props.data.faAddr} fontSize={18} color={'dimgray'} />
+        <TouchableOpacity
+          onPress={() => {
+            props.navigation.navigate('FullMap', {
+              latitude: 100,
+              longitude: 50,
+            });
+          }}>
+          <Text
+            text={props.data.faAddr}
+            fontSize={18}
+            color={'dimgray'}
+            selectable={true}
+          />
+        </TouchableOpacity>
+        <Seperator width={20} />
+        <TouchableOpacity
+          onPress={() => {
+            Clipboard.setString(props.data.faAddr);
+            showToast('주소가가 복사 되었습니다.');
+          }}>
+          <FontAwesome5 name={'copy'} size={20} />
+        </TouchableOpacity>
       </HView>
       <Seperator bottom />
     </Container>

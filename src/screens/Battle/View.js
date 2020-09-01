@@ -144,7 +144,13 @@ export default function BattleView(props) {
                 borderBottomWidth: index === i ? 3 : 0,
               }}
               key={i}
-              onPress={() => setIndex(i)}>
+              onPress={() => {
+                console.log('onIndexChange', i);
+                if (i === 1) {
+                  setShowMatchMember(false);
+                }
+                setIndex(i);
+              }}>
               {index === i ? (
                 <Text text={route.title} fontWeight={'bold'} fontSize={17} />
               ) : (
@@ -192,7 +198,11 @@ export default function BattleView(props) {
         <TouchableOpacity
           style={{flexDirection: 'row', alignItems: 'center'}}
           onPress={() => setShowMatchMember(!showMatchMember)}>
-          <Text text={'접기'} fontWeight={'500'} fontSize={14} />
+          <Text
+            text={showMatchMember ? '접기' : '펼치기'}
+            fontWeight={'500'}
+            fontSize={14}
+          />
           <Seperator width={10} />
           <Image
             local

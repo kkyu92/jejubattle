@@ -13,11 +13,11 @@ export default async () => {
       Platform.OS === 'ios'
         ? NativeModules.SettingsManager.settings.AppleLanguages[0]
         : NativeModules.I18nManager.localeIdentifier;
-    // deviceLanguage = deviceLanguage.substring(0, 2);
-    if (deviceLanguage === 'en-US' || deviceLanguage === 'ko-KR') {
+    deviceLanguage = deviceLanguage.substring(0, 2);
+    if (deviceLanguage === 'en' || deviceLanguage === 'ko') {
       await AsyncStorage.setItem('lang', deviceLanguage);
     } else {
-      deviceLanguage = 'ko-KR';
+      deviceLanguage = 'ko';
       await AsyncStorage.setItem('lang', deviceLanguage);
     }
     // header.member_lang = deviceLanguage;
@@ -27,7 +27,7 @@ export default async () => {
     global.lang = lang;
   }
 
-  moment.locale('ko');
+  moment.locale(global.lang);
 
   // location
   global.address = await getCurrentLocation(lang);

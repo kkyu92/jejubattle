@@ -35,7 +35,7 @@ export default function ReviewEdit(props) {
       formData.append('rePk', props.route.params.rePk);
       formData.append('reContent', reContent);
       formData.append('reScope', reScope);
-      if (file) {
+      if (file && !file.includes('https://')) {
         const response = await fetch(file);
         const blob = await response.blob();
 

@@ -237,7 +237,16 @@ export default function MatchMember(props) {
             justifyContent: 'center',
             paddingHorizontal: 20,
           }}>
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTeam('A');
+              setMemberModalTeam(props.info.teamA);
+              props.navigation.navigate('BattleTeamMember', {
+                teamSide: 'A',
+                info: props.info,
+                updateBattle: updateBattle,
+              });
+            }}
             style={{
               flex: 0.4,
               alignItems: 'center',
@@ -254,6 +263,7 @@ export default function MatchMember(props) {
             />
             <Seperator height={10} />
             <Text
+              style={{textAlign: 'center'}}
               text={props.info.teamA.name}
               fontSize={36}
               color={'#FE7262'}
@@ -290,24 +300,14 @@ export default function MatchMember(props) {
               </TouchableOpacity>
             )}
             <Seperator height={10} />
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedTeam('A');
-                setMemberModalTeam(props.info.teamA);
-                props.navigation.navigate('BattleTeamMember', {
-                  teamSide: 'A',
-                  info: props.info,
-                  updateBattle: updateBattle,
-                });
-              }}
-              style={{paddingVertical: 10, paddingHorizontal: 20}}>
+            <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
               <Text
                 text={`참가인원 ${props.info.teamA?.member.length}명`}
                 fontSize={14}
                 fontWeight={'500'}
               />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
           <View style={{flex: 0.2, alignItems: 'center'}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
             <Seperator height={20} />
@@ -320,7 +320,18 @@ export default function MatchMember(props) {
               />
             </TouchableOpacity>
           </View>
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              if (props.info.teamB.member.length > 0) {
+                setSelectedTeam('B');
+                setMemberModalTeam(props.info.teamB);
+                props.navigation.navigate('BattleTeamMember', {
+                  teamSide: 'B',
+                  info: props.info,
+                  updateBattle: updateBattle,
+                });
+              }
+            }}
             style={{
               flex: 0.4,
               alignItems: 'center',
@@ -337,6 +348,7 @@ export default function MatchMember(props) {
             />
             <Seperator height={10} />
             <Text
+              style={{textAlign: 'center'}}
               text={props.info.teamB.name}
               fontSize={36}
               color={'#0752AB'}
@@ -369,26 +381,14 @@ export default function MatchMember(props) {
               </TouchableOpacity>
             )}
             <Seperator height={10} />
-            <TouchableOpacity
-              onPress={() => {
-                if (props.info.teamB.member.length > 0) {
-                  setSelectedTeam('B');
-                  setMemberModalTeam(props.info.teamB);
-                  props.navigation.navigate('BattleTeamMember', {
-                    teamSide: 'B',
-                    info: props.info,
-                    updateBattle: updateBattle,
-                  });
-                }
-              }}
-              style={{paddingVertical: 10, paddingHorizontal: 20}}>
+            <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
               <Text
                 text={`참가인원 ${props.info.teamB?.member.length}명`}
                 fontSize={14}
                 fontWeight={'500'}
               />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </HView>
       )}
 

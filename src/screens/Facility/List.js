@@ -241,43 +241,45 @@ export default function FacilityList(props) {
 
             <Seperator height={30} />
 
-            <HView style={{flexWrap: 'wrap'}}>
-              <View style={{paddingVertical: 10, paddingRight: 20}}>
-                <Checkbox
-                  label={'전체'}
-                  checked={filter2 === 0}
-                  onPress={() => setFilter2(0)}
-                />
-              </View>
-              <View style={{paddingVertical: 10, paddingRight: 20}}>
-                <Checkbox
-                  label={'학교운동장'}
-                  checked={filter2 === 1}
-                  onPress={() => setFilter2(1)}
-                />
-              </View>
-              <View style={{paddingVertical: 10, paddingRight: 20}}>
-                <Checkbox
-                  label={'체육공원'}
-                  checked={filter2 === 2}
-                  onPress={() => setFilter2(2)}
-                />
-              </View>
-              <View style={{paddingVertical: 10, paddingRight: 20}}>
-                <Checkbox
-                  label={'공공체육시설'}
-                  checked={filter2 === 3}
-                  onPress={() => setFilter2(3)}
-                />
-              </View>
-              <View style={{paddingVertical: 10, paddingRight: 20}}>
-                <Checkbox
-                  label={'사설체육시설'}
-                  checked={filter2 === 4}
-                  onPress={() => setFilter2(4)}
-                />
-              </View>
-            </HView>
+            {props.route.params.endpoint === 'gojiList' && (
+              <HView style={{flexWrap: 'wrap'}}>
+                <View style={{paddingVertical: 10, paddingRight: 20}}>
+                  <Checkbox
+                    label={'전체'}
+                    checked={filter2 === 0}
+                    onPress={() => setFilter2(0)}
+                  />
+                </View>
+                <View style={{paddingVertical: 10, paddingRight: 20}}>
+                  <Checkbox
+                    label={'학교운동장'}
+                    checked={filter2 === 1}
+                    onPress={() => setFilter2(1)}
+                  />
+                </View>
+                <View style={{paddingVertical: 10, paddingRight: 20}}>
+                  <Checkbox
+                    label={'체육공원'}
+                    checked={filter2 === 2}
+                    onPress={() => setFilter2(2)}
+                  />
+                </View>
+                <View style={{paddingVertical: 10, paddingRight: 20}}>
+                  <Checkbox
+                    label={'공공체육시설'}
+                    checked={filter2 === 3}
+                    onPress={() => setFilter2(3)}
+                  />
+                </View>
+                <View style={{paddingVertical: 10, paddingRight: 20}}>
+                  <Checkbox
+                    label={'사설체육시설'}
+                    checked={filter2 === 4}
+                    onPress={() => setFilter2(4)}
+                  />
+                </View>
+              </HView>
+            )}
           </View>
           <HView style={{padding: 10}}>
             <View style={{flex: 1}}>

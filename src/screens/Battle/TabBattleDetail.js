@@ -414,7 +414,7 @@ export default function TabBattleDetail(props) {
             <View style={{flex: 1}}>
               <Button
                 text={'아니오'}
-                color={custom.themeColor}
+                color={'gray'}
                 onPress={() => {
                   setModalExit2(false);
                 }}
@@ -426,7 +426,7 @@ export default function TabBattleDetail(props) {
             <View style={{flex: 1}}>
               <Button
                 text={'예'}
-                color={'gray'}
+                color={custom.themeColor}
                 onPress={() => handleExit()}
                 size={'large'}
                 stretch
@@ -650,6 +650,7 @@ export default function TabBattleDetail(props) {
               value={startTime}
               onChange={(e) => setStartTime(e)}
               borderWidth={0}
+              locale={global.lang}
               placeholder={'자세한시간'}
               disable={context.me.userPk !== props.info.teamA.member[0].userPk}
             />
@@ -660,6 +661,7 @@ export default function TabBattleDetail(props) {
               closeBar
               onChange={(e) => setDate(e)}
               borderWidth={0}
+              locale={global.lang}
               placeholder={'자세한시간'}
               disable={context.me.userPk !== props.info.teamA.member[0].userPk}
             />

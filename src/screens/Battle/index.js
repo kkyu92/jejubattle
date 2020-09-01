@@ -109,25 +109,19 @@ export default function Battle(props) {
           {item.foldable && (
             <TouchableOpacity onPress={() => setShowMyBattle(!showMyBattle)}>
               <HView>
-                <Text text={'접기'} fontWeight={'500'} fontSize={14} />
+                <Text
+                  text={showMyBattle ? '접기' : '펼치기'}
+                  fontWeight={'500'}
+                  fontSize={14}
+                />
                 <Seperator width={10} />
-                {showMyBattle ? (
-                  <Image
-                    local
-                    uri={require('../../../assets/img/icon-fold.png')}
-                    height={27}
-                    width={27}
-                    resizeMode={'cover'}
-                  />
-                ) : (
-                  <Image
-                    local
-                    uri={require('../../../assets/img/icon-fold.png')}
-                    height={27}
-                    width={27}
-                    resizeMode={'cover'}
-                  />
-                )}
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-fold.png')}
+                  height={27}
+                  width={27}
+                  resizeMode={'cover'}
+                />
               </HView>
             </TouchableOpacity>
           )}

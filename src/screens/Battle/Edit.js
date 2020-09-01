@@ -143,6 +143,7 @@ export default function BattleEdit(props) {
             value={date}
             placeholder={'선택해 주세요'}
             borderWidth={0}
+            locale={global.lang}
             onChange={(e) => setDate(e)}
             closeBar
           />
