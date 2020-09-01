@@ -17,6 +17,7 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {screenWidth} from '../../styles';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TabView} from 'react-native-tab-view';
 import TabTourIntroduction from './TabTourIntroduction';
 import Axios from 'axios';
@@ -167,14 +168,24 @@ export default function TravelView(props) {
                 <TouchableOpacity
                   onPress={() => scrapOn()}
                   style={{paddingHorizontal: 5, paddingVertical: 5}}>
-                  <Icons name={'icon-bookmark-20'} size={20} color={'black'} />
+                  {/* <Icons name={'icon-bookmark-20'} size={20} color={'black'} /> */}
+                  <MaterialIcons
+                    name={'bookmark-border'}
+                    size={24}
+                    color={'black'}
+                  />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   onPress={() => scrapOff()}
                   style={{paddingHorizontal: 5, paddingVertical: 5}}>
-                  <Icons
+                  {/* <Icons
                     name={'icon-bookmark-s-20'}
+                    size={24}
+                    color={custom.themeColor}
+                  /> */}
+                  <MaterialIcons
+                    name={'bookmark'}
                     size={24}
                     color={custom.themeColor}
                   />

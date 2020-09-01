@@ -21,6 +21,7 @@ import {logApi, gotoStore} from 'react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
 import DeviceInfo from 'react-native-device-info';
+import BattleComponentEmpty from './BattleComponentEmpty';
 
 export default function Home(props) {
   const context = React.useContext(AppContext);
@@ -117,14 +118,14 @@ export default function Home(props) {
         {/* View Carousel */}
         <Carousel
           data={[
-            <BattleComponent />,
-            <BattleComponent />,
-            <BattleComponent />,
-            <BattleComponent />,
-            <BattleComponent />,
-            <BattleComponent />,
-            <BattleComponent />,
-            <BattleComponent />,
+            <BattleComponentEmpty />,
+            // <BattleComponent />,
+            // <BattleComponent />,
+            // <BattleComponent />,
+            // <BattleComponent />,
+            // <BattleComponent />,
+            // <BattleComponent />,
+            // <BattleComponent />,
           ]}
           dotColor={custom.themeColor}
           paginationContainerStyle={{

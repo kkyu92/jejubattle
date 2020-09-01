@@ -6,9 +6,11 @@ import {
   Image,
   HView,
   Seperator,
+  Modal,
+  Button,
   TextInput,
 } from 'react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import {View, ScrollView, TouchableOpacity} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
@@ -16,6 +18,9 @@ import {AppContext} from '../../context';
 
 export default function CoinCharge(props) {
   const context = React.useContext(AppContext);
+  const [showPurchaseModal, setShowPurchaseModal] = React.useState(false);
+  const [modalIcon, setModalIcon] = React.useState();
+  const [modalContent, setModalContent] = React.useState();
   return (
     <Container>
       <Header
@@ -83,119 +88,314 @@ export default function CoinCharge(props) {
           <Text text={'유료 구매하기'} fontSize={18} fontWeight={'bold'} />
         </View>
         <View style={{paddingHorizontal: 20}}>
-          <HView style={{padding: 10}}>
-            <Image
-              local
-              uri={require('../../../assets/img/icon-coinmoney.png')}
-              height={40}
-              width={40}
-              resizeMode={'cover'}
-            />
-            <Seperator width={20} />
-            <View>
-              <HView>
-                <Text text={'배틀코인 1개'} fontSize={18} />
-              </HView>
-              <HView style={{alignItems: 'flex-end'}}>
-                <Text text={'1,200 원'} fontSize={23} />
-              </HView>
-            </View>
-          </HView>
+          <TouchableOpacity
+            onPress={() => {
+              setModalIcon(
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-coinmoney.png')}
+                  height={70}
+                  width={70}
+                  resizeMode={'cover'}
+                />,
+              );
+              setModalContent(
+                <View>
+                  <HView>
+                    <Text text={'배틀코인 '} fontSize={18} />
+                    <Text text={'1개'} fontSize={18} fontWeight={'bold'} />
+                  </HView>
+                  <Seperator height={6} />
+                  <View>
+                    <Text text={'1,200 원'} fontSize={23} />
+                  </View>
+                </View>,
+              );
+              setShowPurchaseModal(true);
+            }}>
+            <HView style={{padding: 10}}>
+              <Image
+                local
+                uri={require('../../../assets/img/icon-coinmoney.png')}
+                height={40}
+                width={40}
+                resizeMode={'cover'}
+              />
+              <Seperator width={20} />
+              <View>
+                <HView>
+                  <Text text={'배틀코인 '} fontSize={18} />
+                  <Text text={'1개'} fontSize={18} fontWeight={'bold'} />
+                </HView>
+                <Seperator height={6} />
+                <HView style={{alignItems: 'flex-end'}}>
+                  <Text text={'1,200 원'} fontSize={23} />
+                </HView>
+              </View>
+            </HView>
+          </TouchableOpacity>
           <Seperator line />
-          <HView style={{padding: 10}}>
-            <Image
-              local
-              uri={require('../../../assets/img/icon-fivecoins.png')}
-              height={40}
-              width={40}
-              resizeMode={'cover'}
-            />
-            <Seperator width={20} />
-            <View>
-              <HView>
-                <Text text={'배틀코인 1개'} fontSize={18} />
-              </HView>
-              <HView style={{alignItems: 'flex-end'}}>
-                <Text
-                  text={'1,200 원'}
-                  fontSize={23}
-                  style={{textDecorationLine: 'line-through'}}
-                />
-                <Text text={'1,200 원'} fontSize={23} />
-              </HView>
-            </View>
-          </HView>
+          <TouchableOpacity
+            onPress={() => {
+              setModalIcon(
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-fivecoins.png')}
+                  height={70}
+                  width={70}
+                  resizeMode={'cover'}
+                />,
+              );
+              setModalContent(
+                <View>
+                  <HView>
+                    <Text text={'배틀코인 '} fontSize={18} />
+                    <Text text={'5개'} fontSize={18} fontWeight={'bold'} />
+                  </HView>
+                  <Seperator height={6} />
+                  <View>
+                    <Text text={'6,000 원'} fontSize={23} />
+                  </View>
+                </View>,
+              );
+              setShowPurchaseModal(true);
+            }}>
+            <HView style={{padding: 10}}>
+              <Image
+                local
+                uri={require('../../../assets/img/icon-fivecoins.png')}
+                height={40}
+                width={40}
+                resizeMode={'cover'}
+              />
+              <Seperator width={20} />
+              <View>
+                <HView>
+                  <Text text={'배틀코인 '} fontSize={18} />
+                  <Text text={'5개'} fontSize={18} fontWeight={'bold'} />
+                </HView>
+                <Seperator height={6} />
+                <HView style={{alignItems: 'flex-end'}}>
+                  <Text text={'6,000 원'} fontSize={23} />
+                </HView>
+              </View>
+            </HView>
+          </TouchableOpacity>
           <Seperator line />
-          <HView style={{padding: 10}}>
-            <Image
-              local
-              uri={require('../../../assets/img/icon-tencoins.png')}
-              height={40}
-              width={40}
-              resizeMode={'cover'}
-            />
-            <Seperator width={20} />
-            <View>
-              <HView>
-                <Text text={'배틀코인 1개'} fontSize={18} />
-              </HView>
-              <HView style={{alignItems: 'flex-end'}}>
-                <Text
-                  text={'1,200 원'}
-                  fontSize={23}
-                  style={{textDecorationLine: 'line-through'}}
-                />
-                <Text text={'1,200 원'} fontSize={23} />
-              </HView>
-            </View>
-          </HView>
+          <TouchableOpacity
+            onPress={() => {
+              setModalIcon(
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-tencoins.png')}
+                  height={70}
+                  width={70}
+                  resizeMode={'cover'}
+                />,
+              );
+              setModalContent(
+                <View style={{alignItems: 'center'}}>
+                  <HView>
+                    <Text text={'배틀코인 '} fontSize={18} />
+                    <Text text={'10개'} fontSize={18} fontWeight={'bold'} />
+                  </HView>
+                  <Seperator height={6} />
+                  <HView>
+                    <Text
+                      text={'12,000 원'}
+                      fontSize={23}
+                      color={'darkgray'}
+                      style={{textDecorationLine: 'line-through'}}
+                    />
+                    <Seperator width={10} />
+                    <Text text={'11,000 원'} fontSize={23} />
+                    <Seperator width={10} />
+                    <Text text={'-10%'} fontSize={20} color={'red'} />
+                  </HView>
+                </View>,
+              );
+              setShowPurchaseModal(true);
+            }}>
+            <HView style={{padding: 10}}>
+              <Image
+                local
+                uri={require('../../../assets/img/icon-tencoins.png')}
+                height={40}
+                width={40}
+                resizeMode={'cover'}
+              />
+              <Seperator width={20} />
+              <View>
+                <HView>
+                  <Text text={'배틀코인 '} fontSize={18} />
+                  <Text text={'10개'} fontSize={18} fontWeight={'bold'} />
+                </HView>
+                <Seperator height={6} />
+                <HView style={{alignItems: 'flex-end'}}>
+                  <Text
+                    text={'12,000 원'}
+                    fontSize={23}
+                    color={'darkgray'}
+                    style={{textDecorationLine: 'line-through'}}
+                  />
+                  <Seperator width={10} />
+                  <Text text={'11,000 원'} fontSize={23} />
+                  <Seperator width={10} />
+                  <Text text={'-10%'} fontSize={20} color={'red'} />
+                </HView>
+              </View>
+            </HView>
+          </TouchableOpacity>
         </View>
 
         <Seperator height={10} />
 
         <View style={{padding: 20}}>
-          <Text text={'포인트로 구매하기'} fontSize={18} fontWeight={'bold'} />
+          <Text text={'구구매하기'} fontSize={18} fontWeight={'bold'} />
         </View>
         <View style={{paddingHorizontal: 20}}>
-          <HView style={{padding: 10}}>
-            <Image
-              local
-              uri={require('../../../assets/img/icon-coinmoney.png')}
-              height={40}
-              width={40}
-              resizeMode={'cover'}
-            />
-            <Seperator width={20} />
-            <View>
-              <HView>
-                <Text text={'배틀코인 1개'} fontSize={18} />
-              </HView>
-              <HView style={{alignItems: 'flex-end'}}>
-                <Text text={'1,200 원'} fontSize={23} />
-              </HView>
-            </View>
-          </HView>
+          <TouchableOpacity
+            onPress={() => {
+              setModalIcon(
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-coinmoney.png')}
+                  height={70}
+                  width={70}
+                  resizeMode={'cover'}
+                />,
+              );
+              setModalContent(
+                <View>
+                  <HView>
+                    <Text text={'배틀코인 '} fontSize={18} />
+                    <Text text={'1개'} fontSize={18} fontWeight={'bold'} />
+                  </HView>
+                  <Seperator height={6} />
+                  <View>
+                    <Text text={'포인트 3개 필요'} fontSize={14} />
+                  </View>
+                </View>,
+              );
+              setShowPurchaseModal(true);
+            }}>
+            <HView style={{padding: 10}}>
+              <Image
+                local
+                uri={require('../../../assets/img/icon-coinmoney.png')}
+                height={40}
+                width={40}
+                resizeMode={'cover'}
+              />
+              <Seperator width={20} />
+              <View>
+                <HView>
+                  <Text text={'배틀코인 '} fontSize={18} />
+                  <Text text={'1개'} fontSize={18} fontWeight={'bold'} />
+                </HView>
+                <Seperator height={6} />
+                <HView style={{alignItems: 'flex-end'}}>
+                  <Text text={'포인트 3개 필요'} fontSize={14} />
+                </HView>
+              </View>
+            </HView>
+          </TouchableOpacity>
           <Seperator line />
-          <HView style={{padding: 10}}>
-            <Image
-              local
-              uri={require('../../../assets/img/icon-fivecoins.png')}
-              height={40}
-              width={40}
-              resizeMode={'cover'}
-            />
+          <TouchableOpacity
+            onPress={() => {
+              setModalIcon(
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-fivecoins.png')}
+                  height={70}
+                  width={70}
+                  resizeMode={'cover'}
+                />,
+              );
+              setModalContent(
+                <View>
+                  <HView>
+                    <Text text={'배틀코인 '} fontSize={18} />
+                    <Text text={'5개'} fontSize={18} fontWeight={'bold'} />
+                  </HView>
+                  <Seperator height={6} />
+                  <View>
+                    <Text text={'포인트 15개 필요'} fontSize={14} />
+                  </View>
+                </View>,
+              );
+              setShowPurchaseModal(true);
+            }}>
+            <HView style={{padding: 10}}>
+              <Image
+                local
+                uri={require('../../../assets/img/icon-fivecoins.png')}
+                height={40}
+                width={40}
+                resizeMode={'cover'}
+              />
+              <Seperator width={20} />
+              <View>
+                <HView>
+                  <Text text={'배틀코인 '} fontSize={18} />
+                  <Text text={'5개'} fontSize={18} fontWeight={'bold'} />
+                </HView>
+                <Seperator height={6} />
+                <HView style={{alignItems: 'flex-end'}}>
+                  <Text text={'포인트 15개 필요'} fontSize={14} />
+                </HView>
+              </View>
+            </HView>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+      <Modal
+        isVisible={showPurchaseModal}
+        onBackdropPress={() => setShowPurchaseModal(false)}
+        onModalHide={() => console.log('modal hide')}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          <Text
+            fontSize={18}
+            fontWeight={'bold'}
+            color={'black'}
+            text={'코인구매'}
+          />
+          <Seperator height={30} />
+          {modalIcon}
+          <Seperator height={30} />
+          {modalContent}
+          <Seperator height={30} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'아니오'}
+                color={'gray'}
+                onPress={() => {
+                  setShowPurchaseModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
             <Seperator width={20} />
-            <View>
-              <HView>
-                <Text text={'배틀코인 1개'} fontSize={18} />
-              </HView>
-              <HView style={{alignItems: 'flex-end'}}>
-                <Text text={'포인트 3개 필요'} fontSize={14} />
-              </HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'예'}
+                color={custom.themeColor}
+                onPress={() => null}
+                size={'large'}
+                stretch
+              />
             </View>
           </HView>
         </View>
-      </ScrollView>
+      </Modal>
     </Container>
   );
 }

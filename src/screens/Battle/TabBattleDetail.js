@@ -33,7 +33,7 @@ export default function TabBattleDetail(props) {
   const [modalDateAlert, setModalDateAlert] = React.useState(false);
   const [modalEditBattleOwner, setModalEditBattleOwner] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [place, setPlace] = React.useState(props.info.baPlace || '장소이름');
+  const [place, setPlace] = React.useState(props.info.baPlace);
   const [date, setDate] = React.useState(new Date(props.info.baDate));
   const [startTime, setStartTime] = React.useState(
     new Date(getDateFromHours(props.info.baStartTime || '00:00')),
@@ -261,6 +261,8 @@ export default function TabBattleDetail(props) {
             text={
               context.me.userPk === props.info.teamA.member[0].userPk
                 ? '배틀시작'
+                : props.info.teamA.member[0].ready === 'Y'
+                ? '배틀취소'
                 : '배틀준비'
             }
             onPress={() => {
@@ -283,13 +285,15 @@ export default function TabBattleDetail(props) {
                   .indexOf(context.me.userPk);
                 if (foundedAtTeamA !== -1) {
                   const team = {...props.info.teamA};
-                  team.member[foundedAtTeamA].ready = 'Y';
+                  team.member[foundedAtTeamA].ready =
+                    team.member[foundedAtTeamA].ready === 'Y' ? 'N' : 'Y';
                   updateBattle({teamA: team}, true);
                 }
 
                 if (foundedAtTeamB !== -1) {
                   const team = {...props.info.teamB};
-                  team.member[foundedAtTeamB].ready = 'Y';
+                  team.member[foundedAtTeamB].ready =
+                    team.member[foundedAtTeamB].ready === 'Y' ? 'N' : 'Y';
                   updateBattle({teamB: team}, true);
                 }
               }
@@ -623,7 +627,11 @@ export default function TabBattleDetail(props) {
             <Text text={'장소설정'} fontSize={14} fontWeight={'bold'} />
             <HView>
               <View style={{padding: 10, flex: 1}}>
-                <Text text={place} fontSize={14} color={'dimgray'} />
+                <Text
+                  text={place.faName || '장소이름'}
+                  fontSize={14}
+                  color={'dimgray'}
+                />
               </View>
               <Button
                 text={'설정하기'}
@@ -687,7 +695,7 @@ export default function TabBattleDetail(props) {
                   onPress={() => {
                     updateBattle(
                       {
-                        faPk: place,
+                        faPk: place.faPk,
                         baStartTime: moment(startTime).format('HH:MM'),
                       },
                       true,

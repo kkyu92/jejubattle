@@ -31,15 +31,13 @@ export default function Setting(props) {
   const [userTermsPush, setUserTermsPush] = React.useState(
     context.me.userTermsPush,
   );
-  const [alertTitle, setAlertTitle] = React.useState('');
-  const [alertText, setAlertText] = React.useState('');
   const [showLogoutDone, setShowLogoutDone] = React.useState(false);
+  const [modalLogout, setModalLogout] = React.useState(false);
 
   const signout = async () => {
     await AsyncStorage.removeItem('token');
-    setAlertTitle('로그아웃');
-    setAlertText('로그아웃 되엇습니다.');
-    setShowLogoutDone(true);
+    await Init();
+    context.dispatch({type: 'UNAUTHORIZED'});
   };
   const firstUpdate = React.useRef(true);
   React.useLayoutEffect(() => {
@@ -72,15 +70,7 @@ export default function Setting(props) {
       });
   };
   return (
-    <Container
-      alertTitle={alertTitle}
-      alertText={alertText}
-      alertVisible={showLogoutDone}
-      onConfirm={async () => {
-        setShowLogoutDone(false);
-        await Init();
-        context.dispatch({type: 'UNAUTHORIZED'});
-      }}>
+    <Container>
       <Header left={'close'} title={'설정'} navigation={props.navigation} />
       <ScrollView>
         <Seperator height={20} />
@@ -183,7 +173,7 @@ export default function Setting(props) {
 
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
-          onPress={() => signout()}>
+          onPress={() => setModalLogout(true)}>
           <Text
             text={'로그아웃'}
             fontSize={18}
@@ -202,6 +192,48 @@ export default function Setting(props) {
           />
         </TouchableOpacity>
       </ScrollView>
+      <Modal
+        isVisible={modalLogout}
+        onBackdropPress={() => setModalLogout(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          <Text
+            fontSize={18}
+            fontWeight={'bold'}
+            color={'black'}
+            text={'로그아웃 하시겠습니까?'}
+          />
+          <Seperator height={50} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'아니오'}
+                color={'gray'}
+                onPress={() => {
+                  setModalLogout(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'예'}
+                color={custom.themeColor}
+                onPress={() => signout()}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
     </Container>
   );
 }

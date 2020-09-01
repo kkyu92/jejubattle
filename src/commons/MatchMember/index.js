@@ -119,7 +119,7 @@ export default function MatchMember(props) {
         <HView
           style={{
             justifyContent: 'center',
-            alignItems: 'flex-start',
+            alignItems: 'center',
             paddingHorizontal: 20,
             paddingBottom: 10,
           }}>
@@ -163,13 +163,14 @@ export default function MatchMember(props) {
               fontSize={16}
             />
           </View>
-          <View style={{flex: 0.2, alignItems: 'center', paddingTop: 30}}>
+          <View style={{flex: 0.2, alignItems: 'center'}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
           </View>
           <View
             style={{
               flex: 0.4,
               alignItems: 'center',
+              // justifyContent: 'center',
             }}>
             {props.info.teamB?.member[0]?.userImgUrl ? (
               <Image
@@ -185,18 +186,11 @@ export default function MatchMember(props) {
                 }}
               />
             ) : (
-              <Image
-                local
-                uri={require('../../../assets/img/user_boy.png')}
-                width={72}
-                height={72}
-                borderRadius={36}
-                onPress={() => {
-                  if (props.info.teamB?.member.length > 0) {
-                    setMemberModalTeam(props.info.teamB);
-                    setMemberModal(true);
-                  }
-                }}
+              <Text
+                text={'대결상대가\n없습니다'}
+                fontSize={18}
+                fontWeight={'bold'}
+                style={{textAlign: 'center'}}
               />
             )}
             {props.info.teamB?.member[0]?.ready === 'Y' && (

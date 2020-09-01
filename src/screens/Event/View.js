@@ -239,8 +239,8 @@ export default function EventView(props) {
   };
   const getPhoto = (index) => {
     ImageCropPicker.openPicker({
-      width: 500,
-      height: 500,
+      width: 700,
+      height: 700,
       mediaType: 'photo',
       smartAlbums: ['UserLibrary'],
       cropping: true,

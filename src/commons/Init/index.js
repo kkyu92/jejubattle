@@ -44,6 +44,8 @@ export default async () => {
   // 각종 asyncstorage global value
   const hideFilterGuide = await AsyncStorage.getItem('hideFilterGuide');
   global.hideFilterGuide = hideFilterGuide;
+  const hidePermissionAlert = await AsyncStorage.getItem('hidePermissionAlert');
+  global.hidePermissionAlert = hidePermissionAlert;
 
   await axios
     .post('version', {})

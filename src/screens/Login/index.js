@@ -40,12 +40,15 @@ export default function Login(props) {
   const [permissionVisible, setPermissionVisible] = React.useState(false);
   const [permission1, setPermission1] = React.useState(false);
   const [permission2, setPermission2] = React.useState(false);
-  const joinCallback = React.useRef();
+  const [hidePermissionAlert, setHidePermissionAlert] = React.useState(
+    global.hidePermissionAlert,
+  );
 
-  const gotoJoin = (callback) => {
-    setPermissionVisible(true);
-    joinCallback.current = callback;
-  };
+  React.useEffect(() => {
+    if (!hidePermissionAlert) {
+      setPermissionVisible(true);
+    }
+  }, []);
   const signin = () => {
     setLoading(true);
     Axios.post('signin', {
@@ -84,13 +87,11 @@ export default function Login(props) {
         logApi('snsSignin error', err?.response);
         setLoading(false);
         if (err?.response.status === 403) {
-          gotoJoin(() =>
-            props.navigation.navigate('Join', {
-              uid: userId,
-              userId: userEmail,
-              userCode: userCode,
-            }),
-          );
+          props.navigation.navigate('Join', {
+            uid: userId,
+            userId: userEmail,
+            userCode: userCode,
+          });
         } else {
           Alert.alert('로그인', err.response?.data?.message);
         }
@@ -224,7 +225,8 @@ export default function Login(props) {
             color={'rgba(0, 0, 0, 0.6)'}
             borderRadius={20}
             onPress={() => {
-              gotoJoin(() => props.navigation.navigate('Join'));
+              // gotoJoin(() => props.navigation.navigate('Join'));
+              props.navigation.navigate('Join');
             }}
           />
         </HView>
@@ -439,9 +441,13 @@ export default function Login(props) {
           <View style={{padding: 10}}>
             <Button
               text={'동의하고 계속하기'}
-              onPress={() => {
+              onPress={async () => {
+                await AsyncStorage.setItem(
+                  'hidePermissionAlert',
+                  JSON.stringify(true),
+                );
                 setPermissionVisible(false);
-                joinCallback.current();
+                global.hidePermissionAlert = true;
               }}
               disable={!permission1 || !permission2}
               color={custom.themeColor}

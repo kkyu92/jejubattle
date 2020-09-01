@@ -1,6 +1,7 @@
 import React from 'react';
 import {HView, Seperator, Text, Image, Checkbox} from 'react-native-nuno-ui';
 import Icons from '../Icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {custom} from '../../config';
 import {TouchableOpacity, View} from 'react-native';
 
@@ -68,13 +69,23 @@ export default function ListItem(props) {
             (props.item.faScrapType === 'N' ? (
               <TouchableOpacity
                 onPress={() => props.scrapOn(props.item, props.index)}>
-                <Icons name="icon-bookmark-20" size={20} color={'black'} />
+                {/* <Icons name="icon-bookmark-20" size={20} color={'black'} /> */}
+                <MaterialIcons
+                  name={'bookmark-border'}
+                  size={24}
+                  color={'black'}
+                />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 onPress={() => props.scrapOff(props.item, props.index)}>
-                <Icons
+                {/* <Icons
                   name="icon-bookmark-s-20"
+                  size={24}
+                  color={custom.themeColor}
+                /> */}
+                <MaterialIcons
+                  name={'bookmark'}
                   size={24}
                   color={custom.themeColor}
                 />
