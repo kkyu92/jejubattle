@@ -160,6 +160,30 @@ export default function EditProfile(props) {
         Alert.alert(err.response?.data?.message);
       });
   };
+  const renderItemCategory = ({item, index}) => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          opacity:
+            selectedSports.map((s) => s.code).indexOf(item.code) === -1
+              ? 0.3
+              : 1,
+        }}>
+        <Image
+          local
+          height={Math.floor((screenWidth - 180) / 5)}
+          width={Math.floor((screenWidth - 180) / 5)}
+          uri={item.icon}
+          resizeMode={'contain'}
+          onPress={() => handleSports(item)}
+        />
+        <Seperator height={10} />
+        <Text text={item.name} fontSize={14} />
+      </View>
+    );
+  };
   return (
     <Container>
       <Header left={'close'} title={'정보수정'} navigation={props.navigation} />
@@ -314,33 +338,12 @@ export default function EditProfile(props) {
           <Seperator height={40} />
           <Text text={'선호 종목 선정'} fontSize={18} fontWeight={'bold'} />
           <Seperator height={20} />
-          <HView style={{flexWrap: 'wrap'}}>
-            {sports.map((e, i) => {
-              return (
-                <TouchableOpacity onPress={() => handleSports(e)} key={i}>
-                  <View
-                    style={{
-                      padding: 10,
-                      alignItems: 'center',
-                      opacity:
-                        selectedSports.map((s) => s.code).indexOf(e.code) === -1
-                          ? 0.3
-                          : 1,
-                    }}>
-                    <Image
-                      local
-                      height={Math.floor((screenWidth - 140) / 5)}
-                      width={Math.floor((screenWidth - 140) / 5)}
-                      uri={e.icon}
-                      resizeMode={'contain'}
-                    />
-                    <Seperator height={10} />
-                    <Text text={e.name} fontSize={14} />
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </HView>
+          <FlatList
+            data={sports}
+            keyExtractor={(item) => JSON.stringify(item.code)}
+            renderItem={renderItemCategory}
+            numColumns={5}
+          />
         </View>
       </ScrollView>
       <HView
