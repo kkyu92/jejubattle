@@ -74,7 +74,7 @@ export default function Report(props) {
         logApi('report', res.data);
         setModalWarning(false);
         props.navigation.goBack();
-        showToast('신고가 완료되었습니다');
+        showToast('신고가 완료되었습니다', 2000, 'center');
       })
       .catch((err) => {
         setLoading(false);

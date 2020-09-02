@@ -115,7 +115,7 @@ export default function EditProfile(props) {
         logApi('pwdCheck', res.data);
         setNewPassword(npw);
         setModalPassword(false);
-        showToast('가장 하단에 있는 수정 완료 버튼을 눌러야 적용됩니다.');
+        showToast('가장 하단에 있는 수정 완료 버튼을 눌러야 적용됩니다.', 2000, 'center');
       })
       .catch((err) => {
         logApi('pwdCheck error', err.response?.data?.message);

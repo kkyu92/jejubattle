@@ -126,7 +126,8 @@ export default function Drawer(props) {
       {/* menu list */}
       <ScrollView>
         <Seperator height={20} />
-        <TouchableOpacity onPress={() => props.navigation.navigate('FullMap')}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('FullMap', {roundme: true})}>
           <HView
             style={{
               paddingHorizontal: 20,

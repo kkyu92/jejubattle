@@ -38,7 +38,21 @@ export default function TabBattleDetail(props) {
   const [startTime, setStartTime] = React.useState(
     new Date(getDateFromHours(props.info.baStartTime || '00:00')),
   );
-  // const [role, setRole] = React.useState('');
+  const [foundedAtTeamA, setFoundedAtTeamA] = React.useState(
+    props.info.teamA.member.map((e) => e.userPk).indexOf(context.me.userPk),
+  );
+  const [foundedAtTeamB, setFoundedAtTeamB] = React.useState(
+    props.info.teamB.member.map((e) => e.userPk).indexOf(context.me.userPk),
+  );
+
+  React.useEffect(() => {
+    setFoundedAtTeamA(
+      props.info.teamA.member.map((e) => e.userPk).indexOf(context.me.userPk),
+    );
+    setFoundedAtTeamB(
+      props.info.teamB.member.map((e) => e.userPk).indexOf(context.me.userPk),
+    );
+  }, [props.info]);
 
   const updateBattle = (data, update) => {
     props.socket.send(
@@ -81,12 +95,12 @@ export default function TabBattleDetail(props) {
       });
   };
   const handleExit = () => {
-    const foundedAtTeamA = props.info.teamA.member
-      .map((e) => e.userPk)
-      .indexOf(context.me.userPk);
-    const foundedAtTeamB = props.info.teamB.member
-      .map((e) => e.userPk)
-      .indexOf(context.me.userPk);
+    // const foundedAtTeamA = props.info.teamA.member
+    //   .map((e) => e.userPk)
+    //   .indexOf(context.me.userPk);
+    // const foundedAtTeamB = props.info.teamB.member
+    //   .map((e) => e.userPk)
+    //   .indexOf(context.me.userPk);
     if (foundedAtTeamA !== -1) {
       const localTeam = {...props.info.teamA};
       let localHistory = props.info.history.map((e) => ({userPk: e.userPk}));
@@ -261,7 +275,8 @@ export default function TabBattleDetail(props) {
             text={
               context.me.userPk === props.info.teamA.member[0].userPk
                 ? '배틀시작'
-                : props.info.teamA.member[0].ready === 'Y'
+                : props.info.teamA.member[foundedAtTeamA]?.ready === 'Y' ||
+                  props.info.teamB.member[foundedAtTeamB]?.ready === 'Y'
                 ? '배틀취소'
                 : '배틀준비'
             }
@@ -277,12 +292,12 @@ export default function TabBattleDetail(props) {
                 }
                 setModalStart(true);
               } else {
-                const foundedAtTeamA = props.info.teamA.member
-                  .map((e) => e.userPk)
-                  .indexOf(context.me.userPk);
-                const foundedAtTeamB = props.info.teamB.member
-                  .map((e) => e.userPk)
-                  .indexOf(context.me.userPk);
+                // const foundedAtTeamA = props.info.teamA.member
+                //   .map((e) => e.userPk)
+                //   .indexOf(context.me.userPk);
+                // const foundedAtTeamB = props.info.teamB.member
+                //   .map((e) => e.userPk)
+                //   .indexOf(context.me.userPk);
                 if (foundedAtTeamA !== -1) {
                   const team = {...props.info.teamA};
                   team.member[foundedAtTeamA].ready =
@@ -346,7 +361,7 @@ export default function TabBattleDetail(props) {
                 onPress={() => {
                   setModalExit(false);
                   if (props.info.teamA.member.length < 2) {
-                    showToast('위임할 유저가 없습니다');
+                    showToast('위임할 유저가 없습니다', 2000, 'center');
                   } else {
                     props.navigation.navigate('BattleTeamMember', {
                       teamSide: 'A',
@@ -641,9 +656,14 @@ export default function TabBattleDetail(props) {
                 onPress={() => {
                   setModalSetting(false);
                   props.navigation.navigate('FullMap', {
+                    facilitySearch: true,
+                    baPk: props.info.baPk,
                     share: (data) => {
                       setModalSetting(true);
-                      setPlace(data.faPk);
+                      setPlace({
+                        faPk: data.faPk,
+                        faName: data.faName,
+                      });
                     },
                   });
                 }}
@@ -695,7 +715,7 @@ export default function TabBattleDetail(props) {
                   onPress={() => {
                     updateBattle(
                       {
-                        faPk: place.faPk,
+                        baPlace: place,
                         baStartTime: moment(startTime).format('HH:MM'),
                       },
                       true,

@@ -125,7 +125,13 @@ export default function ListItemBattle({
                 <MaterialIcons name={'lock-open'} color={'dimgray'} size={12} />
               )}
               <Seperator width={9} />
-              <Text text={item.btName} fontSize={13} color={'dimgray'} />
+              <Text
+                text={`${
+                  item.teamA.member.length + item.teamB.member.length
+                } / ${JSON.parse(item.btName.split(' ')[0] * 2)}`}
+                fontSize={13}
+                color={'dimgray'}
+              />
             </HView>
           </HView>
           <Seperator height={20} />

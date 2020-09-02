@@ -111,7 +111,7 @@ export default function WishList(props) {
         rightComponent={
           <HView>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('FullMap')}
+              onPress={() => props.navigation.navigate('FullMap', {aroundme: true})}
               style={{paddingHorizontal: 20, paddingVertical: 5}}>
               <Icons
                 name={'icon-map-24'}

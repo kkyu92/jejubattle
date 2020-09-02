@@ -66,6 +66,7 @@ export default function TabBattleChat({
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('FullMap', {
+                aroundme: true,
                 share: (data) => {
                   send({
                     text: data.faName,

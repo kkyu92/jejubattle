@@ -22,21 +22,24 @@ import ListItem from '../../commons/ListItem';
 const actionSheetRef = React.createRef();
 
 export default function FullMapFilter(props) {
-  const [sports, setSports] = React.useState([]);
+  const [sports, setSports] = React.useState(props.route?.params?.caCode);
   const [selectedSports, setSelectedSports] = React.useState([]);
+  const [clCode] = React.useState(props.route?.params?.clCode);
+  const [selectedClCode, setSelectedClCode] = React.useState([]);
   const [checkAll, setCheckAll] = React.useState(false);
+  const [checkAll2, setCheckAll2] = React.useState(false);
 
-  React.useEffect(() => {
-    Axios.post('sportsList', {})
-      .then((res) => {
-        logApi('sportsList', res.data);
-        setSports(res.data.gojiList);
-      })
-      .catch((err) => {
-        logApi('sportsList error', err.response);
-      });
-  }, []);
-  const handleButton = (e) => {
+  // React.useEffect(() => {
+  //   Axios.post('sportsList', {})
+  //     .then((res) => {
+  //       logApi('sportsList', res.data);
+  //       setSports(res.data.gojiList);
+  //     })
+  //     .catch((err) => {
+  //       logApi('sportsList error', err.response);
+  //     });
+  // }, []);
+  const handleSportsButton = (e) => {
     const temp = [...selectedSports];
     const found = temp.indexOf(e);
     if (found === -1) {
@@ -46,6 +49,16 @@ export default function FullMapFilter(props) {
     }
     setSelectedSports(temp);
   };
+  const handleClCodeButton = (e) => {
+    const temp = [...selectedClCode];
+    const found = temp.indexOf(e);
+    if (found === -1) {
+      temp.push(e);
+    } else {
+      temp.splice(found, 1);
+    }
+    setSelectedClCode(temp);
+  };
   React.useEffect(() => {
     if (checkAll) {
       const temp = [...sports.map((e) => e.code)];
@@ -54,6 +67,14 @@ export default function FullMapFilter(props) {
       setSelectedSports([]);
     }
   }, [checkAll]);
+  React.useEffect(() => {
+    if (checkAll2) {
+      const temp = [...clCode.map((e) => e.code)];
+      setSelectedClCode(temp);
+    } else {
+      setSelectedClCode([]);
+    }
+  }, [checkAll2]);
   return (
     <Container>
       <Header
@@ -90,7 +111,7 @@ export default function FullMapFilter(props) {
                         ? 'white'
                         : custom.themeColor
                     }
-                    onPress={() => handleButton(e.code)}
+                    onPress={() => handleSportsButton(e.code)}
                   />
                 </View>
               );
@@ -99,6 +120,37 @@ export default function FullMapFilter(props) {
         </View>
         <View style={{padding: 20}}>
           <Text text={'유형'} fontSize={18} fontWeight={'bold'} />
+          <Seperator height={20} />
+          <HView style={{flexWrap: 'wrap'}}>
+            <View style={{marginRight: 5, marginBottom: 5}}>
+              <Button
+                text={'전체'}
+                size={'medium'}
+                paddingHorizontal={30}
+                paddingVertical={15}
+                color={checkAll2 ? custom.themeColor : 'white'}
+                onPress={() => setCheckAll2(!checkAll2)}
+              />
+            </View>
+            {clCode.map((e, i) => {
+              return (
+                <View style={{marginRight: 5, marginBottom: 5}} key={i}>
+                  <Button
+                    text={e.name}
+                    paddingHorizontal={30}
+                    paddingVertical={15}
+                    size={'medium'}
+                    color={
+                      selectedClCode.indexOf(e.code) === -1
+                        ? 'white'
+                        : custom.themeColor
+                    }
+                    onPress={() => handleClCodeButton(e.code)}
+                  />
+                </View>
+              );
+            })}
+          </HView>
         </View>
       </ScrollView>
       <HView

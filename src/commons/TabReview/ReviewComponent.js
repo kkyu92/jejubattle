@@ -25,11 +25,11 @@ export default function ReviewComponent(props) {
 
   const renderViewMore = (onPress) => {
     return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={{padding: 10, position: 'absolute', right: 0, bottom: -34}}>
-        <Text text={'+ 더보기'} fontSize={14} color={custom.themeColor} />
-      </TouchableOpacity>
+      <View style={{alignItems: 'flex-end'}}>
+        <TouchableOpacity onPress={onPress} style={{padding: 10}}>
+          <Text text={'+ 더보기'} fontSize={14} color={custom.themeColor} />
+        </TouchableOpacity>
+      </View>
     );
   };
   const renderViewLess = (onPress) => {
@@ -101,7 +101,7 @@ export default function ReviewComponent(props) {
             <Text text={props.data.reContent} fontSize={15} color={'dimgray'} />
           </ViewMoreText>
           <Seperator height={6} />
-          <HView style={{width: 110}}>
+          <HView style={{minWidth: 110}}>
             <Text
               text={props.data.reUpdatetime}
               fontSize={14}

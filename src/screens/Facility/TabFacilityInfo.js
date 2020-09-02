@@ -219,6 +219,7 @@ export default function TabFacilityInfo(props) {
         <TouchableOpacity
           onPress={() => {
             props.navigation.navigate('FullMap', {
+              // 응답으로 장소에 대한 lat, lng 값이 와야 함. 아래는 임시로 넣음.
               latitude: 100,
               longitude: 50,
             });
@@ -234,7 +235,7 @@ export default function TabFacilityInfo(props) {
         <TouchableOpacity
           onPress={() => {
             Clipboard.setString(props.data.faAddr);
-            showToast('주소가가 복사 되었습니다.');
+            showToast('주소가가 복사 되었습니다.', 2000, 'center');
           }}>
           <FontAwesome5 name={'copy'} size={20} />
         </TouchableOpacity>

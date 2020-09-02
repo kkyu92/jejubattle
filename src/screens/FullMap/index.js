@@ -34,11 +34,40 @@ export default function FullMap(props) {
   const [hideFilterGuide, setHideFilterGuide] = React.useState(
     global.hideFilterGuide,
   );
+  const [caCode, setCaCode] = React.useState(0);
+  const [clCode, setClCode] = React.useState(0);
 
   const onMapReady = () => {
-    aroundme();
+    if (props.route?.params?.aroundme) {
+      aroundme();
+    } else if (props.route?.params?.facilitySearch) {
+      facilitySearch();
+    }
   };
 
+  const facilitySearch = () => {
+    Axios.post('facilitySearch', {
+      baPk: props.route?.params?.baPk,
+      keyword: keyword,
+      caCode: caCode,
+      clCode: clCode,
+    })
+      .then((res) => {
+        logApi('facilitySearch', res.data);
+        const temp = res.data.facility.map((e) => ({
+          ...e,
+          coords: {latitude: e.faLat, longitude: e.faLon},
+          title: e.faName,
+          // markerComponent: require('../../../assets/img/icon-mylocation.png'),
+        }));
+        setResult(temp);
+        setCaCode(res.data.caCode);
+        setClCode(res.data.clCode);
+      })
+      .catch((err) => {
+        logApi('facilitySearch error', err.response);
+      });
+  };
   const aroundme = () => {
     // 테스트 좌표
     // "lat": 37.55375859999999,
@@ -163,7 +192,12 @@ export default function FullMap(props) {
           </HView>
           <Seperator width={20} />
           <TouchableOpacity
-            onPress={() => props.navigation.navigate('FullMapFilter')}
+            onPress={() =>
+              props.navigation.navigate('FullMapFilter', {
+                caCode: caCode,
+                clCode: clCode,
+              })
+            }
             style={{
               backgroundColor: 'white',
               width: 40,

@@ -105,7 +105,7 @@ export default function MatchMember(props) {
 
       await updateBattle({teamA: teamA, teamB: teamB});
     }
-    showToast('팀이 변경되었습니다.');
+    showToast('팀이 변경되었습니다.', 2000, 'center');
   };
   return (
     <Container
