@@ -17,7 +17,12 @@ import {custom, API_URL} from '../../config';
 import Icons from '../../commons/Icons';
 import ImagePicker from 'react-native-image-crop-picker';
 import Axios from 'axios';
-import {logApi, checkEmail, checkPassword, getQueryParam} from 'react-native-nuno-ui/funcs';
+import {
+  logApi,
+  checkEmail,
+  checkPassword,
+  getQueryParam,
+} from 'react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';
@@ -329,42 +334,43 @@ export default function Join(props) {
             />
           </HView>
 
-          <Seperator height={30} />
-          <Text text={'아이디'} fontSize={16} fontWeight={'500'} />
-          <Seperator height={10} />
-          <HView>
-            <View style={{flex: 1}}>
-              <TextInput
-                value={email}
-                onChangeText={(e) => setEmail(e)}
-                borderWidth={0}
-                autoCapitalize={'none'}
-                keyboardType={'email-address'}
-                editable={props.route?.params?.userCode === undefined}
-                placeholder={'아이디로 사용할 이메일을 입력해주세요'}
-              />
-            </View>
-            {props.route?.params?.userCode === undefined && (
-              <Button
-                text={emailVerified ? '인증완료' : '인증요청'}
-                size={'medium'}
-                onPress={() => {
-                  if (email) {
-                    const checkemail = checkEmail(email);
-                    if (!checkemail.valid) {
-                      Alert.alert('이메일 오류', '이메일 형식이 아닙니다');
-                      return;
+          {props.route?.params?.userCode === undefined && (
+            <>
+              <Seperator height={30} />
+              <Text text={'아이디'} fontSize={16} fontWeight={'500'} />
+              <Seperator height={10} />
+              <HView>
+                <View style={{flex: 1}}>
+                  <TextInput
+                    value={email}
+                    onChangeText={(e) => setEmail(e)}
+                    borderWidth={0}
+                    autoCapitalize={'none'}
+                    keyboardType={'email-address'}
+                    placeholder={'아이디로 사용할 이메일을 입력해주세요'}
+                  />
+                </View>
+                <Button
+                  text={emailVerified ? '인증완료' : '인증요청'}
+                  size={'medium'}
+                  onPress={() => {
+                    if (email) {
+                      const checkemail = checkEmail(email);
+                      if (!checkemail.valid) {
+                        Alert.alert('이메일 오류', '이메일 형식이 아닙니다');
+                        return;
+                      }
+                      verifyEmail();
                     }
-                    verifyEmail();
-                  }
-                }}
-                // textColor={'dimgray'}
-                color={emailVerified ? custom.themeColor : 'white'}
-                borderRadius={20}
-              />
-            )}
-          </HView>
-          <Seperator line />
+                  }}
+                  // textColor={'dimgray'}
+                  color={emailVerified ? custom.themeColor : 'white'}
+                  borderRadius={20}
+                />
+              </HView>
+              <Seperator line />
+            </>
+          )}
 
           {props.route?.params?.userCode === undefined && (
             <>
