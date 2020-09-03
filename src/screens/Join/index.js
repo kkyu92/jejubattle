@@ -69,6 +69,21 @@ export default function Join(props) {
     console.log('handleOpenURL', e.url, param);
     setMobile(param);
   };
+  const handleAgreementAll = () => {
+    if (agreement) {
+      setAgreement(!agreement);
+      setAgreement1(false);
+      setAgreement2(false);
+      setAgreement3(false);
+      setAgreement4(false);
+    } else {
+      setAgreement(!agreement);
+      setAgreement1(true);
+      setAgreement2(true);
+      setAgreement3(true);
+      setAgreement4(true);
+    }
+  };
   const verifyEmail = () => {
     if (!email) {
       Alert.alert('인증을 위한 이메일을 입력해주세요');
@@ -423,7 +438,7 @@ export default function Join(props) {
           <Checkbox
             label={'약관에 동의하였습니다'}
             checked={agreement}
-            onPress={() => setAgreement(!agreement)}
+            onPress={() => handleAgreementAll()}
           />
         </View>
       </KeyboardAwareScrollView>
