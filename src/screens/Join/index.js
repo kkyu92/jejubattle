@@ -72,6 +72,7 @@ export default function Join(props) {
     const temp = e.url.split('/');
     const param = temp[temp.length - 1];
     console.log('handleOpenURL', e.url, param);
+    Alert.alert('Debug Alert', param);
     setMobile(param);
   };
   const handleAgreementAll = () => {
