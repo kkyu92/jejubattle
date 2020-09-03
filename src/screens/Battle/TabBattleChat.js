@@ -47,7 +47,14 @@ export default function TabBattleChat({
   return (
     <Container>
       <Chat
-        messages={messages}
+        // messages 안에 해당 멤버가 어느팀에 소속되어 있는지 team 을 추가한다.
+        messages={messages.map((e) => ({
+          ...e,
+          team:
+            info.teamA.member.map((m) => m.userPk).indexOf(e.userPk) === -1
+              ? 'B'
+              : 'A',
+        }))}
         onSend={send}
         openMap={(e) =>
           navigation.navigate('FullMap', {latitude: e.lat, longitude: e.lng})

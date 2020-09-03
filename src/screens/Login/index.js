@@ -166,12 +166,14 @@ export default function Login(props) {
         },
         (error) => {
           console.log('Login fail with error: ', error);
+          Alert.alert('Facebook getPermission fail', JSON.stringify(error));
         },
       )
       .then((data) => {
         const responseInfoCallback = (error, profile) => {
           if (error) {
             console.log(error);
+            Alert.alert('Facebook getAccessToken fail', JSON.stringify(error));
           } else {
             console.log(profile);
             startWithSNS(profile.id, profile.email, 4);

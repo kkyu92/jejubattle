@@ -75,7 +75,11 @@ export default function BattleView(props) {
             const msgs = JSON.parse(e.body);
             console.log('subscribe msg', msgs);
             setMessages((old) => [
-              {...msgs, id: msgs.userPk, index: JSON.stringify(msgs.msgPk)},
+              {
+                ...msgs,
+                id: msgs.userPk,
+                index: JSON.stringify(msgs.msgPk),
+              },
               ...old,
             ]);
           },

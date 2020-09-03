@@ -56,7 +56,7 @@ export default function FullMap(props) {
         logApi('facilitySearch', res.data);
         const temp = res.data.facility.map((e) => ({
           ...e,
-          coords: {latitude: e.faLat, longitude: e.faLon},
+          coords: {latitude: e.faLat, longitude: e.falon},
           title: e.faName,
           // markerComponent: require('../../../assets/img/icon-mylocation.png'),
         }));

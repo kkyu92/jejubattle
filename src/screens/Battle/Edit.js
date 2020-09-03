@@ -69,6 +69,7 @@ export default function BattleEdit(props) {
             userPk: context.me.userPk,
             ready: 'N',
             regdate: new Date(),
+            coinType: '',
           },
         ],
       },

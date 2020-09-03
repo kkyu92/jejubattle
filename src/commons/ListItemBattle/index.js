@@ -80,6 +80,7 @@ export default function ListItemBattle({
         userPk: context.me.userPk,
         ready: 'N',
         regdate: new Date(),
+        coinType: '',
       });
       await updateBattle({baPk: item.baPk, teamB: team});
     } else {
@@ -88,6 +89,7 @@ export default function ListItemBattle({
         userPk: context.me.userPk,
         ready: 'N',
         regdate: new Date(),
+        coinType: '',
       });
       await updateBattle({baPk: item.baPk, teamA: team});
     }

@@ -10,17 +10,33 @@ import {
   Button,
   TextInput,
 } from 'react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity} from 'react-native';
+import {View, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {AppContext} from '../../context';
+import * as RNIap from 'react-native-iap';
 
 export default function CoinCharge(props) {
   const context = React.useContext(AppContext);
   const [showPurchaseModal, setShowPurchaseModal] = React.useState(false);
   const [modalIcon, setModalIcon] = React.useState();
   const [modalContent, setModalContent] = React.useState();
+  const [product, setProduct] = React.useState();
+  React.useEffect(() => {
+    const itemSkus = Platform.select({
+      ios: ['com.jejubattle'],
+      android: ['com.jejubattle'],
+    });
+    RNIap.getProducts(itemSkus)
+      .then((data) => {
+        console.log('RNIap getProduct', data);
+        setProduct(data);
+      })
+      .catch((err) => {
+        console.log('RNIap getProduct error', err);
+      });
+  }, []);
   return (
     <Container>
       <Header

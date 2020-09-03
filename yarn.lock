@@ -6477,10 +6477,10 @@ react-native-gesture-handler@^1.6.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-iap@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.5.2.tgz#323e1d8b54b3ecd8c96133c4b64b7d570e12f949"
-  integrity sha512-GH8TpIcmJZczQHWinJ1cSqRJONjrlzAQnqi/bdrSpmFuArJPYGJFhyWJa8AlGjCw9QB7GG745SNmngIs3kss1w==
+react-native-iap@^4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.5.3.tgz#f5eb68199faaa442c6d062121e7382eecc30c17c"
+  integrity sha512-jaWMAUpXmkwy5EqVmOiGtqIisaqLXjbjc0wWg5mmXjnYh5pxKX3Zmtpe7BfJaC4lIyyO8ZI3PiWUTMNnELU8vA==
   dependencies:
     dooboolab-welcome "^1.2.0"
 
@@ -6537,10 +6537,10 @@ react-native-modal@^11.5.6:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
 
-react-native-nuno-ui@^1.0.100:
-  version "1.0.100"
-  resolved "https://registry.yarnpkg.com/react-native-nuno-ui/-/react-native-nuno-ui-1.0.100.tgz#f09bd79da5945508fa4f890b70b2b353091ce1fa"
-  integrity sha512-rjg3KxRHSctoRAZnGnr3lUHBJYEg13qVEsv/2rfkb0G7ZBpFJkieeBKjMujTBiMPKft27ocy9YmR4O0+rnxyMg==
+react-native-nuno-ui@^1.0.101:
+  version "1.0.101"
+  resolved "https://registry.yarnpkg.com/react-native-nuno-ui/-/react-native-nuno-ui-1.0.101.tgz#ec2cc76fe63a25443ecba2cf33f3d6e66a61aecb"
+  integrity sha512-Cj4RmnHVaffzopsHAAGaPKNaSi3J5o6sKSAOuVCfUcwvWPg3MPTjdRSKnpis9IyZABRmH7WSWakiBgLx6rAg8Q==
   dependencies:
     moment "^2.27.0"
     react-native-image-zoom-viewer "^3.0.1"

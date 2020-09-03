@@ -220,8 +220,8 @@ export default function TabFacilityInfo(props) {
           onPress={() => {
             props.navigation.navigate('FullMap', {
               // 응답으로 장소에 대한 lat, lng 값이 와야 함. 아래는 임시로 넣음.
-              latitude: 100,
-              longitude: 50,
+              latitude: props.data.faLat,
+              longitude: props.data.faLon,
             });
           }}>
           <Text

@@ -648,27 +648,29 @@ export default function TabBattleDetail(props) {
                   color={'dimgray'}
                 />
               </View>
-              <Button
-                text={'설정하기'}
-                color={'white'}
-                borderRadius={20}
-                paddingVertical={5}
-                onPress={() => {
-                  setModalSetting(false);
-                  props.navigation.navigate('FullMap', {
-                    facilitySearch: true,
-                    baPk: props.info.baPk,
-                    share: (data) => {
-                      setModalSetting(true);
-                      setPlace({
-                        faPk: data.faPk,
-                        faName: data.faName,
-                      });
-                    },
-                  });
-                }}
-                size={'medium'}
-              />
+              {context.me.userPk === props.info.teamA.member[0].userPk && (
+                <Button
+                  text={'설정하기'}
+                  color={'white'}
+                  borderRadius={20}
+                  paddingVertical={5}
+                  onPress={() => {
+                    setModalSetting(false);
+                    props.navigation.navigate('FullMap', {
+                      facilitySearch: true,
+                      baPk: props.info.baPk,
+                      share: (data) => {
+                        setModalSetting(true);
+                        setPlace({
+                          faPk: data.faPk,
+                          faName: data.faName,
+                        });
+                      },
+                    });
+                  }}
+                  size={'medium'}
+                />
+              )}
             </HView>
             <Seperator line marginBottom={20} />
             <Text text={'시간'} fontSize={14} fontWeight={'bold'} />
@@ -713,10 +715,13 @@ export default function TabBattleDetail(props) {
                   text={'적용'}
                   color={custom.themeColor}
                   onPress={() => {
+                    const tempTeamA = {...props.info.teamA};
+                    tempTeamA.member[0].ready = 'Y';
                     updateBattle(
                       {
                         baPlace: place,
                         baStartTime: moment(startTime).format('HH:MM'),
+                        teamA: tempTeamA,
                       },
                       true,
                     );
