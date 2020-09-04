@@ -7,31 +7,28 @@ import moment from 'moment';
 import 'moment/locale/ko';
 
 export default async () => {
-  const lang = await AsyncStorage.getItem('lang');
-  if (!lang) {
-    let deviceLanguage =
-      Platform.OS === 'ios'
-        ? NativeModules.SettingsManager.settings.AppleLanguages[0]
-        : NativeModules.I18nManager.localeIdentifier;
-    deviceLanguage = deviceLanguage.substring(0, 2);
-    if (deviceLanguage === 'en' || deviceLanguage === 'ko') {
-      await AsyncStorage.setItem('lang', deviceLanguage);
-    } else {
-      deviceLanguage = 'ko';
-      await AsyncStorage.setItem('lang', deviceLanguage);
-    }
-    // header.member_lang = deviceLanguage;
-    global.lang = deviceLanguage.substring(0, 2);
-  } else {
-    // header.member_lang = lang;
-    global.lang = lang;
-  }
+  // const lang = await AsyncStorage.getItem('lang');
+  // if (!lang) {
+  //   let deviceLanguage =
+  //     Platform.OS === 'ios'
+  //       ? NativeModules.SettingsManager.settings.AppleLanguages[0]
+  //       : NativeModules.I18nManager.localeIdentifier;
+  //   deviceLanguage = deviceLanguage.substring(0, 2);
+  //   if (deviceLanguage === 'en' || deviceLanguage === 'ko') {
+  //     await AsyncStorage.setItem('lang', deviceLanguage);
+  //   } else {
+  //     deviceLanguage = 'ko';
+  //     await AsyncStorage.setItem('lang', deviceLanguage);
+  //   }
+  //   // header.member_lang = deviceLanguage;
+  //   global.lang = deviceLanguage.substring(0, 2);
+  // } else {
+  //   // header.member_lang = lang;
+  //   global.lang = lang;
+  // }
 
-  moment.locale(global.lang);
-
-  // location
-  global.address = await getCurrentLocation(lang);
-  console.log('location', global.address);
+  global.lang = 'ko';
+  moment.locale('ko');
 
   const token = await AsyncStorage.getItem('token');
   global.token = token;
@@ -46,6 +43,10 @@ export default async () => {
   global.hideFilterGuide = hideFilterGuide;
   const hidePermissionAlert = await AsyncStorage.getItem('hidePermissionAlert');
   global.hidePermissionAlert = hidePermissionAlert;
+
+  // location
+  global.address = await getCurrentLocation(global.lang);
+  console.log('location', global.address);
 
   await axios
     .post('version', {})

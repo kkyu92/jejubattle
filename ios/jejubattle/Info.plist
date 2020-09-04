@@ -91,8 +91,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>사용자의 위치정보를 접근을 허용해주세요</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>사용자의 위치정보를 접근을 허용해주세요</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>사용자의 위치정보를 접근을 허용해주세요</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>프로필 사잔 설정을 위해 사진접근을 허용해주세요</string>
 	<key>UIAppFonts</key>

@@ -58,7 +58,7 @@ static void InitializeFlipper(UIApplication *application) {
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   
-  [[NaverThirdPartyLoginConnection getSharedInstance] setIsNaverAppOauthEnable:YES];
+  [[NaverThirdPartyLoginConnection getSharedInstance] setIsInAppOauthEnable:YES];
   return YES;
 }
 
@@ -85,7 +85,8 @@ static void InitializeFlipper(UIApplication *application) {
 
   // naver login
   if ([[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options]) {
-    return true;
+//    return true;
+    return [self handleWithUrl:url];
   }
   
   if ([RCTLinkingManager application:application openURL:url options:options]) {

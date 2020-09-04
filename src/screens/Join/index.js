@@ -109,6 +109,7 @@ export default function Join(props) {
       })
       .catch((err) => {
         logApi('idCheck error', err?.response);
+        Alert.alert('이메일인증', err?.response?.data?.message);
       });
   };
   const prePostUser = () => {

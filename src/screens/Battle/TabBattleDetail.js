@@ -13,7 +13,7 @@ import {
   Modal,
   Image,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View, FlatList, ScrollView} from 'react-native';
+import {TouchableOpacity, View, FlatList, ScrollView, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -28,6 +28,7 @@ export default function TabBattleDetail(props) {
   const [modalExit, setModalExit] = React.useState(false);
   const [modalExit2, setModalExit2] = React.useState(false);
   const [modalStart, setModalStart] = React.useState(false);
+  const [modalStartNoCoin, setModalStartNoCoin] = React.useState(false);
   const [modalSetting, setModalSetting] = React.useState(false);
   const [modalSettingAlert, setModalSettingAlert] = React.useState(false);
   const [modalDateAlert, setModalDateAlert] = React.useState(false);
@@ -123,6 +124,30 @@ export default function TabBattleDetail(props) {
     // props.refresh && props.refresh();
     props.navigation.goBack();
   };
+  let battleButtonText;
+  if (props.info.baCode < 3) {
+    if (context.me.userPk === props.info.teamA.member[0].userPk) {
+      battleButtonText = '배틀시작';
+    } else {
+      if (
+        props.info.teamA.member[foundedAtTeamA]?.ready === 'Y' ||
+        props.info.teamB.member[foundedAtTeamB]?.ready === 'Y'
+      ) {
+        battleButtonText = '배틀취소';
+      } else {
+        battleButtonText = '배틀준비';
+      }
+    }
+  } else if (props.info.baCode === 3) {
+    if (
+      context.me.userPk === props.info.teamA.member[0].userPk ||
+      context.me.userPk === props.info.teamB.member[0].userPk
+    ) {
+      battleButtonText = '배틀완료 및 평가하기';
+    } else {
+      battleButtonText = '배틀중';
+    }
+  }
   return (
     <Container>
       <ScrollView>
@@ -272,45 +297,40 @@ export default function TabBattleDetail(props) {
         <Seperator width={20} />
         <View style={{flex: 1}}>
           <Button
-            text={
-              context.me.userPk === props.info.teamA.member[0].userPk
-                ? '배틀시작'
-                : props.info.teamA.member[foundedAtTeamA]?.ready === 'Y' ||
-                  props.info.teamB.member[foundedAtTeamB]?.ready === 'Y'
-                ? '배틀취소'
-                : '배틀준비'
-            }
+            text={battleButtonText}
             onPress={() => {
-              if (context.me.userPk === props.info.teamA.member[0].userPk) {
-                if (!props.info.baPlace || !props.info.baStartTime) {
-                  setModalSettingAlert(true);
-                  return;
-                }
-                if (new Date(props.info.baDate) > new Date()) {
-                  setModalDateAlert(true);
-                  return;
-                }
-                setModalStart(true);
-              } else {
-                // const foundedAtTeamA = props.info.teamA.member
-                //   .map((e) => e.userPk)
-                //   .indexOf(context.me.userPk);
-                // const foundedAtTeamB = props.info.teamB.member
-                //   .map((e) => e.userPk)
-                //   .indexOf(context.me.userPk);
-                if (foundedAtTeamA !== -1) {
-                  const team = {...props.info.teamA};
-                  team.member[foundedAtTeamA].ready =
-                    team.member[foundedAtTeamA].ready === 'Y' ? 'N' : 'Y';
-                  updateBattle({teamA: team}, true);
-                }
+              if (props.info.baCode < 3) {
+                if (context.me.userPk === props.info.teamA.member[0].userPk) {
+                  if (!props.info.baPlace || !props.info.baStartTime) {
+                    setModalSettingAlert(true);
+                    return;
+                  }
+                  if (new Date(props.info.baDate) > new Date()) {
+                    setModalDateAlert(true);
+                    return;
+                  }
+                  if (props.coin === 'Y') {
+                    setModalStart(true);
+                  } else {
+                    setModalStartNoCoin(true);
+                  }
+                } else {
+                  if (foundedAtTeamA !== -1) {
+                    const team = {...props.info.teamA};
+                    team.member[foundedAtTeamA].ready =
+                      team.member[foundedAtTeamA].ready === 'Y' ? 'N' : 'Y';
+                    updateBattle({teamA: team}, true);
+                  }
 
-                if (foundedAtTeamB !== -1) {
-                  const team = {...props.info.teamB};
-                  team.member[foundedAtTeamB].ready =
-                    team.member[foundedAtTeamB].ready === 'Y' ? 'N' : 'Y';
-                  updateBattle({teamB: team}, true);
+                  if (foundedAtTeamB !== -1) {
+                    const team = {...props.info.teamB};
+                    team.member[foundedAtTeamB].ready =
+                      team.member[foundedAtTeamB].ready === 'Y' ? 'N' : 'Y';
+                    updateBattle({teamB: team}, true);
+                  }
                 }
+              } else if (props.info.baCode === 3) {
+                Alert.alert('알림', '개발중.. 현재버전에서 동작하지 않습니다.');
               }
             }}
             color={custom.themeColor}
@@ -532,6 +552,67 @@ export default function TabBattleDetail(props) {
                 text={'예'}
                 color={custom.themeColor}
                 onPress={() => null}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
+      {/* 코인이 없을때 */}
+      <Modal
+        isVisible={modalStartNoCoin}
+        onBackdropPress={() => setModalStartNoCoin(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          <Text
+            fontSize={18}
+            fontWeight={'bold'}
+            color={'black'}
+            style={{textAlign: 'center'}}
+            text={'코인이 없습니다. 코인충전소로 이동하여 충전하시겠습니까?'}
+          />
+          <Seperator height={30} />
+          <HView ttyle={{justifyContent: 'center'}}>
+            <Text
+              fontSize={16}
+              color={'dimgray'}
+              text={'코인이 없어도 배틀은 진행됩니다.'}
+            />
+          </HView>
+          <Seperator height={20} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setModalStartNoCoin(false);
+                  updateBattle(
+                    {
+                      baCode: 3,
+                    },
+                    true,
+                  );
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'이동'}
+                color={custom.themeColor}
+                onPress={() => {
+                  setModalStartNoCoin(false);
+                  props.navigation.navigate('CoinCharge');
+                }}
                 size={'large'}
                 stretch
               />

@@ -301,6 +301,25 @@ export default function MatchMember(props) {
                 fontWeight={'500'}
               />
             </View>
+            {props.info.baCode === 3 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-battle.png')}
+                  width={100}
+                  height={100}
+                />
+              </View>
+            )}
           </TouchableOpacity>
           <View style={{flex: 0.2, alignItems: 'center'}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
@@ -382,6 +401,25 @@ export default function MatchMember(props) {
                 fontWeight={'500'}
               />
             </View>
+            {props.info.baCode === 3 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  local
+                  uri={require('../../../assets/img/icon-battle.png')}
+                  width={100}
+                  height={100}
+                />
+              </View>
+            )}
           </TouchableOpacity>
         </HView>
       )}

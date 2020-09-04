@@ -40,10 +40,12 @@ export default function BattleView(props) {
   const [messages, setMessages] = React.useState([]);
   const [page, setPage] = React.useState(2);
   const [moredone, setMoredone] = React.useState(false);
+  const [coin, setCoin] = React.useState('');
   const stompClient = React.useRef();
 
   React.useEffect(() => {
     get();
+    coinCheck();
     const sock = new SockJS(SOCKET_URL);
     stompClient.current = Stomp.over(sock);
     stompClient.current.connect(
@@ -128,6 +130,21 @@ export default function BattleView(props) {
         logApi('getBattle error', err.response);
       });
   };
+  const coinCheck = () => {
+    Axios.get('coinCheck')
+      .then((res) => {
+        logApi('coinCheck', res.data);
+        setCoin('OK');
+      })
+      .catch((err) => {
+        if (err?.response?.status === 403) {
+          logApi('coinCheck 403 보유코인이 없습니다.');
+          setCoin('');
+        } else {
+          logApi('coinCheck error', err.response);
+        }
+      });
+  };
   const renderTabBar = (tabprops) => {
     return (
       <HView
@@ -175,6 +192,7 @@ export default function BattleView(props) {
             info={info}
             refresh={props.route.params.refresh}
             refreshBattleView={() => get()}
+            coin={coin}
             socket={stompClient.current}
           />
         );

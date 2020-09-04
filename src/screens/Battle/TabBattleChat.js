@@ -44,17 +44,41 @@ export default function TabBattleChat({
   const more = () => {
     socket.send(`/msgmore/${info.baPk}`, {}, JSON.stringify({pageNum: page}));
   };
+
   return (
     <Container>
       <Chat
         // messages 안에 해당 멤버가 어느팀에 소속되어 있는지 team 을 추가한다.
-        messages={messages.map((e) => ({
-          ...e,
-          team:
-            info.teamA.member.map((m) => m.userPk).indexOf(e.userPk) === -1
-              ? 'B'
-              : 'A',
-        }))}
+        messages={messages.map((e) => {
+          let team = '';
+          if (info.teamA.name !== '' && info.teamB.name !== '') {
+            // N:N 일경우에만 아래 적용됨
+            const foundedAtTeamA = info.teamA.member
+              .map((m) => m.userPk)
+              .indexOf(e.userPk);
+            const foundedAtTeamB = info.teamB.member
+              .map((m) => m.userPk)
+              .indexOf(e.userPk);
+            if (foundedAtTeamA !== -1) {
+              if (foundedAtTeamA === 0) {
+                team = `(${info.teamA.name} 방장)`;
+              } else {
+                team = `(${info.teamA.name})`;
+              }
+            }
+            if (foundedAtTeamB !== -1) {
+              if (foundedAtTeamB === 0) {
+                team = `(${info.teamB.name} 팀장)`;
+              } else {
+                team = `(${info.teamB.name})`;
+              }
+            }
+          }
+          return {
+            ...e,
+            team: team,
+          };
+        })}
         onSend={send}
         openMap={(e) =>
           navigation.navigate('FullMap', {latitude: e.lat, longitude: e.lng})
