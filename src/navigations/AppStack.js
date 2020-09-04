@@ -32,6 +32,7 @@ import FullMapFilter from '../screens/FullMap/Filter';
 import BattleTeamMember from '../screens/Battle/TeamMember';
 import BattleMemberReport from '../screens/Battle/MemberReport';
 import Report from '../screens/Report';
+import Evaluation from '../screens/Battle/Evaluation';
 
 const LeftDrawerStack = createDrawerNavigator();
 function LeftDrawerStackScreen() {
@@ -138,6 +139,7 @@ export default function AppStackScreen() {
       <Stack.Screen name="BattleTeamMember" component={BattleTeamMember} />
       <Stack.Screen name="BattleMemberReport" component={BattleMemberReport} />
       <Stack.Screen name="Report" component={Report} />
+      <Stack.Screen name="Evaluation" component={Evaluation} />
     </Stack.Navigator>
   );
 }

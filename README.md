@@ -19,6 +19,12 @@
 ####  Android Internal Test Links
   > https://play.google.com/apps/internaltest/4700794782783427988
 
+####  2020.09.04
+  > android (2.0.0.18)
+  > ios (2.0.0.7)
+
+  - bug 수정 및 battle관련 api 적용
+
 ####  2020.08.27
   > android (2.0.0.17)
   > ios (2.0.0.6)

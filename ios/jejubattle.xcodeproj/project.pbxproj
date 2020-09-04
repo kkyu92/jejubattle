@@ -19,6 +19,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* jejubattleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* jejubattleTests.m */; };
 		57F4DBA132602FCE9C8E60E0 /* libPods-jejubattle-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D7DD96EF2A3B298CF87C21B /* libPods-jejubattle-tvOS.a */; };
 		6F04615E24C5D12400D58F4E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */; };
+		6F8B4EC1250257CD00524EDC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F8B4EC0250257CD00524EDC /* StoreKit.framework */; };
 		6FA07B1C24B5BCC70063B017 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6FA07B1B24B5BCC70063B017 /* BootSplash.storyboard */; };
 		6FAEFC4F24AC94C9006F9953 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FAEFC4E24AC94C9006F9953 /* icomoon.ttf */; };
 		ACE179B9204202D1E820B511 /* libPods-jejubattle-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BAA03701C4C1561E507CE6 /* libPods-jejubattle-tvOSTests.a */; };
@@ -62,6 +63,7 @@
 		5EA63A5098B1F541DDCE037F /* Pods-jejubattle-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jejubattle-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-jejubattle-tvOSTests/Pods-jejubattle-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		6F04615D24C5D12400D58F4E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F44560624DBE8350073FF59 /* libRNNaverLogin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNNaverLogin.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F8B4EC0250257CD00524EDC /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		6FA07B1B24B5BCC70063B017 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = jejubattle/BootSplash.storyboard; sourceTree = "<group>"; };
 		6FA8F51B24E3C4ED000B5DEE /* 제주배틀.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "제주배틀.entitlements"; path = "jejubattle/제주배틀.entitlements"; sourceTree = "<group>"; };
 		6FAEFC4E24AC94C9006F9953 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = icomoon.ttf; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CAB382AB2E32866457372FE3 /* libPods-jejubattle.a in Frameworks */,
+				6F8B4EC1250257CD00524EDC /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,6 +168,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6F8B4EC0250257CD00524EDC /* StoreKit.framework */,
 				6F44560624DBE8350073FF59 /* libRNNaverLogin.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
@@ -820,7 +824,7 @@
 				CODE_SIGN_ENTITLEMENTS = "jejubattle/제주배틀.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -853,7 +857,7 @@
 				CODE_SIGN_ENTITLEMENTS = "jejubattle/제주배틀.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				INFOPLIST_FILE = jejubattle/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

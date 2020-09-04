@@ -330,7 +330,7 @@ export default function TabBattleDetail(props) {
                   }
                 }
               } else if (props.info.baCode === 3) {
-                Alert.alert('알림', '개발중.. 현재버전에서 동작하지 않습니다.');
+                props.navigation.navigate('Evaluation');
               }
             }}
             color={custom.themeColor}

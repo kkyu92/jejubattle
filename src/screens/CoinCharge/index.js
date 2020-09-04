@@ -10,7 +10,7 @@ import {
   Button,
   TextInput,
 } from 'react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {View, ScrollView, TouchableOpacity, Platform, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
@@ -24,19 +24,36 @@ export default function CoinCharge(props) {
   const [modalContent, setModalContent] = React.useState();
   const [product, setProduct] = React.useState();
   React.useEffect(() => {
-    const itemSkus = Platform.select({
-      ios: ['com.jejubattle'],
-      android: ['com.jejubattle'],
-    });
-    RNIap.getProducts(itemSkus)
-      .then((data) => {
-        console.log('RNIap getProduct', data);
-        setProduct(data);
-      })
-      .catch((err) => {
-        console.log('RNIap getProduct error', err);
-      });
+    fetchProducts();
   }, []);
+  const fetchProducts = async () => {
+    const itemSkus = Platform.select({
+      ios: [
+        'com.jejubattle.battlecoin1200',
+        'com.jejubattle.battlecoin6000',
+        'com.jejubattle.battlecoin11000',
+      ],
+      android: [
+        'com.jejubattle.battlecoin1200',
+        'com.jejubattle.battlecoin6000',
+        'com.jejubattle.battlecoin11000',
+      ],
+    });
+    try {
+      const prod = await RNIap.getProducts(itemSkus);
+      setProduct(prod);
+    } catch (err) {
+      console.log('purchase error', err);
+    }
+    // Alert.alert('product', JSON.stringify(prod));
+  };
+  const purchase = async (sku) => {
+    try {
+      await RNIap.requestPurchase(sku, false);
+    } catch (err) {
+      console.log('purchase error', err);
+    }
+  };
   return (
     <Container>
       <Header
