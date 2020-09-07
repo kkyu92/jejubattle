@@ -25,13 +25,14 @@ export default function MyBattle(props) {
   const [mybattle, setMybattle] = React.useState([]);
   const [pullToRefresh, setPullToRefresh] = React.useState(true);
   const [edit, setEdit] = React.useState(false);
+  const [page, setPage] = React.useState(1);
 
   React.useEffect(() => {
     pullToRefresh && get();
   }, [pullToRefresh]);
 
   const get = () => {
-    Axios.get('myBattle')
+    Axios.post('myBattle', {pageNum: page})
       .then((res) => {
         logApi('myBattle', res.data);
         setMybattle(res.data);

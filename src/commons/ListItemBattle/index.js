@@ -173,24 +173,20 @@ export default function ListItemBattle({
               </HView>
             </View>
             <View>
-              {item.baState === '대기중' && (
-                <>
-                  <Button
-                    text={'대기중'}
-                    size={'medium'}
-                    color={'#CECCCD'}
-                    borderRadius={20}
-                  />
-                </>
-              )}
-              {item.baState === 'playing' && (
+              <Button
+                text={item.baState}
+                size={'medium'}
+                color={'#CECCCD'}
+                borderRadius={20}
+              />
+              {/* {item.baState === 'playing' && (
                 <Button
                   text={'배틀중'}
                   size={'medium'}
                   color={custom.themeColor}
                   borderRadius={20}
                 />
-              )}
+              )} */}
               {item.baState === 'done' && (
                 <>
                   {item.win ? (

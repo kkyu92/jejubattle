@@ -184,17 +184,20 @@ export default function MatchMember(props) {
               fontSize={16}
             />
             {/* 아래는 오른쪽 강퇴하기 버튼과 같이 높이를 맞추기위한 fake button */}
-            <View>
-              <Seperator height={10} />
-              <Button
-                text={''}
-                color={'white'}
-                borderColor={'white'}
-                borderRadius={20}
-                size={'medium'}
-                onPress={() => null}
-              />
-            </View>
+            {props.info.teamA?.member.length > 0 &&
+              context.me.userPk === props.info.teamA?.member[0].userPk && (
+                <View>
+                  <Seperator height={10} />
+                  <Button
+                    text={''}
+                    color={'white'}
+                    borderColor={'white'}
+                    borderRadius={20}
+                    size={'medium'}
+                    onPress={() => null}
+                  />
+                </View>
+              )}
           </View>
           <View style={{flex: 0.2, alignItems: 'center'}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />

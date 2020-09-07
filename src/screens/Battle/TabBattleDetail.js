@@ -13,7 +13,13 @@ import {
   Modal,
   Image,
 } from 'react-native-nuno-ui';
-import {TouchableOpacity, View, FlatList, ScrollView, Alert} from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  FlatList,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -22,6 +28,7 @@ import Axios from 'axios';
 import {logApi, getDateFromHours, showToast} from 'react-native-nuno-ui/funcs';
 import moment from 'moment';
 import {AppContext} from '../../context';
+import Reward from './Reward';
 
 export default function TabBattleDetail(props) {
   const context = React.useContext(AppContext);
@@ -33,6 +40,7 @@ export default function TabBattleDetail(props) {
   const [modalSettingAlert, setModalSettingAlert] = React.useState(false);
   const [modalDateAlert, setModalDateAlert] = React.useState(false);
   const [modalEditBattleOwner, setModalEditBattleOwner] = React.useState(false);
+  const [modalReward, setModalReward] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [place, setPlace] = React.useState(props.info.baPlace);
   const [date, setDate] = React.useState(new Date(props.info.baDate));
@@ -147,6 +155,8 @@ export default function TabBattleDetail(props) {
     } else {
       battleButtonText = '배틀중';
     }
+  } else if (props.info.baCode === 4) {
+    battleButtonText = '보상받기';
   }
   return (
     <Container>
@@ -319,6 +329,8 @@ export default function TabBattleDetail(props) {
                     const team = {...props.info.teamA};
                     team.member[foundedAtTeamA].ready =
                       team.member[foundedAtTeamA].ready === 'Y' ? 'N' : 'Y';
+                    team.member[foundedAtTeamB].coinType =
+                      props.coin === 'OK' ? 'Y' : 'N';
                     updateBattle({teamA: team}, true);
                   }
 
@@ -326,11 +338,19 @@ export default function TabBattleDetail(props) {
                     const team = {...props.info.teamB};
                     team.member[foundedAtTeamB].ready =
                       team.member[foundedAtTeamB].ready === 'Y' ? 'N' : 'Y';
+                    team.member[foundedAtTeamB].coinType =
+                      props.coin === 'OK' ? 'Y' : 'N';
                     updateBattle({teamB: team}, true);
                   }
                 }
               } else if (props.info.baCode === 3) {
-                props.navigation.navigate('Evaluation');
+                props.navigation.navigate('Evaluation', {
+                  info: props.info,
+                  socket: props.socket,
+                });
+              } else if (props.info.baCode === 4) {
+                // 보상받기
+                setModalReward(true);
               }
             }}
             color={custom.themeColor}
@@ -592,10 +612,15 @@ export default function TabBattleDetail(props) {
                 text={'취소'}
                 color={'gray'}
                 onPress={() => {
+                  const tempTeamA = {...props.info.teamA};
+                  const tempTeamB = {...props.info.teamB};
+                  tempTeamA.member[0].ready = 'Y';
+
                   setModalStartNoCoin(false);
                   updateBattle(
                     {
-                      baCode: 3,
+                      teamA: tempTeamA,
+                      teamB: tempTeamB,
                     },
                     true,
                   );
@@ -796,13 +821,11 @@ export default function TabBattleDetail(props) {
                   text={'적용'}
                   color={custom.themeColor}
                   onPress={() => {
-                    const tempTeamA = {...props.info.teamA};
-                    tempTeamA.member[0].ready = 'Y';
                     updateBattle(
                       {
                         baPlace: place,
                         baStartTime: moment(startTime).format('HH:MM'),
-                        teamA: tempTeamA,
+                        baDate: date,
                       },
                       true,
                     );
@@ -873,6 +896,15 @@ export default function TabBattleDetail(props) {
             </View>
           </HView>
         </View>
+      </Modal>
+      {/* 보상받기 */}
+      <Modal
+        isVisible={modalReward}
+        onBackdropPress={() => setModalReward(false)}>
+        <Reward
+          closeModal={() => setModalReward(false)}
+          baPk={props.info.baPk}
+        />
       </Modal>
     </Container>
   );
