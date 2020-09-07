@@ -9,7 +9,7 @@ import {
   TextInput,
   Button,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {
   View,
   ScrollView,
@@ -24,7 +24,7 @@ import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import ImagePicker from 'react-native-image-crop-picker';
-import {logApi, checkPassword, showToast} from 'react-native-nuno-ui/funcs';
+import {logApi, checkPassword, showToast} from '../../react-native-nuno-ui/funcs';
 import {sports1Table} from '../../constants';
 
 export default function EditProfile(props) {

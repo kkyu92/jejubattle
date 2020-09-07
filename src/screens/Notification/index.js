@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container, Header, Text, Image, HView, Seperator} from 'react-native-nuno-ui';
+import {Container, Header, Text, Image, HView, Seperator} from '../../react-native-nuno-ui';
 import {View, ScrollView} from 'react-native';
 import Icons from '../../commons/Icons';
 

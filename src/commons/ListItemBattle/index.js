@@ -1,4 +1,11 @@
 import React from 'react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {custom} from '../../config';
+import {Alert, TouchableOpacity, View, CheckBox} from 'react-native';
+import {ShadowStyle} from '../../styles';
+import {AppContext} from '../../context';
+import Axios from 'axios';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import {
   HView,
   Seperator,
@@ -8,14 +15,7 @@ import {
   Modal,
   Button,
   Checkbox,
-} from 'react-native-nuno-ui';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {custom} from '../../config';
-import {Alert, TouchableOpacity, View, CheckBox} from 'react-native';
-import {ShadowStyle} from '../../styles';
-import {AppContext} from '../../context';
-import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+} from '../../react-native-nuno-ui';
 
 export default function ListItemBattle({
   item,

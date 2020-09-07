@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import { custom } from '../../config';
-import { Text } from 'react-native-nuno-ui';
 import { ShadowStyle } from '../../styles';
 import Feather from 'react-native-vector-icons/Feather';
 

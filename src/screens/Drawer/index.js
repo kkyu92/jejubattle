@@ -6,7 +6,7 @@ import {
   HView,
   Text,
   Image,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View} from 'react-native';
 import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';

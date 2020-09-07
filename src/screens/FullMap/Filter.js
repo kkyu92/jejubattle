@@ -9,12 +9,12 @@ import {
   Button,
   Container,
   Header,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, TouchableOpacity, ScrollView} from 'react-native';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import {custom} from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';

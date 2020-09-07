@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../config';
 import axios from 'axios';
 import {Platform, NativeModules} from 'react-native';
-import {logApi, getCurrentLocation} from 'react-native-nuno-ui/funcs';
+import {logApi, getCurrentLocation} from '../../react-native-nuno-ui/funcs';
 import moment from 'moment';
 import 'moment/locale/ko';
 

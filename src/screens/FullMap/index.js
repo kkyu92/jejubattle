@@ -7,13 +7,13 @@ import {
   Image,
   Text,
   Button,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, TouchableOpacity, Platform} from 'react-native';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
-import {logApi, share, sleep} from 'react-native-nuno-ui/funcs';
+import {logApi, share, sleep} from '../../react-native-nuno-ui/funcs';
 import {custom} from '../../config';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ActionSheet from 'react-native-actions-sheet';

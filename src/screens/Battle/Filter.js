@@ -8,11 +8,11 @@ import {
   Button,
   Image,
   Checkbox,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import {screenWidth} from '../../styles';

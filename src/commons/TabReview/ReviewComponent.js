@@ -8,7 +8,7 @@ import {
   Image,
   ImageCarousel,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {custom} from '../../config';
@@ -17,7 +17,7 @@ import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import ViewMoreText from 'react-native-view-more-text';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 
 export default function ReviewComponent(props) {
   const context = React.useContext(AppContext);

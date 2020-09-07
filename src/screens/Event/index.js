@@ -10,14 +10,14 @@ import {
   Button,
   Checkbox,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import { logApi } from 'react-native-nuno-ui/funcs';
+import { logApi } from '../../react-native-nuno-ui/funcs';
 
 export default function Event(props) {
   const [modalVisible, setModalVisible] = React.useState(false);

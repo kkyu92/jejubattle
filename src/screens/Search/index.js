@@ -7,7 +7,7 @@ import {
   HView,
   Seperator,
   TextInput,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
@@ -18,7 +18,7 @@ import {
   saveRecentKeyword,
   getRecentKeyword,
   removeRecentKeyword,
-} from 'react-native-nuno-ui/funcs';
+} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 
 export default function Search(props) {

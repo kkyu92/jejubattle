@@ -10,7 +10,7 @@ import {
   Button,
   Checkbox,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

@@ -8,13 +8,13 @@ import {
   TextInput,
   Button,
   Image,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';
 import {custom, API_URL} from '../../config';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';

@@ -10,7 +10,7 @@ import {
   Button,
   Checkbox,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
@@ -19,7 +19,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 
 export default function Travel(props) {
   const [travel, setTravel] = React.useState([]);

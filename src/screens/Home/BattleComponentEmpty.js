@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TouchableOpacity} from 'react-native';
-import {HView, Text, Seperator, Image} from 'react-native-nuno-ui';
+import {HView, Text, Seperator, Image} from '../../react-native-nuno-ui';
 import Icons from '../../commons/Icons';
 import {ShadowStyle} from '../../styles';
 import MatchMember from '../../commons/MatchMember';

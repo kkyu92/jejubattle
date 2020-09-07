@@ -8,7 +8,7 @@ import {
   Seperator,
   TextInput,
   Button,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';

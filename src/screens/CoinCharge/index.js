@@ -9,7 +9,7 @@ import {
   Modal,
   Button,
   TextInput,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, Platform, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';

@@ -10,7 +10,7 @@ import {
   Modal,
   Checkbox,
   TextInput,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
@@ -18,7 +18,7 @@ import {ShadowStyle, screenWidth} from '../../styles';
 import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import {useIsFocused} from '@react-navigation/native';

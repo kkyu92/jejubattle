@@ -8,7 +8,7 @@ import {
   Image,
   TextInput,
   Container,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
 import {custom} from '../../config';
 import StarRating from 'react-native-star-rating';
@@ -18,7 +18,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MySports from '../MySports';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Axios from 'axios';
-import {logApi, showToast} from 'react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {screenWidth} from '../../styles';
 
 export default function MatchMember(props) {

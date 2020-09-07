@@ -8,7 +8,7 @@ import {
   Seperator,
   Button,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity} from 'react-native';
 import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';

@@ -12,7 +12,7 @@ import {
   Checkbox,
   Modal,
   Image,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {
   TouchableOpacity,
   View,
@@ -25,7 +25,7 @@ import {custom} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Axios from 'axios';
-import {logApi, getDateFromHours, showToast} from 'react-native-nuno-ui/funcs';
+import {logApi, getDateFromHours, showToast} from '../../react-native-nuno-ui/funcs';
 import moment from 'moment';
 import {AppContext} from '../../context';
 import Reward from './Reward';

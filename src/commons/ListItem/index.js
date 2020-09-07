@@ -1,9 +1,15 @@
 import React from 'react';
-import {HView, Seperator, Text, Image, Checkbox} from 'react-native-nuno-ui';
 import Icons from '../Icons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {custom} from '../../config';
 import {TouchableOpacity, View} from 'react-native';
+import {
+  HView,
+  Seperator,
+  Text,
+  Image,
+  Checkbox,
+} from '../../react-native-nuno-ui';
 
 export default function ListItem(props) {
   return (

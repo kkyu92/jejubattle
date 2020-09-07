@@ -10,13 +10,13 @@ import {
   Image,
   Checkbox,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import Icons from '../../commons/Icons';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Axios from 'axios';
-import {logApi, showToast} from 'react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {API_URL} from '../../config';
 import {screenWidth} from '../../styles';
 

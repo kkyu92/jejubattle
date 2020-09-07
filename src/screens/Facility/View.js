@@ -10,7 +10,7 @@ import {
   Button,
   Modal,
   ImageCarousel,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
@@ -23,7 +23,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import TabReview from '../../commons/TabReview';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import {logApi, share} from 'react-native-nuno-ui/funcs';
+import {logApi, share} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 

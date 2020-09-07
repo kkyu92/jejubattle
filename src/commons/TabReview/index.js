@@ -5,10 +5,7 @@ import {
   HView,
   Button,
   Seperator,
-  Image,
-  ImageCarousel,
-  Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {custom} from '../../config';
@@ -16,7 +13,7 @@ import Icons from '../Icons';
 import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import ReviewComponent from './ReviewComponent';
 
 export default function TabReview(props) {

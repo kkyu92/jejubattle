@@ -10,13 +10,13 @@ import {
   Picker,
   DateTime,
   Checkbox,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList} from 'react-native';
 import moment from 'moment';
 import {custom} from '../../config';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 
 export default function BattleEdit(props) {

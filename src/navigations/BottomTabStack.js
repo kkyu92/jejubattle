@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
-import {Text} from 'react-native-nuno-ui';
+import {Text} from '../react-native-nuno-ui';
 import Battle from '../screens/Battle';
 import Facility from '../screens/Facility';
 import Icons from '../commons/Icons';

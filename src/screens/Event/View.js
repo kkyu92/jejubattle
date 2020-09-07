@@ -11,7 +11,7 @@ import {
   Checkbox,
   Modal,
   ImageCarousel,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, API_URL} from '../../config';
@@ -20,7 +20,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import {screenWidth} from '../../styles';
-import {share, logApi} from 'react-native-nuno-ui/funcs';
+import {share, logApi} from '../../react-native-nuno-ui/funcs';
 import Axios from 'axios';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import { AppContext } from '../../context';

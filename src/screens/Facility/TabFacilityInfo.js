@@ -1,11 +1,11 @@
 import React from 'react';
-import {Container, Text, Seperator, Image, HView} from 'react-native-nuno-ui';
+import {Container, Text, Seperator, Image, HView} from '../../react-native-nuno-ui';
 import {View, TouchableOpacity, Linking} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import {screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {showToast} from 'react-native-nuno-ui/funcs';
+import {showToast} from '../../react-native-nuno-ui/funcs';
 
 export default function TabFacilityInfo(props) {
   return (

@@ -12,7 +12,7 @@ import {
   Checkbox,
   Chat,
   Image,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';

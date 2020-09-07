@@ -9,11 +9,11 @@ import {
   Image,
   Checkbox,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {logApi, swap} from 'react-native-nuno-ui/funcs';
+import {logApi, swap} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';

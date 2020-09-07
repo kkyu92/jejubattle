@@ -13,7 +13,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
 import * as RootNavigation from './src/navigations/RootNavigation';
-import {Nuno} from 'react-native-nuno-ui';
 import {
   GEOCODE_API,
   BUNDLE_ID,
@@ -31,9 +30,10 @@ import {requestPermission, getFcmToken} from './src/fcm';
 import RNBootSplash from 'react-native-bootsplash';
 import Init from './src/commons/Init';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
+import { Nuno } from './src/react-native-nuno-ui';
+import { logApi } from './src/react-native-nuno-ui/funcs';
 
 const Stack = createStackNavigator();
 

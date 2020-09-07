@@ -12,7 +12,7 @@ import {
   Checkbox,
   Image,
   Modal,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, SOCKET_URL} from '../../config';
@@ -25,7 +25,7 @@ import Stomp from 'stompjs';
 import TabBattleChat from './TabBattleChat';
 import MatchMember from '../../commons/MatchMember';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 
 const initialLayout = {width: screenWidth};
 

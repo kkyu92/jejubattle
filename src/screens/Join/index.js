@@ -10,7 +10,7 @@ import {
   Header,
   Checkbox,
   Picker,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, TouchableOpacity, Alert, Linking} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom, API_URL} from '../../config';
@@ -22,7 +22,7 @@ import {
   checkEmail,
   checkPassword,
   getQueryParam,
-} from 'react-native-nuno-ui/funcs';
+} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';

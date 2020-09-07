@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform, Linking, View} from 'react-native';
 import {WebView} from 'react-native-webview';
-import { Header, Loader } from 'react-native-nuno-ui';
+import { Header, Loader } from '../../react-native-nuno-ui';
 
 export default function Webview(props) {
   React.useEffect(() => {

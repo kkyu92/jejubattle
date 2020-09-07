@@ -9,14 +9,14 @@ import {
   HView,
   Modal,
   Checkbox,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, Alert, Platform} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom} from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import {logApi} from 'react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
 import RNKakaoLogins from '@react-native-seoul/kakao-login';

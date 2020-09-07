@@ -11,7 +11,7 @@ import {
   Checkbox,
   Modal,
   ImageCarousel,
-} from 'react-native-nuno-ui';
+} from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
@@ -21,7 +21,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TabView} from 'react-native-tab-view';
 import TabTourIntroduction from './TabTourIntroduction';
 import Axios from 'axios';
-import {logApi, share} from 'react-native-nuno-ui/funcs';
+import {logApi, share} from '../../react-native-nuno-ui/funcs';
 import TabReview from '../../commons/TabReview';
 import {AppContext} from '../../context';
 

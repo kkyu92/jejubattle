@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  HView,
-  Seperator,
-  Text,
-  Image,
-  Checkbox,
-  Button,
-} from 'react-native-nuno-ui';
+import {HView, Text} from '../../react-native-nuno-ui';
 
 export default function MySports(props) {
   return (
