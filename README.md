@@ -19,6 +19,14 @@
 ####  Android Internal Test Links
   > https://play.google.com/apps/internaltest/4700794782783427988
 
+####  2020.09.08
+  > android (2.0.0.19)
+  > ios (2.0.0.8)
+
+  - battle 관련 api 추가 구현
+  - react-native-nuno-ui 의존성 분리
+  - 버그수정
+
 ####  2020.09.04
   > android (2.0.0.18)
   > ios (2.0.0.7)
