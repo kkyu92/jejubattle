@@ -33,6 +33,21 @@ export default function BattleTeamMember(props) {
       : props.route.params.info.teamB,
   );
 
+  const kickUser = async (userPk, baPk) => {
+    // console.log('userPk : ' + userPk);
+    // console.log('baPk : ' + baPk);
+    Axios.post('fcmMemberDelete', {
+      userPk: userPk,
+      baPk: baPk,
+    })
+      .then((res) => {
+        logApi('kickUser success', res.data);
+      })
+      .catch((err) => {
+        logApi('kickUser error', err?.response);
+      });
+  };
+
   return (
     <Container>
       <Header
@@ -126,6 +141,7 @@ export default function BattleTeamMember(props) {
                               const foundedIndex = teamA.member
                                 .map((f) => f.userPk)
                                 .indexOf(e.userPk);
+                              kickUser(e.userPk, props.route.params.info.baPk);
                               if (foundedIndex !== -1) {
                                 const localHistory = [
                                   ...props.route.params.info.history.map(
@@ -159,6 +175,7 @@ export default function BattleTeamMember(props) {
                               const foundedIndex = teamB.member
                                 .map((f) => f.userPk)
                                 .indexOf(e.userPk);
+                              kickUser(e.userPk, props.route.params.info.baPk);
                               if (foundedIndex !== -1) {
                                 const localHistory = [
                                   ...props.route.params.info.history.map(

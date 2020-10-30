@@ -208,54 +208,81 @@ export default function MatchMember(props) {
               alignItems: 'center',
               // justifyContent: 'center',
             }}>
-            <View>
-              {props.info.teamB?.member[0]?.userImgUrl ? (
-                <Image
-                  uri={props.info.teamB.member[0]?.userImgUrl}
-                  width={72}
-                  height={72}
-                  borderRadius={36}
-                  onPress={() => {
-                    if (props.info.teamB.member.length > 0) {
-                      setMemberModalTeam(props.info.teamB);
-                      setMemberModal(true);
-                    }
-                  }}
-                />
-              ) : (
+            {props.info.teamB?.member.length === 0 ? (
+              <View>
                 <Text
                   text={'대결상대가\n없습니다'}
                   fontSize={18}
                   fontWeight={'bold'}
                   style={{textAlign: 'center'}}
                 />
-              )}
-              {props.info.teamB?.member[0]?.ready === 'Y' && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
+                <Seperator height={10} />
+                <Text
+                  text={props.info.teamB?.member[0]?.userName}
+                  fontWeight={'500'}
+                  fontSize={16}
+                />
+              </View>
+            ) : (
+              <View>
+                {props.info.teamB?.member[0]?.userImgUrl ? (
+                  <Image
+                    uri={props.info.teamB.member[0]?.userImgUrl}
+                    width={72}
+                    height={72}
+                    borderRadius={36}
+                    onPress={() => {
+                      if (props.info.teamB.member.length > 0) {
+                        setMemberModalTeam(props.info.teamB);
+                        setMemberModal(true);
+                      }
+                    }}
+                  />
+                ) : (
                   <Image
                     local
-                    uri={require('../../../assets/img/icon-ready.png')}
-                    width={100}
-                    height={100}
+                    uri={require('../../../assets/img/user_boy.png')}
+                    width={72}
+                    height={72}
+                    borderRadius={36}
+                    onPress={() => {
+                      if (props.info.teamA?.member.length > 0) {
+                        setMemberModalTeam(props.info.teamA);
+                        setMemberModal(true);
+                      }
+                    }}
                   />
-                </View>
-              )}
-            </View>
-            <Seperator height={10} />
-            <Text
-              text={props.info.teamB?.member[0]?.userName}
-              fontWeight={'500'}
-              fontSize={16}
-            />
+                )}
+
+                {props.info.teamB?.member[0]?.ready === 'Y' && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      local
+                      uri={require('../../../assets/img/icon-ready.png')}
+                      width={100}
+                      height={100}
+                    />
+                  </View>
+                )}
+                <Seperator height={10} />
+                <Text
+                  text={props.info.teamB?.member[0]?.userName}
+                  fontWeight={'500'}
+                  fontSize={16}
+                  style={{textAlign: 'center'}}
+                />
+              </View>
+            )}
+
             {props.info.teamB?.member.length > 0 &&
               context.me.userPk !== props.info.teamB?.member[0].userPk && (
                 <View>

@@ -11,10 +11,16 @@ import {
   Modal,
   Loader,
 } from '../../react-native-nuno-ui';
-import {TouchableOpacity, View, ScrollView} from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  ScrollView,
+  Platform,
+  Alert,
+} from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 
 export default function Reward(props) {
@@ -26,11 +32,17 @@ export default function Reward(props) {
   const getReward = () => {
     Axios.get(`rewardCheck/${props.baPk}`)
       .then((res) => {
-        logApi('getReward', res.data);
+        logApi('rewardCheck', res.data);
         setReward(res.data);
       })
       .catch((err) => {
-        logApi('getReward error', err.response);
+        if (err.response.status === 403) {
+          logApi('rewardCheck 403', err.response.data);
+          // props.closeModal();
+          showToast(err.response.data.message, 2000, 'center');
+        } else {
+          logApi('rewardCheck error', err.response);
+        }
       });
   };
   const getRandomBox = () => {
@@ -164,48 +176,53 @@ export default function Reward(props) {
       }
     }
   } else {
-    component = (
-      <View>
-        <Text
-          fontSize={18}
-          fontWeight={'bold'}
-          color={'black'}
-          style={{textAlign: 'center'}}
-          text={'배틀에 앞서 코인을 사용하셨습니다. 지금 보상을 받으시겠어요?'}
-        />
-        <Seperator height={30} />
-        <Text
-          fontSize={16}
-          color={'dimgray'}
-          text={
-            '아니오를 누르시면 [나의 배틀]에서 다시 선택하실 수 있습니다.\n\n(단, 오늘부터 1주일 이내에 다시 해야합니다.)'
-          }
-          style={{textAlign: 'center'}}
-        />
-        <Seperator height={30} />
-        <HView>
-          <View style={{flex: 1}}>
-            <Button
-              text={'아니요'}
-              color={'gray'}
-              onPress={props.closeModal}
-              size={'large'}
-              stretch
-            />
-          </View>
-          <Seperator width={20} />
-          <View style={{flex: 1}}>
-            <Button
-              text={'예'}
-              color={custom.themeColor}
-              onPress={() => getReward()}
-              size={'large'}
-              stretch
-            />
-          </View>
-        </HView>
-      </View>
-    );
+    component =
+      props.coinType === 'Y' ? (
+        <View>
+          <Text
+            fontSize={18}
+            fontWeight={'bold'}
+            color={'black'}
+            style={{textAlign: 'center'}}
+            text={
+              '배틀에 앞서 코인을 사용하셨습니다. 지금 보상을 받으시겠어요?'
+            }
+          />
+          <Seperator height={30} />
+          <Text
+            fontSize={16}
+            color={'dimgray'}
+            text={
+              '아니오를 누르시면 [나의 배틀]에서 다시 선택하실 수 있습니다.\n\n(단, 오늘부터 1주일 이내에 다시 해야합니다.)'
+            }
+            style={{textAlign: 'center'}}
+          />
+          <Seperator height={30} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'아니요'}
+                color={'gray'}
+                onPress={props.closeModal}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'예'}
+                color={custom.themeColor}
+                onPress={() => getReward()}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      ) : (
+        getReward()
+      );
   }
   return (
     <View

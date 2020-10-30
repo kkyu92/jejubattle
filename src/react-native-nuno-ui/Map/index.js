@@ -7,7 +7,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {screenWidth, screenHeight, ShadowStyle} from '../style';
 import Seperator from '../Seperator';
 import {Nuno} from '..';
-import {getCurrentLocation, getAddressFromGeoCode} from '../funcs';
+import {
+  getCurrentLocation,
+  getAddressFromGeoCode,
+  showToast,
+  sleep,
+} from '../funcs';
 import Text from '../Text';
 
 export default function Map({
@@ -23,6 +28,8 @@ export default function Map({
   onMapReady,
   getCurrentPosition,
   markerOnSelect,
+  setLoading,
+  mapReady,
 }) {
   let mapRef = React.useRef();
   const [camera, setCamera] = React.useState({
@@ -38,16 +45,71 @@ export default function Map({
 
   React.useEffect(() => {
     async function getLoc() {
+      console.log(mapReady);
       const loc = await getCurrentLocation(Nuno.config.lang);
       const temp = {...camera};
       temp.center = loc.coords;
-      setCamera(temp);
-      getCurrentPosition(loc.coords);
+      if (mapReady === 'aroundme') {
+        console.log('getLoc : no Markers');
+        setCamera(temp);
+        getCurrentPosition(loc.coords);
+      }
     }
+    // getLoc();
     if (!latitude && !longitude) {
       getLoc();
+      console.log('getLoc - fin');
     }
   }, []);
+  React.useEffect(() => {
+    setLoading(true);
+    console.log('out');
+    if (mapRef && JSON.stringify(markers) !== '[]') {
+      console.log('in - str');
+      if (markers.length === 1) {
+        console.log('marker one');
+        let temp = {...camera};
+        console.log(JSON.stringify(temp));
+        temp.zoom = 16;
+        temp.center = markers[0].coords;
+        mapRef.animateCamera(temp, {duration: 500});
+      } else {
+        console.log('marker list');
+        // list of _id's must same that has been provided to the identifier props of the Marker
+        // mapRef.fitToSuppliedMarkers(
+        //   markers.map(({marker}) => marker),
+        //   {
+        //     edgePadding: {top: 100, right: 100, bottom: 100, left: 100},
+        //     animated: false,
+        //   },
+        // );
+        const temp = markers.map((m) => ({
+          latitude: m.faLat,
+          longitude: m.faLon,
+        }));
+        mapRef.fitToCoordinates(temp, {
+          edgePadding: {top: 100, right: 100, bottom: 100, left: 100},
+          animated: false,
+        });
+      }
+    }
+    // async function getLoc() {
+    //   console.log(mapReady);
+    //   const loc = await getCurrentLocation(Nuno.config.lang);
+    //   const temp = {...camera};
+    //   temp.center = loc.coords;
+    //   if (mapReady === 'aroundme' && markers.length === 0) {
+    //     console.log('getLoc : no Markers');
+    //     setCamera(temp);
+    //     getCurrentPosition(loc.coords);
+    //   } else if (mapReady === 'facilitySearch' && markers.length === 0) {
+    //     console.log('\n\n\n\n\n\n\n\n\n\n');
+    //   }
+    // }
+    // getLoc();
+    console.log('in - fin : ' + mapReady);
+  }, [markers]);
+
   const onRegionChangeComplete = async (e) => {
     const temp = await mapRef.getCamera();
     temp.altitude = 1;
@@ -77,15 +139,17 @@ export default function Map({
       <MapView
         provider={Nuno.config.mapProvider}
         onMapReady={onMapReady}
-        ref={e => mapRef = e}
+        ref={(e) => (mapRef = e)}
         style={{width: screenWidth, flex: 1}}
         camera={camera}
         showsCompass={false}
+        showsUserLocation
         initialCamera={camera}
         onRegionChangeComplete={onRegionChangeComplete}>
         {markers &&
           markers.map((e, i) => (
             <Marker
+              identifier={e.faAddr}
               key={i}
               coordinate={e.coords}
               title={e.title}
@@ -100,18 +164,20 @@ export default function Map({
             </Marker>
           ))}
       </MapView>
-      <View
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          marginLeft: -20,
-          marginTop: -20,
-        }}>
-        {customCenter || (
-          <MaterialIcons name={'location-on'} color={'red'} size={40} />
-        )}
-      </View>
+      {mapReady === 'aroundme' || mapReady === 'facilitySearch' ? (
+        <View
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            marginLeft: -20,
+            marginTop: -20,
+          }}>
+          {customCenter || (
+            <MaterialIcons name={'location-on'} color={'red'} size={40} />
+          )}
+        </View>
+      ) : null}
       {/* zoom control */}
       <View style={{position: 'absolute', bottom: 20, right: 20}}>
         {showZoom && (
@@ -173,4 +239,4 @@ export default function Map({
       </View>
     </View>
   );
-};
+}

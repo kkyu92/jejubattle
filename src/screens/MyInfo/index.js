@@ -15,10 +15,33 @@ import StarRating from 'react-native-star-rating';
 import {custom} from '../../config';
 import {AppContext} from '../../context';
 import MySports from '../../commons/MySports';
+import Axios from 'axios';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 
 export default function MyInfo(props) {
   const context = React.useContext(AppContext);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [totalMatch, setTotalMatch] = React.useState('');
+  const [totalWin, setTotalWin] = React.useState('');
+  const [totalLose, setTotalLose] = React.useState('');
+  const [totalWinRate, setTotalWinRate] = React.useState('');
+  const [detailList, setDetailList] = React.useState([]);
+
+  React.useEffect(() => {
+    Axios.get('getScore')
+      .then(async (res) => {
+        logApi('getScore', res.data);
+        setTotalMatch(res.data.ago);
+        setTotalWin(res.data.win);
+        setTotalLose(res.data.lose);
+        setTotalWinRate(res.data.winrate);
+        setDetailList(res.data.detail);
+      })
+      .catch((err) => {
+        // setLoading(false);
+        logApi('getScore error', err?.response);
+      });
+  }, []);
 
   return (
     <Container>
@@ -143,7 +166,9 @@ export default function MyInfo(props) {
               </View>
               <View style={{flex: 0.7}}>
                 <Text
-                  text={'100전 60승 10패'}
+                  text={
+                    totalMatch + '전 ' + totalWin + '승 ' + totalLose + '패'
+                  }
                   fontSize={16}
                   color={'dimgray'}
                 />
@@ -161,7 +186,11 @@ export default function MyInfo(props) {
                 />
               </View>
               <View style={{flex: 0.7}}>
-                <Text text={'60%'} fontSize={16} color={'dimgray'} />
+                <Text
+                  text={totalWinRate + '%'}
+                  fontSize={16}
+                  color={'dimgray'}
+                />
               </View>
             </HView>
           </View>
@@ -175,66 +204,50 @@ export default function MyInfo(props) {
             />
           </View>
 
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
-            <HView>
-              <View style={{flex: 0.3}}>
-                <Text
-                  text={'축구'}
-                  fontSize={16}
-                  fontWeight={'bold'}
-                  color={'dimgray'}
-                />
-              </View>
-              <View style={{flex: 0.7}}>
-                <Text text={'16전 12승 4패'} fontSize={16} color={'dimgray'} />
-              </View>
-            </HView>
-          </View>
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
-            <HView>
-              <View style={{flex: 0.3}}>
-                <Text
-                  text={'농구'}
-                  fontSize={16}
-                  fontWeight={'bold'}
-                  color={'dimgray'}
-                />
-              </View>
-              <View style={{flex: 0.7}}>
-                <Text text={'16전 12승 4패'} fontSize={16} color={'dimgray'} />
-              </View>
-            </HView>
-          </View>
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
-            <HView>
-              <View style={{flex: 0.3}}>
-                <Text
-                  text={'골프'}
-                  fontSize={16}
-                  fontWeight={'bold'}
-                  color={'dimgray'}
-                />
-              </View>
-              <View style={{flex: 0.7}}>
-                <Text text={'16전 12승 4패'} fontSize={16} color={'dimgray'} />
-              </View>
-            </HView>
-          </View>
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
-            <HView>
-              <View style={{flex: 0.3}}>
-                <Text
-                  text={'테니스'}
-                  fontSize={16}
-                  fontWeight={'bold'}
-                  color={'dimgray'}
-                />
-              </View>
-              <View style={{flex: 0.7}}>
-                <Text text={'16전 12승 4패'} fontSize={16} color={'dimgray'} />
-              </View>
-            </HView>
-          </View>
+          {detailList.length == 0 ? (
+            <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
+              <HView>
+                <View style={{flex: 0.3}}>
+                  <Text
+                    text={'전적없음'}
+                    fontSize={16}
+                    fontWeight={'bold'}
+                    color={'dimgray'}
+                  />
+                </View>
+                <View style={{flex: 0.7}}>
+                  <Text text={'0전 0승 0패'} fontSize={16} color={'dimgray'} />
+                </View>
+              </HView>
+            </View>
+          ) : (
+            detailList.map((e) => {
+              return (
+                <View
+                  style={{paddingHorizontal: 20, paddingVertical: 5}}
+                  key={e.name}>
+                  <HView>
+                    <View style={{flex: 0.3}}>
+                      <Text
+                        text={e.name}
+                        fontSize={16}
+                        fontWeight={'bold'}
+                        color={'dimgray'}
+                      />
+                    </View>
+                    <View style={{flex: 0.7}}>
+                      <Text
+                        text={e.ago + '전 ' + e.win + '승 ' + e.lose + '패'}
+                        fontSize={16}
+                        color={'dimgray'}
+                      />
+                    </View>
+                  </HView>
+                </View>
+              );
+            })
+          )}
+
           <Seperator height={50} />
           <Button
             text={'확인'}

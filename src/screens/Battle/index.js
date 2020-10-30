@@ -24,16 +24,42 @@ import {sports1Table} from '../../constants';
 import {useIsFocused} from '@react-navigation/native';
 
 export default function Battle(props) {
-  // const context = React.useContext(AppContext);
+  const context = React.useContext(AppContext);
   const [showMyBattle, setShowMyBattle] = React.useState(true);
   const [list, setList] = React.useState([]);
   const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([]);
   const [pullToRefresh, setPullToRefresh] = React.useState(true);
   const isFocused = useIsFocused();
 
+  const [boCode, setBoCode] = React.useState(1);
+  const [baCode, setBaCode] = React.useState(0);
+  const [bmCode, setBmCode] = React.useState(0);
+  const [blCode, setBlCode] = React.useState(0);
+  const [bpCode, setBpCode] = React.useState(0);
+  const [caCode, setCaCode] = React.useState([]);
+
   React.useEffect(() => {
     if (isFocused || pullToRefresh) {
-      get();
+      if (props.route.params === undefined) {
+        get();
+      } else {
+        setBoCode(props.route.params.boCode);
+        setBaCode(props.route.params.baCode);
+        setBmCode(props.route.params.bmCode);
+        setBlCode(props.route.params.blCode);
+        setBpCode(props.route.params.bpCode);
+        setCaCode(props.route.params.caCode);
+        get(
+          props.route.params.boCode,
+          props.route.params.baCode,
+          props.route.params.bmCode,
+          props.route.params.blCode,
+          props.route.params.bpCode,
+          props.route.params.caCode,
+        );
+      }
+      getCoin();
+      console.log('params : ' + JSON.stringify(props.route.params));
     }
   }, [pullToRefresh, isFocused]);
   // React.useEffect(() => {
@@ -50,8 +76,29 @@ export default function Battle(props) {
   //       logApi('sportsList error', err.response);
   //     });
   // }, []);
-  const get = () => {
-    Axios.get('battle')
+  const get = (boCode, baCode, bmCode, blCode, bpCode, caCode) => {
+    if (caCode !== undefined) {
+      if (caCode.length === 0) {
+        console.log('length : 0');
+      } else {
+        console.log('length : ' + caCode.length);
+      }
+    }
+    Axios.post(
+      'battle',
+      boCode === 3
+        ? {
+            boCode,
+            baCode,
+            bmCode,
+            blCode,
+            bpCode,
+            caCode,
+            lat: global.address.coords.latitude,
+            lon: global.address.coords.longitude,
+          }
+        : {boCode, baCode, bmCode, blCode, bpCode, caCode},
+    )
       .then((res) => {
         logApi('battle', res.data);
         // setMybattles(res.data.myBattle);
@@ -84,6 +131,22 @@ export default function Battle(props) {
       .catch((err) => {
         logApi('battle error', err.response);
         setPullToRefresh(false);
+      });
+  };
+  const getCoin = () => {
+    Axios.get(`getPay`)
+      .then((res) => {
+        logApi('getPay', res.data);
+        context.dispatch({
+          type: 'UPDATEME',
+          data: {
+            userCoin: res.data.userCoin,
+            userPoint: res.data.userPoint,
+          },
+        });
+      })
+      .catch((err) => {
+        // logApi('getPay error', err.response);
       });
   };
   // const handleSports = (e) => {
@@ -171,7 +234,16 @@ export default function Battle(props) {
         navigation={props.navigation}
         rightComponent={
           <TouchableOpacity
-            onPress={() => props.navigation.navigate('BattleFilter')}
+            onPress={() =>
+              props.navigation.navigate('BattleFilter', {
+                boCode,
+                baCode,
+                bmCode,
+                blCode,
+                bpCode,
+                caCode,
+              })
+            }
             style={{
               paddingHorizontal: 20,
               paddingVertical: 5,

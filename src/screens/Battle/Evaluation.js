@@ -11,10 +11,20 @@ import {
   Modal,
   Loader,
 } from '../../react-native-nuno-ui';
-import {TouchableOpacity, View, ScrollView} from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  ScrollView,
+  Platform,
+  Alert,
+} from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {logApi, getCurrentCoords} from '../../react-native-nuno-ui/funcs';
+import {
+  logApi,
+  getCurrentCoords,
+  showToast,
+} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import {screenWidth} from '../../styles';
@@ -22,10 +32,12 @@ import StarRating from 'react-native-star-rating';
 
 export default function Evaluation(props) {
   const context = React.useContext(AppContext);
+  const [getBaCode] = React.useState(props.route.params.info.baCode);
   const [gameResult, setGameResult] = React.useState(0);
   const [timeScope, setTimeScope] = React.useState(0);
   const [playScope, setPlayScope] = React.useState(0);
   const [modalWating, setModalWaiting] = React.useState(false);
+  const [modalMsg, setModalMsg] = React.useState('');
   const [evTarget] = React.useState(
     props.route.params.info.teamA.member.filter(
       (e) => e.userPk === context.me.userPk,
@@ -34,7 +46,14 @@ export default function Evaluation(props) {
       : props.route.params.info.teamB,
   );
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    if (getBaCode === 4) {
+      props.navigation.goBack();
+      console.log('goBack, baCode = ' + getBaCode);
+    }
+    console.log('useEffect ;;; ' + getBaCode);
+  }, [props.route?.params?.info, getBaCode]);
+
   const complete = async () => {
     const team =
       props.route.params.info.teamA.member.filter(
@@ -54,26 +73,39 @@ export default function Evaluation(props) {
       },
     })
       .then((res) => {
-        logApi('resultBattle', res.data);
-        props.route.params.socket.send(
-          `/battle/${props.route.params.info.baPk}`,
-          {},
-          JSON.stringify({
-            baCode: 4,
-          }),
-        );
-        props.navigation.goBack();
+        logApi('resultBattle ', res);
+        if (res.status === 201) {
+          if (
+            res.data.message ===
+            '상대방의 배틀 평가 및 완료를 기다리고 있습니다.'
+          ) {
+            props.navigation.goBack();
+            showToast('상대방의 배틀평가를 기다리고 있습니다.', 2000, 'center');
+          } else {
+            setModalMsg(res.data.message);
+            setModalWaiting(true);
+          }
+        } else {
+          props.route.params.socket.send(
+            `/battle/${props.route.params.info.baPk}`,
+            {},
+            JSON.stringify({
+              baCode: 4,
+            }),
+          );
+          props.navigation.goBack();
+          showToast('평가를 완료했습니다.', 2000, 'center');
+        }
       })
       .catch((err) => {
         if (err.response.status === 403) {
           // props.navigation.goBack();
-          setModalWaiting(true);
         } else {
           logApi('resultBattle error', err.response);
         }
       });
   };
-  let userProfileComponent = '';
+  let userProfileComponent = null;
   if (evTarget.name === '') {
     if (evTarget?.member[0]?.userImgUrl) {
       userProfileComponent = (
@@ -241,7 +273,7 @@ export default function Evaluation(props) {
             fontWeight={'bold'}
             color={'black'}
             style={{textAlign: 'center'}}
-            text={'상대방의 배틀평가 및 완료를 기다리고 있습니다…'}
+            text={modalMsg}
           />
         </View>
       </Modal>

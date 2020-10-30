@@ -153,16 +153,19 @@ export async function getCurrentCoords() {
   const isEmulator = await deviceInfoModule.isEmulator();
   return new Promise((resolve, reject) => {
     if (isEmulator) {
-      resolve({latitude: 37.568676, longitude: 126.978031});
+      resolve({latitude: 37.5683905, longitude: 126.9510365});
     } else {
       Geolocation.getCurrentPosition(
         (position) => {
-          console.log('current location', position);
-          resolve(position);
+          console.log('current location', position.coords);
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
         },
-        error => {
+        (error) => {
           // See error code charts below.
-          console.log('getCurrentPosition error', error.code, error.message);
+          console.log('getCurrentPosition1 error', error.code, error.message);
           reject(error);
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
@@ -172,21 +175,42 @@ export async function getCurrentCoords() {
 }
 export async function getCurrentLocation(lang) {
   let granted;
+  let result;
   if (Platform.OS === 'android') {
     granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
         // title: '',
-        message: '근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요',
+        message:
+          '근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요.',
       },
     );
   } else {
-    granted = PermissionsAndroid.RESULTS.GRANTED;
+    result = await Geolocation.requestAuthorization('whenInUse');
+    console.log('geolocation : ' + result);
+    if (result !== 'granted') {
+      Alert.alert(
+        `근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요.`,
+        '',
+        [
+          {text: '권한 설정하기', onPress: () => openSetting()},
+          {text: '취소', onPress: () => {}},
+        ],
+      );
+      granted = result;
+    } else {
+      granted = PermissionsAndroid.RESULTS.GRANTED;
+    }
   }
+  const openSetting = () => {
+    Linking.openSettings().catch(() => {
+      Alert.alert('Unable to open settings');
+    });
+  };
   const isEmulator = await deviceInfoModule.isEmulator();
 
   return new Promise((resolve, reject) => {
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    if (granted === 'granted') {
       if (isEmulator) {
         resolve({
           address: '서울시 중구',
@@ -235,9 +259,9 @@ export async function getCurrentLocation(lang) {
                 reject();
               });
           },
-          error => {
+          (error) => {
             // See error code charts below.
-            console.log('getCurrentPosition error', error.code, error.message);
+            console.log('getCurrentPosition2 error', error.code, error.message);
             reject(error);
           },
           {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
@@ -344,13 +368,13 @@ export function showToast(msg, duration, position) {
 export const swap = (arr, index1, index2) =>
   arr.map((val, idx) => {
     if (idx === index1) return arr[index2];
-  if (idx === index2) return arr[index1];
+    if (idx === index2) return arr[index1];
     return val;
   });
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export function share(deeplink, title, callback) {
+export function share(deeplink, title, contents, img, callback) {
   fetch(
     `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${Nuno.config.FIREBASE_WEB_API}`,
     {
@@ -359,7 +383,9 @@ export function share(deeplink, title, callback) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        longDynamicLink: `${Nuno.config.dynamicLink}/?link=${deeplink}&ibi=${Nuno.config.BUNDLE_ID}&isi=${Nuno.config.IOS_STORE_ID}&apn=${Nuno.config.PACKAGE_NAME}`,
+        longDynamicLink: `${Nuno.config.dynamicLink}/?link=${deeplink}&ibi=${Nuno.config.BUNDLE_ID}&isi=${Nuno.config.IOS_STORE_ID}&apn=${Nuno.config.PACKAGE_NAME}&st=${title}
+        &sd=${contents}
+        &si=${img}`,
       }),
     },
   )

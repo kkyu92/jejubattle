@@ -10,18 +10,28 @@ import {
   Button,
   TextInput,
 } from '../../react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, Platform, Alert} from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  Alert,
+} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {AppContext} from '../../context';
 import * as RNIap from 'react-native-iap';
+import Axios from 'axios';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 
 export default function CoinCharge(props) {
   const context = React.useContext(AppContext);
   const [showPurchaseModal, setShowPurchaseModal] = React.useState(false);
   const [modalIcon, setModalIcon] = React.useState();
   const [modalContent, setModalContent] = React.useState();
+  const [usePoint, setUsePoint] = React.useState();
+  const [coinCount, setCoinCount] = React.useState();
   const [product, setProduct] = React.useState();
   React.useEffect(() => {
     fetchProducts();
@@ -52,6 +62,80 @@ export default function CoinCharge(props) {
       await RNIap.requestPurchase(sku, false);
     } catch (err) {
       console.log('purchase error', err);
+    }
+  };
+  const addCoin = (usePoint) => {
+    if (usePoint) {
+      let coinType = coinCount === 5 ? 2 : 1;
+      Axios.post('pointBuy', {pointType: coinType})
+        .then((res) => {
+          logApi('pointBuy', res.data);
+          context.me.userCoin += coinCount;
+          context.me.userPoint -= coinCount * 3;
+          context.dispatch({
+            type: 'UPDATEME',
+            data: {
+              userCoin: context.me.userCoin,
+              userPoint: context.me.userPoint,
+            },
+          });
+          console.log('coin : ' + context.me.userCoin);
+          console.log('point : ' + context.me.userPoint);
+          if (Platform.OS === 'android') {
+            Alert.alert('코인 ' + coinCount + '개를 충전했습니다.');
+          } else {
+            showToast(
+              '코인 ' + coinCount + '개를 충전했습니다.',
+              2000,
+              'center',
+            );
+          }
+        })
+        .catch((err) => {
+          if (err.response.status === 403) {
+            logApi('pointBuy 403', err.response.data);
+            if (Platform.OS === 'android') {
+              Alert.alert(err.response.data.message);
+            } else {
+              showToast(err.response.data.message, 2000, 'center');
+            }
+          } else {
+            logApi('pointBuy error', err.response);
+          }
+        });
+      setShowPurchaseModal(false);
+    } else {
+      Axios.post('coinBuy', {pointType: coinCount})
+        .then((res) => {
+          logApi('coinBuy', res.data);
+          context.dispatch({
+            type: 'UPDATEME',
+            data: {
+              userCoin: context.me.userCoin + coinCount,
+            },
+          });
+          if (Platform.OS === 'android') {
+            Alert.alert('코인 ' + coinCount + '개를 충전했습니다.');
+          } else {
+            showToast(
+              '코인 ' + coinCount + '개를 충전했습니다.',
+              2000,
+              'center',
+            );
+          }
+        })
+        .catch((err) => {
+          if (err.response.status === 403) {
+            logApi('coinBuy 403', err.response.data);
+            if (Platform.OS === 'android') {
+              Alert.alert(err.response.data.message);
+            } else {
+              showToast(err.response.data.message, 2000, 'center');
+            }
+          } else {
+            logApi('coinBuy error', err.response);
+          }
+        });
     }
   };
   return (
@@ -132,6 +216,8 @@ export default function CoinCharge(props) {
                   resizeMode={'cover'}
                 />,
               );
+              setUsePoint(false);
+              setCoinCount(1);
               setModalContent(
                 <View>
                   <HView>
@@ -179,6 +265,8 @@ export default function CoinCharge(props) {
                   resizeMode={'cover'}
                 />,
               );
+              setUsePoint(false);
+              setCoinCount(5);
               setModalContent(
                 <View>
                   <HView>
@@ -226,6 +314,8 @@ export default function CoinCharge(props) {
                   resizeMode={'cover'}
                 />,
               );
+              setUsePoint(false);
+              setCoinCount(10);
               setModalContent(
                 <View style={{alignItems: 'center'}}>
                   <HView>
@@ -284,7 +374,7 @@ export default function CoinCharge(props) {
         <Seperator height={10} />
 
         <View style={{padding: 20}}>
-          <Text text={'구구매하기'} fontSize={18} fontWeight={'bold'} />
+          <Text text={'포인트로 구매하기'} fontSize={18} fontWeight={'bold'} />
         </View>
         <View style={{paddingHorizontal: 20}}>
           <TouchableOpacity
@@ -298,6 +388,8 @@ export default function CoinCharge(props) {
                   resizeMode={'cover'}
                 />,
               );
+              setUsePoint(true);
+              setCoinCount(1);
               setModalContent(
                 <View>
                   <HView>
@@ -345,6 +437,8 @@ export default function CoinCharge(props) {
                   resizeMode={'cover'}
                 />,
               );
+              setUsePoint(true);
+              setCoinCount(5);
               setModalContent(
                 <View>
                   <HView>
@@ -421,7 +515,13 @@ export default function CoinCharge(props) {
               <Button
                 text={'예'}
                 color={custom.themeColor}
-                onPress={() => null}
+                onPress={() => {
+                  usePoint === true
+                    ? addCoin(true)
+                    : purchase(
+                        product[coinCount === 1 ? 0 : coinCount === 5 ? 1 : 2],
+                      );
+                }}
                 size={'large'}
                 stretch
               />

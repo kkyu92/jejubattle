@@ -11,7 +11,7 @@ import {
   Checkbox,
   Picker,
 } from '../../react-native-nuno-ui';
-import {View, TouchableOpacity, Alert, Linking} from 'react-native';
+import {View, TouchableOpacity, Alert, Linking, Platform} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {custom, API_URL} from '../../config';
 import Icons from '../../commons/Icons';
@@ -147,6 +147,8 @@ export default function Join(props) {
       formData.append('userSex', gender);
       formData.append('userPhone', mobile);
       formData.append('userPushkey', global.fcmToken);
+      formData.append('deviceOs', Platform.OS === 'android' ? 1 : 2);
+      formData.append('deviceOsVer', Platform.Version);
       if (photo) {
         const response = await fetch(photo);
         const blob = await response.blob();
@@ -191,6 +193,8 @@ export default function Join(props) {
       formData.append('userPhone', mobile);
       formData.append('userPushkey', global.fcmToken);
       formData.append('userAuthkey', userAuthkey);
+      formData.append('deviceOs', Platform.OS === 'android' ? 1 : 2);
+      formData.append('deviceOsVer', Platform.Version);
       if (photo) {
         const response = await fetch(photo);
         const blob = await response.blob();

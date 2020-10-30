@@ -8,7 +8,7 @@
 
 import 'react-native-gesture-handler';
 import React from 'react';
-import {useColorScheme, AppState} from 'react-native';
+import {useColorScheme, AppState, Platform, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
@@ -27,13 +27,18 @@ import {AppContext, useAppReducer} from './src/context';
 import AppStackScreen from './src/navigations/AppStack';
 import AuthStackScreen from './src/navigations/AuthStack';
 import {requestPermission, getFcmToken} from './src/fcm';
+import {fcmService} from './src/fcm/FCMService';
 import RNBootSplash from 'react-native-bootsplash';
 import Init from './src/commons/Init';
 import Axios from 'axios';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
-import { Nuno } from './src/react-native-nuno-ui';
-import { logApi } from './src/react-native-nuno-ui/funcs';
+import {Nuno} from './src/react-native-nuno-ui';
+import {logApi, showToast} from './src/react-native-nuno-ui/funcs';
+import {localNotificationService} from './src/fcm/LocalNotificationService';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotification from 'react-native-push-notification';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -52,7 +57,9 @@ Nuno.init({
   IOS_APP_STORE: IOS_APP_STORE,
 });
 
-const App: () => React$Node = () => {
+// const App: () => React$Node = () => {
+export default function App() {
+  const context = React.useContext(AppContext);
   const colorScheme = useColorScheme();
   const {state, dispatch} = useAppReducer();
   const [ready, setReady] = React.useState(false);
@@ -67,8 +74,8 @@ const App: () => React$Node = () => {
   let init = async () => {
     // …do multiple async tasks
     // await registerAppWithFCM(); // auto registration firebase.json
-    await requestPermission();
-    await getFcmToken();
+    await fcmService.requestPermission();
+    await fcmService.getFcmToken();
     await Init();
     await getPush();
     // await locationInit();
@@ -78,7 +85,15 @@ const App: () => React$Node = () => {
           logApi('getme', res.data);
           dispatch({
             type: 'AUTHORIZED',
-            data: res.data,
+            data: {...res.data},
+            // data: res.data.baPk
+            //   ? {
+            //       ...res.data,
+            //     }
+            //   : {
+            //       ...res.data,
+            //       baPk: 0,
+            //     },
           });
         })
         .catch((err) => {
@@ -98,37 +113,217 @@ const App: () => React$Node = () => {
             console.log('dynamic link', link);
             link && handleRoute(link.url);
           });
+        fcmService.register(onNotification, onOpenNotification);
+        localNotificationService.configure(onOpenNotification);
 
-        const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-          console.log('Receiving FCM Message Data:', remoteMessage.data);
+        async function onNotification(notify) {
+          let baPk = await AsyncStorage.getItem('baPk');
+          // baPk = JSON.parse(baPk);
+          // baPk = JSON.stringify(baPk);
+          console.log('async baPk : ' + baPk);
+          console.log('onNoti baPk : ' + notify.baPk);
+          console.log('[APP] onNotification : ' + JSON.stringify(notify));
 
-          await getPush();
-        });
-
-        // background > foreground
-        messaging().onNotificationOpenedApp(async (remoteMessage) => {
-          console.log(
-            'Notification caused app to open from background state:',
-            remoteMessage,
-          );
-          await getPush();
-          handleNotification(remoteMessage.data);
-        });
-
-        // closed > foreground
-        messaging()
-          .getInitialNotification()
-          .then(async (remoteMessage) => {
-            if (remoteMessage) {
-              console.log(
-                'Notification caused app to open from quit state:',
-                remoteMessage,
+          if (notify.screen === 'battleview') {
+            // system msg
+            if (baPk === '0') {
+              // 배틀방이 아님
+              console.log('배틀방아님');
+              const options = {
+                soundName: 'default',
+                playSound: true,
+              };
+              localNotificationService.showNotification(
+                notify.baPk,
+                notify.title,
+                notify.body,
+                notify,
+                options,
               );
-              await getPush();
-              handleNotification(remoteMessage.data);
+            } else if (
+              baPk === notify.baPk ||
+              baPk === JSON.stringify(notify.baPk)
+            ) {
+              // 해당 배틀방 화면
+              console.log('해당 배틀방 화면');
+              showToast(notify.title + '\n' + notify.body, 2000, 'center');
+            } else {
+              // 다른 배틀방 화면
+              console.log('다른 배틀방 화면');
+              const options = {
+                soundName: 'default',
+                playSound: true,
+              };
+              localNotificationService.showNotification(
+                notify.baPk,
+                notify.title,
+                notify.body,
+                notify,
+                options,
+              );
             }
-          });
-        return unsubscribe;
+          } else if (notify.screen === 'battlechat') {
+            // chat msg
+            if (baPk === '0') {
+              // 배틀방이 아님
+              console.log('배틀방아님');
+              const options = {
+                soundName: 'default',
+                playSound: true,
+              };
+              localNotificationService.showNotification(
+                notify.baPk,
+                notify.title,
+                notify.body,
+                notify,
+                options,
+              );
+            } else if (
+              baPk === notify.baPk ||
+              baPk === JSON.stringify(notify.baPk)
+            ) {
+              // 해당 배틀방 화면
+              console.log('해당 배틀방 화면');
+            } else {
+              // 다른 배틀방 화면
+              console.log('다른 배틀방 화면');
+              const options = {
+                soundName: 'default',
+                playSound: true,
+              };
+              localNotificationService.showNotification(
+                notify.baPk,
+                notify.title,
+                notify.body,
+                notify,
+                options,
+              );
+            }
+          } else if (notify.screen === 'battlelist') {
+            // kick
+            if (baPk === '0') {
+              // 다른화면인 경우
+              const options = {
+                soundName: 'default',
+                playSound: true,
+              };
+              localNotificationService.showNotification(
+                notify.baPk,
+                notify.title,
+                notify.body,
+                notify,
+                options,
+              );
+            } else if (
+              baPk === notify.baPk ||
+              baPk === JSON.stringify(notify.baPk)
+            ) {
+              // 해당 배틀방 화면
+              showToast(notify.title + '\n' + notify.body, 2000, 'center');
+              RootNavigation.navigate('Battle', {});
+            } else {
+              // 다른 배틀방 화면
+              showToast(notify.title + '\n' + notify.body, 2000, 'center');
+            }
+          }
+        }
+
+        async function onOpenNotification(notify) {
+          let baPk = await AsyncStorage.getItem('baPk');
+          // baPk = JSON.parse(baPk);
+          // baPk = JSON.stringify(baPk);
+          console.log('async baPk : ' + baPk);
+          console.log('notti baPk : ' + notify.baPk);
+          console.log('[APP] onOpenNotification : ' + JSON.stringify(notify));
+
+          if (Platform.OS === 'ios') {
+            let userInfo = {
+              id: notify.baPk,
+            };
+            PushNotificationIOS.cancelLocalNotifications(userInfo);
+          } else {
+            PushNotification.cancelLocalNotifications({id: notify.baPk});
+          }
+
+          if (
+            notify.screen === 'battleview' ||
+            notify.screen === 'battlechat'
+          ) {
+            // chat, system msg open
+            RootNavigation.navigate('BattleView', {
+              baPk: notify.baPk,
+              tabIndex: notify.tabIndex,
+            });
+          } else if (notify.screen === 'battlelist') {
+            // kick open
+            if (baPk !== notify.baPk || baPk !== JSON.stringify(notify.baPk)) {
+              // 다른방에 들어와 있는 경우
+              showToast(notify.title + '\n' + notify.body, 2000, 'center');
+            } else {
+              // 해당방 || 다른화면인 경우
+              showToast(notify.title + '\n' + notify.body, 2000, 'center');
+              RootNavigation.navigate('Battle', {});
+            }
+          }
+          // getPush();
+        }
+
+        // // foreground 상태
+        // const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+        //   console.log('[foreground] :', remoteMessage.data);
+        //   let notification = null
+        //   if (remoteMessage) {
+        //     if (Platform.OS === 'ios') {
+        //         notification = remoteMessage.data.notification
+        //     } else {
+        //         notification = remoteMessage.data
+        //     }
+        //     console.log('notification : ', notification)
+        //     const options = {
+        //       soundName: 'default',
+        //       playSound: true,
+        //     };
+        //     localNotificationService.showNotification(
+        //       0,
+        //       notification.title,
+        //       notification.body,
+        //       notification,
+        //       options,
+        //     );
+        //     await getPush();
+        //     // handleNotification(notification.screen, {baPk: notification.baPk, tabIndex: notification.tabIndex})
+        //   }
+        // });
+
+        // // background > foreground
+        // messaging().onNotificationOpenedApp(async (remoteMessage) => {
+        //   console.log(
+        //     'Notification caused app to open from background state:',
+        //     remoteMessage,
+        //   );
+        //   await getPush();
+        //   handleNotification(remoteMessage.data.screen, {baPk: notification.baPk, tabIndex: notification.tabIndex})
+        // });
+
+        // // closed > foreground
+        // messaging()
+        //   .getInitialNotification()
+        //   .then(async (remoteMessage) => {
+        //     if (remoteMessage) {
+        //       console.log(
+        //         'Notification caused app to open from quit state:',
+        //         remoteMessage,
+        //       );
+        //       await getPush();
+        //       handleNotification(remoteMessage.data.screen, remoteMessage.data);
+        //     }
+        //   });
+        // return unsubscribe;
+        return () => {
+          console.log('[APP] unRegister');
+          fcmService.unRegister();
+          localNotificationService.unregister();
+        };
       });
     }
   }, []);
@@ -174,31 +369,20 @@ const App: () => React$Node = () => {
     }
   };
 
-  const handleNotification = ({screen, param, order_id}) => {
-    if (screen === '001') {
-      RootNavigation.navigate('Delivery');
-      RootNavigation.navigate('OrderViewStack', {
-        screen: 'OrderView',
-        params: {
-          order_id: order_id,
-        },
+  const handleNotification = ({screen, param}) => {
+    console.log(
+      '[handleNotification] screen : ' + screen + ' param : ' + param,
+    );
+    if (screen === 'battleview') {
+      RootNavigation.navigate('BattleView', {
+        baPk: param.baPk,
+        tabIndex: param.tabIndex,
       });
-      // } else {
-      //   RootNavigation.navigate('Delivery');
-      // }
     }
-    if (param === '002') {
-      RootNavigation.navigate('Mart');
-      RootNavigation.navigate('OrderViewStack', {
-        screen: 'OrderView',
-        params: {
-          order_id: order_id,
-        },
-      });
-      // } else {
-      //   RootNavigation.navigate('Mart');
-      // }
-    }
+    // RootNavigation.navigate('BattleView', {
+    //   baPk: 193,
+    //   tabIndex: 1,
+    // });
   };
 
   const handleRoute = (url) => {
@@ -234,6 +418,6 @@ const App: () => React$Node = () => {
       </AppContext.Provider>
     </NavigationContainer>
   );
-};
+}
 
-export default App;
+// export default App;

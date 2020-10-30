@@ -24,7 +24,10 @@ export default ({
   leftComponent,
   onSend,
   openMap,
+  otherTokenes,
 }) => {
+  const firebase_server_key =
+    'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
   const [message, setMessage] = React.useState('');
 
   const renderItem = ({item, index}) => {
@@ -34,12 +37,12 @@ export default ({
     createdAt = new Date(...dateTimeParts); // our Date object
 
     if (index > 0) {
-      dateTimeParts = messages[index-1].createdAt.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
+      dateTimeParts = messages[index - 1].createdAt.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
       dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
       prevCreatedAt = new Date(...dateTimeParts);
     }
     if (index < messages.length - 1) {
-      dateTimeParts = messages[index+1].createdAt.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
+      dateTimeParts = messages[index + 1].createdAt.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
       dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
       nextCreatedAt = new Date(...dateTimeParts);
     }
@@ -292,6 +295,27 @@ export default ({
         avatar: me.avatar,
         name: me.name,
       });
+      // if (otherTokenes) {
+      //   fetch('https://fcm.googleapis.com/fcm/send', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       Authorization: 'key=' + firebase_server_key,
+      //     },
+      //     body: JSON.stringify({
+      //       registration_ids: [otherTokenes],
+      //       notification: {
+      //         title: me.name,
+      //         body: message,
+      //       },
+      //       data: {
+      //         screen: 'battleview',
+      //         baPk: baPk,
+      //         tabIndex: 1,
+      //       },
+      //     }),
+      //   });
+      // }
     }
   };
   return (

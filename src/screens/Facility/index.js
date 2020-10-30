@@ -12,7 +12,7 @@ import Icons from '../../commons/Icons';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Axios from 'axios';
 import {logApi} from '../../react-native-nuno-ui/funcs';
-import { sports1Table, sports2Table } from '../../constants';
+import {sports1Table, sports2Table} from '../../constants';
 
 export default function Facility(props) {
   const [sports1, setSports1] = React.useState([]);
@@ -108,7 +108,7 @@ export default function Facility(props) {
         title={'운동시설'}
         navigation={props.navigation}
       />
-      <ScrollView style={{backgroundColor: 'whitesmoke'}}>
+      <View style={{backgroundColor: 'whitesmoke', flex: 1}}>
         <View
           style={{
             backgroundColor: 'white',
@@ -143,7 +143,7 @@ export default function Facility(props) {
             numColumns={5}
           />
         </View>
-      </ScrollView>
+      </View>
     </Container>
   );
 }

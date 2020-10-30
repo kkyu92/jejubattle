@@ -143,7 +143,13 @@ export default function Home(props) {
         <HView style={{justifyContent: 'space-between', paddingHorizontal: 20}}>
           <Text text={'추천 운동시설'} fontSize={22} fontWeight={'bold'} />
           <TouchableOpacity
-            onPress={() => props.navigation.navigate('FullMap', {aroundme: true})}>
+            onPress={() =>
+              props.navigation.navigate('FullMap', {
+                // facilitySearch: true,
+                // 추천 운동시설들의 좌표값이 필요함
+                facilityReco: true,
+              })
+            }>
             <Icons name={'icon-map-24'} size={24} color={'gray'} />
           </TouchableOpacity>
         </HView>

@@ -1,5 +1,8 @@
 @host=https://kangmin.shop/api/
-@token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiVGVzdCIsImlzcyI6ImthbmdtaW4uc2hvcCIsIl9wayI6NSwiZXhwIjoxNTk4NjAyNzUwfQ.OZHvoPis4aubxRxA8BkvdBksURmddXLbwwk948kmOMw
+@tokenKakao=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjA2MDEwMjk0fQ.fs8nwQh0gVTQqaK4E82TUk-V79jXLwFYzhXwcyertvQ
+@token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjAzNTg1ODY0fQ.u4ntsPBengOKc3C3JOGwfYQ-mocnkR_DylzKSbcusKA
+@pushKeyKakao=d9P80U8JTPKd8o6OCNbIt4:APA91bENEKBovx8G4mn3aKu9jnIe_xBJVh1_xqLLrUfs3IDCEKyx4UaatPpltqZmCPsRbVSbc-ga8jWJ8PytoNueL0aFndn-s6EKRoVKPWw4S059zc3CsFiTseqcxXMqkDCj-mkQciYx
+@pushKey=fITkvNxP80Yon4znlXr-cF:APA91bEb5A-_YB7-pZ1cVjDXfoCCYx8aIalX8yVjgpFJHy7_hA0DUoV-yCSZJ9UZ87QxnqxYUNT65H0nWwLBykEoGn-3q8YQ9Gl65XE3wDgeHPXqD7aoxaKiLvahBUF5krMqT7EusvuP
 
 GET {{host}}mainList HTTP/1.1
 token: {{token}}
@@ -9,13 +12,15 @@ token: {{token}}
 
 POST {{host}}gojiList HTTP/1.1
 Content-Type: application/json
-token: {{token}}
+token: {{tokenKakao}}
 
 {
   "code": 1,
   "clCode": 0,
-  "orderType": 0,
+  "orderType": 3,
   "keyword": "",
+  "lat": 37.5683394,
+  "lon": 126.9511045
 }
 
 
@@ -38,4 +43,84 @@ token: {{token}}
     {"name":"","member":[5]},
   "teamB":
     {"name":"","member":[]}
+}
+
+###
+
+POST {{host}}updateBattle HTTP/1.1
+Content-Type: application/json
+token: {{token}}
+
+{
+}
+
+###
+
+POST {{host}}resultBattle HTTP/1.1
+Content-Type: application/json
+token: {{token}}
+
+{
+  "baPk": 106,
+  "teamA": {
+    "gameResult": 1,
+    "timeScope": "5.0",
+    "playScope": "5.0",
+    "lat": "33.2539385",
+    "lon": "126.5595922"
+  },
+  "teamB": {
+    "gameResult": 0,
+    "timeScope": "",
+    "playScope": "",
+    "lat": "33.2539385",
+    "lon": "126.5595922"
+  }
+}
+
+###
+
+POST {{host}}locker HTTP/1.1
+Content-Type: application/json
+token: {{token}}
+
+{
+  "pageNum": 2
+}
+
+###
+
+POST {{host}}updateBattlePk HTTP/1.1
+Content-Type: application/json
+token: {{tokenKakao}}
+
+{
+  "baPk": 0
+}
+
+###
+
+DELETE {{host}}locker/186 HTTP/1.1
+Content-Type: application/json
+token: {{token}}
+
+###
+
+GET {{host}}getPush/{{pushKeyKakao}} HTTP/1.1
+Content-Type: application/json
+token: {{{{tokenKakao}}}}
+
+{
+  "userPushKey" : {{pushKeyKakao}}
+}
+
+### recomMap 추천운동시설 리스트
+
+POST {{host}}recomMap HTTP/1.1
+Content-Type: application/json
+token: {{tokenKakao}}
+
+{
+  "caCode" : [{"code":1}, {"code":8}],
+  "clCode" : [{"code":2}]
 }

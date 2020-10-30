@@ -69,10 +69,15 @@ export default function TravelList(props) {
     return (
       <ListItem
         onPress={() =>
-          props.navigation.navigate('TravelView', {
-            faPk: item.faPk,
-            showScrap: props.route.params.faCode === 1 ? false : true,
-          })
+          props.route.params.faCode === 1
+            ? props.navigation.navigate('TravelView', {
+                faPk: item.faPk,
+                showScrap: false,
+              })
+            : props.navigation.navigate('TravelView', {
+                faPk: item.faPk,
+                showScrap: true,
+              })
         }
         item={item}
         index={index}

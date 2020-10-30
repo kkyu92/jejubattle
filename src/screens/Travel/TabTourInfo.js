@@ -13,8 +13,7 @@ import Icons from '../../commons/Icons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {showToast} from '../../react-native-nuno-ui/funcs';
 
-export default function TabFacilityInfo(props) {
-  console.log(JSON.stringify(props));
+export default function TabTourInfo(props) {
   return (
     <Container>
       <View style={{padding: 20}}>
@@ -118,6 +117,7 @@ export default function TabFacilityInfo(props) {
         style={{
           paddingHorizontal: 40,
           paddingBottom: 20,
+          justifyItems: 'center',
         }}>
         <Icons
           style={{flex: 0.1}}

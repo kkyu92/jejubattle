@@ -22,7 +22,8 @@ import ListItem from '../../commons/ListItem';
 const actionSheetRef = React.createRef();
 
 export default function FullMapFilter(props) {
-  const [sports, setSports] = React.useState(props.route?.params?.caCode);
+  const [mapReady] = React.useState(props.route?.params?.mapReady);
+  const [sports] = React.useState(props.route?.params?.caCode);
   const [selectedSports, setSelectedSports] = React.useState([]);
   const [clCode] = React.useState(props.route?.params?.clCode);
   const [selectedClCode, setSelectedClCode] = React.useState([]);
@@ -162,7 +163,25 @@ export default function FullMapFilter(props) {
         }}>
         <Button
           text={'설정하기'}
-          onPress={() => props.navigation.goBack()}
+          onPress={
+            () =>
+              props.navigation.navigate('FullMap', {
+                // mapReady === 'aroundme'
+                //   ? aroundme: true
+                //   : mapReady === 'facilitySearch'
+                //   ? {facilitySearch: true}
+                //   : mapReady === 'noSearch'
+                //   ? {noSearch: true}
+                //   : mapReady === 'noSearchFilter'
+                //   ? {noSearchFilter: true}
+                //   : mapReady,
+
+                // noSearch: true,
+                sportsList: selectedSports,
+                clCodeList: selectedClCode,
+              })
+            // props.navigation.goBack(),
+          }
           color={custom.themeColor}
           disable={false}
           size={'large'}

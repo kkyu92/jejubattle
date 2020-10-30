@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../config';
 import axios from 'axios';
 import {Platform, NativeModules} from 'react-native';
+import Geolocation from 'react-native-geolocation-service'
 import {logApi, getCurrentLocation} from '../../react-native-nuno-ui/funcs';
 import moment from 'moment';
 import 'moment/locale/ko';
@@ -45,8 +46,26 @@ export default async () => {
   global.hidePermissionAlert = hidePermissionAlert;
 
   // location
-  global.address = await getCurrentLocation(global.lang);
-  console.log('location', global.address);
+  // Geolocation.requestAuthorization('whenInUse');
+  
+    global.address = await getCurrentLocation(global.lang);
+    console.log('[init] location', global.address);
+  
+  // if (Platform.OS === 'ios') {
+  //   var response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+  //   console.log('[init] iOS : ', response);
+  //   if (response === 'granted') {
+  //     global.address = await getCurrentLocation(global.lang);
+  //     console.log('location', global.address);
+  //   }
+  // } else {
+  //   var response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+  //   console.log('[init] Android : ', response);
+  //   if (response === 'granted') {
+  //     global.address = await getCurrentLocation(global.lang);
+  //     console.log('location', global.address);
+  //   }
+  // }
 
   await axios
     .post('version', {})

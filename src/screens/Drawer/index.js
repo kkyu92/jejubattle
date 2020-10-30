@@ -12,7 +12,7 @@ import Icons from '../../commons/Icons';
 import StarRating from 'react-native-star-rating';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
-import { AppContext } from '../../context';
+import {AppContext} from '../../context';
 import MySports from '../../commons/MySports';
 
 export default function Drawer(props) {
@@ -127,7 +127,9 @@ export default function Drawer(props) {
       <ScrollView>
         <Seperator height={20} />
         <TouchableOpacity
-          onPress={() => props.navigation.navigate('FullMap', {aroundme: true})}>
+          onPress={() =>
+            props.navigation.navigate('FullMap', {aroundme: true})
+          }>
           <HView
             style={{
               paddingHorizontal: 20,

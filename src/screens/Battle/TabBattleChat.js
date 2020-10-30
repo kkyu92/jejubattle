@@ -42,7 +42,11 @@ export default function TabBattleChat({
     );
   };
   const more = () => {
-    socket.send(`/msgmore/${info.baPk}`, {}, JSON.stringify({pageNum: page}));
+    socket.send(
+      `/msgmore/${info.baPk}`,
+      {},
+      JSON.stringify({pageNum: page + 1}),
+    );
   };
 
   return (
@@ -81,7 +85,11 @@ export default function TabBattleChat({
         })}
         onSend={send}
         openMap={(e) =>
-          navigation.navigate('FullMap', {latitude: e.lat, longitude: e.lng})
+          navigation.navigate('FullMap', {
+            facilitySearch: true,
+            latitude: e.lat,
+            longitude: e.lng,
+          })
         }
         emptyAvatar={require('../../../assets/img/user_boy.png')}
         me={{

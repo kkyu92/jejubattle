@@ -18,6 +18,8 @@ import MyBattle from '../screens/MyBattle';
 import RandomBox from '../screens/Battle/RandomBox';
 import WishList from '../screens/WishList';
 import Search from '../screens/Search';
+import CoinCharge from '../screens/CoinCharge';
+import PurchaseHistory from '../screens/PurchaseHistory';
 
 const Tab = createBottomTabNavigator();
 function TabStackScreen() {
@@ -114,6 +116,11 @@ export default function BottomTabStackScreen() {
       <BottomTabStack.Screen name="BattleView" component={BattleView} />
       <BottomTabStack.Screen name="RandomBox" component={RandomBox} />
       <BottomTabStack.Screen name="WishList" component={WishList} />
+      <BottomTabStack.Screen name="CoinCharge" component={CoinCharge} />
+      <BottomTabStack.Screen
+        name="PurchaseHistory"
+        component={PurchaseHistory}
+      />
     </BottomTabStack.Navigator>
   );
 }

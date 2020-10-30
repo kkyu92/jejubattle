@@ -26,6 +26,7 @@ import TabBattleChat from './TabBattleChat';
 import MatchMember from '../../commons/MatchMember';
 import Axios from 'axios';
 import {logApi} from '../../react-native-nuno-ui/funcs';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const initialLayout = {width: screenWidth};
 
@@ -38,20 +39,29 @@ export default function BattleView(props) {
     {key: '2', title: '배틀 톡'},
   ]);
   const [messages, setMessages] = React.useState([]);
-  const [page, setPage] = React.useState(2);
+  const [page, setPage] = React.useState(1);
   const [moredone, setMoredone] = React.useState(false);
   const [coin, setCoin] = React.useState('');
   const stompClient = React.useRef();
 
+  let getBaPk = props.route?.params?.baPk;
+  let getTabIndex = props.route?.params?.tabIndex;
+
   React.useEffect(() => {
-    get();
-    coinCheck();
+    if (getBaPk && getTabIndex) {
+      setShowMatchMember(false);
+      setIndex(1);
+    }
+  }, [getBaPk, getTabIndex]);
+
+  const socketConn = () => {
     const sock = new SockJS(SOCKET_URL);
     stompClient.current = Stomp.over(sock);
     stompClient.current.connect(
       {},
       function (frame) {
-        // console.log('Connected: ' + frame);
+        AsyncStorage.setItem('baPk', JSON.stringify(props.route.params.baPk));
+        console.log('set baPk : ' + props.route.params.baPk);
         // alert(frame);
         //subscribing path
         stompClient.current.subscribe(
@@ -59,7 +69,13 @@ export default function BattleView(props) {
           (e) => {
             const msgs = JSON.parse(e.body);
             console.log('subscribe in', msgs);
-            if (msgs.length < 40) {
+            if (
+              msgs.length <= 40 &&
+              msgs[msgs.length - 1].userPk === 0 &&
+              msgs[msgs.length - 1].text ===
+                '대화를 통해 배틀장소와 시간을 정해주세요.'
+            ) {
+              console.log('subscribe in', 'setMoredone = true');
               setMoredone(true);
             }
             setMessages(
@@ -91,7 +107,13 @@ export default function BattleView(props) {
           (e) => {
             const msgs = JSON.parse(e.body);
             console.log('subscribe msgmore', msgs);
-            if (msgs.length < 40) {
+            if (
+              msgs.length <= 40 &&
+              msgs[msgs.length - 1].userPk === 0 &&
+              msgs[msgs.length - 1].text ===
+                '대화를 통해 배틀장소와 시간을 정해주세요.'
+            ) {
+              console.log('subscribe msgmore', 'setMoredone = true');
               setMoredone(true);
             }
             const temp = msgs.map((f) => ({
@@ -100,7 +122,7 @@ export default function BattleView(props) {
               index: JSON.stringify(f.msgPk),
             }));
             setPage(page + 1);
-            setMessages((old) => [...old, ...temp]);
+            setMessages((old) => [...old, ...temp]); //index가 작은수록 최신 메시지
           },
         );
         stompClient.current.subscribe(
@@ -111,15 +133,36 @@ export default function BattleView(props) {
           },
         );
         stompClient.current.send(`/in/${props.route.params.baPk}`, {});
+        stompClient.current.send(
+          `/battle/${props.route.params.baPk}`,
+          {},
+          JSON.stringify({}),
+        );
+      },
+      function (message) {
+        // check message for disconnect
+        console.log('disconnect socket:::::::');
+        stompClient.current.disconnect();
+        setTimeout(socketConn, 3000);
       },
       // (fail) => {
       //   alert(fail);
       // },
     );
+  };
+
+  React.useEffect(() => {
+    get();
+    coinCheck();
+    socketConn();
+    console.log('인덱스 값 ::: ' + index);
     return () => {
+      AsyncStorage.setItem('baPk', '0');
+      console.log('delete baPk');
       stompClient.current && stompClient.current.disconnect();
     };
   }, []);
+
   const get = () => {
     Axios.get(`getBattle/${props.route.params.baPk}`)
       .then((res) => {

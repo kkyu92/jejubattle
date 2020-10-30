@@ -121,7 +121,10 @@ export default function Travel(props) {
           borderRadius={10}
           uri={item.faImgUrl}
           onPress={() =>
-            props.navigation.navigate('TravelView', {faPk: item.faPk})
+            props.navigation.navigate('TravelView', {
+              faPk: item.faPk,
+              advert: true,
+            })
           }
           resizeMode={'cover'}
         />

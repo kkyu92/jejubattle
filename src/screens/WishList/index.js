@@ -111,7 +111,12 @@ export default function WishList(props) {
         rightComponent={
           <HView>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('FullMap', {aroundme: true})}
+              onPress={() =>
+                props.navigation.navigate('FullMap', {
+                  wishList: true,
+                  // wishList 장소의 좌표값들 필요함
+                })
+              }
               style={{paddingHorizontal: 20, paddingVertical: 5}}>
               <Icons
                 name={'icon-map-24'}

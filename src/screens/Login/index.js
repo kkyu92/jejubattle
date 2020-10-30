@@ -10,8 +10,11 @@ import {
   Modal,
   Checkbox,
 } from '../../react-native-nuno-ui';
-import {View, Alert, Platform} from 'react-native';
+import {View, Alert, Platform, Linking, StyleSheet} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+// import {listenToKeyboardEvents} from 'react-native-keyboard-aware-scroll-view';
+// import {ScrollView} from 'react-native';
+
 import {custom} from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {screenWidth} from '../../styles';
@@ -27,11 +30,16 @@ import {
   GraphRequest,
   GraphRequestManager,
 } from 'react-native-fbsdk';
+import {
+  appleAuth,
+  AppleButton,
+} from '@invertase/react-native-apple-authentication';
 import Init from '../../commons/Init';
 import Icons from '../../commons/Icons';
 
 export default function Login(props) {
   const context = React.useContext(AppContext);
+  const [granted, setGranted] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -44,17 +52,132 @@ export default function Login(props) {
     global.hidePermissionAlert,
   );
 
+  let user = null;
+  const [credentialStateForUser, updateCredentialStateForUser] = React.useState(
+    -1,
+  );
+  async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {
+    if (user === null) {
+      updateCredentialStateForUser('N/A');
+    } else {
+      const credentialState = await appleAuth.getCredentialStateForUser(user);
+      if (credentialState === appleAuth.State.AUTHORIZED) {
+        updateCredentialStateForUser('AUTHORIZED');
+      } else {
+        updateCredentialStateForUser(credentialState);
+      }
+    }
+  }
+  async function onAppleButtonPress(updateCredentialStateForUser) {
+    console.warn('Beginning Apple Authentication');
+    // start a login request
+    try {
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      });
+      console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+      Alert.alert(
+        'get apple info\n아직 미구현\n\n',
+        JSON.stringify(appleAuthRequestResponse),
+      );
+      const {
+        user: newUser,
+        email,
+        nonce,
+        identityToken,
+        realUserStatus /* etc */,
+      } = appleAuthRequestResponse;
+      user = newUser;
+      fetchAndUpdateCredentialState(
+        updateCredentialStateForUser,
+      ).catch((error) => updateCredentialStateForUser(`Error: ${error.code}`));
+      if (identityToken) {
+        // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
+        console.log(nonce, identityToken);
+      } else {
+        // no token - failed sign-in?
+      }
+      // if (realUserStatus === AppleAuthRealUserStatus.LIKELY_REAL) {
+      //   console.log("I'm a real person!");
+      // }
+      console.warn(`Apple Authentication Completed, ${user}, ${email}`);
+    } catch (error) {
+      if (error.code === appleAuth.Error.CANCELED) {
+        console.warn('User canceled Apple Sign in.');
+      } else {
+        console.error(error);
+      }
+    }
+  }
+  // const onAppleButtonPress = async () => {
+  //   // performs login request
+  //   const appleAuthRequestResponse = await appleAuth.performRequest({
+  //     requestedOperation: appleAuth.Operation.LOGIN,
+  //     requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+  //   });
+
+  //   // get current authentication state for user
+  //   const credentialState = await appleAuth.getCredentialStateForUser(
+  //     appleAuthRequestResponse.user,
+  //     appleAuthRequestResponse.email,
+  //     appleAuthRequestResponse.fullName,
+  //     appleAuthRequestResponse.identityToken,
+  //   );
+  //   Alert.alert(
+  //     appleAuthRequestResponse.user +
+  //       '\n' +
+  //       appleAuthRequestResponse.email +
+  //       '\n' +
+  //       appleAuthRequestResponse.fullName +
+  //       '\n' +
+  //       appleAuthRequestResponse.identityToken,
+  //   );
+  //   console.log('credentialState::: ' + JSON.stringify(credentialState));
+  //   // use credentialState response to ensure the user is authenticated
+  //   if (credentialState === appleAuth.State.AUTHORIZED) {
+  //     console.log('user is authenticated');
+  //   }
+  // };
+
   React.useEffect(() => {
     if (!hidePermissionAlert) {
       setPermissionVisible(true);
     }
+    if (!appleAuth.isSupported) return;
+
+    fetchAndUpdateCredentialState(updateCredentialStateForUser).catch((error) =>
+      updateCredentialStateForUser(`Error: ${error.code}`),
+    );
   }, []);
+
+  React.useEffect(() => {
+    if (!appleAuth.isSupported) return;
+
+    return appleAuth.onCredentialRevoked(async () => {
+      console.warn('Credential Revoked');
+      fetchAndUpdateCredentialState(
+        updateCredentialStateForUser,
+      ).catch((error) => updateCredentialStateForUser(`Error: ${error.code}`));
+    });
+  }, []);
+
+  if (!appleAuth.isSupported) {
+    return (
+      <View style={[styles.container, styles.horizontal]}>
+        <Text>Apple Authentication is not supported on this device.</Text>
+      </View>
+    );
+  }
+
   const signin = () => {
     setLoading(true);
     Axios.post('signin', {
       userId: email,
       userPwd: password,
       userPushkey: global.fcmToken,
+      deviceOs: Platform.OS === 'android' ? 1 : 2,
+      deviceOsVer: Platform.Version,
     })
       .then(async (res) => {
         logApi('signin success', res.data);
@@ -66,7 +189,10 @@ export default function Login(props) {
       .catch((err) => {
         logApi('signin error', err?.response);
         setLoading(false);
-        Alert.alert('로그인', err.response?.data?.message);
+        console.log('e : ' + JSON.stringify(err));
+        if (err.code !== 1) {
+          Alert.alert('로그인', err.response?.data?.message);
+        }
       });
   };
   const startWithSNS = (userId, userEmail, userCode) => {
@@ -75,6 +201,8 @@ export default function Login(props) {
       userId: userId,
       userCode: userCode,
       userPushkey: global.fcmToken,
+      deviceOs: Platform.OS === 'android' ? 1 : 2,
+      deviceOsVer: Platform.Version,
     })
       .then(async (res) => {
         logApi('snsSignin', res.data);
@@ -194,6 +322,7 @@ export default function Login(props) {
         new GraphRequestManager().addRequest(infoRequest).start();
       });
   };
+
   return (
     <Container
       backgroundImage={require('../../../assets/img/bg/img-background-login.png')}>
@@ -338,6 +467,37 @@ export default function Login(props) {
                 resizeMode={'contain'}
               />
             </TouchableOpacity>
+            {/* <TouchableOpacity
+              onPress={() => onAppleButtonPress()}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: '#000000',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                local
+                uri={require('../../../assets/img/icon-facebook.png')}
+                width={23}
+                height={23}
+                resizeMode={'contain'}
+              />
+            </TouchableOpacity> */}
+            <AppleButton
+              buttonStyle={AppleButton.Style.BLACK}
+              buttonType={AppleButton.Type.CONTINUE}
+              style={{
+                width: 60,
+                height: 60,
+                // borderRadius: 30,
+                //   backgroundColor: '#000000',
+                //   alignItems: 'center',
+                //   justifyContent: 'center',
+              }}
+              onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
+            />
           </HView>
           <Seperator height={50} />
           <Button
@@ -461,3 +621,27 @@ export default function Login(props) {
     </Container>
   );
 }
+const styles = StyleSheet.create({
+  appleButton: {
+    width: 200,
+    height: 60,
+    margin: 10,
+  },
+  header: {
+    margin: 10,
+    marginTop: 30,
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'pink',
+  },
+  horizontal: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+});

@@ -9,13 +9,14 @@ import {
   Checkbox,
   Button,
   Modal,
+  Nuno,
 } from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, getCurrentLocation} from '../../react-native-nuno-ui/funcs';
 import {useIsFocused} from '@react-navigation/native';
 import {AppContext} from '../../context';
 
@@ -27,21 +28,43 @@ export default function FacilityList(props) {
   const [filter1, setFilter1] = React.useState(0);
   const [filter2, setFilter2] = React.useState(0);
   const [keyword, setKeyword] = React.useState('');
+  const [coords, setCoords] = React.useState({});
   const [list, setList] = React.useState([]);
   const isFocused = useIsFocused();
   const scrollViewRef = React.useRef();
 
   React.useEffect(() => {
+    async function getLoc() {
+      const loc = await getCurrentLocation(Nuno.config.lang);
+      console.log('loc : ' + JSON.stringify(loc));
+      setCoords(loc.coords);
+    }
+    getLoc();
+  }, []);
+  React.useEffect(() => {
     isFocused && getList();
   }, [activeTab, isFocused]);
   const getList = () => {
-    Axios.post(props.route.params.endpoint, {
-      code: activeTab,
-      clCode: filter2,
-      orderType: filter1,
-      keyword: keyword,
-    })
+    Axios.post(
+      props.route.params.endpoint,
+      filter1 === 3
+        ? {
+            code: activeTab,
+            clCode: filter2,
+            orderType: filter1,
+            keyword: keyword,
+            lat: coords.latitude,
+            lon: coords.longitude,
+          }
+        : {
+            code: activeTab,
+            clCode: filter2,
+            orderType: filter1,
+            keyword: keyword,
+          },
+    )
       .then((res) => {
+        console.log(JSON.stringify(res.data));
         logApi(props.route.params.endpoint, res.data);
         setList(res.data.facility);
         setCategory(res.data.category);

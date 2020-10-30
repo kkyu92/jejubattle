@@ -16,22 +16,65 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth, screenHeight} from '../../styles';
+import Axios from 'axios';
+import {logApi} from '../../react-native-nuno-ui/funcs';
 
 export default function Archive(props) {
   const [modalVisible, setModalVisible] = React.useState(false);
-  const data = [
-    {id: '0'},
-    {id: '1'},
-    {id: '2'},
-    {id: '3'},
-    {id: '4'},
-    {id: '5'},
-    {id: '6'},
-    {id: 's'},
-  ];
-  const showDetail = () => {
+  const [archive, setArchive] = React.useState([]);
+  const [page, setPage] = React.useState(1);
+  const [moredone, setMoredone] = React.useState(false);
+  const [clickItem, setClickItem] = React.useState({});
+  const showDetail = (item) => {
+    setClickItem(item);
     setModalVisible(true);
   };
+  const getArchive = () => {
+    Axios.post('locker', {pageNum: 1})
+      .then((res) => {
+        logApi('getArchive', res.data);
+        res.data.length < 9 ? setMoredone(true) : setPage(page + 1);
+        setArchive(
+          res.data.map((f) => ({
+            ...f,
+            id: f.loPk,
+          })),
+        );
+      })
+      .catch((err) => {
+        if (err.response.status === 403) {
+          logApi('getArchive 403', err.response.data);
+        } else {
+          logApi('getArchive error', err.response);
+        }
+      });
+  };
+  const moreArchive = () => {
+    Axios.post('locker', {pageNum: page}).then((res) => {
+      logApi('moreArchive', res.data);
+      res.data.length < 9 ? setMoredone(true) : setPage(page + 1);
+      const temp = res.data.map((f) => ({
+        ...f,
+        id: f.loPk,
+      }));
+      setArchive((old) => [...old, ...temp]); //index가 작은수록 최신 메시지
+    });
+  };
+  const deleteArchive = (id) => {
+    Axios.delete('locker/' + id)
+      .then((res) => {
+        logApi('deleteArchive', 'deleteItem : ' + id);
+        getArchive();
+      })
+      .catch((err) => {
+        logApi('deleteArchive error', err.response);
+      });
+  };
+
+  React.useEffect(() => {
+    getArchive();
+  }, []);
+
   const renderItem = ({item, index}) => {
     return (
       <View
@@ -40,7 +83,7 @@ export default function Archive(props) {
           marginRight: index % 3 === 2 ? 20 : 10,
         }}>
         <TouchableOpacity
-          onPress={() => showDetail()}
+          onPress={() => showDetail(item)}
           style={{
             borderColor: 'lightgray',
             borderWidth: 1,
@@ -51,12 +94,20 @@ export default function Archive(props) {
           <Image
             height={Math.floor(((screenWidth - 140) / 3) * 0.9)}
             width={Math.floor((screenWidth - 140) / 3)}
-            uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-            onPress={() => showDetail()}
+            uri={item.loImgUrl}
             resizeMode={'cover'}
+            borderRadius={10}
           />
           <View style={{position: 'absolute', top: 5, right: 5}}>
-            <Button text={'D-2'} color={'#FE491B'} size={'small'} />
+            {item.loUsed === 'N' ? (
+              <Button
+                text={'D-' + item.dday}
+                color={item.dday <= 7 ? '#FE491B' : '#F4A100'}
+                size={'small'}
+              />
+            ) : (
+              <Button text={'사용완료'} color={'#CECCCD'} size={'small'} />
+            )}
           </View>
         </TouchableOpacity>
         <View
@@ -67,7 +118,7 @@ export default function Archive(props) {
             marginBottom: 20,
           }}>
           <Text
-            text={'STARBUCKS 카페아이스 아메리카노 TALL'}
+            text={item.loName}
             fontSize={13}
             fontWeight={'500'}
             color={'gray'}
@@ -84,7 +135,7 @@ export default function Archive(props) {
         <Text text={'미사용 상품'} fontSize={18} fontWeight={'bold'} />
       </View>
       <FlatList
-        data={data}
+        data={archive}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         numColumns={3}
@@ -95,6 +146,12 @@ export default function Archive(props) {
         //   setIsLast(false);
         //   setPullToRefresh(true);
         // }}
+        onEndReached={() => {
+          console.log('archive endReched!');
+          if (!moredone) {
+            moreArchive();
+          }
+        }}
       />
       <Modal
         isVisible={modalVisible}
@@ -106,56 +163,86 @@ export default function Archive(props) {
             maxHeight: screenHeight - 100,
           }}>
           <ScrollView style={{padding: 10}}>
-            <Image
-              height={230}
-              width={Math.floor(screenWidth - 110)}
-              borderRadius={8}
-              uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-              // onPress={() => null}
-              resizeMode={'cover'}
-            />
+            {clickItem.loUsed === 'N' ? (
+              <>
+                <Image
+                  height={230}
+                  width={Math.floor(screenWidth - 110)}
+                  borderRadius={8}
+                  uri={clickItem.loImgUrl}
+                  resizeMode={'cover'}
+                />
+                <View style={{padding: 10, alignItems: 'center'}}>
+                  <Button size={'medium'} text={'사용가능'} color={'#F4A100'} />
+                </View>
+              </>
+            ) : (
+              <>
+                <View
+                  height={230}
+                  width={Math.floor(screenWidth - 110)}
+                  borderRadius={8}
+                  backgroundColor={'#000000'}
+                  style={{
+                    opacity: 0.7,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Icons name={'check'} size={38} color={'white'} />
+                  <Text
+                    text={'사용완료'}
+                    color={'white'}
+                    fontWeight={'bold'}
+                    fontSize={18}
+                    style={{marginTop: 17}}
+                  />
+                </View>
+                <View style={{padding: 10, alignItems: 'center'}}>
+                  <Button
+                    size={'medium'}
+                    text={'사용완료'}
+                    fontSize={14}
+                    color={'#CECCCD'}
+                  />
+                </View>
+              </>
+            )}
 
             <View style={{padding: 10, alignItems: 'center'}}>
-              <Button size={'medium'} text={'사용완료'} color={'lightgray'} />
-            </View>
-            <View style={{padding: 10, alignItems: 'center'}}>
               <Text
-                text={'상품코드 : 1234567890'}
+                text={'상품코드 : ' + clickItem.loGoods}
                 fontWeight={'bold'}
                 fontSize={22}
               />
-              <Text
-                text={'[교환권] 스타벅스 카페아이스아메리카노 TALL'}
-                color={'dimgray'}
-                fontSize={18}
-              />
+              <Text text={clickItem.loName} color={'#4F4F4F'} fontSize={18} />
             </View>
             <View style={{paddingVertical: 30, alignItems: 'center'}}>
               <Text
-                text={'사용기한: 2020년 00월 00일 ~ 2020년 00년 00일'}
-                color={'gray'}
+                text={
+                  '사용기한: ' + clickItem.startDate + ' ~ ' + clickItem.endDate
+                }
+                color={'#4F4F4F'}
                 fontSize={15}
+                style={{opacity: 0.5}}
               />
             </View>
             <Seperator line />
             <View style={{paddingVertical: 30, alignItems: 'center'}}>
-              <Text
-                text={
-                  '상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다상품상세내용이들어갈자리입니다'
-                }
-                color={'dimgray'}
-                fontSize={16}
-              />
+              <Text text={clickItem.loText} color={'#4F4F4F'} fontSize={16} />
             </View>
           </ScrollView>
-          <View style={{padding: 10}}>
-            <Button
-              text={'삭제하기'}
-              onPress={() => null}
-              color={custom.themeColor}
-              stretch
-            />
-          </View>
+          {clickItem.loUsed === 'N' ? null : (
+            <View style={{padding: 10}}>
+              <Button
+                text={'삭제하기'}
+                onPress={() => {
+                  setModalVisible(false), deleteArchive(clickItem.id);
+                }}
+                color={custom.themeColor}
+                stretch
+              />
+            </View>
+          )}
         </View>
       </Modal>
     </Container>

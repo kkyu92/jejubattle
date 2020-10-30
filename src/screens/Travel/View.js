@@ -11,6 +11,7 @@ import {
   Checkbox,
   Modal,
   ImageCarousel,
+  Loader,
 } from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -24,23 +25,35 @@ import Axios from 'axios';
 import {logApi, share} from '../../react-native-nuno-ui/funcs';
 import TabReview from '../../commons/TabReview';
 import {AppContext} from '../../context';
+import TabTourInfo from './TabTourInfo';
 
 const initialLayout = {width: screenWidth};
 
 export default function TravelView(props) {
   const context = React.useContext(AppContext);
+  const [loading, setLoading] = React.useState(true);
   const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {key: '1', title: '소개'},
-    {key: '2', title: '리뷰'},
-  ]);
+  const [routes] = React.useState(
+    props.route.params.showScrap === false
+      ? [
+          {key: '1', title: '소개'},
+          {key: '2', title: '리뷰'},
+        ]
+      : [
+          {key: '1', title: '소개'},
+          {key: '2', title: '정보'},
+          {key: '3', title: '리뷰'},
+        ],
+  );
   const [facility, setFacility] = React.useState({});
+  const [courseList, setCourseList] = React.useState([]);
   const [reply, setReply] = React.useState([]);
 
   React.useEffect(() => {
-    get();
+    props.route.params.advert === true ? advert() : travel();
+    setLoading(false);
   }, []);
-  const get = () => {
+  const advert = () => {
     Axios.get(`advertInfo/${props.route.params.faPk}`)
       .then((res) => {
         logApi('advertInfo', res.data);
@@ -49,6 +62,18 @@ export default function TravelView(props) {
       })
       .catch((err) => {
         logApi('advertInfo error', err.response);
+      });
+  };
+  const travel = () => {
+    Axios.get(`travelInfo/${props.route.params.faPk}`)
+      .then((res) => {
+        logApi('travelInfo', res.data);
+        setCourseList(res.data.courseList);
+        setFacility(res.data.facility);
+        setReply(res.data.replyList);
+      })
+      .catch((err) => {
+        logApi('travelInfo error', err.response);
       });
   };
   const renderTabBar = (tabprops) => {
@@ -82,11 +107,15 @@ export default function TravelView(props) {
       </HView>
     );
   };
-  const renderScene = ({route}) => {
+  const renderSceneReco = ({route}) => {
     switch (route.key) {
       case '1':
         return (
-          <TabTourIntroduction navigation={props.navigation} data={facility} />
+          <TabTourIntroduction
+            navigation={props.navigation}
+            data={facility}
+            courseList={courseList}
+          />
         );
       case '2':
         return (
@@ -96,7 +125,28 @@ export default function TravelView(props) {
             replyCnt={facility.faReplyCnt}
             scopeCnt={facility.faScopeCnt}
             faPk={facility.faPk}
-            refresh={get}
+            refresh={advert}
+          />
+        );
+    }
+  };
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case '1':
+        return (
+          <TabTourIntroduction navigation={props.navigation} data={facility} />
+        );
+      case '2':
+        return <TabTourInfo navigation={props.navigation} data={facility} />;
+      case '3':
+        return (
+          <TabReview
+            navigation={props.navigation}
+            data={reply}
+            replyCnt={facility.faReplyCnt}
+            scopeCnt={facility.faScopeCnt}
+            faPk={facility.faPk}
+            refresh={advert}
           />
         );
     }
@@ -155,7 +205,9 @@ export default function TravelView(props) {
         logApi('likeOff error', err.response);
       });
   };
-  return (
+  return loading === true ? (
+    <Loader />
+  ) : (
     <Container>
       <Header
         left={'close'}
@@ -208,7 +260,8 @@ export default function TravelView(props) {
         <View>
           <ImageCarousel
             data={[facility.faImgUrl]}
-            height={Math.floor(screenWidth * 0.6)}
+            // height={300}
+            height={Math.floor(screenWidth * 0.7)}
             width={screenWidth}
           />
           <Seperator height={20} />
@@ -249,7 +302,11 @@ export default function TravelView(props) {
           lazy
           renderTabBar={renderTabBar}
           navigationState={{index, routes}}
-          renderScene={renderScene}
+          renderScene={
+            props.route.params.showScrap === false
+              ? renderSceneReco
+              : renderScene
+          }
           onIndexChange={setIndex}
           initialLayout={initialLayout}
         />

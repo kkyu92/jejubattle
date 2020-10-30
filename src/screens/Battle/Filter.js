@@ -19,13 +19,13 @@ import {screenWidth} from '../../styles';
 
 export default function BattleFilter(props) {
   const context = React.useContext(AppContext);
-  const [filter1, setFilter1] = React.useState(1);
-  const [filter2, setFilter2] = React.useState(1);
-  const [filter3, setFilter3] = React.useState(1);
-  const [filter4, setFilter4] = React.useState(1);
-  const [filter5, setFilter5] = React.useState(1);
+  const [boCode, setBoCode] = React.useState(props.route.params.boCode);
+  const [baCode, setBaCode] = React.useState(props.route.params.baCode);
+  const [bmCode, setBmCode] = React.useState(props.route.params.bmCode);
+  const [blCode, setBlCode] = React.useState(props.route.params.blCode);
+  const [bpCode, setBpCode] = React.useState(props.route.params.bpCode);
   const [sports, setSports] = React.useState([]);
-  const [selectedSports, setSelectedSports] = React.useState([]);
+  const [caCode, setCaCode] = React.useState(props.route.params.caCode);
 
   React.useEffect(() => {
     Axios.post('sportsList', {})
@@ -42,25 +42,40 @@ export default function BattleFilter(props) {
       });
   }, []);
   const handleSports = (e) => {
-    const temp = [...selectedSports];
+    const temp = [...caCode];
     const found = temp.map((t) => t.code).indexOf(e.code);
     if (found === -1) {
       temp.push(e);
     } else {
       temp.splice(found, 1);
     }
-    setSelectedSports(temp);
+    setCaCode(temp);
   };
   const apply = () => {
-    props.navigation.goBack();
+    let code = [];
+    caCode.map((e) => {
+      code.push({
+        code: e.code,
+      });
+    });
+    console.log(JSON.stringify(code));
+    props.navigation.navigate('Battle', {
+      boCode,
+      baCode,
+      bmCode,
+      blCode,
+      bpCode,
+      // caCode,
+      caCode: code,
+    });
   };
   const reset = () => {
-    setFilter1(1);
-    setFilter2(1);
-    setFilter3(1);
-    setFilter4(1);
-    setFilter5(1);
-    setSelectedSports([]);
+    setBoCode(1);
+    setBaCode(0);
+    setBmCode(0);
+    setBlCode(0);
+    setBpCode(0);
+    setCaCode([]);
   };
   return (
     <Container>
@@ -90,22 +105,22 @@ export default function BattleFilter(props) {
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'등록순'}
-                checked={filter1 === 1}
-                onPress={() => setFilter1(1)}
+                checked={boCode === 1}
+                onPress={() => setBoCode(1)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'날짜순'}
-                checked={filter1 === 2}
-                onPress={() => setFilter1(2)}
+                checked={boCode === 2}
+                onPress={() => setBoCode(2)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'내 위치순'}
-                checked={filter1 === 3}
-                onPress={() => setFilter1(3)}
+                checked={boCode === 3}
+                onPress={() => setBoCode(3)}
               />
             </View>
           </HView>
@@ -117,29 +132,29 @@ export default function BattleFilter(props) {
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'전체'}
-                checked={filter2 === 1}
-                onPress={() => setFilter2(1)}
+                checked={baCode === 0}
+                onPress={() => setBaCode(0)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'대기중'}
-                checked={filter2 === 2}
-                onPress={() => setFilter2(2)}
+                checked={baCode === 1}
+                onPress={() => setBaCode(1)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'배틀준비'}
-                checked={filter2 === 3}
-                onPress={() => setFilter2(3)}
+                checked={baCode === 2}
+                onPress={() => setBaCode(2)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'배틀중'}
-                checked={filter2 === 4}
-                onPress={() => setFilter2(4)}
+                checked={baCode === 3}
+                onPress={() => setBaCode(3)}
               />
             </View>
           </HView>
@@ -151,22 +166,22 @@ export default function BattleFilter(props) {
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'전체'}
-                checked={filter3 === 1}
-                onPress={() => setFilter3(1)}
+                checked={bmCode === 0}
+                onPress={() => setBmCode(0)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'개인전'}
-                checked={filter3 === 2}
-                onPress={() => setFilter3(2)}
+                checked={bmCode === 1}
+                onPress={() => setBmCode(1)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'팀전'}
-                checked={filter3 === 3}
-                onPress={() => setFilter3(3)}
+                checked={bmCode === 2}
+                onPress={() => setBmCode(2)}
               />
             </View>
           </HView>
@@ -178,36 +193,36 @@ export default function BattleFilter(props) {
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'전체'}
-                checked={filter4 === 1}
-                onPress={() => setFilter4(1)}
+                checked={blCode === 0}
+                onPress={() => setBlCode(0)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'초보'}
-                checked={filter4 === 2}
-                onPress={() => setFilter4(2)}
+                checked={blCode === 1}
+                onPress={() => setBlCode(1)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'중수'}
-                checked={filter4 === 3}
-                onPress={() => setFilter4(3)}
+                checked={blCode === 2}
+                onPress={() => setBlCode(2)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'고수'}
-                checked={filter4 === 4}
-                onPress={() => setFilter4(4)}
+                checked={blCode === 3}
+                onPress={() => setBlCode(3)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'프로'}
-                checked={filter4 === 5}
-                onPress={() => setFilter4(5)}
+                checked={blCode === 4}
+                onPress={() => setBlCode(4)}
               />
             </View>
           </HView>
@@ -219,22 +234,22 @@ export default function BattleFilter(props) {
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'전체'}
-                checked={filter5 === 1}
-                onPress={() => setFilter5(1)}
+                checked={bpCode === 0}
+                onPress={() => setBpCode(0)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'공개'}
-                checked={filter5 === 2}
-                onPress={() => setFilter5(2)}
+                checked={bpCode === 1}
+                onPress={() => setBpCode(1)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
                 label={'비공개'}
-                checked={filter5 === 3}
-                onPress={() => setFilter5(3)}
+                checked={bpCode === 2}
+                onPress={() => setBpCode(2)}
               />
             </View>
           </HView>
@@ -250,7 +265,7 @@ export default function BattleFilter(props) {
                       padding: 10,
                       alignItems: 'center',
                       opacity:
-                        selectedSports.map((s) => s.code).indexOf(e.code) === -1
+                        caCode.map((s) => s.code).indexOf(e.code) === -1
                           ? 0.3
                           : 1,
                     }}>
