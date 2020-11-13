@@ -26,16 +26,37 @@ export default function MyBattle(props) {
   const [pullToRefresh, setPullToRefresh] = React.useState(true);
   const [edit, setEdit] = React.useState(false);
   const [page, setPage] = React.useState(1);
+  const [moredone, setMoredone] = React.useState(false);
 
   React.useEffect(() => {
-    pullToRefresh && get();
+    pullToRefresh && get(1, true);
+    console.log('reFresh');
+    setMoredone(false);
+    setPage(1);
   }, [pullToRefresh]);
 
-  const get = () => {
+  const get = (page, refresh) => {
     Axios.post('myBattle', {pageNum: page})
       .then((res) => {
+        let myList = res.data;
+        const list = myList.map((item) => ({
+          ...item,
+        }));
         logApi('myBattle', res.data);
-        setMybattle(res.data);
+        if (refresh) {
+          setMybattle(res.data);
+        } else {
+          setMybattle((old) => [...old, ...list]);
+        }
+        if (res.data.length === 10) {
+          Axios.post('myBattle', {pageNum: page + 1}).then(async (res) => {
+            if (res.data.length === 0) {
+              setMoredone(true);
+            }
+          });
+        } else {
+          setMoredone(true);
+        }
         setPullToRefresh(false);
       })
       .catch((err) => {
@@ -50,7 +71,7 @@ export default function MyBattle(props) {
     Axios.post('myBattleDelete', data)
       .then((res) => {
         logApi('myBattleDelete', res.data);
-        get();
+        get(1, true);
       })
       .catch((err) => {
         logApi('myBattleDelete error', err.response);
@@ -69,7 +90,7 @@ export default function MyBattle(props) {
         index={index}
         handleCheck={handleCheck}
         navigation={props.navigation}
-        refresh={() => get()}
+        refresh={() => get(1, true)}
         deleteMyBattle={deleteMyBattle}
       />
     );
@@ -108,6 +129,15 @@ export default function MyBattle(props) {
         onRefresh={() => {
           // setIsLast(false);
           setPullToRefresh(true);
+        }}
+        onEndReached={() => {
+          if (!moredone) {
+            console.log('more endReched!');
+            setPage(page + 1);
+            get(page + 1, false);
+          } else {
+            console.log('finish endReched!');
+          }
         }}
       />
       {edit && (

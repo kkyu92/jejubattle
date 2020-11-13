@@ -12,7 +12,14 @@ import {
   Modal,
   Switch,
 } from '../../react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  Linking,
+  Platform,
+} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, API_URL} from '../../config';
 import DeviceInfo from 'react-native-device-info';
@@ -21,10 +28,15 @@ import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';
 import Axios from 'axios';
-import { logApi } from '../../react-native-nuno-ui/funcs';
+import {logApi} from '../../react-native-nuno-ui/funcs';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {fcmService} from '../../../src/fcm/FCMService';
+import PushNotification from 'react-native-push-notification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 export default function Setting(props) {
   const context = React.useContext(AppContext);
+  const [loading, setLoading] = React.useState(false);
   const [userTermsEvent, setUserTermsEvent] = React.useState(
     context.me.userTermsEvent,
   );
@@ -34,10 +46,24 @@ export default function Setting(props) {
   const [showLogoutDone, setShowLogoutDone] = React.useState(false);
   const [modalLogout, setModalLogout] = React.useState(false);
 
+  const signoutNo = async () => {
+    setModalLogout(false);
+  };
+
   const signout = async () => {
+    setModalLogout(false);
+    setTimeout(() => {
+      setLoading(true);
+    }, 500);
+    Axios.get('signout')
+      .then(logApi('signout'))
+      .catch((e) => {
+        logApi('signout error : ' + e);
+      });
     await AsyncStorage.removeItem('token');
     await Init();
     context.dispatch({type: 'UNAUTHORIZED'});
+    setLoading(false);
   };
   const firstUpdate = React.useRef(true);
   React.useLayoutEffect(() => {
@@ -47,6 +73,31 @@ export default function Setting(props) {
     }
     updateUser();
   }, [userTermsEvent, userTermsPush]);
+  // React.useEffect(() => {
+  //   if (Platform.OS === 'ios') {
+  //     PushNotificationIOS.checkPermissions((permission) => {
+  //       console.log('IOS : ' + JSON.stringify(permission));
+  //     });
+  //     if (userTermsPush === 'Y') {
+  //       PushNotificationIOS.requestPermissions();
+  //       console.log('PushNotification ON');
+  //     } else {
+  //       PushNotificationIOS.abandonPermissions();
+  //       console.log('PushNotification OFF');
+  //     }
+  //   } else {
+  //     PushNotification.checkPermissions((permission) => {
+  //       console.log('ANDROID : ' + JSON.stringify(permission));
+  //     });
+  //     if (userTermsPush === 'Y') {
+  //       PushNotification.requestPermissions();
+  //       console.log('PushNotification ON');
+  //     } else {
+  //       PushNotification.abandonPermissions();
+  //       console.log('PushNotification OFF');
+  //     }
+  //   }
+  // }, [userTermsPush]);
   const updateUser = async () => {
     const formData = new FormData();
     formData.append('userTermsEvent', userTermsEvent);
@@ -73,6 +124,7 @@ export default function Setting(props) {
     <Container>
       <Header left={'close'} title={'설정'} navigation={props.navigation} />
       <ScrollView>
+        <Spinner visible={loading} textContent={''} color={'#F4A100'} />
         <Seperator height={20} />
         <HView
           style={{
@@ -88,7 +140,9 @@ export default function Setting(props) {
           />
           <Switch
             checked={userTermsEvent === 'Y'}
-            onPress={() => setUserTermsEvent(userTermsEvent === 'Y' ? 'N' : 'Y')}
+            onPress={() =>
+              setUserTermsEvent(userTermsEvent === 'Y' ? 'N' : 'Y')
+            }
           />
         </HView>
         <HView
@@ -111,7 +165,7 @@ export default function Setting(props) {
         <Seperator height={20} />
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
-          onPress={() => null}>
+          onPress={() => Linking.openURL('https://kangmin.shop/privacy')}>
           <Text
             text={'개인정보 처리 방침'}
             fontSize={18}
@@ -121,7 +175,7 @@ export default function Setting(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
-          onPress={() => null}>
+          onPress={() => Linking.openURL('https://kangmin.shop/service')}>
           <Text
             text={'서비스 이용 약관'}
             fontSize={18}
@@ -129,7 +183,7 @@ export default function Setting(props) {
             color={'dimgray'}
           />
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
           onPress={() => null}>
           <Text
@@ -138,7 +192,7 @@ export default function Setting(props) {
             fontWeight={'500'}
             color={'dimgray'}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
           onPress={() => null}>
@@ -214,9 +268,7 @@ export default function Setting(props) {
               <Button
                 text={'아니오'}
                 color={'gray'}
-                onPress={() => {
-                  setModalLogout(false);
-                }}
+                onPress={() => signoutNo()}
                 size={'large'}
                 stretch
               />

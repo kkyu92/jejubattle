@@ -266,7 +266,7 @@ export default function Evaluation(props) {
             borderRadius: 10,
             alignItems: 'center',
           }}>
-          <Loader />
+          {/* <Loader /> */}
           <Seperator height={20} />
           <Text
             fontSize={18}
@@ -274,6 +274,14 @@ export default function Evaluation(props) {
             color={'black'}
             style={{textAlign: 'center'}}
             text={modalMsg}
+          />
+          <Seperator height={40} />
+          <Button
+            text={'닫기'}
+            size={'large'}
+            onPress={() => setModalWaiting(false)}
+            stretch
+            color={custom.themeColor}
           />
         </View>
       </Modal>

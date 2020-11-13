@@ -27,6 +27,10 @@ export const useAppReducer = () => {
             ...prevState,
             noti: action.data,
           };
+        case 'CLEARNOTI':
+          return {
+            noti: action.data,
+          };
       }
     },
     {

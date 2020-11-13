@@ -20,7 +20,7 @@ import {
 export default function ListItemBattle({
   item,
   navigation,
-  // refresh,
+  refresh,
   editMode,
   handleCheck,
   index,
@@ -29,6 +29,7 @@ export default function ListItemBattle({
   const context = React.useContext(AppContext);
   const [enteranceAlert, setEnteranceAlert] = React.useState(false);
   const [passwordModal, setPasswordModal] = React.useState(false);
+  const [battleIngdModal, setBattleIngModal] = React.useState(false);
   const [password, setPassword] = React.useState('');
 
   const updateBattle = async (data) => {
@@ -57,19 +58,26 @@ export default function ListItemBattle({
         setEnteranceAlert(true);
       } else {
         // 만원이 아니면
-        // 1. 비밀번호가 설정이 되어 있다면 비밀번호 입력창 띄움
-        if (item.baPrivate === 'Y') {
-          setPasswordModal(true);
+        // 배틀중인 경우 입장 불가
+        if (item.baState === '배틀 중') {
+          setBattleIngModal(true);
           return;
+        } else {
+          // 1. 비밀번호가 설정이 되어 있다면 비밀번호 입력창 띄움
+          if (item.baPrivate === 'Y') {
+            setPasswordModal(true);
+            return;
+          }
+          // 2. 비밀번호가 설정이 되어 있지않다면 방에 몇명이 찼는지 확인하고 적절한 방으로 들어감
+          battleJoin();
         }
-        // 2. 비밀번호가 설정이 되어 있지않다면 방에 몇명이 찼는지 확인하고 적절한 방으로 들어감
-        battleJoin();
       }
     } else {
       // 이미 배틀방에 참여하고 있다면
       navigation.navigate('BattleView', {
         baPk: item.baPk,
-        // refresh: refresh,
+        gameResult: item.gameResult,
+        refresh: refresh,
       });
     }
   };
@@ -95,22 +103,53 @@ export default function ListItemBattle({
     }
     navigation.navigate('BattleView', {
       baPk: item.baPk,
-      // refresh: refresh,
+      refresh: refresh,
     });
   };
   return (
     <View keyboardShouldPersistTaps={'handled'}>
       <View style={{padding: 20}}>
         <TouchableOpacity
-          onPress={onPress}
-          style={{
-            padding: 20,
-            borderRadius: 10,
-            backgroundColor: 'white',
-            ...ShadowStyle,
-          }}>
+          onPress={() => (editMode ? handleCheck(index) : onPress())}
+          style={
+            item.baState === '배틀완료'
+              ? item.gameResult === '1'
+                ? {
+                    padding: 20,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: '#FE8A3D',
+                    backgroundColor: '#FFFBF8',
+                    ...ShadowStyle,
+                  }
+                : {
+                    padding: 20,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: '#AEAEB0',
+                    backgroundColor: '#F2F3F6',
+                    ...ShadowStyle,
+                  }
+              : {
+                  padding: 20,
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                  ...ShadowStyle,
+                }
+          }>
           <HView style={{justifyContent: 'space-between'}}>
-            <HView>
+            <HView style={({justifyContent: 'center'}, {alignItems: 'center'})}>
+              {item.baState === '배틀완료' && deleteMyBattle && editMode && (
+                <>
+                  <Checkbox
+                    multiple
+                    checked={item.checked}
+                    onPress={() => handleCheck(index)}
+                    size={'medium'}
+                  />
+                  <Seperator width={5} />
+                </>
+              )}
               <Text text={item.baSubject} fontSize={16} fontWeight={'bold'} />
               <Seperator width={9} />
               <Button
@@ -168,28 +207,57 @@ export default function ListItemBattle({
                   <Text text={'소개'} fontSize={14} color={'gray'} />
                 </View>
                 <View style={{flex: 0.8}}>
-                  <Text text={item.baContent} fontSize={14} color={'gray'} />
+                  <Text
+                    text={item.baContent}
+                    fontSize={14}
+                    color={'gray'}
+                    numberOfLines={3}
+                    ellipsizeMode={'tail'}
+                  />
                 </View>
               </HView>
             </View>
             <View>
-              <Button
-                text={item.baState}
-                size={'medium'}
-                color={'#CECCCD'}
-                borderRadius={20}
-              />
-              {/* {item.baState === 'playing' && (
+              {item.baState === '대기중' && (
+                <Button
+                  text={item.baState}
+                  size={'medium'}
+                  color={'#CECCCD'}
+                  borderRadius={20}
+                />
+              )}
+              {item.baState === '준비완료' && (
+                <Button
+                  text={item.baState}
+                  textColor={'gray'}
+                  size={'medium'}
+                  color={'white'}
+                  borderColor={'gray'}
+                  borderRadius={20}
+                />
+              )}
+              {item.baState === '배틀 중' && (
                 <Button
                   text={'배틀중'}
+                  textColor={'white'}
                   size={'medium'}
                   color={custom.themeColor}
                   borderRadius={20}
                 />
-              )} */}
-              {item.baState === 'done' && (
+              )}
+              {item.baState === '보상받기' && (
+                <Button
+                  text={item.baState}
+                  textColor={custom.themeColor}
+                  size={'medium'}
+                  color={'white'}
+                  borderRadius={20}
+                  borderColor={custom.themeColor}
+                />
+              )}
+              {item.baState === '배틀완료' && (
                 <>
-                  {item.win ? (
+                  {item.gameResult === '1' ? (
                     <Image
                       local
                       uri={require('../../../assets/img/icon-win.png')}
@@ -206,29 +274,23 @@ export default function ListItemBattle({
                       resizeMode={'cover'}
                     />
                   )}
+                  <Seperator height={5} />
                   <Button
-                    text={'배틀완료'}
+                    text={item.baState}
+                    textColor={'gray'}
                     size={'medium'}
                     color={'#EBEBEB'}
-                    textColor={'gray'}
+                    borderColor={'#AEAEB0'}
                     borderRadius={20}
                   />
                   <Seperator height={5} />
-                  {deleteMyBattle && editMode ? (
-                    <View style={{alignItems: 'center'}}>
-                      <Checkbox
-                        multiple
-                        checked={item.checked}
-                        onPress={() => handleCheck(index)}
-                        size={'large'}
-                      />
-                    </View>
-                  ) : (
+                  {deleteMyBattle && (
                     <Button
                       text={'삭제'}
                       size={'medium'}
                       color={'white'}
                       textColor={'gray'}
+                      borderColor={'#CECCCD'}
                       borderRadius={20}
                       onPress={() =>
                         deleteMyBattle
@@ -324,6 +386,29 @@ export default function ListItemBattle({
               />
             </View>
           </HView>
+        </View>
+      </Modal>
+      <Modal
+        isVisible={battleIngdModal}
+        onBackdropPress={() => setBattleIngModal(false)}>
+        <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
+          <View style={{padding: 20}}>
+            <View style={{alignItems: 'center'}}>
+              <Text
+                text={'배틀진행중 입장불가.'}
+                fontWeight={'bold'}
+                fontSize={18}
+              />
+            </View>
+          </View>
+          <Seperator height={40} />
+          <Button
+            text={'닫기'}
+            size={'large'}
+            onPress={() => setBattleIngModal(false)}
+            stretch
+            color={custom.themeColor}
+          />
         </View>
       </Modal>
     </View>

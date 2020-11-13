@@ -144,6 +144,7 @@ export default function Map({
         camera={camera}
         showsCompass={false}
         showsUserLocation
+        showsMyLocationButton={false}
         initialCamera={camera}
         onRegionChangeComplete={onRegionChangeComplete}>
         {markers &&
@@ -164,7 +165,7 @@ export default function Map({
             </Marker>
           ))}
       </MapView>
-      {mapReady === 'aroundme' || mapReady === 'facilitySearch' ? (
+      {/* {mapReady === 'aroundme' || mapReady === 'facilitySearch' ? (
         <View
           style={{
             position: 'absolute',
@@ -177,7 +178,7 @@ export default function Map({
             <MaterialIcons name={'location-on'} color={'red'} size={40} />
           )}
         </View>
-      ) : null}
+      ) : null} */}
       {/* zoom control */}
       <View style={{position: 'absolute', bottom: 20, right: 20}}>
         {showZoom && (

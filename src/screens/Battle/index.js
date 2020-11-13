@@ -180,7 +180,11 @@ export default function Battle(props) {
                 <Seperator width={10} />
                 <Image
                   local
-                  uri={require('../../../assets/img/icon-fold.png')}
+                  uri={
+                    showMyBattle
+                      ? require('../../../assets/img/icon-fold.png')
+                      : require('../../../assets/img/icon-fold-down.png')
+                  }
                   height={27}
                   width={27}
                   resizeMode={'cover'}

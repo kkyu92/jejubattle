@@ -103,7 +103,8 @@ export default ({
                   <TouchableOpacity
                     onPress={() => setShowPicker(!showPicker)}
                     style={{paddingHorizontal: 20, paddingVertical: 10}}>
-                    <AntDesign name={'down'} size={20} color={'gray'} />
+                    <Text text={'확인'} fontSize={16} color={'gray'} />
+                    {/* <AntDesign name={'down'} size={20} color={'gray'} /> */}
                   </TouchableOpacity>
                 </View>
               )}

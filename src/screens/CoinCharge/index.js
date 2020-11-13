@@ -16,12 +16,25 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {AppContext} from '../../context';
-import * as RNIap from 'react-native-iap';
+import RNIap, {
+  InAppPurchase,
+  SubscriptionPurchase,
+  ProductPurchase,
+  PurchaseError,
+  acknowledgePurchaseAndroid,
+  consumePurchaseAndroid,
+  finishTransaction,
+  finishTransactionIOS,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+  consumeAllItemsAndroid,
+} from 'react-native-iap';
 import Axios from 'axios';
 import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 
@@ -32,36 +45,124 @@ export default function CoinCharge(props) {
   const [modalContent, setModalContent] = React.useState();
   const [usePoint, setUsePoint] = React.useState();
   const [coinCount, setCoinCount] = React.useState();
-  const [product, setProduct] = React.useState();
+  const [product, setProduct] = React.useState([]);
+
+  let purchaseUpdateSubscription;
+  let purchaseErrorSubscription;
+  // var purchaseUpdateSubscription;
+  // var purchaseErrorSubscription;
+  // const loadIAPListeners = () => {
+  //   initConnection(); // important, or else it won't trigger before a random state change
+  //   purchaseUpdateSubscription = purchaseUpdatedListener(
+  //     async (
+  //       purchase: InAppPurchase | SubscriptionPurchase | ProductPurchase,
+  //     ) => {
+  //       console.log('purchaseUpdatedListener', purchase);
+  //       let receipt = purchase.transactionReceipt;
+  //       if (receipt) {
+  //         if (Platform.OS === 'ios') {
+  //           await RNIap.finishTransactionIOS(purchase.transactionId);
+  //         } else if (Platform.OS === 'android') {
+  //           await RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken);
+  //         }
+  //         await RNIap.finishTransaction(purchase, true);
+  //         await RNIap.finishTransaction(purchase, false);
+  //       } else {
+  //         // Retry / conclude the purchase is fraudulent, etc...
+  //       }
+  //     },
+  //   );
+  //   purchaseErrorSubscription = purchaseErrorListener(
+  //     (error: PurchaseError) => {
+  //       console.log('purchaseErrorListener', error);
+  //     },
+  //   );
+  // };
+
   React.useEffect(() => {
     fetchProducts();
+    // loadIAPListeners();
+    purchaseUpdateSubscription = purchaseUpdatedListener(
+      async (purchase: InAppPurchase | SubscriptionPurchase) => {
+        const receipt = purchase.transactionReceipt;
+        if (receipt) {
+          try {
+            if (Platform.OS === 'ios') {
+              // 4.1.0 이상부터 두 플랫폼 모두 동작 가능
+              await finishTransactionIOS(purchase.transactionId);
+            } else if (Platform.OS === 'android') {
+              // If consumable (can be purchased again)
+              await consumePurchaseAndroid(purchase.purchaseToken);
+              // If not consumable
+              // await acknowledgePurchaseAndroid(purchase.purchaseToken);
+            }
+            const ackResult = await finishTransaction(purchase);
+            console.log(ackResult);
+          } catch (ackErr) {
+            console.warn('ackErr', ackErr);
+          }
+          addCoin(false);
+          setShowPurchaseModal(false);
+          console.log('Receipt : ' + receipt);
+        }
+      },
+    );
+
+    purchaseErrorSubscription = purchaseErrorListener(
+      (error: PurchaseError) => {
+        console.log('purchaseErrorListener', error);
+        if (error.code !== 'E_USER_CANCELLED') {
+          Alert.alert('purchase error', JSON.stringify(error));
+        }
+      },
+    );
+
+    return () => {
+      // purchaseUpdateSubscription.remove();
+      // purchaseErrorSubscription.remove();
+      if (purchaseUpdateSubscription) {
+        purchaseUpdateSubscription.remove();
+        purchaseUpdateSubscription = null;
+      }
+      if (purchaseErrorSubscription) {
+        purchaseErrorSubscription.remove();
+        purchaseErrorSubscription = null;
+      }
+      RNIap.endConnection();
+    };
   }, []);
+
   const fetchProducts = async () => {
-    const itemSkus = Platform.select({
-      ios: [
-        'com.jejubattle.battlecoin1200',
-        'com.jejubattle.battlecoin6000',
-        'com.jejubattle.battlecoin11000',
-      ],
-      android: [
-        'com.jejubattle.battlecoin1200',
-        'com.jejubattle.battlecoin6000',
-        'com.jejubattle.battlecoin11000',
-      ],
-    });
+    console.log('fetch');
     try {
-      const prod = await RNIap.getProducts(itemSkus);
+      const result = await RNIap.initConnection();
+      await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+      console.log('result', result);
+
+      const itemSkus = Platform.select({
+        ios: ['1', '2', '3'],
+        android: ['battlecoin1200', 'battlecoin6000', 'battlecoin11000'],
+      });
+      let prod = [];
+      prod = await RNIap.getProducts(itemSkus);
       setProduct(prod);
+      Alert.alert('product', JSON.stringify(prod));
     } catch (err) {
-      console.log('purchase error', err);
+      console.log('product error', err);
     }
-    // Alert.alert('product', JSON.stringify(prod));
   };
   const purchase = async (sku) => {
     try {
-      await RNIap.requestPurchase(sku, false);
+      console.log('coin count : ' + coinCount + '\n' + sku.productId);
+      await RNIap.requestPurchase(sku.productId, false);
     } catch (err) {
-      console.log('purchase error', err);
+      setShowPurchaseModal(false);
+      console.log('purchase error', err.code);
+      if (err.code === 'E_USER_CANCELLED') {
+        showToast('구매를 취소했습니다.', 2000, 'center');
+      } else {
+        Alert.alert(err.code, err.message);
+      }
     }
   };
   const addCoin = (usePoint) => {
@@ -81,31 +182,19 @@ export default function CoinCharge(props) {
           });
           console.log('coin : ' + context.me.userCoin);
           console.log('point : ' + context.me.userPoint);
-          if (Platform.OS === 'android') {
-            Alert.alert('코인 ' + coinCount + '개를 충전했습니다.');
-          } else {
-            showToast(
-              '코인 ' + coinCount + '개를 충전했습니다.',
-              2000,
-              'center',
-            );
-          }
+          showToast('코인 ' + coinCount + '개를 충전했습니다.', 2000, 'center');
         })
         .catch((err) => {
           if (err.response.status === 403) {
             logApi('pointBuy 403', err.response.data);
-            if (Platform.OS === 'android') {
-              Alert.alert(err.response.data.message);
-            } else {
-              showToast(err.response.data.message, 2000, 'center');
-            }
+            showToast(err.response.data.message, 2000, 'center');
           } else {
             logApi('pointBuy error', err.response);
           }
         });
       setShowPurchaseModal(false);
     } else {
-      Axios.post('coinBuy', {pointType: coinCount})
+      Axios.post('coinBuy', {coin: coinCount})
         .then((res) => {
           logApi('coinBuy', res.data);
           context.dispatch({
@@ -114,24 +203,12 @@ export default function CoinCharge(props) {
               userCoin: context.me.userCoin + coinCount,
             },
           });
-          if (Platform.OS === 'android') {
-            Alert.alert('코인 ' + coinCount + '개를 충전했습니다.');
-          } else {
-            showToast(
-              '코인 ' + coinCount + '개를 충전했습니다.',
-              2000,
-              'center',
-            );
-          }
+          showToast('코인 ' + coinCount + '개를 충전했습니다.', 2000, 'center');
         })
         .catch((err) => {
           if (err.response.status === 403) {
             logApi('coinBuy 403', err.response.data);
-            if (Platform.OS === 'android') {
-              Alert.alert(err.response.data.message);
-            } else {
-              showToast(err.response.data.message, 2000, 'center');
-            }
+            showToast(err.response.data.message, 2000, 'center');
           } else {
             logApi('coinBuy error', err.response);
           }
@@ -144,7 +221,14 @@ export default function CoinCharge(props) {
         left={'close'}
         rightComponent={
           <TouchableOpacity
-            onPress={() => props.navigation.navigate('PurchaseHistory')}
+            // onPress={() => props.navigation.navigate('PurchaseHistory')}
+            onPress={() =>
+              Platform.OS === 'android'
+                ? Linking.openURL(
+                    'https://play.google.com/store/account/orderhistory?hl=ko&gl=US',
+                  )
+                : Linking.openURL('itms-apps://apps.apple.com/today')
+            }
             style={{paddingHorizontal: 20, paddingVertical: 5}}>
             <Text
               text={'구매내역'}
@@ -519,7 +603,13 @@ export default function CoinCharge(props) {
                   usePoint === true
                     ? addCoin(true)
                     : purchase(
-                        product[coinCount === 1 ? 0 : coinCount === 5 ? 1 : 2],
+                        Platform.OS === 'ios'
+                          ? product[
+                              coinCount === 1 ? 0 : coinCount === 5 ? 1 : 2
+                            ]
+                          : product[
+                              coinCount === 1 ? 1 : coinCount === 5 ? 2 : 0
+                            ],
                       );
                 }}
                 size={'large'}

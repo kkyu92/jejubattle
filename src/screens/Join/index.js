@@ -26,6 +26,7 @@ import {
 import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function Join(props) {
   const context = React.useContext(AppContext);
@@ -58,21 +59,36 @@ export default function Join(props) {
     return () => Linking.removeEventListener('url', handleOpenURL);
   }, []);
   React.useEffect(() => {
-    const count = context.noti.filter(
-      (e) =>
-        e.screen === 'join' &&
-        e.param === 'email_approved' &&
-        e.email === email,
-    ).length;
-    if (count > 0) {
+    console.log('context.noti : ' + JSON.stringify(context.noti));
+    const noti = context.noti;
+    if (
+      noti.screen === 'join' &&
+      noti.param === 'email_approved' &&
+      noti.email === email
+    ) {
       setEmailVerified(true);
+      console.log('인증 오케');
+    } else {
+      console.log('인증 노');
     }
+    // const count = context.noti.filter(
+    //   (e) =>
+    //     e.screen === 'join' &&
+    //     e.param === 'email_approved' &&
+    //     e.email === email,
+    // ).length;
+    // if (count > 0) {
+    //   setEmailVerified(true);
+    //   console.log('인증 오케');
+    // } else {
+    //   console.log('아직인증 노');
+    // }
   }, [context.noti]);
   const handleOpenURL = (e) => {
     const temp = e.url.split('/');
     const param = temp[temp.length - 1];
     console.log('handleOpenURL', e.url, param);
-    Alert.alert('Debug Alert', param);
+    Alert.alert('핸드폰 본인인증이 완료되었습니다', param);
     setMobile(param);
   };
   const handleAgreementAll = () => {
@@ -170,18 +186,18 @@ export default function Join(props) {
         },
       })
         .then(async (res) => {
-          setLoading(false);
           logApi('snsSignup', res.data);
           if (res.data.token) {
             await AsyncStorage.setItem('token', res.data.token);
             await Init();
             context.dispatch({type: 'AUTHORIZED', data: res.data});
           }
+          setLoading(false);
         })
         .catch((err) => {
-          setLoading(false);
           logApi('snsSignup error', err?.response);
           Alert.alert(err.response?.data?.message);
+          setLoading(false);
         });
     } else {
       const formData = new FormData();
@@ -216,18 +232,18 @@ export default function Join(props) {
         },
       })
         .then(async (res) => {
-          setLoading(false);
           logApi('signup', res.data);
           if (res.data.token) {
             await AsyncStorage.setItem('token', res.data.token);
             await Init();
             context.dispatch({type: 'AUTHORIZED', data: res.data});
           }
+          setLoading(false);
         })
         .catch((err) => {
-          setLoading(false);
           logApi('signup error', err?.response);
           Alert.alert(err.response?.data?.message);
+          setLoading(false);
         });
     }
   };
@@ -250,6 +266,12 @@ export default function Join(props) {
 
   return (
     <Container>
+      <Spinner
+        visible={loading}
+        textContent={''}
+        color={'#F4A100'}
+        // textStyle={styles.spinnerTextStyle}
+      />
       <Header left={'close'} navigation={props.navigation} title={'회원가입'} />
       <KeyboardAwareScrollView keyboardShouldPersistTaps={'handled'}>
         <Seperator height={30} />
@@ -465,7 +487,6 @@ export default function Join(props) {
           stretch
           size={'large'}
           text={'회원가입'}
-          loading={loading}
           disable={
             !name ||
             !agreement ||

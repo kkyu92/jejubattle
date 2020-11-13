@@ -19,6 +19,7 @@ import Notice from '../screens/Notice';
 import CustomerCenter from '../screens/CustomerCenter';
 import Setting from '../screens/Setting';
 import EventView from '../screens/Event/View';
+import Ad from '../screens/Ad';
 import Travel from '../screens/Travel';
 import TravelList from '../screens/Travel/List';
 import TravelView from '../screens/Travel/View';
@@ -140,6 +141,7 @@ export default function AppStackScreen() {
       <Stack.Screen name="BattleMemberReport" component={BattleMemberReport} />
       <Stack.Screen name="Report" component={Report} />
       <Stack.Screen name="Evaluation" component={Evaluation} />
+      <Stack.Screen name="Ad" component={Ad} />
     </Stack.Navigator>
   );
 }

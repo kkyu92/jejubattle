@@ -177,7 +177,7 @@ export default function BattleEdit(props) {
           <Seperator height={30} />
           <TextInput
             title={'비밀번호 설정'}
-            placeholder={'최대 8글자 숫자만 가능'}
+            placeholder={'필수 X, 최대 8자 숫자만 가능'}
             value={password}
             maxLength={8}
             keyboardType={'number-pad'}

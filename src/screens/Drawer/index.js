@@ -31,7 +31,28 @@ export default function Drawer(props) {
           <TouchableOpacity
             onPress={() => props.navigation.navigate('Notification')}
             style={{paddingHorizontal: 20, paddingVertical: 5}}>
-            <Icons name="icon-notification-20" size={18} color={'black'} />
+            {context.me.notification === 'Y' ? (
+              <Icons name="icon-notification-20" size={18} color={'black'} />
+            ) : (
+              <>
+                <Icons name="icon-notification-20" size={18} color={'black'} />
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: 37,
+                    width: 5,
+                    height: 5,
+                    // paddingTop: 3,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#FF402B',
+                    borderRadius: 2.5,
+                  }}
+                />
+              </>
+            )}
           </TouchableOpacity>
         }
         // navigation={props.navigation}

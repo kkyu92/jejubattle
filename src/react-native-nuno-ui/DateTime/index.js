@@ -89,8 +89,9 @@ export default function DateTime({
         </View>
         <View>
           {mode === 'date' ? (
-            <AntDesign name={'down'} size={20} color={'black'} />
+            <Text text={'확인'} fontSize={16} color={'gray'} />
           ) : (
+            // <AntDesign name={'close'} size={20} color={'black'} />
             <MaterialCommunityIcons
               name={'calendar-blank'}
               size={20}
@@ -128,7 +129,8 @@ export default function DateTime({
                 <TouchableOpacity
                   onPress={() => setShowPicker(!showPicker)}
                   style={{paddingHorizontal: 20, paddingVertical: 10}}>
-                  <AntDesign name={'down'} size={20} color={'gray'} />
+                  {/* <AntDesign name={'down'} size={20} color={'gray'} /> */}
+                  <Text text={'확인'} fontSize={16} color={'gray'} />
                 </TouchableOpacity>
               </View>
             )}

@@ -31,71 +31,73 @@ import Axios from 'axios';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {AppContext} from '../../context';
 
-export default function EventView(props) {
+export default function Ad(props) {
   const context = React.useContext(AppContext);
-  const [event, setEvent] = React.useState({});
-  const [eventImgList, setEventImgList] = React.useState([]);
+  const [banner, setBanner] = React.useState({});
+  const [bannerImgList, setBannerImgList] = React.useState([]);
   const [replyList, setReplyList] = React.useState([]);
   const [reply, setReply] = React.useState('');
   const [file, setFile] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
+    console.log('get adPk: ' + props.route.params.adPk);
     get();
   }, []);
 
   const get = () => {
-    Axios.get(`eventInfo/${props.route.params.item.evPk}`)
+    Axios.get(`bannerInfo/${props.route.params.adPk}`)
       .then((res) => {
-        logApi('eventInfo', res.data);
-        setEvent(res.data.event);
-        setEventImgList(res.data.eventImgList);
+        logApi('bannerInfo', res.data);
+        setBanner(res.data.banner);
+        setBannerImgList(res.data.bannerImgList);
         setReplyList(res.data.replyList);
       })
       .catch((err) => {
-        logApi('eventInfo error', err.response);
+        logApi('bannerInfo error', err);
       });
   };
-  const delReview = (rePk) => {
-    Axios.delete(`eventReply/${rePk}`)
+  const delReview = (arPk) => {
+    console.log('arPk : ' + arPk);
+    Axios.delete(`advertReply/${arPk}`)
       .then((res) => {
-        logApi('delete eventReply', res.data);
+        logApi('delete advertReply', res.data);
         get();
       })
       .catch((err) => {
-        logApi('delete eventReply error', err.response);
+        logApi('delete advertReply error', err.response);
       });
   };
   const likeOn = () => {
-    Axios.post('eventLikeOn', {
-      evPk: event.evPk,
+    Axios.post('advertLikeOn', {
+      adPk: banner.adPk,
     })
       .then((res) => {
-        logApi('eventLikeOn', res.data);
+        logApi('advertLikeOn', res.data);
         get();
       })
       .catch((err) => {
-        logApi('eventLikeOn error', err.response);
+        logApi('advertLikeOn error', err.response);
       });
   };
   const likeOff = () => {
-    Axios.post('eventLikeOff', {
-      evPk: event.evPk,
+    Axios.post('advertLikeOff', {
+      adPk: banner.adPk,
     })
       .then((res) => {
-        logApi('eventLikeOff', res.data);
+        logApi('advertLikeOff', res.data);
         get();
       })
       .catch((err) => {
-        logApi('eventLikeOff error', err.response);
+        logApi('advertLikeOff error', err.response);
       });
   };
   const save = async () => {
     setLoading(true);
     if (false) {
       const formData = new FormData();
-      formData.append('erPk', event.erPk);
-      formData.append('erContent', reply);
+      formData.append('adPk', banner.adPk);
+      formData.append('arContent', reply);
       if (file) {
         const response = await fetch(file);
         const blob = await response.blob();
@@ -108,8 +110,8 @@ export default function EventView(props) {
       }
     } else {
       const formData = new FormData();
-      formData.append('evPk', event.evPk);
-      formData.append('erContent', reply);
+      formData.append('adPk', banner.adPk);
+      formData.append('arContent', reply);
 
       if (file) {
         const response = await fetch(file);
@@ -122,7 +124,7 @@ export default function EventView(props) {
         });
       }
       Axios({
-        url: API_URL + 'eventReplyInsert',
+        url: API_URL + 'advertReplyInsert',
         method: 'POST',
         data: formData,
         headers: {
@@ -133,13 +135,13 @@ export default function EventView(props) {
       })
         .then((res) => {
           setLoading(false);
-          logApi('eventReplyInsert', res.data);
+          logApi('advertReplyInsert', res.data);
           setReply('');
           get();
         })
         .catch((err) => {
           setLoading(false);
-          logApi('eventReplyInsert error', err.response);
+          logApi('advertReplyInsert error', err.response);
         });
     }
   };
@@ -149,14 +151,14 @@ export default function EventView(props) {
       <View>
         <View style={{padding: 20}}>
           <ImageCarousel
-            data={eventImgList.map((e) => e.evImgUrl)}
+            data={bannerImgList.map((e) => e.adImgUrl)}
             height={undefined}
             width={Math.floor(screenWidth - 40)}
           />
         </View>
 
         <TouchableOpacity
-          onPress={() => (event.evLikeType === 'N' ? likeOn() : likeOff())}
+          onPress={() => (banner.adLikeType === 'N' ? likeOn() : likeOff())}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -164,20 +166,24 @@ export default function EventView(props) {
             justifyContent: 'flex-end',
             paddingVertical: 10,
           }}>
-          {event.evLikeType === 'N' ? (
+          {banner.adLikeType === 'N' ? (
             <AntDesign name={'like2'} size={20} color={'gray'} />
           ) : (
             <AntDesign name={'like1'} size={20} color={custom.themeColor} />
           )}
           <Seperator width={5} />
-          <Text text={event.evLikeCnt} fontSize={14} color={'gray'} />
+          <Text text={banner.adLikeCnt} fontSize={14} color={'gray'} />
         </TouchableOpacity>
 
         <Seperator marginTop={20} line />
         <View style={{padding: 20}}>
           <HView>
             <Text text={'댓글'} fontSize={18} fontWeight={'bold'} />
-            <Text text={`(${event.evReplyCnt})`} fontSize={15} color={'gray'} />
+            <Text
+              text={`(${banner.adReplyCnt})`}
+              fontSize={15}
+              color={'gray'}
+            />
           </HView>
         </View>
       </View>
@@ -192,25 +198,25 @@ export default function EventView(props) {
             alignItems: 'flex-start',
           }}>
           <View style={{flex: 1}}>
-            {item.erImgUrl && (
+            {item.arImgUrl && (
               <ImageCarousel
-                data={[item.erImgUrl]}
+                data={[item.arImgUrl]}
                 height={Math.floor(screenWidth - 110) * 0.6}
                 width={Math.floor(screenWidth - 110)}
                 borderRadius={5}
               />
             )}
             <Seperator height={5} />
-            <Text text={item.erContent} fontSize={15} />
+            <Text text={item.arContent} fontSize={15} />
             <Seperator height={5} />
-            <Text text={item.erDatetime} color={'gray'} fontSize={14} />
+            <Text text={item.arDatetime} color={'gray'} fontSize={14} />
             <Seperator height={5} />
             {context.me.userPk === item.userPk && (
               <Button
                 text={'삭제'}
                 size={'medium'}
                 color={'white'}
-                onPress={() => delReview(item.erPk)}
+                onPress={() => delReview(item.arPk)}
               />
             )}
           </View>
@@ -292,7 +298,7 @@ export default function EventView(props) {
 
       <FlatList
         data={replyList}
-        keyExtractor={(item) => JSON.stringify(item.erPk)}
+        keyExtractor={(item) => JSON.stringify(item.arPk)}
         renderItem={renderItem}
         // ListEmptyComponent={<Empty />}
         ListHeaderComponent={FlatListHeader()}

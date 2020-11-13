@@ -34,6 +34,7 @@ import {
 import moment from 'moment';
 import {AppContext} from '../../context';
 import Reward from './Reward';
+import {navigate} from '../../navigations/RootNavigation';
 
 export default function TabBattleDetail(props) {
   const context = React.useContext(AppContext);
@@ -93,7 +94,14 @@ export default function TabBattleDetail(props) {
       }
     } else if (props.info.baCode === 3) {
       // battleButtonText = '배틀완료 및 평가하기';
-      setBattleButtonText('배틀완료 및 평가하기');
+      if (
+        context.me.userPk === props.info.teamA.member[0].userPk ||
+        context.me.userPk === props.info.teamB.member[0].userPk
+      ) {
+        setBattleButtonText('배틀완료 및 평가하기');
+      } else {
+        setBattleButtonText('배틀중');
+      }
     } else if (props.info.baCode === 4) {
       props.info.teamA.member.map((m, index) => {
         if (m.userPk === context.me.userPk) {
@@ -109,7 +117,7 @@ export default function TabBattleDetail(props) {
               setReStartBattle(true);
             } else {
               // battleButtonText = '보상완료';
-              setBattleButtonText('보상완료');
+              setBattleButtonText('배틀완료');
             }
           }
         }
@@ -121,35 +129,11 @@ export default function TabBattleDetail(props) {
             setBattleButtonText('보상받기');
           } else {
             // battleButtonText = '보상완료';
-            setBattleButtonText('보상완료');
+            setBattleButtonText('배틀완료');
           }
         }
       });
     }
-
-    // for (let m = 0; m < props.info.teamA.member.length; m++) {
-    //   if (props.info.teamA.member[m].userPk === context.me.userPk) {
-    //     if (props.info.teamA.member[m].rewardType === 'N') {
-    //       setBattleButtonText('보상받기');
-    //     } else {
-    //       if (context.me.userPk === props.info.teamA.member[0].userPk) {
-    //         setBattleButtonText('배틀 다시하기');
-    //         setReStartBattle(true);
-    //       } else {
-    //         setBattleButtonText('보상완료');
-    //       }
-    //     }
-    //   }
-    // }
-    // for (let m = 0; m < props.info.teamB.member.length; m++) {
-    //   if (props.info.teamB.member[m].userPk === context.me.userPk) {
-    //     if (props.info.teamB.member[m].rewardType === 'N') {
-    //       setBattleButtonText('보상받기');
-    //     } else {
-    //       setBattleButtonText('보상완료');
-    //     }
-    //   }
-    // }
   }, [props.info.teamA, props.info.teamB, props.info.baCode]);
 
   const readyNcoinCheck = async (useCoin) => {
@@ -213,6 +197,23 @@ export default function TabBattleDetail(props) {
         ...data,
       }),
     );
+  };
+  // 배틀완료 후 방 나가기
+  const deleteMyBattle = (baPk) => {
+    let data = [
+      {
+        baPk: baPk,
+      },
+    ];
+    Axios.post('myBattleDelete', data)
+      .then((res) => {
+        logApi('myBattleDelete', res.data);
+        props.navigation.goBack();
+        props.refresh();
+      })
+      .catch((err) => {
+        logApi('myBattleDelete error', err.response);
+      });
   };
   const deleteBattle = () => {
     Axios.get(`deleteBattle/${props.info.baPk}`)
@@ -393,7 +394,7 @@ export default function TabBattleDetail(props) {
           borderTopColor: 'lightgray',
           borderTopWidth: 1,
         }}>
-        {props.info.baCode >= 3 ? null : (
+        {props.info.baCode < 3 ? (
           <>
             <Button
               text={'나가기'}
@@ -412,6 +413,24 @@ export default function TabBattleDetail(props) {
             />
             <Seperator width={20} />
           </>
+        ) : (
+          props.info.baCode === 4 &&
+          battleButtonText === '배틀 다시하기' && (
+            <>
+              <Button
+                text={'나가기'}
+                onPress={() => {
+                  deleteMyBattle(props.info.baPk);
+                }}
+                color={'white'}
+                disable={false}
+                loading={false}
+                size={'large'}
+                // stretch
+              />
+              <Seperator width={20} />
+            </>
+          )
         )}
         <View style={{flex: 1}}>
           <Button
@@ -487,10 +506,21 @@ export default function TabBattleDetail(props) {
                   }
                 }
               } else if (props.info.baCode === 3) {
-                props.navigation.navigate('Evaluation', {
-                  info: props.info,
-                  socket: props.socket,
-                });
+                if (
+                  context.me.userPk === props.info.teamA.member[0].userPk ||
+                  context.me.userPk === props.info.teamB.member[0].userPk
+                ) {
+                  props.navigation.navigate('Evaluation', {
+                    info: props.info,
+                    socket: props.socket,
+                  });
+                } else {
+                  showToast(
+                    '배틀완료 및 평가가 아직 진행중입니다.',
+                    2000,
+                    'center',
+                  );
+                }
               } else if (props.info.baCode === 4) {
                 if (
                   context.me.userPk === props.info.teamA.member[0].userPk &&
@@ -503,12 +533,12 @@ export default function TabBattleDetail(props) {
                     // 보상받기
                     setModalReward(true);
                   } else {
-                    showToast('이미 보상받기를 완료했습니다.', 2000, 'center');
+                    showToast('종료된 배틀입니다.', 2000, 'center');
                   }
                 }
               }
             }}
-            color={custom.themeColor}
+            color={battleButtonText === '배틀완료' ? 'gray' : custom.themeColor}
             disable={false}
             loading={loading}
             size={'large'}
@@ -717,6 +747,7 @@ export default function TabBattleDetail(props) {
                 onPress={() => {
                   readyNcoinCheck(false);
                   setModalStart(false);
+                  showToast('준비되었습니다.', 2000, 'center');
                 }}
                 size={'large'}
                 stretch
@@ -730,6 +761,7 @@ export default function TabBattleDetail(props) {
                 onPress={() => {
                   readyNcoinCheck(true);
                   setModalStart(false);
+                  showToast('준비되었습니다.', 2000, 'center');
                 }}
                 size={'large'}
                 stretch
@@ -768,7 +800,7 @@ export default function TabBattleDetail(props) {
           <HView>
             <View style={{flex: 1}}>
               <Button
-                text={'취소'}
+                text={'그냥하기'}
                 color={'gray'}
                 onPress={() => {
                   readyNcoinCheck(false);
@@ -781,7 +813,7 @@ export default function TabBattleDetail(props) {
             <Seperator width={20} />
             <View style={{flex: 1}}>
               <Button
-                text={'이동'}
+                text={'코인충전'}
                 color={custom.themeColor}
                 onPress={() => {
                   setModalStartNoCoin(false);
@@ -922,6 +954,7 @@ export default function TabBattleDetail(props) {
                     props.navigation.navigate('FullMap', {
                       facilitySearch: true,
                       baPk: props.info.baPk,
+                      set: 'set',
                       share: (data) => {
                         setModalSetting(true);
                         setPlace({
@@ -932,6 +965,7 @@ export default function TabBattleDetail(props) {
                     });
                   }}
                   size={'medium'}
+                  disable={props.info.baCode >= 3}
                 />
               )}
             </HView>
@@ -945,7 +979,10 @@ export default function TabBattleDetail(props) {
               borderWidth={0}
               locale={global.lang}
               placeholder={'자세한시간'}
-              disable={context.me.userPk !== props.info.teamA.member[0].userPk}
+              disable={
+                context.me.userPk !== props.info.teamA.member[0].userPk ||
+                props.info.baCode >= 3
+              }
             />
             <Seperator line marginBottom={20} />
             <Text text={'날짜선택'} fontSize={14} fontWeight={'bold'} />
@@ -956,12 +993,16 @@ export default function TabBattleDetail(props) {
               borderWidth={0}
               locale={global.lang}
               placeholder={'자세한시간'}
-              disable={context.me.userPk !== props.info.teamA.member[0].userPk}
+              disable={
+                context.me.userPk !== props.info.teamA.member[0].userPk ||
+                props.info.baCode >= 3
+              }
             />
             <Seperator line />
           </View>
           <Seperator height={50} />
-          {context.me.userPk === props.info.teamA.member[0].userPk ? (
+          {context.me.userPk === props.info.teamA.member[0].userPk &&
+          props.info.baCode < 3 ? (
             <HView>
               <View style={{flex: 1}}>
                 <Button
@@ -981,7 +1022,7 @@ export default function TabBattleDetail(props) {
                     updateBattle(
                       {
                         baPlace: place,
-                        baStartTime: moment(startTime).format('HH:MM'),
+                        baStartTime: moment(startTime).format('HH:mm'),
                         baDate: date,
                       },
                       true,

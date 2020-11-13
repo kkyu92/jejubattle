@@ -123,6 +123,7 @@ export default function Travel(props) {
           onPress={() =>
             props.navigation.navigate('TravelView', {
               faPk: item.faPk,
+              showScrap: true,
               advert: true,
             })
           }

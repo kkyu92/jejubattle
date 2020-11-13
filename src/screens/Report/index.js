@@ -195,7 +195,7 @@ export default function Report(props) {
           borderTopColor: 'lightgray',
         }}>
         <Button
-          text={'위의 사항으로 해당 리뷰를 신고합니다.'}
+          text={'위 사항으로 해당 유저를 신고합니다.'}
           onPress={() => setModalWarning(true)}
           color={'#FE7262'}
           size={'large'}

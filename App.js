@@ -225,6 +225,21 @@ export default function App() {
               // 다른 배틀방 화면
               showToast(notify.title + '\n' + notify.body, 2000, 'center');
             }
+          } else if (notify.screen === 'no') {
+            // 신고하기
+            const options = {
+              soundName: 'default',
+              playSound: true,
+            };
+            localNotificationService.showNotification(
+              0,
+              notify.title,
+              notify.body,
+              notify,
+              options,
+            );
+          } else if (notify.screen === 'join') {
+            dispatch({type: 'UPDATENOTI', data: notify});
           }
         }
 
@@ -240,9 +255,7 @@ export default function App() {
             let userInfo = {
               id: notify.baPk,
             };
-            PushNotificationIOS.cancelLocalNotifications(userInfo);
-          } else {
-            PushNotification.cancelLocalNotifications({id: notify.baPk});
+            PushNotificationIOS.cancelAllLocalNotifications(userInfo);
           }
 
           if (
@@ -268,57 +281,6 @@ export default function App() {
           // getPush();
         }
 
-        // // foreground 상태
-        // const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-        //   console.log('[foreground] :', remoteMessage.data);
-        //   let notification = null
-        //   if (remoteMessage) {
-        //     if (Platform.OS === 'ios') {
-        //         notification = remoteMessage.data.notification
-        //     } else {
-        //         notification = remoteMessage.data
-        //     }
-        //     console.log('notification : ', notification)
-        //     const options = {
-        //       soundName: 'default',
-        //       playSound: true,
-        //     };
-        //     localNotificationService.showNotification(
-        //       0,
-        //       notification.title,
-        //       notification.body,
-        //       notification,
-        //       options,
-        //     );
-        //     await getPush();
-        //     // handleNotification(notification.screen, {baPk: notification.baPk, tabIndex: notification.tabIndex})
-        //   }
-        // });
-
-        // // background > foreground
-        // messaging().onNotificationOpenedApp(async (remoteMessage) => {
-        //   console.log(
-        //     'Notification caused app to open from background state:',
-        //     remoteMessage,
-        //   );
-        //   await getPush();
-        //   handleNotification(remoteMessage.data.screen, {baPk: notification.baPk, tabIndex: notification.tabIndex})
-        // });
-
-        // // closed > foreground
-        // messaging()
-        //   .getInitialNotification()
-        //   .then(async (remoteMessage) => {
-        //     if (remoteMessage) {
-        //       console.log(
-        //         'Notification caused app to open from quit state:',
-        //         remoteMessage,
-        //       );
-        //       await getPush();
-        //       handleNotification(remoteMessage.data.screen, remoteMessage.data);
-        //     }
-        //   });
-        // return unsubscribe;
         return () => {
           console.log('[APP] unRegister');
           fcmService.unRegister();
@@ -348,41 +310,12 @@ export default function App() {
       .catch((err) => {
         logApi('getPush error', err.response);
       });
-    // getPushInfo()
-    //   .then(res => {
-    //     console.log('getPushInfo res', res.data);
-    //     if (res.status === 200) {
-    //       dispatch({type: 'UPDATE_NOTI', data: res.data});
-    //     } else {
-    //       Alert.alert(res.data.message);
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.log('getPushInfo error', err);
-    //     Alert.alert(err);
-    //   });
   };
 
   const handleAppState = (newState) => {
     if (newState === 'active') {
       global.fcmToken && getPush();
     }
-  };
-
-  const handleNotification = ({screen, param}) => {
-    console.log(
-      '[handleNotification] screen : ' + screen + ' param : ' + param,
-    );
-    if (screen === 'battleview') {
-      RootNavigation.navigate('BattleView', {
-        baPk: param.baPk,
-        tabIndex: param.tabIndex,
-      });
-    }
-    // RootNavigation.navigate('BattleView', {
-    //   baPk: 193,
-    //   tabIndex: 1,
-    // });
   };
 
   const handleRoute = (url) => {
@@ -409,7 +342,7 @@ export default function App() {
     <NavigationContainer theme={theme} ref={navigationRef}>
       <AppContext.Provider value={{...state, dispatch}}>
         <Stack.Navigator headerMode="none">
-          {state.me.userPk ? (
+          {state.me?.userPk ? (
             <Stack.Screen name="App" component={AppStackScreen} />
           ) : (
             <Stack.Screen name="Auth" component={AuthStackScreen} />

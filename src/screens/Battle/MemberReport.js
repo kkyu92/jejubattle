@@ -29,8 +29,20 @@ export default function BattleMemberReport(props) {
     ...props.route.params.info.teamB.member,
     ...props.route.params.info.history,
   ]);
-
-  React.useEffect(() => {}, []);
+  function getUniqueObjectArray(array) {
+    return array.filter((item, i) => {
+      return (
+        array.findIndex((item2, j) => {
+          return item.userPk === item2.userPk;
+        }) === i
+      );
+    });
+  }
+  React.useEffect(() => {
+    let uniq = getUniqueObjectArray(member);
+    setMember(uniq);
+    console.log(uniq);
+  }, []);
   return (
     <Container>
       <Header left={'close'} title={'신고하기'} navigation={props.navigation} />

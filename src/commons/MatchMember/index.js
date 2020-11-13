@@ -20,6 +20,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Axios from 'axios';
 import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {screenWidth} from '../../styles';
+import TextTicker from 'react-native-text-ticker';
 
 export default function MatchMember(props) {
   const context = React.useContext(AppContext);
@@ -33,6 +34,34 @@ export default function MatchMember(props) {
   const [selectedTeam, setSelectedTeam] = React.useState('A');
   const [memberModalTeam, setMemberModalTeam] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const [aReady, setAReady] = React.useState(false);
+  const [bReady, setBReady] = React.useState(false);
+  const [leaderA, setLeaderA] = React.useState(
+    props.info?.teamA?.member[0]?.userPk,
+  );
+  const [leaderB, setLeaderB] = React.useState(
+    props.info?.teamB?.member[0]?.userPk,
+  );
+
+  React.useEffect(() => {
+    const newLeaderA = props.info?.teamA?.member[0]?.userPk;
+    const newLeaderB = props.info?.teamB?.member[0]?.userPk;
+    if (leaderA !== newLeaderA) {
+      if (context.me.userPk === newLeaderB) {
+        showToast('방장을 위임 받았습니다.', 2000, 'center');
+      }
+    }
+    if (leaderB !== newLeaderB) {
+      if (context.me.userPk === newLeaderB) {
+        showToast('팀장을 위임 받았습니다.', 2000, 'center');
+      }
+    }
+    setLeaderA(props.info?.teamA?.member[0]?.userPk);
+    setLeaderB(props.info?.teamB?.member[0]?.userPk);
+  }, [
+    props.info?.teamA?.member[0]?.userPk,
+    props.info?.teamB?.member[0]?.userPk,
+  ]);
 
   const updateBattle = (data) => {
     props.socket.send(
@@ -43,20 +72,20 @@ export default function MatchMember(props) {
         ...data,
       }),
     );
-    // await Axios.post('updateBattle', {
-    //   baPk: props.info.baPk,
-    //   ...data,
-    // })
-    //   .then((res) => {
-    //     logApi('updateBattle', res.data);
-    //     setLoading(false);
-    //     setName('');
-    //     props.refreshBattleView && props.refreshBattleView();
-    //   })
-    //   .catch((err) => {
-    //     logApi('updateBattle error', err.response);
-    //     setLoading(false);
-    //   });
+  };
+  const kickUser = async (userPk, baPk) => {
+    // console.log('userPk : ' + userPk);
+    // console.log('baPk : ' + baPk);
+    Axios.post('fcmMemberDelete', {
+      userPk: userPk,
+      baPk: baPk,
+    })
+      .then((res) => {
+        logApi('kickUser success', res.data);
+      })
+      .catch((err) => {
+        logApi('kickUser error', err?.response);
+      });
   };
   const memberSwitch = async () => {
     const foundedAtTeamA = props.info.teamA.member
@@ -157,25 +186,33 @@ export default function MatchMember(props) {
                   }}
                 />
               )}
-              {props.info.teamA?.member[0]?.ready === 'Y' && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    local
-                    uri={require('../../../assets/img/icon-ready.png')}
-                    width={100}
-                    height={100}
-                  />
-                </View>
-              )}
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  local
+                  uri={
+                    props.info.baResultA === '1'
+                      ? require('../../../assets/img/icon-win.png')
+                      : props.info.baResultA === '2'
+                      ? require('../../../assets/img/icon-lose.png')
+                      : props.info.teamA?.member[0]?.ready === 'Y' &&
+                        props.info.baCode < 3
+                      ? require('../../../assets/img/icon-ready.png')
+                      : props.info.baCode === 3 &&
+                        require('../../../assets/img/icon-battle.png')
+                  }
+                  width={100}
+                  height={100}
+                />
+              </View>
             </View>
             <Seperator height={10} />
             <Text
@@ -184,8 +221,8 @@ export default function MatchMember(props) {
               fontSize={16}
             />
             {/* 아래는 오른쪽 강퇴하기 버튼과 같이 높이를 맞추기위한 fake button */}
-            {props.info.teamA?.member.length > 0 &&
-              context.me.userPk === props.info.teamA?.member[0].userPk && (
+            {props.info.teamA?.member[0].userPk === context.me.userPk &&
+              props.info.baCode < 3 && (
                 <View>
                   <Seperator height={10} />
                   <Button
@@ -206,55 +243,46 @@ export default function MatchMember(props) {
             style={{
               flex: 0.4,
               alignItems: 'center',
-              // justifyContent: 'center',
             }}>
-            {props.info.teamB?.member.length === 0 ? (
-              <View>
+            <View>
+              {props.info.teamB?.member.length === 0 ? (
                 <Text
                   text={'대결상대가\n없습니다'}
                   fontSize={18}
                   fontWeight={'bold'}
                   style={{textAlign: 'center'}}
                 />
-                <Seperator height={10} />
-                <Text
-                  text={props.info.teamB?.member[0]?.userName}
-                  fontWeight={'500'}
-                  fontSize={16}
-                />
-              </View>
-            ) : (
-              <View>
-                {props.info.teamB?.member[0]?.userImgUrl ? (
-                  <Image
-                    uri={props.info.teamB.member[0]?.userImgUrl}
-                    width={72}
-                    height={72}
-                    borderRadius={36}
-                    onPress={() => {
-                      if (props.info.teamB.member.length > 0) {
-                        setMemberModalTeam(props.info.teamB);
-                        setMemberModal(true);
-                      }
-                    }}
-                  />
-                ) : (
-                  <Image
-                    local
-                    uri={require('../../../assets/img/user_boy.png')}
-                    width={72}
-                    height={72}
-                    borderRadius={36}
-                    onPress={() => {
-                      if (props.info.teamA?.member.length > 0) {
-                        setMemberModalTeam(props.info.teamA);
-                        setMemberModal(true);
-                      }
-                    }}
-                  />
-                )}
+              ) : (
+                <>
+                  {props.info.teamB?.member[0]?.userImgUrl ? (
+                    <Image
+                      uri={props.info.teamB.member[0]?.userImgUrl}
+                      width={72}
+                      height={72}
+                      borderRadius={36}
+                      onPress={() => {
+                        if (props.info.teamB.member.length > 0) {
+                          setMemberModalTeam(props.info.teamB);
+                          setMemberModal(true);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      local
+                      uri={require('../../../assets/img/user_boy.png')}
+                      width={72}
+                      height={72}
+                      borderRadius={36}
+                      onPress={() => {
+                        if (props.info.teamA?.member.length > 0) {
+                          setMemberModalTeam(props.info.teamA);
+                          setMemberModal(true);
+                        }
+                      }}
+                    />
+                  )}
 
-                {props.info.teamB?.member[0]?.ready === 'Y' && (
                   <View
                     style={{
                       position: 'absolute',
@@ -267,24 +295,34 @@ export default function MatchMember(props) {
                     }}>
                     <Image
                       local
-                      uri={require('../../../assets/img/icon-ready.png')}
+                      uri={
+                        props.info.baResultB === '1'
+                          ? require('../../../assets/img/icon-win.png')
+                          : props.info.baResultB === '2'
+                          ? require('../../../assets/img/icon-lose.png')
+                          : props.info.teamB?.member[0]?.ready === 'Y' &&
+                            props.info.baCode < 3
+                          ? require('../../../assets/img/icon-ready.png')
+                          : props.info.baCode === 3 &&
+                            require('../../../assets/img/icon-battle.png')
+                      }
                       width={100}
                       height={100}
                     />
                   </View>
-                )}
-                <Seperator height={10} />
-                <Text
-                  text={props.info.teamB?.member[0]?.userName}
-                  fontWeight={'500'}
-                  fontSize={16}
-                  style={{textAlign: 'center'}}
-                />
-              </View>
-            )}
-
+                </>
+              )}
+            </View>
+            <Seperator height={10} />
+            <Text
+              text={props.info.teamB?.member[0]?.userName}
+              fontWeight={'500'}
+              fontSize={16}
+              style={{textAlign: 'center'}}
+            />
             {props.info.teamB?.member.length > 0 &&
-              context.me.userPk !== props.info.teamB?.member[0].userPk && (
+              context.me.userPk !== props.info.teamB?.member[0].userPk &&
+              props.info.baCode < 3 && (
                 <View>
                   <Seperator height={10} />
                   <Button
@@ -329,16 +367,23 @@ export default function MatchMember(props) {
               fontWeight={'500'}
             />
             <Seperator height={10} />
-            <Text
-              style={{textAlign: 'center'}}
-              text={props.info.teamA.name}
-              fontSize={36}
-              color={'#FE7262'}
-              fontWeight={'bold'}
-            />
+            <TextTicker
+              style={{
+                color: '#FE7262',
+                fontSize: 36,
+                fontWeight: 'bold',
+                textAlign: 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              duration={4000}
+              loop
+              repeatSpacer={50}
+              marqueeDelay={1000}>
+              {props.info.teamA.name}
+            </TextTicker>
             <Seperator height={10} />
-            {(context.me.userPk === props.info?.teamA?.member[0]?.userPk ||
-              context.me.userPk === props.info?.teamB?.member[0]?.userPk) && (
+            {context.me.userPk === props.info?.teamA?.member[0]?.userPk ? (
               <TouchableOpacity
                 onPress={() => {
                   if (
@@ -365,6 +410,13 @@ export default function MatchMember(props) {
                 <Seperator width={10} />
                 <Text text={'이름 수정'} fontSize={14} color={'gray'} />
               </TouchableOpacity>
+            ) : (
+              <View
+                style={{
+                  paddingVertical: 5,
+                }}>
+                <Text text={''} fontSize={14} />
+              </View>
             )}
             <Seperator height={10} />
             <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
@@ -374,25 +426,34 @@ export default function MatchMember(props) {
                 fontWeight={'500'}
               />
             </View>
-            {props.info.baCode === 3 && (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  local
-                  uri={require('../../../assets/img/icon-battle.png')}
-                  width={100}
-                  height={100}
-                />
-              </View>
-            )}
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                local
+                uri={
+                  props.info.baResultA === '1'
+                    ? require('../../../assets/img/icon-win.png')
+                    : props.info.baResultA === '2'
+                    ? require('../../../assets/img/icon-lose.png')
+                    : props.info.teamA?.member.findIndex(
+                        (e) => e.ready === 'N',
+                      ) === -1 && props.info.baCode < 3
+                    ? require('../../../assets/img/icon-ready.png')
+                    : props.info.baCode === 3 &&
+                      require('../../../assets/img/icon-battle.png')
+                }
+                width={100}
+                height={100}
+              />
+            </View>
           </TouchableOpacity>
           <View style={{flex: 0.2, alignItems: 'center'}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
@@ -433,16 +494,23 @@ export default function MatchMember(props) {
               fontWeight={'500'}
             />
             <Seperator height={10} />
-            <Text
-              style={{textAlign: 'center'}}
-              text={props.info.teamB.name}
-              fontSize={36}
-              color={'#0752AB'}
-              fontWeight={'bold'}
-            />
+            <TextTicker
+              style={{
+                color: '#0752AB',
+                fontSize: 36,
+                fontWeight: 'bold',
+                textAlign: 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              duration={4000}
+              loop
+              repeatSpacer={50}
+              marqueeDelay={1000}>
+              {props.info.teamB.name}
+            </TextTicker>
             <Seperator height={10} />
-            {(context.me.userPk === props.info?.teamB?.member[0]?.userPk ||
-              context.me.userPk === props.info?.teamA?.member[0]?.userPk) && (
+            {context.me.userPk === props.info?.teamB?.member[0]?.userPk ? (
               <TouchableOpacity
                 onPress={() => {
                   setSelectedTeam('B');
@@ -465,6 +533,13 @@ export default function MatchMember(props) {
                 <Seperator width={10} />
                 <Text text={'이름 수정'} fontSize={14} color={'gray'} />
               </TouchableOpacity>
+            ) : (
+              <View
+                style={{
+                  paddingVertical: 5,
+                }}>
+                <Text text={''} fontSize={14} />
+              </View>
             )}
             <Seperator height={10} />
             <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
@@ -474,25 +549,34 @@ export default function MatchMember(props) {
                 fontWeight={'500'}
               />
             </View>
-            {props.info.baCode === 3 && (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  local
-                  uri={require('../../../assets/img/icon-battle.png')}
-                  width={100}
-                  height={100}
-                />
-              </View>
-            )}
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                local
+                uri={
+                  props.info.baResultB === '1'
+                    ? require('../../../assets/img/icon-win.png')
+                    : props.info.baResultB === '2'
+                    ? require('../../../assets/img/icon-lose.png')
+                    : props.info.teamB?.member.findIndex(
+                        (e) => e.ready === 'N',
+                      ) === -1 && props.info.baCode < 3
+                    ? require('../../../assets/img/icon-ready.png')
+                    : props.info.baCode === 3 &&
+                      require('../../../assets/img/icon-battle.png')
+                }
+                width={100}
+                height={100}
+              />
+            </View>
           </TouchableOpacity>
         </HView>
       )}
@@ -719,6 +803,7 @@ export default function MatchMember(props) {
                   }
                   teamB.member = [];
                   await updateBattle({teamB: teamB, history: localHistory});
+                  kickUser(props.info.teamB.member[0].userPk, props.info.baPk);
                   setMemberOutModal(false);
                 }}
                 size={'large'}

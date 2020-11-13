@@ -19,7 +19,7 @@ import {custom} from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
 import RNKakaoLogins from '@react-native-seoul/kakao-login';
@@ -36,6 +36,8 @@ import {
 } from '@invertase/react-native-apple-authentication';
 import Init from '../../commons/Init';
 import Icons from '../../commons/Icons';
+import jwt_decode from 'jwt-decode';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function Login(props) {
   const context = React.useContext(AppContext);
@@ -77,11 +79,7 @@ export default function Login(props) {
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       });
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
-      Alert.alert(
-        'get apple info\n아직 미구현\n\n',
-        JSON.stringify(appleAuthRequestResponse),
-      );
-      const {
+      let {
         user: newUser,
         email,
         nonce,
@@ -92,16 +90,17 @@ export default function Login(props) {
       fetchAndUpdateCredentialState(
         updateCredentialStateForUser,
       ).catch((error) => updateCredentialStateForUser(`Error: ${error.code}`));
-      if (identityToken) {
-        // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
-        console.log(nonce, identityToken);
-      } else {
-        // no token - failed sign-in?
-      }
-      // if (realUserStatus === AppleAuthRealUserStatus.LIKELY_REAL) {
-      //   console.log("I'm a real person!");
-      // }
+      // Alert.alert(
+      //   'get apple info\n아직 미구현\n\n',
+      //   JSON.stringify(appleAuthRequestResponse),
+      // );
       console.warn(`Apple Authentication Completed, ${user}, ${email}`);
+      if (email === null) {
+        var decoded = jwt_decode(identityToken);
+        console.log(JSON.stringify(decoded));
+        email = decoded.email;
+      }
+      startWithSNS(user, email, 5);
     } catch (error) {
       if (error.code === appleAuth.Error.CANCELED) {
         console.warn('User canceled Apple Sign in.');
@@ -162,14 +161,6 @@ export default function Login(props) {
     });
   }, []);
 
-  if (!appleAuth.isSupported) {
-    return (
-      <View style={[styles.container, styles.horizontal]}>
-        <Text>Apple Authentication is not supported on this device.</Text>
-      </View>
-    );
-  }
-
   const signin = () => {
     setLoading(true);
     Axios.post('signin', {
@@ -181,21 +172,22 @@ export default function Login(props) {
     })
       .then(async (res) => {
         logApi('signin success', res.data);
-        setLoading(false);
         await AsyncStorage.setItem('token', res.data.token);
         await Init();
         context.dispatch({type: 'AUTHORIZED', data: res.data});
+        setLoading(false);
       })
       .catch((err) => {
         logApi('signin error', err?.response);
-        setLoading(false);
         console.log('e : ' + JSON.stringify(err));
         if (err.code !== 1) {
           Alert.alert('로그인', err.response?.data?.message);
         }
+        setLoading(false);
       });
   };
   const startWithSNS = (userId, userEmail, userCode) => {
+    console.log('userEmail : ' + userEmail);
     setLoading(true);
     Axios.post('snsSignin', {
       userId: userId,
@@ -206,14 +198,13 @@ export default function Login(props) {
     })
       .then(async (res) => {
         logApi('snsSignin', res.data);
-        setLoading(false);
         await AsyncStorage.setItem('token', res.data.token);
         await Init();
         context.dispatch({type: 'AUTHORIZED', data: res.data});
+        setLoading(false);
       })
       .catch((err) => {
         logApi('snsSignin error', err?.response);
-        setLoading(false);
         if (err?.response.status === 403) {
           props.navigation.navigate('Join', {
             uid: userId,
@@ -223,6 +214,7 @@ export default function Login(props) {
         } else {
           Alert.alert('로그인', err.response?.data?.message);
         }
+        setLoading(false);
       });
   };
   const pwInquiry = () => {
@@ -234,13 +226,15 @@ export default function Login(props) {
         logApi('pwInquiry success', res.data);
         setLoading(false);
         setModalVisible(false);
+        showToast('임시 비밀번호를 발송했습니다.', 2000, 'center');
       })
       .catch((err) => {
         logApi('pwInquiry error', err?.response);
         setLoading(false);
+        Alert.alert(err?.response?.data?.message);
       });
   };
-  const startWithApple = () => {};
+
   const startWithNaver = () => {
     NaverLogin.login(
       {
@@ -332,7 +326,12 @@ export default function Login(props) {
           padding: 50,
           justifyContent: 'center',
         }}>
-        {/* <View style={{flex: 1, padding: 50, justifyContent: 'center'}}> */}
+        <Spinner
+          visible={loading}
+          textContent={''}
+          color={'#F4A100'}
+          // textStyle={styles.spinnerTextStyle}
+        />
         <View>
           <Image
             local
@@ -467,37 +466,21 @@ export default function Login(props) {
                 resizeMode={'contain'}
               />
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              onPress={() => onAppleButtonPress()}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                backgroundColor: '#000000',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                local
-                uri={require('../../../assets/img/icon-facebook.png')}
-                width={23}
-                height={23}
-                resizeMode={'contain'}
+            {Platform.OS === 'ios' && Platform.Version >= '13' ? (
+              <AppleButton
+                buttonStyle={AppleButton.Style.BLACK}
+                buttonType={AppleButton.Type.CONTINUE}
+                style={{
+                  width: 60,
+                  height: 60,
+                  // borderRadius: 30,
+                  //   backgroundColor: '#000000',
+                  //   alignItems: 'center',
+                  //   justifyContent: 'center',
+                }}
+                onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
               />
-            </TouchableOpacity> */}
-            <AppleButton
-              buttonStyle={AppleButton.Style.BLACK}
-              buttonType={AppleButton.Type.CONTINUE}
-              style={{
-                width: 60,
-                height: 60,
-                // borderRadius: 30,
-                //   backgroundColor: '#000000',
-                //   alignItems: 'center',
-                //   justifyContent: 'center',
-              }}
-              onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
-            />
+            ) : null}
           </HView>
           <Seperator height={50} />
           <Button
@@ -508,7 +491,6 @@ export default function Login(props) {
             textColor={'black'}
             borderColor={'whitesmoke'}
             stretch
-            loading={loading}
           />
         </View>
         {/* </View> */}

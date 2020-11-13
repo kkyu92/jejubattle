@@ -158,7 +158,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('scrapOn', res.data);
-        get();
+        advert();
       })
       .catch((err) => {
         logApi('scrapOn error', err.response);
@@ -171,7 +171,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('scrapOff', res.data);
-        get();
+        advert();
       })
       .catch((err) => {
         logApi('scrapOff error', err.response);
@@ -184,7 +184,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('likeOn', res.data);
-        get();
+        advert();
         // props.route.params?.refresh();
       })
       .catch((err) => {
@@ -198,7 +198,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('likeOff', res.data);
-        get();
+        advert();
         // props.route.params?.refresh();
       })
       .catch((err) => {

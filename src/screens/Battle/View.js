@@ -5,18 +5,11 @@ import {
   Header,
   Seperator,
   HView,
-  Button,
-  TextInput,
-  Picker,
-  DateTime,
-  Checkbox,
   Image,
-  Modal,
+  Loader,
 } from '../../react-native-nuno-ui';
-import {TouchableOpacity, View, FlatList, Alert} from 'react-native';
-import Icons from '../../commons/Icons';
+import {TouchableOpacity, View} from 'react-native';
 import {custom, SOCKET_URL} from '../../config';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TabView} from 'react-native-tab-view';
 import {screenWidth} from '../../styles';
 import TabBattleDetail from './TabBattleDetail';
@@ -32,6 +25,7 @@ const initialLayout = {width: screenWidth};
 
 export default function BattleView(props) {
   const [showMatchMember, setShowMatchMember] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [index, setIndex] = React.useState(0);
   const [info, setInfo] = React.useState({});
   const [routes] = React.useState([
@@ -44,6 +38,7 @@ export default function BattleView(props) {
   const [coin, setCoin] = React.useState('');
   const stompClient = React.useRef();
 
+  const [baPk, setBaPk] = React.useState(props.route?.params?.baPk);
   let getBaPk = props.route?.params?.baPk;
   let getTabIndex = props.route?.params?.tabIndex;
 
@@ -163,6 +158,24 @@ export default function BattleView(props) {
     };
   }, []);
 
+  React.useEffect(() => {
+    console.log('baPk : ' + baPk);
+    console.log('props baPk : ' + props.route.params.baPk);
+    if (baPk !== props.route.params.baPk) {
+      setLoading(true);
+      stompClient.current && stompClient.current.disconnect();
+      get();
+      coinCheck();
+      socketConn();
+      setBaPk(props.route.params.baPk);
+      setTimeout(() => {
+        setLoading(false);
+      }, 200);
+    } else {
+      console.log('samsam');
+    }
+  }, [props.route.params.baPk, baPk]);
+
   const get = () => {
     Axios.get(`getBattle/${props.route.params.baPk}`)
       .then((res) => {
@@ -212,6 +225,8 @@ export default function BattleView(props) {
                 console.log('onIndexChange', i);
                 if (i === 1) {
                   setShowMatchMember(false);
+                } else {
+                  setShowMatchMember(true);
                 }
                 setIndex(i);
               }}>
@@ -252,7 +267,9 @@ export default function BattleView(props) {
         );
     }
   };
-  return (
+  return loading === true ? (
+    <Loader />
+  ) : (
     <Container>
       <Header
         left={'back'}
@@ -271,7 +288,11 @@ export default function BattleView(props) {
           <Seperator width={10} />
           <Image
             local
-            uri={require('../../../assets/img/icon-fold.png')}
+            uri={
+              showMatchMember
+                ? require('../../../assets/img/icon-fold.png')
+                : require('../../../assets/img/icon-fold-down.png')
+            }
             height={27}
             width={27}
             resizeMode={'cover'}
@@ -284,6 +305,7 @@ export default function BattleView(props) {
           navigation={props.navigation}
           refreshBattleView={() => get()}
           socket={stompClient.current}
+          gameResult={props.route.params.gameResult}
         />
       )}
       {/* <Seperator height={50} /> */}

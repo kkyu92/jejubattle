@@ -280,7 +280,7 @@ export default function FullMap(props) {
         />
         <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
           <Button
-            text={'공유하기'}
+            text={props.route.params.set === 'set' ? '설정하기' : '공유하기'}
             size={'large'}
             onPress={async () => {
               if (props.route?.params?.share) {

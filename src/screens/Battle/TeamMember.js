@@ -13,7 +13,7 @@ import {
 import {TouchableOpacity, View, ScrollView} from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {logApi, swap} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast, swap} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -308,6 +308,7 @@ export default function BattleTeamMember(props) {
                     });
                   }
                   props.navigation.goBack();
+                  showToast('위임을 완료했습니다.', 2000, 'center');
                 }
               }}
               size={'large'}

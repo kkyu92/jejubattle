@@ -22,26 +22,44 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
 import DeviceInfo from 'react-native-device-info';
 import BattleComponentEmpty from './BattleComponentEmpty';
+import {useIsFocused} from '@react-navigation/native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function Home(props) {
   const context = React.useContext(AppContext);
+  const [loading, setLoading] = React.useState(false);
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
   const [alertTitle, setAertTitle] = React.useState('');
   const [alertText, setAlertText] = React.useState('');
   const [banner, setBanner] = React.useState([]);
+  const [battle, setBattle] = React.useState([]);
   const [recommand, setRecommand] = React.useState([]);
+  const isFocused = useIsFocused();
+  let list = [];
   React.useEffect(() => {
-    Axios.get('mainList')
-      .then(async (res) => {
-        logApi('mainList', res.data);
-        setBanner(res.data.bannerList.map((e) => e.imgUrl));
-        setRecommand(res.data.recomList);
-      })
-      .catch((err) => {
-        // setLoading(false);
-        logApi('mainList error', err?.response);
-      });
+    if (isFocused) {
+      setLoading(true);
+      Axios.get('mainList')
+        .then(async (res) => {
+          logApi('mainList', res.data);
+          setBanner(res.data.bannerList);
+          // setBanner(res.data.bannerList.map((e) => e.imgUrl));
+          setBattle(res.data.battleList);
+          setRecommand(res.data.recomList);
+        })
+        .catch((err) => {
+          logApi('mainList error', err?.response);
+        });
+      setLoading(false);
+      let teamB = {
+        member: [{ready: 'N'}, {ready: 'Y'}, {ready: 'N'}],
+      };
+      let check = teamB.member.findIndex((e) => e.ready === 'N');
+      console.log('findIndex: ' + check);
+    }
+  }, [isFocused]);
 
+  React.useEffect(() => {
     Axios.post('version', {})
       .then(async (res) => {
         const version = DeviceInfo.getVersion();
@@ -55,13 +73,6 @@ export default function Home(props) {
             `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
           );
         }
-        // if (res.data.build_no !== buildNumber) {
-        //   setShowUpdateModal(true);
-        //   setAertTitle('업데이트 알림');
-        //   setAlertText(
-        //     `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
-        //   );
-        // }
       })
       .catch((err) => {
         console.log('Version error', err.response);
@@ -78,6 +89,7 @@ export default function Home(props) {
         gotoStore();
       }}
       onCancel={() => setShowUpdateModal(false)}>
+      <Spinner visible={loading} textContent={''} color={'#F4A100'} />
       <Header
         leftComponent={
           <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
@@ -103,9 +115,11 @@ export default function Home(props) {
       />
       <ScrollView>
         <ImageCarousel
+          // data={banner.map((e) => e.imgUrl)}
           data={banner}
-          height={170}
-          onPress={() => null}
+          height={200}
+          adIndex={true}
+          navigation={props.navigation}
           dotColor={'white'}
           paginationContainerStyle={{
             position: 'absolute',
@@ -116,27 +130,39 @@ export default function Home(props) {
           }}
         />
         {/* View Carousel */}
-        <Carousel
-          data={[
-            <BattleComponentEmpty />,
-            // <BattleComponent />,
-            // <BattleComponent />,
-            // <BattleComponent />,
-            // <BattleComponent />,
-            // <BattleComponent />,
-            // <BattleComponent />,
-            // <BattleComponent />,
-          ]}
-          dotColor={custom.themeColor}
-          paginationContainerStyle={{
-            position: 'absolute',
-            bottom: 20,
-            left: 0,
-            right: 0,
-            alignItems: 'center',
-          }}
-        />
-
+        {battle.length === 0 ? (
+          <Carousel
+            data={[<BattleComponentEmpty />]}
+            dotColor={custom.themeColor}
+            paginationContainerStyle={{
+              position: 'absolute',
+              bottom: 20,
+              left: 0,
+              right: 0,
+              alignItems: 'center',
+            }}
+          />
+        ) : (
+          <Carousel
+            data={
+              (list = battle.map((b, i) => (
+                <BattleComponent
+                  key={i}
+                  data={b}
+                  navigation={props.navigation}
+                />
+              )))
+            }
+            dotColor={custom.themeColor}
+            paginationContainerStyle={{
+              position: 'absolute',
+              bottom: 20,
+              left: 0,
+              right: 0,
+              alignItems: 'center',
+            }}
+          />
+        )}
         <Seperator height={30} />
 
         {/* recommand facility */}

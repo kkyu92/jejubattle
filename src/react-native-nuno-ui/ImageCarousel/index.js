@@ -8,6 +8,8 @@ import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 export default ({
+  adIndex,
+  navigation,
   data,
   onPress,
   width,
@@ -24,7 +26,12 @@ export default ({
     return (
       <TouchableOpacity
         onPress={
-          disableTouch
+          adIndex
+            ? () => {
+                navigation.navigate('Ad', {adPk: item.adPk}),
+                  console.log('adPk: ' + item.adPk);
+              }
+            : disableTouch
             ? () => null
             : onPress
             ? () => onPress()
@@ -32,7 +39,7 @@ export default ({
         }
         activeOpacity={!disableTouch ? 0.5 : 1}>
         <FastImage
-          source={{uri: item}}
+          source={adIndex ? {uri: item.imgUrl} : {uri: item}}
           style={{
             width: width || screenWidth,
             height: height || Math.floor(screenWidth / 2),

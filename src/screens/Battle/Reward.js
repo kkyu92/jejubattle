@@ -67,7 +67,7 @@ export default function Reward(props) {
     if (randomBox) {
       if (randomBox.rcName) {
         component = (
-          <View>
+          <View style={{alignItems: 'center'}}>
             <Image
               uri={randomBox.rcImgUrl}
               height={70}
@@ -94,7 +94,7 @@ export default function Reward(props) {
         );
       } else {
         component = (
-          <View>
+          <View style={{alignItems: 'center'}}>
             <Text
               fontSize={16}
               color={'black'}
@@ -115,7 +115,7 @@ export default function Reward(props) {
     } else {
       if (reward.coinType === 'N') {
         component = (
-          <View>
+          <View style={{alignItems: 'center'}}>
             <Text
               fontSize={16}
               color={'black'}
@@ -134,7 +134,7 @@ export default function Reward(props) {
         );
       } else if (reward.coinType === 'Y') {
         component = (
-          <View>
+          <View style={{alignItems: 'center'}}>
             <Text
               fontSize={18}
               fontWeight={'bold'}
@@ -178,7 +178,7 @@ export default function Reward(props) {
   } else {
     component =
       props.coinType === 'Y' ? (
-        <View>
+        <View style={{alignItems: 'center'}}>
           <Text
             fontSize={18}
             fontWeight={'bold'}

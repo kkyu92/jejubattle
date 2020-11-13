@@ -149,7 +149,7 @@ export default function TravelList(props) {
             : {borderBottomWidth: 1}
         }
       />
-      {props.route.params.faCode === 2 ? (
+      {props.route.params.faCode !== 1 ? (
         <View>
           <ScrollView
             horizontal={true}
