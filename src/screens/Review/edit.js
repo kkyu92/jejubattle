@@ -127,7 +127,7 @@ export default function ReviewEdit(props) {
       <ScrollView keyboardShouldPersistTaps={'handled'}>
         <Seperator height={50} />
         <View style={{alignItems: 'center'}}>
-          <Text text={'서귀포시 체육관'} fontSize={21} />
+          <Text text={props.route.params.faName} fontSize={21} />
           <Seperator height={10} />
           <View style={{width: 220}}>
             <StarRating

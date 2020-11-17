@@ -10,6 +10,7 @@ import {
   Button,
   Modal,
   ImageCarousel,
+  Loader,
 } from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, ScrollView, FlatList} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -31,6 +32,7 @@ const initialLayout = {width: screenWidth};
 
 export default function FacilityView(props) {
   const context = React.useContext(AppContext);
+  const [loading, setLoading] = React.useState(true);
   const [index, setIndex] = React.useState(0);
   const [facility, setFacility] = React.useState({});
   const [reply, setReply] = React.useState([]);
@@ -49,6 +51,7 @@ export default function FacilityView(props) {
         logApi('facilityInfo', res.data);
         setFacility(res.data.facility);
         setReply(res.data.replyList);
+        setLoading(false);
       })
       .catch((err) => {
         logApi('facilityInfo error', err.response);
@@ -103,6 +106,7 @@ export default function FacilityView(props) {
             replyCnt={facility.faReplyCnt}
             scopeCnt={facility.faScopeCnt}
             faPk={facility.faPk}
+            faName={facility.faName}
             refresh={get}
           />
         );
@@ -164,7 +168,9 @@ export default function FacilityView(props) {
         logApi('likeOff error', err.response);
       });
   };
-  return (
+  return loading === true ? (
+    <Loader />
+  ) : (
     <Container>
       <Header
         left={'back'}

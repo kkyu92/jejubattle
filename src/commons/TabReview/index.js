@@ -65,6 +65,7 @@ export default function TabReview(props) {
             onPress={() =>
               props.navigation.navigate('ReviewEdit', {
                 faPk: props.faPk,
+                faName: props.faName,
                 refresh: props.refresh,
               })
             }
@@ -86,6 +87,7 @@ export default function TabReview(props) {
             delReview={delReview}
             navigation={props.navigation}
             refresh={props.refresh}
+            faName={props.faName}
           />
         );
       })}

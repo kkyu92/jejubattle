@@ -8,7 +8,13 @@
 
 import 'react-native-gesture-handler';
 import React from 'react';
-import {useColorScheme, AppState, Platform, Alert} from 'react-native';
+import {
+  useColorScheme,
+  AppState,
+  Platform,
+  Alert,
+  BackHandler,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
@@ -39,6 +45,7 @@ import {localNotificationService} from './src/fcm/LocalNotificationService';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
 import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 
 const Stack = createStackNavigator();
 
@@ -292,9 +299,27 @@ export default function App() {
   // Suspend > Resume Logic
   React.useEffect(() => {
     AppState.addEventListener('change', handleAppState);
-
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+      if (state.type === 'none' || state.isConnected === false) {
+        Alert.alert(
+          '인터넷 연결끊김',
+          '인터넷 연결 상태를 확인 후 다시 시도해주세요!.',
+          [
+            {
+              text: '확인',
+              onPress: () => {
+                BackHandler.exitApp();
+              },
+            },
+          ],
+        );
+      }
+    });
     return () => {
       AppState.removeEventListener('change', handleAppState);
+      unsubscribe();
     };
   }, []);
 

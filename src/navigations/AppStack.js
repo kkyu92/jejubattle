@@ -35,6 +35,8 @@ import BattleMemberReport from '../screens/Battle/MemberReport';
 import Report from '../screens/Report';
 import Evaluation from '../screens/Battle/Evaluation';
 
+import FacilityViewModal from '../screens/Facility/View';
+
 const LeftDrawerStack = createDrawerNavigator();
 function LeftDrawerStackScreen() {
   return (
@@ -142,6 +144,8 @@ export default function AppStackScreen() {
       <Stack.Screen name="Report" component={Report} />
       <Stack.Screen name="Evaluation" component={Evaluation} />
       <Stack.Screen name="Ad" component={Ad} />
+
+      <Stack.Screen name="FacilityViewModal" component={FacilityViewModal} />
     </Stack.Navigator>
   );
 }

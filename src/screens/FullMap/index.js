@@ -53,8 +53,6 @@ export default function FullMap(props) {
 
   const DEFAULT_BAPK = 195;
 
-  // const [selectedSports, setSelectedSports] = React.useState([]);
-  // const [selectedClCode, setSelectedClCode] = React.useState([]);
   React.useEffect(() => {
     let caCode, clCode;
     if (props.route.params?.sportsList) {
@@ -272,9 +270,10 @@ export default function FullMap(props) {
     setActionSheetComponent(
       <>
         <ListItem
-          onPress={() =>
-            props.navigation.navigate('FacilityView', {faPk: e.faPk})
-          }
+          onPress={() => {
+            props.navigation.navigate('FacilityViewModal', {faPk: e.faPk});
+            actionSheetRef.current?.setModalVisible(false);
+          }}
           item={e}
           showScrap={false}
         />

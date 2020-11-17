@@ -18,10 +18,13 @@ import {AppContext} from '../../context';
 import ViewMoreText from 'react-native-view-more-text';
 import Axios from 'axios';
 import {logApi} from '../../react-native-nuno-ui/funcs';
+import MySports from '../MySports';
 
 export default function ReviewComponent(props) {
   const context = React.useContext(AppContext);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [selectedMember, setSelectedMember] = React.useState({});
+  const [memberModal, setMemberModal] = React.useState(false);
 
   const renderViewMore = (onPress) => {
     return (
@@ -52,7 +55,10 @@ export default function ReviewComponent(props) {
               width={50}
               borderRadius={25}
               uri={props.data.userImgUrl}
-              onPress={() => null}
+              // onPress={() => {
+              //   setSelectedMember(props.data);
+              //   setMemberModal(true);
+              // }}
               resizeMode={'cover'}
             />
           ) : (
@@ -62,7 +68,10 @@ export default function ReviewComponent(props) {
               width={50}
               height={50}
               borderRadius={25}
-              onPress={() => null}
+              // onPress={() => {
+              //   setSelectedMember(props.data);
+              //   setMemberModal(true);
+              // }}
             />
           )}
           <Seperator height={5} />
@@ -138,6 +147,7 @@ export default function ReviewComponent(props) {
                 onPress={() =>
                   props.navigation.navigate('ReviewEdit', {
                     rePk: props.data.rePk,
+                    faName: props.faName,
                     reScope: props.data.reScope,
                     reContent: props.data.reContent,
                     file: props.data.reImgUrl,
@@ -203,6 +213,79 @@ export default function ReviewComponent(props) {
           </HView>
         </View>
       </Modal>
+      {/* 사용자정보 modal */}
+      {/* <Modal
+        isVisible={memberModal}
+        onBackdropPress={() => setMemberModal(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          {selectedMember.userImgUrl ? (
+            <Image
+              uri={selectedMember.userImgUrl}
+              width={72}
+              height={72}
+              borderRadius={36}
+            />
+          ) : (
+            <Image
+              local
+              uri={require('../../../assets/img/user_boy.png')}
+              width={72}
+              height={72}
+              borderRadius={36}
+            />
+          )}
+          <View style={{paddingVertical: 8}}>
+            <StarRating
+              disabled={true}
+              maxStars={5}
+              rating={selectedMember.userScope}
+              starSize={11}
+              emptyStarColor={custom.themeColor}
+              halfStarEnabled={true}
+              halfStarColor={custom.themeColor}
+              fullStarColor={custom.themeColor}
+            />
+          </View>
+          <Text
+            fontSize={18}
+            fontWeight={'bold'}
+            color={'black'}
+            text={selectedMember.userName}
+          />
+          <Seperator height={10} />
+          <MySports userSport={selectedMember.userSport} />
+          <Seperator height={20} />
+          <Text
+            fontSize={14}
+            // color={'gray'}
+            text={`전체 승률: ${selectedMember.winrate}% (${selectedMember.ago}전 ${selectedMember.win}승 ${selectedMember.lose}패)`}
+          />
+          <Seperator height={10} />
+          <Text
+            fontSize={14}
+            // color={'gray'}
+            text={`소개: ${selectedMember.userIntro}`}
+          />
+
+          <Seperator height={50} />
+          <Button
+            text={'확인'}
+            size={'large'}
+            color={custom.themeColor}
+            onPress={() => {
+              setSelectedMember({});
+              setMemberModal(false);
+            }}
+            stretch
+          />
+        </View>
+      </Modal> */}
     </View>
   );
 }

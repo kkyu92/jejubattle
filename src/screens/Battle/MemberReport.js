@@ -27,8 +27,12 @@ export default function BattleMemberReport(props) {
   const [member, setMember] = React.useState([
     ...props.route.params.info.teamA.member,
     ...props.route.params.info.teamB.member,
+  ]);
+  const [history, setHistory] = React.useState([
     ...props.route.params.info.history,
   ]);
+  const [total, setTotal] = React.useState([]);
+
   function getUniqueObjectArray(array) {
     return array.filter((item, i) => {
       return (
@@ -38,18 +42,28 @@ export default function BattleMemberReport(props) {
       );
     });
   }
+
   React.useEffect(() => {
-    let uniq = getUniqueObjectArray(member);
-    setMember(uniq);
-    console.log(uniq);
+    let m = member.map((e) => ({
+      ...e,
+      in: true,
+    }));
+    let h = history.map((e) => ({
+      ...e,
+      in: false,
+    }));
+    let t = [...m, ...h];
+    let uniq = getUniqueObjectArray(t);
+    setTotal(uniq);
   }, []);
+
   return (
     <Container>
       <Header left={'close'} title={'신고하기'} navigation={props.navigation} />
       <ScrollView>
         <View style={{padding: 20}}>
           <HView style={{flexWrap: 'wrap', justifyContent: 'flex-start'}}>
-            {member.map((e, i) => {
+            {total.map((e, i) => {
               return (
                 <TouchableOpacity
                   key={i}
@@ -73,8 +87,8 @@ export default function BattleMemberReport(props) {
                   <Text
                     text={e.userName}
                     fontSize={14}
-                    fontWeight={'500'}
-                    color={'dimgray'}
+                    fontWeight={e.in === true ? 'bold' : '500'}
+                    color={e.in === true ? 'black' : 'dimgray'}
                   />
                 </TouchableOpacity>
               );
