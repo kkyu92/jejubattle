@@ -217,6 +217,7 @@ export async function getCurrentLocation(lang) {
           coords: {latitude: 37.568676, longitude: 126.978031},
         });
       } else {
+        showToast('위치권한을 확인하는중입니다....', 6000, 'center');
         Geolocation.getCurrentPosition(
           (position) => {
             console.log('current location', position);
@@ -269,6 +270,14 @@ export async function getCurrentLocation(lang) {
       }
     } else {
       console.log('location permission not granted');
+      // Alert.alert(
+      //   `근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요.`,
+      //   '',
+      //   [
+      //     {text: '권한 설정하기', onPress: () => openSetting()},
+      //     {text: '취소', onPress: () => {}},
+      //   ],
+      // );
       reject();
     }
   });

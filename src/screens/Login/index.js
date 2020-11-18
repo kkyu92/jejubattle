@@ -19,7 +19,11 @@ import {custom} from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
-import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
+import {
+  getCurrentLocation,
+  logApi,
+  showToast,
+} from '../../react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
 import RNKakaoLogins from '@react-native-seoul/kakao-login';
@@ -140,9 +144,10 @@ export default function Login(props) {
   // };
 
   React.useEffect(() => {
-    if (!hidePermissionAlert) {
-      setPermissionVisible(true);
-    }
+    // if (!hidePermissionAlert) {
+    //   setPermissionVisible(true);
+    // }
+    GCL();
     if (!appleAuth.isSupported) return;
 
     fetchAndUpdateCredentialState(updateCredentialStateForUser).catch((error) =>
@@ -161,7 +166,11 @@ export default function Login(props) {
     });
   }, []);
 
-  const signin = () => {
+  async function GCL() {
+    global.address = await getCurrentLocation(global.lang);
+  }
+  const signin = async () => {
+    global.address = await getCurrentLocation(global.lang);
     setLoading(true);
     Axios.post('signin', {
       userId: email,
@@ -186,8 +195,9 @@ export default function Login(props) {
         setLoading(false);
       });
   };
-  const startWithSNS = (userId, userEmail, userCode) => {
+  const startWithSNS = async (userId, userEmail, userCode) => {
     console.log('userEmail : ' + userEmail);
+    global.address = await getCurrentLocation(global.lang);
     setLoading(true);
     Axios.post('snsSignin', {
       userId: userId,
