@@ -28,6 +28,13 @@
 
 > https://play.google.com/apps/internaltest/4700794782783427988
 
+#### 2020.11.19
+
+> android (2.0.0.26)
+> ios (2.0.0.18)
+
+- app icon 변경
+
 #### 2020.11.18
 
 > android (2.0.0.25)
