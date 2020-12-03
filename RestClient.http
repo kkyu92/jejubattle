@@ -1,8 +1,8 @@
 @fcm=https://fcm.googleapis.com/fcm/send
 @host=https://kangmin.shop/api/
 @tokenFb=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudZmIiLCJpc3MiOiJrYW5nbWluLnNob3AiLCJfcGsiOjQxLCJleHAiOjE2MDcxMzI3Mjh9.wYO8KC3F5L8WNZuGZ0Iu7GdqgZBo_OEn1j3lqc73O_Y
-@tokenKakao=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjA2MDEwMjk0fQ.fs8nwQh0gVTQqaK4E82TUk-V79jXLwFYzhXwcyertvQ
-@token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjA3NjU1MTY3fQ.8DWfTM0rpWDvmjEB0PCBSF5shKVNcaPO0ghPgOlYofw
+@tokenKakao=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7Iuda2FrYW8iLCJpc3MiOiJrYW5nbWluLnNob3AiLCJfcGsiOjMyLCJleHAiOjE2MDk0Njc3MzB9.qBhLgEo03PTAjlBEl_Q5NRecVRMe0iSvgigBapkckgA
+@token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjA5NDY3NzUwfQ.qcSt_Arq9B3sb6IHaUb_D65aZ5ledSRz3QElzC0evIM
 @pushKeyKakao=d9P80U8JTPKd8o6OCNbIt4:APA91bENEKBovx8G4mn3aKu9jnIe_xBJVh1_xqLLrUfs3IDCEKyx4UaatPpltqZmCPsRbVSbc-ga8jWJ8PytoNueL0aFndn-s6EKRoVKPWw4S059zc3CsFiTseqcxXMqkDCj-mkQciYx
 @pushKey=fITkvNxP80Yon4znlXr-cF:APA91bEb5A-_YB7-pZ1cVjDXfoCCYx8aIalX8yVjgpFJHy7_hA0DUoV-yCSZJ9UZ87QxnqxYUNT65H0nWwLBykEoGn-3q8YQ9Gl65XE3wDgeHPXqD7aoxaKiLvahBUF5krMqT7EusvuP
 
@@ -82,12 +82,12 @@ token: {{token}}
 
 ###
 
-POST {{host}}locker HTTP/1.1
+POST {{host}}wishList HTTP/1.1
 Content-Type: application/json
-token: {{token}}
+token: {{tokenKakao}}
 
 {
-  "pageNum": 1
+  "pageNum" : 1
 }
 
 ###

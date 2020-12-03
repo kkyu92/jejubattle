@@ -237,7 +237,17 @@ export default function MyInfo(props) {
                     </View>
                     <View style={{flex: 0.7}}>
                       <Text
-                        text={e.ago + '전 ' + e.win + '승 ' + e.lose + '패'}
+                        text={
+                          e.ago +
+                          '전 ' +
+                          e.win +
+                          '승 ' +
+                          e.lose +
+                          '패' +
+                          '    ' +
+                          parseInt((e.win / e.ago) * 100) +
+                          '%'
+                        }
                         fontSize={16}
                         color={'dimgray'}
                       />

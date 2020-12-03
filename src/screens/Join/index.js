@@ -22,11 +22,13 @@ import {
   checkEmail,
   checkPassword,
   getQueryParam,
+  showToast,
 } from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {show} from 'react-native-bootsplash';
 
 export default function Join(props) {
   const context = React.useContext(AppContext);
@@ -129,6 +131,36 @@ export default function Join(props) {
       });
   };
   const prePostUser = () => {
+    if (
+      !name ||
+      !agreement ||
+      !agreement1 ||
+      !agreement2 ||
+      !agreement3 ||
+      !agreement4 ||
+      !gender ||
+      !email ||
+      !mobile
+    ) {
+      if (!name) {
+        showToast('이름을 확인해주세요', 2000, 'center');
+      } else if (
+        !agreement ||
+        !agreement1 ||
+        !agreement2 ||
+        !agreement3 ||
+        !agreement4
+      ) {
+        showToast('약관에 동의해주세요', 2000, 'center');
+      } else if (!gender) {
+        showToast('성별을 체크해주세요', 2000, 'center');
+      } else if (!email) {
+        showToast('인증을 위한 이메일을 입력해주세요', 2000, 'center');
+      } else if (!mobile) {
+        showToast('휴대폰 인증을 완료해주세요', 2000, 'center');
+      }
+      return;
+    }
     const checkemail = checkEmail(email);
     const checkpassword = checkPassword(password, repassword);
     if (props.route?.params?.userCode === undefined && !userAuthkey) {
@@ -487,17 +519,6 @@ export default function Join(props) {
           stretch
           size={'large'}
           text={'회원가입'}
-          disable={
-            !name ||
-            !agreement ||
-            !agreement1 ||
-            !agreement2 ||
-            !agreement3 ||
-            !agreement4 ||
-            !gender ||
-            !email ||
-            !mobile
-          }
           onPress={() => prePostUser()}
           color={custom.themeColor}
         />

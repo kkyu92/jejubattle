@@ -26,7 +26,7 @@ import {
 } from '../../react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
-import RNKakaoLogins from '@react-native-seoul/kakao-login';
+import RNKakaoLogins, {KAKAO_AUTH_TYPES} from '@react-native-seoul/kakao-login';
 import {NaverLogin, getProfile} from '@react-native-seoul/naver-login';
 import {
   LoginManager,
@@ -51,12 +51,12 @@ export default function Login(props) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [emailForPassword, setEmailForPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [permissionVisible, setPermissionVisible] = React.useState(false);
-  const [permission1, setPermission1] = React.useState(false);
-  const [permission2, setPermission2] = React.useState(false);
-  const [hidePermissionAlert, setHidePermissionAlert] = React.useState(
-    global.hidePermissionAlert,
-  );
+  // const [permissionVisible, setPermissionVisible] = React.useState(false);
+  // const [permission1, setPermission1] = React.useState(false);
+  // const [permission2, setPermission2] = React.useState(false);
+  // const [hidePermissionAlert, setHidePermissionAlert] = React.useState(
+  //   global.hidePermissionAlert,
+  // );
 
   let user = null;
   const [credentialStateForUser, updateCredentialStateForUser] = React.useState(
@@ -167,10 +167,10 @@ export default function Login(props) {
   }, []);
 
   async function GCL() {
-    global.address = await getCurrentLocation(global.lang);
+    global.address = getCurrentLocation(global.lang);
   }
   const signin = async () => {
-    global.address = await getCurrentLocation(global.lang);
+    global.address = getCurrentLocation(global.lang);
     setLoading(true);
     Axios.post('signin', {
       userId: email,
@@ -190,14 +190,16 @@ export default function Login(props) {
         logApi('signin error', err?.response);
         console.log('e : ' + JSON.stringify(err));
         if (err.code !== 1) {
-          Alert.alert('로그인', err.response?.data?.message);
+          setLoading(false);
+          setTimeout(() => {
+            Alert.alert('로그인 실패', err.response?.data?.message);
+          }, 200);
         }
-        setLoading(false);
       });
   };
   const startWithSNS = async (userId, userEmail, userCode) => {
     console.log('userEmail : ' + userEmail);
-    global.address = await getCurrentLocation(global.lang);
+    global.address = getCurrentLocation(global.lang);
     setLoading(true);
     Axios.post('snsSignin', {
       userId: userId,
@@ -268,22 +270,51 @@ export default function Login(props) {
       },
     );
   };
+  const callback = () => {
+    console.log('callback');
+  };
   const startWithKakao = () => {
-    RNKakaoLogins.login((err, res) => {
-      if (err) {
-        console.log('loginWithKakao Error', err);
-        return;
-      }
-
-      RNKakaoLogins.getProfile((profileErr, profile) => {
-        if (err) {
-          console.log('kakao getProfile', err);
-          return;
-        }
-        console.log('kakao getProfile', profile);
-        startWithSNS(profile.id, profile.email, 3);
+    RNKakaoLogins.logout()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
+    RNKakaoLogins.login([
+      KAKAO_AUTH_TYPES.Talk,
+      KAKAO_AUTH_TYPES.Story,
+      KAKAO_AUTH_TYPES.Account,
+    ])
+      .then((result) => {
+        console.log(`Login Finished:${JSON.stringify(result)}`);
+        RNKakaoLogins.getProfile((profileErr, profile) => {
+          console.log('kakao getProfile', profile);
+          startWithSNS(profile.id, profile.email, 3);
+        });
+      })
+      .catch((err) => {
+        if (err.code === 'E_CANCELLED_OPERATION') {
+          console.log(`Login Cancelled:${err.message}`);
+        } else {
+          console.log(`Login Failed:${err.code} ${err.message}`);
+        }
+      });
+    // RNKakaoLogins.login((err, res) => {
+    //   if (err) {
+    //     console.log('loginWithKakao Error', err);
+    //     return;
+    //   }
+    //   console.log(JSON.stringify(res));
+    // RNKakaoLogins.getProfile((profileErr, profile) => {
+    //   if (err) {
+    //     console.log('kakao getProfile', err);
+    //     return;
+    //   }
+    //   console.log('kakao getProfile', profile);
+    //   startWithSNS(profile.id, profile.email, 3);
+    // });
+    // });
   };
   const startWithFacebook = () => {
     LoginManager.logInWithPermissions(['public_profile', 'email'])
@@ -554,7 +585,7 @@ export default function Login(props) {
           </View>
         </View>
       </Modal>
-      <Modal
+      {/* <Modal
         isVisible={permissionVisible}
         onBackdropPress={() => setPermissionVisible(false)}>
         <View style={{padding: 20, backgroundColor: 'white', borderRadius: 10}}>
@@ -609,7 +640,7 @@ export default function Login(props) {
             />
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </Container>
   );
 }

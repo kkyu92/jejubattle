@@ -9,8 +9,9 @@ import {
   Image,
   Modal,
   Checkbox,
+  Loader,
 } from '../../react-native-nuno-ui';
-import {TouchableOpacity, View, FlatList} from 'react-native';
+import {TouchableOpacity, View, FlatList, Alert} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItemBattle from '../../commons/ListItemBattle';
@@ -19,6 +20,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Axios from 'axios';
 import {logApi} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function MyBattle(props) {
   const context = React.useContext(AppContext);
@@ -27,10 +30,23 @@ export default function MyBattle(props) {
   const [edit, setEdit] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [moredone, setMoredone] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const isFocused = useIsFocused();
+
+  React.useEffect(() => {
+    setLoading(true);
+    get(1, true);
+    console.log('isFocused');
+    setMoredone(false);
+    setPage(1);
+    setTimeout(() => {
+      setLoading(false);
+    }, 100);
+  }, [isFocused]);
 
   React.useEffect(() => {
     pullToRefresh && get(1, true);
-    console.log('reFresh');
+    console.log('pullToReFresh');
     setMoredone(false);
     setPage(1);
   }, [pullToRefresh]);
@@ -95,7 +111,9 @@ export default function MyBattle(props) {
       />
     );
   };
-  return (
+  return loading === true ? (
+    <Loader />
+  ) : (
     <Container>
       <Header
         left={'back'}
@@ -155,7 +173,22 @@ export default function MyBattle(props) {
               <Button
                 text={'삭제'}
                 color={custom.themeColor}
-                onPress={() => deleteMyBattle()}
+                onPress={() =>
+                  Alert.alert(
+                    '선택한 배틀을 삭제합니다',
+                    '해당 방 정보가 모두 삭제되며 복구할 수 없습니다.\n아직보상을 받지않은 경우 보상을 받을 수 없습니다.',
+                    [
+                      {
+                        text: '취소',
+                        onPress: () => console.log('cancel'),
+                      },
+                      {
+                        text: '삭제',
+                        onPress: () => deleteMyBattle(),
+                      },
+                    ],
+                  )
+                }
                 size={'large'}
                 stretch
               />

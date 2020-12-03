@@ -54,7 +54,7 @@ export default function TravelList(props) {
       lon: global.address.coords.longitude,
     })
       .then((res) => {
-        logApi('travelList', props.route.params.faCode, res.data);
+        logApi('travelList', res.data);
         setTravel(res.data.facility);
         res.data.category && setCategory(res.data.category);
       })

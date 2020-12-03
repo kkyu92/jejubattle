@@ -217,7 +217,6 @@ export async function getCurrentLocation(lang) {
           coords: {latitude: 37.568676, longitude: 126.978031},
         });
       } else {
-        showToast('위치권한을 확인하는중입니다....', 6000, 'center');
         Geolocation.getCurrentPosition(
           (position) => {
             console.log('current location', position);
@@ -299,7 +298,7 @@ export async function saveRecentKeyword(keyword, max) {
           date: new Date().toISOString(),
         });
         if (locals.length > max) {
-          locals.splice(10, 1);
+          locals.splice(5, 1);
         }
         AsyncStorage.setItem('searchKeywords', JSON.stringify(locals));
         resolve(locals);

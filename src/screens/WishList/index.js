@@ -24,16 +24,32 @@ export default function WishList(props) {
   const [edit, setEdit] = React.useState(false);
   const [wishList, setWishList] = React.useState([]);
   const [checkAll, setCheckAll] = React.useState(false);
+  const [page, setPage] = React.useState(1);
+  const [moredone, setMoredone] = React.useState(false);
   const isFocused = useIsFocused();
 
   React.useEffect(() => {
-    isFocused && get();
+    isFocused && get(1);
   }, [isFocused]);
-  const get = () => {
-    Axios.get('wishList')
-      .then((res) => {
+  const get = (page) => {
+    Axios.post('wishList', {pageNum: page})
+      .then(async (res) => {
+        let notiList = res.data;
+        const list = notiList.map((item) => ({
+          ...item,
+          checked: false,
+        }));
         logApi('wishList', res.data);
-        setWishList(res.data.map((e) => ({...e, checked: false})));
+        setWishList((old) => [...old, ...list]);
+        if (res.data.length === 10) {
+          Axios.post('wishList', {pageNum: page + 1}).then(async (res) => {
+            if (res.data.length === 0) {
+              setMoredone(true);
+            }
+          });
+        } else {
+          setMoredone(true);
+        }
       })
       .catch((err) => {
         logApi('wishList error', err.response);
@@ -67,7 +83,7 @@ export default function WishList(props) {
     Axios.post('wishDelete', body)
       .then((res) => {
         logApi('wishDelete', res.data);
-        get();
+        get(1);
       })
       .catch((err) => {
         logApi('wishDelete error', err.response);
@@ -175,13 +191,15 @@ export default function WishList(props) {
             <Seperator line />
           </View>
         )}
-        // ListEmptyComponent={<Empty />}
-        // ListHeaderComponent={FlatListHeader()}
-        // refreshing={pullToRefresh}
-        // onRefresh={() => {
-        //   setIsLast(false);
-        //   setPullToRefresh(true);
-        // }}
+        onEndReached={() => {
+          if (!moredone) {
+            console.log('more endReched!');
+            setPage(page + 1);
+            get(page + 1);
+          } else {
+            console.log('finish endReched!');
+          }
+        }}
       />
       {edit && (
         <View>

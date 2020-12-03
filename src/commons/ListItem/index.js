@@ -12,6 +12,10 @@ import {
 } from '../../react-native-nuno-ui';
 
 export default function ListItem(props) {
+  let tagList = '';
+  props.item?.faHashtag?.map((tag) => {
+    tagList = tagList + tag.tag + ' ';
+  });
   return (
     <View>
       <TouchableOpacity onPress={props.onPress}>
@@ -29,7 +33,7 @@ export default function ListItem(props) {
             resizeMode={'cover'}
           />
           <Seperator width={10} />
-          <View style={{flex: 1, paddingVertical: 10}}>
+          <View style={{flex: 1, alignSelf: 'center'}}>
             <Text text={props.item.faName} fontSize={16} fontWeight={'bold'} />
             <Seperator height={10} />
             <Text
@@ -39,7 +43,20 @@ export default function ListItem(props) {
               numberOfLines={2}
               color={'gray'}
             />
-            <Seperator height={10} />
+            <Seperator height={5} />
+            {tagList !== '' ? (
+              <>
+                <Text
+                  text={tagList}
+                  fontSize={12}
+                  fontWeight={'bold'}
+                  color={'orange'}
+                />
+                <Seperator height={5} />
+              </>
+            ) : (
+              <Seperator height={5} />
+            )}
             <HView>
               <Icons
                 name={'icon-star-12'}

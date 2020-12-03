@@ -11,7 +11,7 @@ import {View, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import Icons from '../../commons/Icons';
 import {AppContext} from '../../context';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 
 export default function Notification(props) {
   const context = React.useContext(AppContext);
@@ -62,6 +62,7 @@ export default function Notification(props) {
 
   React.useEffect(() => {
     getNoti(page);
+    notiRead();
   }, []);
 
   const renderItem = ({item, index}) => {
@@ -72,10 +73,12 @@ export default function Notification(props) {
             ? console.log('관리자 알림')
             : item.fmCode === 2
             ? props.navigation.navigate('Archive', {})
-            : item.fmCode === 3
+            : item.fmCode === 3 && item.inValid === 'Y'
             ? props.navigation.navigate('BattleView', {
                 baPk: item.baPk,
               })
+            : item.fmCode === 3 && item.inValid === 'N'
+            ? showToast('배틀방이 존재하지 않습니다.', 2000, 'center')
             : item.fmCode === 4
             ? props.navigation.navigate('Battle', {})
             : item.fmCode === 5

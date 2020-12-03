@@ -36,8 +36,9 @@ export default function FullMap(props) {
   const [mapReady, setMapReady] = React.useState('');
   const [keyword, setKeyword] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState({
-    latitude: props.route?.params?.latitude || undefined,
-    longitude: props.route?.params?.longitude || undefined,
+    latitude: props.route?.params?.latitude || global.address.coords.latitude,
+    longitude:
+      props.route?.params?.longitude || global.address.coords.longitude,
   });
   const [result, setResult] = React.useState([]);
   const [actionSheetComponent, setActionSheetComponent] = React.useState(null);
@@ -98,6 +99,10 @@ export default function FullMap(props) {
       setResult(temp);
     }
     console.log('useEffect');
+    console.log(
+      global.address.coords.latitude,
+      global.address.coords.longitude,
+    );
     setLoading(true);
   }, [props.route.params?.sportsList, props.route.params?.clCodeList]);
 
@@ -245,6 +250,7 @@ export default function FullMap(props) {
     // "lat": 37.55375859999999,
     // "lon": 126.9809696,
     Axios.post('aroundme', {
+      // 움직이는 화면의 중앙 || 저장된 나의 위치
       lat: currentLocation.latitude, //global.address.coords.latitude,
       lon: currentLocation.longitude, //global.address.coords.longitude,
       keyword: keyword,
@@ -253,14 +259,15 @@ export default function FullMap(props) {
         logApi('aroundme', res.data);
         if (res.data.length === 0) {
           showToast('주변에 등록된 장소가 없습니다.', 2000, 'center');
+        } else {
+          const temp = res.data.map((e) => ({
+            ...e,
+            coords: {latitude: e.faLat, longitude: e.faLon},
+            title: e.faName,
+            // markerComponent: require('../../../assets/img/icon-mylocation.png'),
+          }));
+          setResult(temp);
         }
-        const temp = res.data.map((e) => ({
-          ...e,
-          coords: {latitude: e.faLat, longitude: e.faLon},
-          title: e.faName,
-          // markerComponent: require('../../../assets/img/icon-mylocation.png'),
-        }));
-        setResult(temp);
       })
       .catch((err) => {
         logApi('aroundme error', err.response);
@@ -311,8 +318,10 @@ export default function FullMap(props) {
   ) : (
     <View style={{flex: 1}}>
       <Map
-        latitude={currentLocation.latitude}
-        longitude={currentLocation.longitude}
+        // currentLocation.latitude,
+        // currentLocation.longitude,
+        latitude={global.address.coords.latitude}
+        longitude={global.address.coords.longitude}
         showZoom={true}
         showCurrent={true}
         markers={result}

@@ -1525,10 +1525,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-7.6.1.tgz#93a6d231b56e5d4420fc242b10aecacade58677f"
   integrity sha512-43VmHNJCTUC8dj5RS/2PPvY8iWk8qp6VHg1hhmu/oCzcgpeeAdNHPLiQfPxkqiaeHVIr9q8mDKEs+NqSNUD6aw==
 
-"@react-native-seoul/kakao-login@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@react-native-seoul/kakao-login/-/kakao-login-2.7.0.tgz#6a8990773dc81a4a74a6c7991ffa3fa1f216f38b"
-  integrity sha512-/oFJuOuqBCliL4elsTvHCmhS0WyPa9WYpZ69+lHaAVObBYgoL/q0QHO6L9VktFsW5iI19sT8NN6+RiCARO9+CA==
+"@react-native-seoul/kakao-login@^2.10.1":
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/@react-native-seoul/kakao-login/-/kakao-login-2.10.1.tgz#46f510cc0cd51895acc02415591c35fa4ddb524b"
+  integrity sha512-cviMHZ4I9BA/zYaDZdBK+paKvHl4sg43aoVwLkfriiaxH9Xc49942SO6v1IjnQISZX1SYbWw1f4uvNhHb9/XXA==
   dependencies:
     dooboolab-welcome "^1.1.0"
 

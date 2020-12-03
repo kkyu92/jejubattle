@@ -61,7 +61,7 @@ export default function Evaluation(props) {
       ).length === 0
         ? 'teamA'
         : 'teamB';
-    const coords = await getCurrentCoords();
+    const coords = getCurrentCoords();
     Axios.post('resultBattle', {
       baPk: props.route.params.info.baPk,
       [team]: {

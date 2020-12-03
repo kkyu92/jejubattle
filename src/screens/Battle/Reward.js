@@ -147,12 +147,20 @@ export default function Reward(props) {
               {reward.randombox.map((e, i) => {
                 return (
                   <TouchableOpacity
-                    onPress={() => setSelectedRandomBox(e.code)}
+                    onPress={() => {
+                      setSelectedRandomBox(e.code);
+                      showToast(
+                        e.name + '보상을 선택했습니다.',
+                        2000,
+                        'bottom',
+                      );
+                    }}
                     key={i}
                     style={{alignItems: 'center'}}>
                     <View
                       style={{
-                        backgroundColor: 'lightgray',
+                        backgroundColor:
+                          selectedRandomBox - 1 === i ? 'orange' : 'lightgray',
                         width: 70,
                         height: 70,
                         borderRadius: 35,
@@ -167,7 +175,11 @@ export default function Reward(props) {
             <Button
               text={'선택완료'}
               color={custom.themeColor}
-              onPress={() => getRandomBox()}
+              onPress={() =>
+                selectedRandomBox === 0
+                  ? showToast('보상박스를 선택해주세요.', 2000, 'bottom')
+                  : getRandomBox()
+              }
               size={'large'}
               stretch
             />

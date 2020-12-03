@@ -169,6 +169,12 @@ export default function App() {
                 options,
               );
             }
+            dispatch({
+              type: 'UPDATEME',
+              data: {
+                notification: 'N',
+              },
+            });
           } else if (notify.screen === 'battlechat') {
             // chat msg
             if (baPk === '0') {
@@ -232,6 +238,12 @@ export default function App() {
               // 다른 배틀방 화면
               showToast(notify.title + '\n' + notify.body, 2000, 'center');
             }
+            dispatch({
+              type: 'UPDATEME',
+              data: {
+                notification: 'N',
+              },
+            });
           } else if (notify.screen === 'no') {
             // 신고하기
             const options = {
@@ -245,6 +257,12 @@ export default function App() {
               notify,
               options,
             );
+            dispatch({
+              type: 'UPDATEME',
+              data: {
+                notification: 'N',
+              },
+            });
           } else if (notify.screen === 'join') {
             dispatch({type: 'UPDATENOTI', data: notify});
           }
@@ -299,22 +317,27 @@ export default function App() {
   // Suspend > Resume Logic
   React.useEffect(() => {
     AppState.addEventListener('change', handleAppState);
+    // Subscribe
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log('Connection type', state.type);
-      console.log('Is connected?', state.isConnected);
+      // Alert.alert(
+      //   'Connection type : ' + state.type,
+      //   'Is connected :' + state.isConnected,
+      // );
       if (state.type === 'none' || state.isConnected === false) {
-        Alert.alert(
-          '인터넷 연결끊김',
-          '인터넷 연결 상태를 확인 후 다시 시도해주세요!.',
-          [
-            {
-              text: '확인',
-              onPress: () => {
-                BackHandler.exitApp();
+        setTimeout(() => {
+          Alert.alert(
+            '인터넷 연결',
+            '인터넷 연결 상태를 확인 후 다시 시도해주세요!.',
+            [
+              {
+                text: '확인',
+                onPress: () => {
+                  BackHandler.exitApp();
+                },
               },
-            },
-          ],
-        );
+            ],
+          );
+        }, 1000);
       }
     });
     return () => {

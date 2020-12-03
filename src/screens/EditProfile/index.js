@@ -24,7 +24,11 @@ import {screenWidth} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import ImagePicker from 'react-native-image-crop-picker';
-import {logApi, checkPassword, showToast} from '../../react-native-nuno-ui/funcs';
+import {
+  logApi,
+  checkPassword,
+  showToast,
+} from '../../react-native-nuno-ui/funcs';
 import {sports1Table} from '../../constants';
 
 export default function EditProfile(props) {
@@ -76,10 +80,12 @@ export default function EditProfile(props) {
   const handleSports = (e) => {
     const temp = [...selectedSports];
     const found = temp.map((t) => t.code).indexOf(e.code);
-    if (found === -1) {
+    if (found === -1 && selectedSports.length < 3) {
       temp.push(e);
-    } else {
+    } else if (found !== -1 && selectedSports.length <= 3) {
       temp.splice(found, 1);
+    } else {
+      showToast('최대 3개까지 선택가능합니다.', 2000, 'center');
     }
     setSelectedSports(temp);
   };
@@ -115,7 +121,11 @@ export default function EditProfile(props) {
         logApi('pwdCheck', res.data);
         setNewPassword(npw);
         setModalPassword(false);
-        showToast('가장 하단에 있는 수정 완료 버튼을 눌러야 적용됩니다.', 2000, 'center');
+        showToast(
+          '가장 하단에 있는 수정 완료 버튼을 눌러야 적용됩니다.',
+          2000,
+          'center',
+        );
       })
       .catch((err) => {
         logApi('pwdCheck error', err.response?.data?.message);
@@ -226,7 +236,7 @@ export default function EditProfile(props) {
             <View style={{flex: 0.2}}>
               <Text text={'전화번호'} fontSize={18} fontWeight={'500'} />
             </View>
-            <View style={{flex: 0.6}}>
+            <View style={{flex: 0.8}}>
               <Text
                 text={context.me.userPhone}
                 color={'gray'}
@@ -234,7 +244,7 @@ export default function EditProfile(props) {
                 fontWeight={'500'}
               />
             </View>
-            <View style={{flex: 0.2}}>
+            {/* <View style={{flex: 0.2}}>
               <Button
                 text={'인증'}
                 size={'medium'}
@@ -242,14 +252,14 @@ export default function EditProfile(props) {
                 color={custom.themeColor}
                 stretch
               />
-            </View>
+            </View> */}
           </HView>
           {context.me.userCode === 1 && (
             <HView style={{paddingVertical: 10}}>
               <View style={{flex: 0.2}}>
                 <Text text={'이메일'} fontSize={18} fontWeight={'500'} />
               </View>
-              <View style={{flex: 0.6}}>
+              <View style={{flex: 0.8}}>
                 <Text
                   text={context.me.userId}
                   color={'gray'}
@@ -257,7 +267,7 @@ export default function EditProfile(props) {
                   fontWeight={'500'}
                 />
               </View>
-              <View style={{flex: 0.2}}>
+              {/* <View style={{flex: 0.2}}>
                 <Button
                   text={'인증'}
                   size={'medium'}
@@ -265,7 +275,7 @@ export default function EditProfile(props) {
                   color={custom.themeColor}
                   stretch
                 />
-              </View>
+              </View> */}
             </HView>
           )}
           <HView style={{paddingVertical: 10}}>

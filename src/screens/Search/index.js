@@ -8,7 +8,13 @@ import {
   Seperator,
   TextInput,
 } from '../../react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList, Platform} from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  Platform,
+} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
@@ -18,6 +24,7 @@ import {
   saveRecentKeyword,
   getRecentKeyword,
   removeRecentKeyword,
+  showToast,
 } from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 
@@ -27,6 +34,7 @@ export default function Search(props) {
   const [keyword, setKeyword] = React.useState('');
   const [result, setResult] = React.useState([]);
   const [recentKeywords, setRecentKeywords] = React.useState([]);
+  const scrollRef = React.useRef();
 
   React.useEffect(() => {
     getKeywords();
@@ -36,42 +44,93 @@ export default function Search(props) {
     setRecentKeywords(temp);
   };
   const getList = (key) => {
-    Axios.post('search', {
-      keyword: key,
-    })
-      .then(async (res) => {
-        logApi('search', res.data);
-        let temp = [];
-        let stickyIndex = [];
-        if (res.data.goji.length > 0) {
-          stickyIndex.push(0);
-          temp.push({
-            faPk: 1000000000,
-            title: '운동시설',
-            cnt: res.data.goji.length,
-          });
-          temp = temp.concat(res.data.goji);
-        }
-        if (res.data.recommend.length > 0) {
-          stickyIndex.push(temp.length);
-          temp.push({
-            faPk: 2000000000,
-            title: '추천코스',
-            cnt: res.data.recommend.length,
-          });
-          temp = temp.concat(res.data.recommend);
-        }
-        setResult(temp);
-        setStickyHeaderIndices(stickyIndex);
-
-        if (key) {
-          const k = await saveRecentKeyword(key, 5);
-          setRecentKeywords(k);
-        }
+    if (key === ' ') {
+      showToast('공백만 검색할 수 없습니다.', 2000, 'center');
+    } else {
+      Axios.post('search', {
+        keyword: key,
       })
-      .catch((err) => {
-        logApi('search error', err.response);
-      });
+        .then(async (res) => {
+          logApi('search', res.data);
+          let temp = [];
+          let stickyIndex = [];
+          if (
+            res.data.eat.length === 0 &&
+            res.data.goji.length === 0 &&
+            res.data.health.length === 0 &&
+            res.data.play.length === 0 &&
+            res.data.recommend.length === 0 &&
+            res.data.sights.length === 0
+          ) {
+            showToast('검색 결과가 없습니다.', 2000, 'center');
+          } else {
+            if (res.data.goji.length > 0) {
+              stickyIndex.push(0);
+              temp.push({
+                faPk: 1000000000,
+                title: '운동시설',
+                cnt: res.data.goji.length,
+              });
+              temp = temp.concat(res.data.goji);
+            }
+            if (res.data.health.length > 0) {
+              stickyIndex.push(temp.length);
+              temp.push({
+                faPk: 2000000000,
+                title: '건강운동',
+                cnt: res.data.health.length,
+              });
+              temp = temp.concat(res.data.health);
+            }
+            if (res.data.recommend.length > 0) {
+              stickyIndex.push(temp.length);
+              temp.push({
+                faPk: 3000000000,
+                title: '추천시설',
+                cnt: res.data.recommend.length,
+              });
+              temp = temp.concat(res.data.recommend);
+            }
+            if (res.data.eat.length > 0) {
+              stickyIndex.push(temp.length);
+              temp.push({
+                faPk: 4000000000,
+                title: '먹거리',
+                cnt: res.data.eat.length,
+              });
+              temp = temp.concat(res.data.eat);
+            }
+            if (res.data.play.length > 0) {
+              stickyIndex.push(temp.length);
+              temp.push({
+                faPk: 5000000000,
+                title: '놀거리',
+                cnt: res.data.play.length,
+              });
+              temp = temp.concat(res.data.play);
+            }
+            if (res.data.sights.length > 0) {
+              stickyIndex.push(temp.length);
+              temp.push({
+                faPk: 6000000000,
+                title: '볼거리',
+                cnt: res.data.sights.length,
+              });
+              temp = temp.concat(res.data.sights);
+            }
+          }
+          setResult(temp);
+          setStickyHeaderIndices(stickyIndex);
+
+          if (key) {
+            const k = await saveRecentKeyword(key, 5);
+            setRecentKeywords(k);
+          }
+        })
+        .catch((err) => {
+          logApi('search error', err.response);
+        });
+    }
   };
 
   const renderItems = ({item, index}) => {
@@ -132,11 +191,23 @@ export default function Search(props) {
     <Container>
       <Header
         leftComponent={
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
-            <Icons name="icon-search-16" size={20} color={custom.themeColor} />
-          </View>
+          <TouchableOpacity
+            style={{paddingHorizontal: 20, paddingVertical: 5}}
+            onPress={() => props.navigation.goBack()}>
+            <Icons name="icon-backbtn-16" size={20} color={custom.themeColor} />
+          </TouchableOpacity>
         }
-        right={'close'}
+        rightComponent={
+          <TouchableOpacity
+            style={{paddingHorizontal: 20, paddingVertical: 5}}
+            onPress={() => setKeyword('')}>
+            {keyword === '' ? (
+              <Icons name="icon-search-16" size={15} color={'black'} />
+            ) : (
+              <Icons name="icon-cancel-7" size={15} color={'black'} />
+            )}
+          </TouchableOpacity>
+        }
         centerComponent={
           <View style={{flex: 1}}>
             <TextInput
@@ -145,7 +216,11 @@ export default function Search(props) {
               borderWidth={0}
               returnKeyType={'search'}
               returnKeyLabel={'검색'}
-              onSubmitEditing={() => getList(keyword)}
+              onSubmitEditing={() =>
+                keyword === ''
+                  ? showToast('검색하실 키워드를 입력해주세요.', 2000, 'center')
+                  : getList(keyword)
+              }
               placeholder={'검색하실 키워드를 입력해주세요.'}
               clearButtonMode={'while-editing'}
             />
@@ -157,7 +232,10 @@ export default function Search(props) {
         <View style={{padding: 20}}>
           <Text text={'최근 검색어'} color={'gray'} fontSize={13} />
         </View>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          ref={scrollRef}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}>
           {recentKeywords.map((e, i) => {
             return (
               <TouchableOpacity
@@ -166,22 +244,27 @@ export default function Search(props) {
                   flexDirection: 'row',
                   alignItems: 'center',
                   backgroundColor: 'whitesmoke',
-                  padding: 10,
+                  paddingStart: 10,
+                  paddingVertical: 5,
                   borderRadius: 4,
                   marginRight: 10,
                 }}
                 onPress={() => {
                   setKeyword(e.keyword);
                   getList(e.keyword);
+                  scrollRef.current.scrollTo({x: 0, y: 0});
                 }}>
                 <Text text={e.keyword} color={'dimgray'} fontSize={14} />
-                <Seperator width={8} />
                 <TouchableOpacity
                   onPress={async () => {
                     const temp = await removeRecentKeyword(e.keyword);
                     setRecentKeywords(temp);
                   }}>
-                  <Icons name={'icon-cancel-7'} size={7} />
+                  <Icons
+                    name={'icon-cancel-7'}
+                    size={7}
+                    style={{padding: 10}}
+                  />
                 </TouchableOpacity>
               </TouchableOpacity>
             );

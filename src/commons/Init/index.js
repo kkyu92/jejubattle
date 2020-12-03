@@ -48,7 +48,7 @@ export default async () => {
   // location
   // Geolocation.requestAuthorization('whenInUse');
 
-  // global.address = await getCurrentLocation(global.lang);
+  global.address = await getCurrentLocation(global.lang);
   // console.log('[init] location', global.address);
 
   // if (Platform.OS === 'ios') {

@@ -38,7 +38,7 @@ export default function Notice(props) {
         setNotices(res.data);
       })
       .catch((err) => {
-        logApi('event error', err.response);
+        logApi('notice error', err.response);
       });
   }, []);
 

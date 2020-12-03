@@ -37,7 +37,7 @@ export default function Archive(props) {
         setArchive(
           res.data.map((f) => ({
             ...f,
-            id: f.loPk,
+            id: f.loGoods,
           })),
         );
       })
@@ -55,7 +55,7 @@ export default function Archive(props) {
       res.data.length < 9 ? setMoredone(true) : setPage(page + 1);
       const temp = res.data.map((f) => ({
         ...f,
-        id: f.loPk,
+        id: f.loGoods,
       }));
       setArchive((old) => [...old, ...temp]); //index가 작은수록 최신 메시지
     });
@@ -135,6 +135,7 @@ export default function Archive(props) {
         <Text text={'미사용 상품'} fontSize={18} fontWeight={'bold'} />
       </View>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={archive}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
@@ -162,7 +163,7 @@ export default function Archive(props) {
             borderRadius: 5,
             maxHeight: screenHeight - 100,
           }}>
-          <ScrollView style={{padding: 10}}>
+          <ScrollView style={{padding: 10}} showsVerticalScrollIndicato={false}>
             {clickItem.loUsed === 'N' ? (
               <>
                 <Image
@@ -215,6 +216,14 @@ export default function Archive(props) {
                 fontSize={22}
               />
               <Text text={clickItem.loName} color={'#4F4F4F'} fontSize={18} />
+              <Image
+                height={Math.floor((screenWidth - 140) / 3)}
+                width={Math.floor((screenWidth - 140) / 3)}
+                uri={clickItem.loQrcode}
+                // uri={clickItem.loImgUrl}
+                resizeMode={'cover'}
+                borderRadius={10}
+              />
             </View>
             <View style={{paddingVertical: 30, alignItems: 'center'}}>
               <Text
@@ -231,7 +240,16 @@ export default function Archive(props) {
               <Text text={clickItem.loText} color={'#4F4F4F'} fontSize={16} />
             </View>
           </ScrollView>
-          {clickItem.loUsed === 'N' ? null : (
+          {clickItem.loUsed === 'N' ? (
+            <View style={{padding: 10}}>
+              <Button
+                text={'닫기'}
+                onPress={() => setModalVisible(false)}
+                color={custom.themeColor}
+                stretch
+              />
+            </View>
+          ) : (
             <View style={{padding: 10}}>
               <Button
                 text={'삭제하기'}

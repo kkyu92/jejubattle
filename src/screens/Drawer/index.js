@@ -35,6 +35,7 @@ export default function Drawer(props) {
               <Icons name="icon-notification-20" size={18} color={'black'} />
             ) : (
               <>
+                {console.log(context.me.notification + 'cNoti')}
                 <Icons name="icon-notification-20" size={18} color={'black'} />
                 <View
                   style={{

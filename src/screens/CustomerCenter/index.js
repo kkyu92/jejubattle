@@ -32,7 +32,9 @@ export default function CustomerCenter(props) {
 
       <View style={{padding: 40}}>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://pf.kakao.com/_fxdMxlxb')}>
+          onPress={() => {
+            Linking.openURL('https://pf.kakao.com/_fxdMxlxb/friend');
+          }}>
           <HView
             style={{backgroundColor: '#FFEB3B', padding: 20, borderRadius: 10}}>
             <Icons name={'icon-kakaotalk-25'} color={'#623935'} size={24} />

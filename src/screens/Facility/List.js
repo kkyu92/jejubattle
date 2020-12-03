@@ -22,6 +22,7 @@ import {AppContext} from '../../context';
 
 export default function FacilityList(props) {
   const context = React.useContext(AppContext);
+
   const [filterVisible, setFilterVisible] = React.useState(false);
   const [category, setCategory] = React.useState([]);
   const [activeTab, setActiveTab] = React.useState(props.route.params.code);
@@ -30,8 +31,11 @@ export default function FacilityList(props) {
   const [keyword, setKeyword] = React.useState('');
   const [coords, setCoords] = React.useState({});
   const [list, setList] = React.useState([]);
+  const [page, setPage] = React.useState(1);
+  const [moredone, setMoredone] = React.useState(false);
   const isFocused = useIsFocused();
   const scrollViewRef = React.useRef();
+  const flatListRef = React.useRef();
 
   React.useEffect(() => {
     async function getLoc() {
@@ -42,9 +46,17 @@ export default function FacilityList(props) {
     getLoc();
   }, []);
   React.useEffect(() => {
-    isFocused && getList();
+    setPage(1);
+    setMoredone(false);
+    isFocused;
+    getList(1);
+    toTop();
   }, [activeTab, isFocused]);
-  const getList = () => {
+  const toTop = () => {
+    // use current
+    flatListRef.current.scrollToOffset({animated: true, offset: 0});
+  };
+  const getList = (page) => {
     Axios.post(
       props.route.params.endpoint,
       filter1 === 3
@@ -53,6 +65,7 @@ export default function FacilityList(props) {
             clCode: filter2,
             orderType: filter1,
             keyword: keyword,
+            pageNum: page,
             lat: coords.latitude,
             lon: coords.longitude,
           }
@@ -61,13 +74,50 @@ export default function FacilityList(props) {
             clCode: filter2,
             orderType: filter1,
             keyword: keyword,
+            pageNum: page,
           },
     )
-      .then((res) => {
-        console.log(JSON.stringify(res.data));
+      .then(async (res) => {
+        let facilityList = res.data.facility;
+        const list = facilityList.map((item) => ({
+          ...item,
+          id: item.faPk,
+        }));
         logApi(props.route.params.endpoint, res.data);
-        setList(res.data.facility);
+        if (page === 1) {
+          setList(res.data.facility);
+        } else {
+          setList((old) => [...old, ...list]);
+        }
         setCategory(res.data.category);
+        if (res.data.facility.length === 10) {
+          Axios.post(
+            props.route.params.endpoint,
+            filter1 === 3
+              ? {
+                  code: activeTab,
+                  clCode: filter2,
+                  orderType: filter1,
+                  keyword: keyword,
+                  pageNum: page + 1,
+                  lat: coords.latitude,
+                  lon: coords.longitude,
+                }
+              : {
+                  code: activeTab,
+                  clCode: filter2,
+                  orderType: filter1,
+                  keyword: keyword,
+                  pageNum: page + 1,
+                },
+          ).then(async (res) => {
+            if (res.data.length === 0) {
+              setMoredone(true);
+            }
+          });
+        } else {
+          setMoredone(true);
+        }
       })
       .catch((err) => {
         logApi(props.route.params.endpoint + ' error', err.response);
@@ -199,6 +249,7 @@ export default function FacilityList(props) {
         </ScrollView>
       </View>
       <FlatList
+        ref={flatListRef}
         data={list}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
@@ -213,6 +264,21 @@ export default function FacilityList(props) {
         // onRefresh={() => {
         //   setIsLast(false);
         //   setPullToRefresh(true);
+        // }}
+        onEndReached={() => {
+          if (!moredone) {
+            console.log('more endReched!');
+            setPage(page + 1);
+            getList(page + 1);
+          } else {
+            console.log('finish endReched!');
+          }
+        }}
+        // onEndReached={() => {
+        //   console.log('facility endReched!');
+        //   if (!moredone) {
+        //     getListMore();
+        //   }
         // }}
       />
       <Modal
@@ -319,7 +385,7 @@ export default function FacilityList(props) {
               <Button
                 text={'적용하기'}
                 onPress={() => {
-                  getList();
+                  getList(1);
                   setFilterVisible(false);
                 }}
                 color={custom.themeColor}

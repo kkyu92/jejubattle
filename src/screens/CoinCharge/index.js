@@ -37,6 +37,7 @@ import RNIap, {
 } from 'react-native-iap';
 import Axios from 'axios';
 import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function CoinCharge(props) {
   const context = React.useContext(AppContext);
@@ -44,8 +45,9 @@ export default function CoinCharge(props) {
   const [modalIcon, setModalIcon] = React.useState();
   const [modalContent, setModalContent] = React.useState();
   const [usePoint, setUsePoint] = React.useState();
-  const [coinCount, setCoinCount] = React.useState();
+  const [coinCount, setCoinCount] = React.useState(1);
   const [product, setProduct] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
   let purchaseUpdateSubscription;
   let purchaseErrorSubscription;
@@ -96,13 +98,21 @@ export default function CoinCharge(props) {
               // If not consumable
               // await acknowledgePurchaseAndroid(purchase.purchaseToken);
             }
+            console.log(purchase);
+            addCoin(
+              false,
+              purchase.productId === '1'
+                ? 1
+                : purchase.productId === '2'
+                ? 5
+                : 10,
+            );
+            setLoading(false);
+            setShowPurchaseModal(false);
             const ackResult = await finishTransaction(purchase);
-            console.log(ackResult);
           } catch (ackErr) {
             console.warn('ackErr', ackErr);
           }
-          addCoin(false);
-          setShowPurchaseModal(false);
           console.log('Receipt : ' + receipt);
         }
       },
@@ -146,26 +156,31 @@ export default function CoinCharge(props) {
       let prod = [];
       prod = await RNIap.getProducts(itemSkus);
       setProduct(prod);
-      Alert.alert('product', JSON.stringify(prod));
     } catch (err) {
       console.log('product error', err);
     }
   };
-  const purchase = async (sku) => {
+  const purchase = async (sku, coinCount) => {
     try {
       console.log('coin count : ' + coinCount + '\n' + sku.productId);
+      setCoinCount(coinCount);
       await RNIap.requestPurchase(sku.productId, false);
     } catch (err) {
-      setShowPurchaseModal(false);
-      console.log('purchase error', err.code);
+      console.log('purchase error', err);
+      setLoading(false);
       if (err.code === 'E_USER_CANCELLED') {
+        setShowPurchaseModal(false);
         showToast('구매를 취소했습니다.', 2000, 'center');
+      } else if (
+        err.message === "Cannot read property 'productId' of undefined"
+      ) {
+        Alert.alert('', '다시 시도해주세요.');
       } else {
-        Alert.alert(err.code, err.message);
+        console.log(err.code, err.message);
       }
     }
   };
-  const addCoin = (usePoint) => {
+  const addCoin = (usePoint, cC) => {
     if (usePoint) {
       let coinType = coinCount === 5 ? 2 : 1;
       Axios.post('pointBuy', {pointType: coinType})
@@ -194,16 +209,18 @@ export default function CoinCharge(props) {
         });
       setShowPurchaseModal(false);
     } else {
-      Axios.post('coinBuy', {coin: coinCount})
+      console.log('check coinCount: ' + cC);
+      Axios.post('coinBuy', {coin: cC})
         .then((res) => {
           logApi('coinBuy', res.data);
+          context.me.userCoin += cC;
           context.dispatch({
             type: 'UPDATEME',
             data: {
-              userCoin: context.me.userCoin + coinCount,
+              userCoin: context.me.userCoin,
             },
           });
-          showToast('코인 ' + coinCount + '개를 충전했습니다.', 2000, 'center');
+          showToast('코인 ' + cC + '개를 충전했습니다.', 2000, 'center');
         })
         .catch((err) => {
           if (err.response.status === 403) {
@@ -211,6 +228,7 @@ export default function CoinCharge(props) {
             showToast(err.response.data.message, 2000, 'center');
           } else {
             logApi('coinBuy error', err.response);
+            console.log(cC);
           }
         });
     }
@@ -564,6 +582,12 @@ export default function CoinCharge(props) {
         isVisible={showPurchaseModal}
         onBackdropPress={() => setShowPurchaseModal(false)}
         onModalHide={() => console.log('modal hide')}>
+        <Spinner
+          visible={loading}
+          textContent={''}
+          color={'#F4A100'}
+          // textStyle={styles.spinnerTextStyle}
+        />
         <View
           style={{
             padding: 20,
@@ -600,17 +624,12 @@ export default function CoinCharge(props) {
                 text={'예'}
                 color={custom.themeColor}
                 onPress={() => {
-                  usePoint === true
-                    ? addCoin(true)
-                    : purchase(
-                        Platform.OS === 'ios'
-                          ? product[
-                              coinCount === 1 ? 0 : coinCount === 5 ? 1 : 2
-                            ]
-                          : product[
-                              coinCount === 1 ? 1 : coinCount === 5 ? 2 : 0
-                            ],
-                      );
+                  usePoint === true ? addCoin(true) : setLoading(true);
+                  purchase(
+                    Platform.OS === 'ios'
+                      ? product[coinCount === 1 ? 0 : coinCount === 5 ? 1 : 2]
+                      : product[coinCount === 1 ? 1 : coinCount === 5 ? 2 : 0],
+                  );
                 }}
                 size={'large'}
                 stretch

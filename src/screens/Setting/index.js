@@ -45,6 +45,7 @@ export default function Setting(props) {
   );
   const [showLogoutDone, setShowLogoutDone] = React.useState(false);
   const [modalLogout, setModalLogout] = React.useState(false);
+  const [userDelete, setUserDelete] = React.useState(false);
 
   const signoutNo = async () => {
     setModalLogout(false);
@@ -59,6 +60,24 @@ export default function Setting(props) {
       .then(logApi('signout'))
       .catch((e) => {
         logApi('signout error : ' + e);
+      });
+    await AsyncStorage.removeItem('token');
+    await Init();
+    context.dispatch({type: 'UNAUTHORIZED'});
+    setLoading(false);
+  };
+
+  const deleteOut = async () => {
+    setModalLogout(false);
+    setTimeout(() => {
+      setLoading(true);
+    }, 500);
+    let userPk = context.me.userPk;
+    console.log(userPk);
+    Axios.delete(`user`)
+      .then(logApi('delete user'))
+      .catch((e) => {
+        logApi('delete user error : ' + e);
       });
     await AsyncStorage.removeItem('token');
     await Init();
@@ -237,7 +256,10 @@ export default function Setting(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
-          onPress={() => null}>
+          onPress={() => {
+            setUserDelete(true);
+            setModalLogout(true);
+          }}>
           <Text
             text={'회원탈퇴'}
             fontSize={18}
@@ -260,7 +282,11 @@ export default function Setting(props) {
             fontSize={18}
             fontWeight={'bold'}
             color={'black'}
-            text={'로그아웃 하시겠습니까?'}
+            text={
+              userDelete === true
+                ? '회원탈퇴 하시겠습니까?'
+                : '로그아웃 하시겠습니까?'
+            }
           />
           <Seperator height={50} />
           <HView>
@@ -278,7 +304,7 @@ export default function Setting(props) {
               <Button
                 text={'예'}
                 color={custom.themeColor}
-                onPress={() => signout()}
+                onPress={() => (userDelete === true ? deleteOut() : signout())}
                 size={'large'}
                 stretch
               />

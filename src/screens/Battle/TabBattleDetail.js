@@ -420,7 +420,20 @@ export default function TabBattleDetail(props) {
               <Button
                 text={'나가기'}
                 onPress={() => {
-                  deleteMyBattle(props.info.baPk);
+                  Alert.alert(
+                    '선택한 배틀을 삭제합니다',
+                    '해당 방 정보가 모두 삭제되며 복구할 수 없습니다.\n아직보상을 받지않은 경우 보상을 받을 수 없습니다.',
+                    [
+                      {
+                        text: '취소',
+                        onPress: () => console.log('cancel'),
+                      },
+                      {
+                        text: '삭제',
+                        onPress: () => deleteMyBattle(props.info.baPk),
+                      },
+                    ],
+                  );
                 }}
                 color={'white'}
                 disable={false}

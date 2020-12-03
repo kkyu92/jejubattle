@@ -157,6 +157,7 @@ export default function Map({
               description={e.description}
               image={e.markerComponent}
               onPress={() => markerOnSelect(e)}>
+              {console.log(e)}
               <Callout>
                 {/* <View style={{paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, backgroundColor: 'white', borderWidth: 1, borderColor: 'lightgray'}}> */}
                 <Text text={e.title} fontSize={14} />
