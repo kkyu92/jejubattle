@@ -94,8 +94,8 @@ export default function ReviewEdit(props) {
         .then((res) => {
           setLoading(false);
           logApi('replyInsert', res.data);
-          props.route.params?.refresh();
           props.navigation.goBack();
+          props.route.params?.refresh();
         })
         .catch((err) => {
           setLoading(false);
@@ -153,7 +153,7 @@ export default function ReviewEdit(props) {
             value={reContent}
             onChangeText={(e) => setReContent(e)}
             showRemain={true}
-            maxLength={100}
+            maxLength={500}
             backgroundColor={'whitesmoke'}
             borderWidth={0}
             // padding={20}
@@ -195,7 +195,7 @@ export default function ReviewEdit(props) {
           borderTopColor: 'lightgray',
         }}>
         <Button
-          disable={reScope === 0 || reContent.length === 0}
+          disable={reScope === 0}
           text={'작성완료'}
           onPress={() => save()}
           color={custom.themeColor}

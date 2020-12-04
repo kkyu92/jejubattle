@@ -401,6 +401,7 @@ export default function MatchMember(props) {
                   borderWidth: 1,
                   borderColor: 'lightgray',
                   borderRadius: 20,
+                  zIndex: 1,
                 }}>
                 <MaterialCommunityIcons
                   name={'lead-pencil'}
@@ -524,6 +525,7 @@ export default function MatchMember(props) {
                   borderWidth: 1,
                   borderColor: 'lightgray',
                   borderRadius: 20,
+                  zIndex: 1,
                 }}>
                 <MaterialCommunityIcons
                   name={'lead-pencil'}
@@ -746,7 +748,7 @@ export default function MatchMember(props) {
         </View>
       </Modal>
 
-      {/* 강퇴 */}
+      {/* 개인 강퇴 */}
       <Modal
         isVisible={memberOutModal}
         onBackdropPress={() => setMemberOutModal(false)}>

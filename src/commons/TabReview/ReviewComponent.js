@@ -40,7 +40,7 @@ export default function ReviewComponent(props) {
     // return (
     //   <TouchableOpacity
     //     onPress={onPress}
-    //     style={{padding: 10, position: 'absolute', right: 0, bottom: -34}}>
+    //     style={{padding: 10, position: 'absolute', right: 0, bottom: -24}}>
     //     <Text text={'- 숨기기'} fontSize={14} color={custom.themeColor} />
     //   </TouchableOpacity>
     // );

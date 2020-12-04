@@ -147,13 +147,11 @@ export default function EventView(props) {
   const FlatListHeader = () => {
     return (
       <View>
-        <View style={{padding: 20}}>
-          <ImageCarousel
-            data={eventImgList.map((e) => e.evImgUrl)}
-            height={undefined}
-            width={Math.floor(screenWidth - 40)}
-          />
-        </View>
+        <ImageCarousel
+          data={eventImgList.map((e) => e.evImgUrl)}
+          height={Math.floor(screenWidth * 0.7)}
+          width={Math.floor(screenWidth)}
+        />
 
         <TouchableOpacity
           onPress={() => (event.evLikeType === 'N' ? likeOn() : likeOff())}

@@ -245,7 +245,7 @@ export default function MyInfo(props) {
                           e.lose +
                           '패' +
                           '    ' +
-                          parseInt((e.win / e.ago) * 100) +
+                          ((e.win / e.ago) * 100).toFixed(1) +
                           '%'
                         }
                         fontSize={16}

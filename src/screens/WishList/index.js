@@ -29,31 +29,58 @@ export default function WishList(props) {
   const isFocused = useIsFocused();
 
   React.useEffect(() => {
-    isFocused && get(1);
+    isFocused && get(1, true);
+    setPage(1);
+    setMoredone(false);
   }, [isFocused]);
-  const get = (page) => {
-    Axios.post('wishList', {pageNum: page})
-      .then(async (res) => {
-        let notiList = res.data;
-        const list = notiList.map((item) => ({
-          ...item,
-          checked: false,
-        }));
-        logApi('wishList', res.data);
-        setWishList((old) => [...old, ...list]);
-        if (res.data.length === 10) {
-          Axios.post('wishList', {pageNum: page + 1}).then(async (res) => {
-            if (res.data.length === 0) {
-              setMoredone(true);
-            }
-          });
-        } else {
-          setMoredone(true);
-        }
-      })
-      .catch((err) => {
-        logApi('wishList error', err.response);
-      });
+  const get = (page, reFresh) => {
+    if (reFresh) {
+      Axios.post('wishList', {pageNum: page})
+        .then(async (res) => {
+          let wishList = res.data;
+          const list = wishList.map((item) => ({
+            ...item,
+            checked: false,
+          }));
+          logApi('wishList', res.data);
+          setWishList(list);
+          if (res.data.length === 10) {
+            Axios.post('wishList', {pageNum: page + 1}).then(async (res) => {
+              if (res.data.length === 0) {
+                setMoredone(true);
+              }
+            });
+          } else {
+            setMoredone(true);
+          }
+        })
+        .catch((err) => {
+          logApi('wishList error', err.response);
+        });
+    } else {
+      Axios.post('wishList', {pageNum: page})
+        .then(async (res) => {
+          let wishList = res.data;
+          const list = wishList.map((item) => ({
+            ...item,
+            checked: false,
+          }));
+          logApi('wishList', res.data);
+          setWishList((old) => [...old, ...list]);
+          if (res.data.length === 10) {
+            Axios.post('wishList', {pageNum: page + 1}).then(async (res) => {
+              if (res.data.length === 0) {
+                setMoredone(true);
+              }
+            });
+          } else {
+            setMoredone(true);
+          }
+        })
+        .catch((err) => {
+          logApi('wishList error', err.response);
+        });
+    }
   };
   const renderItem = ({item, index}) => {
     return (
@@ -83,7 +110,9 @@ export default function WishList(props) {
     Axios.post('wishDelete', body)
       .then((res) => {
         logApi('wishDelete', res.data);
-        get(1);
+        get(1, true);
+        setPage(1);
+        setMoredone(false);
       })
       .catch((err) => {
         logApi('wishDelete error', err.response);
@@ -195,7 +224,7 @@ export default function WishList(props) {
           if (!moredone) {
             console.log('more endReched!');
             setPage(page + 1);
-            get(page + 1);
+            get(page + 1, false);
           } else {
             console.log('finish endReched!');
           }

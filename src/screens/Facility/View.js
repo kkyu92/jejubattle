@@ -35,6 +35,7 @@ export default function FacilityView(props) {
   const [loading, setLoading] = React.useState(true);
   const [index, setIndex] = React.useState(0);
   const [facility, setFacility] = React.useState({});
+  const [facilityImgList, setFacilityImgList] = React.useState([]);
   const [reply, setReply] = React.useState([]);
   const [routes] = React.useState([
     {key: '1', title: '소개'},
@@ -50,6 +51,7 @@ export default function FacilityView(props) {
       .then((res) => {
         logApi('facilityInfo', res.data);
         setFacility(res.data.facility);
+        setFacilityImgList(res.data.imgList);
         setReply(res.data.replyList);
         setLoading(false);
       })
@@ -220,11 +222,19 @@ export default function FacilityView(props) {
         // containerStyle={{borderBottomWidth: 0}}
       />
       <ScrollView>
-        <ImageCarousel
+        <View>
+          <ImageCarousel
+            data={facilityImgList.map((e) => e.fileUrl)}
+            // height={undefined}
+            height={Math.floor(screenWidth * 0.7)}
+            width={Math.floor(screenWidth)}
+          />
+        </View>
+        {/* <ImageCarousel
           data={[facility.faImgUrl]}
           height={300}
           // onPress={() => setImageViewer(true)}
-        />
+        /> */}
         <Seperator height={20} />
         <HView style={{padding: 20, justifyContent: 'space-between'}}>
           <Text text={facility.faName} fontWeight={'bold'} fontSize={21} />

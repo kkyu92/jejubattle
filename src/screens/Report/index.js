@@ -154,7 +154,7 @@ export default function Report(props) {
             value={text}
             onChangeText={(e) => setText(e)}
             showRemain={true}
-            maxLength={5000}
+            maxLength={500}
             backgroundColor={'whitesmoke'}
             borderWidth={0}
           />
@@ -195,6 +195,7 @@ export default function Report(props) {
           borderTopColor: 'lightgray',
         }}>
         <Button
+          disable={code === '' || text === ''}
           text={'위 사항으로 해당 유저를 신고합니다.'}
           onPress={() => setModalWarning(true)}
           color={'#FE7262'}

@@ -5,6 +5,7 @@ import {
   HView,
   Button,
   Seperator,
+  Loader,
 } from '../../react-native-nuno-ui';
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import StarRating from 'react-native-star-rating';
@@ -18,7 +19,7 @@ import ReviewComponent from './ReviewComponent';
 
 export default function TabReview(props) {
   const context = React.useContext(AppContext);
-
+  const [loading, setLoading] = React.useState(true);
   const delReview = (rePk) => {
     Axios.delete(`reply/${rePk}`)
       .then((res) => {
@@ -29,7 +30,17 @@ export default function TabReview(props) {
         logApi('delete reply error', err.response);
       });
   };
-  return (
+
+  React.useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 200);
+  }, [props.refresh]);
+
+  return loading === true ? (
+    <Loader />
+  ) : (
     <Container>
       <View style={{padding: 20}}>
         <Text text={'시설 정보'} fontSize={18} fontWeight={'bold'} />
@@ -92,7 +103,7 @@ export default function TabReview(props) {
         );
       })}
 
-      {props.data.length > 10 && (
+      {/* {props.data.length > 10 && (
         <View style={{padding: 20}}>
           <Button
             text={'모든 리뷰보기'}
@@ -101,7 +112,7 @@ export default function TabReview(props) {
             stretch
           />
         </View>
-      )}
+      )} */}
 
       {props.data.length === 0 && (
         <View style={{padding: 20}}>

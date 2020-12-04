@@ -150,7 +150,11 @@ export default function ListItemBattle({
                   <Seperator width={5} />
                 </>
               )}
-              <Text text={item.baSubject} fontSize={16} fontWeight={'bold'} />
+              <Text
+                text={item.baPk + '   |   ' + item.baSubject}
+                fontSize={16}
+                fontWeight={'bold'}
+              />
               <Seperator width={9} />
               <Button
                 text={item.blName}

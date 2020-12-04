@@ -25,6 +25,7 @@ import Icons from '../../commons/Icons';
 export default function BattleTeamMember(props) {
   const context = React.useContext(AppContext);
   const [memberModal, setMemberModal] = React.useState(false);
+  const [memberOutTeamModal, setMemberOutTeamModal] = React.useState(false);
   const [selectedMember, setSelectedMember] = React.useState({});
   const [mode, setMode] = React.useState('');
   const [selectedTeam, setSelectedTeam] = React.useState(
@@ -115,98 +116,6 @@ export default function BattleTeamMember(props) {
                     paddingVertical={10}
                     paddingHorizontal={20}
                   />
-                  {/* 팀장이 아닌멤버의경우 (i !== 0) 삭제버튼을 보여준다.
-                   * 대신 내가 (context.me.userPk) 팀장이거나 A팀의 방장인경우에만
-                   * 삭제 버튼을 보여준다.
-                   */}
-                  {i !== 0 &&
-                    mode === '' &&
-                    (context.me.userPk === selectedTeam?.member[0].userPk ||
-                      context.me.userPk ===
-                        props.route.params.info.teamA.member[0].userPk) && (
-                      <View
-                        style={{
-                          marginLeft: -5,
-                        }}>
-                        <Button
-                          text={'X'}
-                          size={'medium'}
-                          textColor={'dimgray'}
-                          paddingVertical={9}
-                          paddingHorizontal={20}
-                          color={'whitesmoke'}
-                          onPress={() => {
-                            if (props.route.params.teamSide === 'A') {
-                              const teamA = {...selectedTeam};
-                              const foundedIndex = teamA.member
-                                .map((f) => f.userPk)
-                                .indexOf(e.userPk);
-                              kickUser(e.userPk, props.route.params.info.baPk);
-                              if (foundedIndex !== -1) {
-                                const localHistory = [
-                                  ...props.route.params.info.history.map(
-                                    (h) => ({
-                                      userPk: h.userPk,
-                                    }),
-                                  ),
-                                ];
-                                if (
-                                  localHistory
-                                    .map((m) => m.userPk)
-                                    .indexOf(
-                                      teamA.member[foundedIndex].userPk,
-                                    ) === -1
-                                ) {
-                                  localHistory.push({
-                                    userPk: teamA.member[foundedIndex].userPk,
-                                  });
-                                }
-                                teamA.member.splice(foundedIndex, 1);
-
-                                props.route.params?.updateBattle({
-                                  teamA: teamA,
-                                  history: localHistory,
-                                });
-                                setSelectedTeam(teamA);
-                              }
-                            }
-                            if (props.route.params.teamSide === 'B') {
-                              const teamB = {...selectedTeam};
-                              const foundedIndex = teamB.member
-                                .map((f) => f.userPk)
-                                .indexOf(e.userPk);
-                              kickUser(e.userPk, props.route.params.info.baPk);
-                              if (foundedIndex !== -1) {
-                                const localHistory = [
-                                  ...props.route.params.info.history.map(
-                                    (h) => ({
-                                      userPk: h.userPk,
-                                    }),
-                                  ),
-                                ];
-                                if (
-                                  localHistory
-                                    .map((m) => m.userPk)
-                                    .indexOf(
-                                      teamB.member[foundedIndex].userPk,
-                                    ) === -1
-                                ) {
-                                  localHistory.push({
-                                    userPk: teamB.member[foundedIndex].userPk,
-                                  });
-                                }
-                                teamB.member.splice(foundedIndex, 1);
-                                props.route.params?.updateBattle({
-                                  teamB: teamB,
-                                  history: localHistory,
-                                });
-                                setSelectedTeam(teamB);
-                              }
-                            }
-                          }}
-                        />
-                      </View>
-                    )}
 
                   {/* 방장/팀장 표시 */}
                   {i === 0 && (
@@ -254,6 +163,35 @@ export default function BattleTeamMember(props) {
                       />
                     </TouchableOpacity>
                   )}
+                  {/* 팀장이 아닌멤버의경우 (i !== 0) 삭제버튼을 보여준다.
+                   * 대신 내가 (context.me.userPk) 팀장이거나 A팀의 방장인경우에만
+                   * 삭제 버튼을 보여준다.
+                   */}
+                  {i !== 0 &&
+                    mode === '' &&
+                    (context.me.userPk === selectedTeam?.member[0].userPk ||
+                      context.me.userPk ===
+                        props.route.params.info.teamA.member[0].userPk) && (
+                      <View
+                        style={
+                          {
+                            // marginLeft: -5,
+                          }
+                        }>
+                        <Button
+                          text={'X'}
+                          size={'medium'}
+                          textColor={'dimgray'}
+                          paddingVertical={10}
+                          // paddingHorizontal={20}
+                          color={'whitesmoke'}
+                          borderColor={'orange'}
+                          onPress={() => {
+                            setSelectedMember(e), setMemberOutTeamModal(true);
+                          }}
+                        />
+                      </View>
+                    )}
                 </HView>
               );
             })}
@@ -428,6 +366,119 @@ export default function BattleTeamMember(props) {
               </TouchableOpacity>
             </View>
           )}
+        </View>
+      </Modal>
+      {/* 팀 강퇴 */}
+      <Modal
+        isVisible={memberOutTeamModal}
+        onBackdropPress={() => setMemberOutTeamModal(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
+          }}>
+          <View style={{padding: 20}}>
+            <View style={{alignItems: 'center'}}>
+              <Text text={'강퇴하기'} fontWeight={'bold'} fontSize={18} />
+            </View>
+          </View>
+          <Seperator height={10} />
+          <Text
+            fontSize={16}
+            color={'dimgray'}
+            text={'해당 유저를 강퇴하시겠습니까?'}
+            style={{textAlign: 'center'}}
+          />
+          <Seperator height={30} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setMemberOutTeamModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'완료'}
+                color={custom.themeColor}
+                onPress={async () => {
+                  if (props.route.params.teamSide === 'A') {
+                    const teamA = {...selectedTeam};
+                    const foundedIndex = teamA.member
+                      .map((f) => f.userPk)
+                      .indexOf(selectedMember.userPk);
+                    kickUser(
+                      selectedMember.userPk,
+                      props.route.params.info.baPk,
+                    );
+                    if (foundedIndex !== -1) {
+                      const localHistory = [
+                        ...props.route.params.info.history.map((h) => ({
+                          userPk: h.userPk,
+                        })),
+                      ];
+                      if (
+                        localHistory
+                          .map((m) => m.userPk)
+                          .indexOf(teamA.member[foundedIndex].userPk) === -1
+                      ) {
+                        localHistory.push({
+                          userPk: teamA.member[foundedIndex].userPk,
+                        });
+                      }
+                      teamA.member.splice(foundedIndex, 1);
+
+                      props.route.params?.updateBattle({
+                        teamA: teamA,
+                        history: localHistory,
+                      });
+                      setSelectedTeam(teamA);
+                    }
+                  }
+                  if (props.route.params.teamSide === 'B') {
+                    const teamB = {...selectedTeam};
+                    const foundedIndex = teamB.member
+                      .map((f) => f.userPk)
+                      .indexOf(selectedMember.userPk);
+                    kickUser(e.userPk, props.route.params.info.baPk);
+                    if (foundedIndex !== -1) {
+                      const localHistory = [
+                        ...props.route.params.info.history.map((h) => ({
+                          userPk: h.userPk,
+                        })),
+                      ];
+                      if (
+                        localHistory
+                          .map((m) => m.userPk)
+                          .indexOf(teamB.member[foundedIndex].userPk) === -1
+                      ) {
+                        localHistory.push({
+                          userPk: teamB.member[foundedIndex].userPk,
+                        });
+                      }
+                      teamB.member.splice(foundedIndex, 1);
+                      props.route.params?.updateBattle({
+                        teamB: teamB,
+                        history: localHistory,
+                      });
+                      setSelectedTeam(teamB);
+                    }
+                  }
+                  setMemberOutTeamModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
         </View>
       </Modal>
     </Container>

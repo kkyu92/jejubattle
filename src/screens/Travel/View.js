@@ -46,6 +46,7 @@ export default function TravelView(props) {
         ],
   );
   const [facility, setFacility] = React.useState({});
+  const [facilityImgList, setFacilityImgList] = React.useState([]);
   const [courseList, setCourseList] = React.useState([]);
   const [reply, setReply] = React.useState([]);
 
@@ -58,6 +59,7 @@ export default function TravelView(props) {
       .then((res) => {
         logApi('advertInfo', res.data);
         setFacility(res.data.facility);
+        setFacilityImgList(res.data.imgList);
         setReply(res.data.replyList);
       })
       .catch((err) => {
@@ -70,6 +72,7 @@ export default function TravelView(props) {
         logApi('travelInfo', res.data);
         setCourseList(res.data.courseList);
         setFacility(res.data.facility);
+        setFacilityImgList(res.data.imgList);
         setReply(res.data.replyList);
       })
       .catch((err) => {
@@ -259,11 +262,17 @@ export default function TravelView(props) {
       <ScrollView /*stickyHeaderIndices={[1]}*/>
         <View>
           <ImageCarousel
+            data={facilityImgList.map((e) => e.fileUrl)}
+            // height={undefined}
+            height={Math.floor(screenWidth * 0.7)}
+            width={Math.floor(screenWidth)}
+          />
+          {/* <ImageCarousel
             data={[facility.faImgUrl]}
             // height={300}
             height={Math.floor(screenWidth * 0.7)}
             width={screenWidth}
-          />
+          /> */}
           <Seperator height={20} />
 
           <HView style={{padding: 20, justifyContent: 'space-between'}}>
