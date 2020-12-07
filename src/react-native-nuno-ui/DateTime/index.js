@@ -28,6 +28,7 @@ export default function DateTime({
   borderWidth,
 }) {
   const [showPicker, setShowPicker] = React.useState(false);
+  const date = new Date();
 
   if (!locale) {
     locale =
@@ -144,6 +145,14 @@ export default function DateTime({
                   locale={locale}
                   format="lll"
                   display="default"
+                  maximumDate={
+                    new Date(
+                      date.getFullYear(),
+                      date.getMonth() + 3,
+                      date.getDate(),
+                    )
+                  }
+                  minimumDate={new Date()}
                   minuteInterval={minuteInterval}
                   onChange={(e, date) => {
                     onChange(date);
@@ -162,6 +171,10 @@ export default function DateTime({
             locale={locale}
             format="lll"
             display="spinner"
+            maximumDate={
+              new Date(date.getFullYear(), date.getMonth() + 3, date.getDate())
+            }
+            minimumDate={new Date()}
             onChange={(e, date) => {
               setShowPicker(false);
               if (e.type === 'set') {
