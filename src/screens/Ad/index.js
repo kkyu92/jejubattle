@@ -149,11 +149,11 @@ export default function Ad(props) {
   const FlatListHeader = () => {
     return (
       <View>
-        <View style={{padding: 20}}>
+        <View>
           <ImageCarousel
             data={bannerImgList.map((e) => e.adImgUrl)}
-            height={undefined}
-            width={Math.floor(screenWidth - 40)}
+            height={Math.floor(screenWidth * 0.7)}
+            width={Math.floor(screenWidth)}
           />
         </View>
 

@@ -86,9 +86,21 @@ export default function TabBattleChat({
         onSend={send}
         openMap={(e) =>
           navigation.navigate('FullMap', {
-            facilitySearch: true,
-            latitude: e.lat,
-            longitude: e.lng,
+            battleChatLink: true,
+            info: [
+              {
+                // faImgUrl: e.faImgUrl,
+                faLat: e.lat,
+                faLon: e.lng,
+                faName: e.title,
+                // faLikeCnt: e.faLikeCnt,
+                faPk: e.faPk,
+                // faReplyCnt: e.faReplyCnt,
+                // faScopeCnt: e.faScopeCnt,
+                // faScrapType: e.faScrapType,
+                // faSubject: e.faSubject,
+              },
+            ],
           })
         }
         emptyAvatar={require('../../../assets/img/user_boy.png')}
@@ -108,9 +120,16 @@ export default function TabBattleChat({
                 aroundme: true,
                 share: (data) => {
                   send({
+                    // faSubject: data.faSubject,
+                    // faScrapType: data.faScrapType,
+                    // faScopeCnt: data.faScopeCnt,
+                    // faReplyCnt: data.faReplyCnt,
+                    faPk: data.faPk,
+                    // faLikeCnt: data.faLikeCnt,
+                    // faImgUrl: data.faImgUrl,
                     text: data.faName,
                     lat: data.faLat,
-                    lon: data.falon,
+                    lon: data.faLon,
                     avatar: context.me.userImgUrl || '',
                   });
                 },

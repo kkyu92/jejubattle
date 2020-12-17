@@ -35,6 +35,7 @@ export default function Home(props) {
   const [battle, setBattle] = React.useState([]);
   const [recommand, setRecommand] = React.useState([]);
   const isFocused = useIsFocused();
+  const [appStartGuide] = React.useState(global.appStartGuide);
   let list = [];
   React.useEffect(() => {
     if (isFocused) {
@@ -60,6 +61,9 @@ export default function Home(props) {
   }, [isFocused]);
 
   React.useEffect(() => {
+    if (!appStartGuide) {
+      props.navigation.navigate('GuideStart');
+    }
     Axios.post('version', {})
       .then(async (res) => {
         const version = DeviceInfo.getVersion();

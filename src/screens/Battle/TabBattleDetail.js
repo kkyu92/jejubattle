@@ -304,7 +304,9 @@ export default function TabBattleDetail(props) {
               color={'gray'}
             />
           </TouchableOpacity>
-          <View style={{flex: 1, alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center'}}
+            onPress={() => props.navigation.navigate('Guide', {})}>
             <Icons name={'icon-guide-30'} size={30} color={'silver'} />
             <Seperator height={10} />
             <Text
@@ -313,7 +315,7 @@ export default function TabBattleDetail(props) {
               fontWeight={'500'}
               color={'gray'}
             />
-          </View>
+          </TouchableOpacity>
         </HView>
         <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
           <View style={{flex: 0.1}}>

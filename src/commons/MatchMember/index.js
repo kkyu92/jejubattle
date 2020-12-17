@@ -459,7 +459,16 @@ export default function MatchMember(props) {
           <View style={{flex: 0.2, alignItems: 'center'}}>
             <Text text={'VS'} fontWeight={'bold'} fontSize={24} />
             <Seperator height={20} />
-            <TouchableOpacity onPress={() => memberSwitch()}>
+            <TouchableOpacity
+              onPress={() =>
+                props.info.baCode < 3
+                  ? memberSwitch()
+                  : showToast(
+                      '배틀시작 이후로는 팀 변경이 불가능합니다.',
+                      2000,
+                      'center',
+                    )
+              }>
               <Image
                 local
                 uri={require('../../../assets/img/icon-change.png')}
@@ -568,9 +577,11 @@ export default function MatchMember(props) {
                     ? require('../../../assets/img/icon-win.png')
                     : props.info.baResultB === '2'
                     ? require('../../../assets/img/icon-lose.png')
-                    : props.info.teamB?.member.findIndex(
+                    : props.info.teamB?.member?.findIndex(
                         (e) => e.ready === 'N',
-                      ) === -1 && props.info.baCode < 3
+                      ) === -1 &&
+                      props.info.baCode < 3 &&
+                      props.info.teamB.member.length !== 0
                     ? require('../../../assets/img/icon-ready.png')
                     : props.info.baCode === 3 &&
                       require('../../../assets/img/icon-battle.png')

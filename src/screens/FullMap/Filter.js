@@ -163,24 +163,11 @@ export default function FullMapFilter(props) {
         }}>
         <Button
           text={'설정하기'}
-          onPress={
-            () =>
-              props.navigation.navigate('FullMap', {
-                // mapReady === 'aroundme'
-                //   ? aroundme: true
-                //   : mapReady === 'facilitySearch'
-                //   ? {facilitySearch: true}
-                //   : mapReady === 'noSearch'
-                //   ? {noSearch: true}
-                //   : mapReady === 'noSearchFilter'
-                //   ? {noSearchFilter: true}
-                //   : mapReady,
-
-                // noSearch: true,
-                sportsList: selectedSports,
-                clCodeList: selectedClCode,
-              })
-            // props.navigation.goBack(),
+          onPress={() =>
+            props.navigation.navigate('FullMap', {
+              itemList: selectedSports,
+              typeList: selectedClCode,
+            })
           }
           color={custom.themeColor}
           disable={false}

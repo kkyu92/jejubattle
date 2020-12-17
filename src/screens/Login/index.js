@@ -198,7 +198,10 @@ export default function Login(props) {
       });
   };
   const startWithSNS = async (userId, userEmail, userCode) => {
+    console.log('userId : ' + userId);
+    console.log('userCode : ' + userCode);
     console.log('userEmail : ' + userEmail);
+    console.log('token : ' + global.fcmToken);
     global.address = getCurrentLocation(global.lang);
     setLoading(true);
     Axios.post('snsSignin', {
@@ -216,7 +219,7 @@ export default function Login(props) {
         setLoading(false);
       })
       .catch((err) => {
-        logApi('snsSignin error', err?.response);
+        logApi('snsSignin error', err);
         if (err?.response.status === 403) {
           props.navigation.navigate('Join', {
             uid: userId,

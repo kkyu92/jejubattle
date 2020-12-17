@@ -28,6 +28,13 @@
 
 > https://play.google.com/apps/internaltest/4700794782783427988
 
+#### 2020.12.17
+
+> android (2.0.0.31)
+> ios (2.0.0.21)
+
+- QA 1차 완료
+
 #### 2020.12.03
 
 > android (2.0.0.30)

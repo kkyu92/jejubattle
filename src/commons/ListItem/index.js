@@ -32,6 +32,20 @@ export default function ListItem(props) {
             onPress={props.onPress}
             resizeMode={'cover'}
           />
+          {props.item.faRmType === 'Y' && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 20,
+                top: 27,
+                paddingHorizontal: 12,
+                backgroundColor: 'orange',
+                borderTopEndRadius: 5,
+                borderBottomEndRadius: 5,
+              }}>
+              <Text text={'추천'} fontSize={13} color={'white'} />
+            </View>
+          )}
           <Seperator width={10} />
           <View style={{flex: 1, alignSelf: 'center'}}>
             <Text text={props.item.faName} fontSize={16} fontWeight={'bold'} />

@@ -4,6 +4,8 @@ import {Nuno} from '..';
 
 export default ({
   text,
+  onPress,
+  textDecorationLine,
   ellipsizeMode,
   numberOfLines,
   fontSize,
@@ -13,9 +15,11 @@ export default ({
 }) => {
   return (
     <Text
+      onPress={onPress}
       ellipsizeMode={ellipsizeMode}
       numberOfLines={numberOfLines}
       style={{
+        textDecorationLine: textDecorationLine,
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color || Nuno.config.textColor,
@@ -24,4 +28,4 @@ export default ({
       {text}
     </Text>
   );
-}
+};

@@ -62,17 +62,27 @@ export default function Map({
     }
   }, []);
   React.useEffect(() => {
-    setLoading(true);
+    setLoading(false);
     console.log('out');
     if (mapRef && JSON.stringify(markers) !== '[]') {
       console.log('in - str');
       if (markers.length === 1) {
         console.log('marker one');
-        let temp = {...camera};
-        console.log(JSON.stringify(temp));
-        temp.zoom = 16;
-        temp.center = markers[0].coords;
-        mapRef.animateCamera(temp, {duration: 500});
+        markers = [
+          ...markers,
+          {
+            faLat: latitude,
+            faLon: longitude,
+          },
+        ];
+        const temp = markers.map((m) => ({
+          latitude: m.faLat,
+          longitude: m.faLon,
+        }));
+        mapRef.fitToCoordinates(temp, {
+          edgePadding: {top: 200, right: 200, bottom: 200, left: 200},
+          animated: false,
+        });
       } else {
         console.log('marker list');
         // list of _id's must same that has been provided to the identifier props of the Marker
@@ -91,6 +101,7 @@ export default function Map({
           edgePadding: {top: 100, right: 100, bottom: 100, left: 100},
           animated: false,
         });
+        console.log('불린다');
       }
     }
     // async function getLoc() {

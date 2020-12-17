@@ -113,21 +113,20 @@ export default function Join(props) {
       Alert.alert('인증을 위한 이메일을 입력해주세요');
       return;
     }
-    Axios.post('idCheck', {
+    Axios.post('idCheckd', {
       userId: email,
       userPushkey: global.fcmToken,
     })
       .then(async (res) => {
         logApi('idCheck', res.data);
         setUserAuthkey(res.data.userAuthkey);
-        Alert.alert(
-          '이메일인증',
-          '입력하신 이메일로 인증메일을 보냈습니다. 이메일을 확인하여 인증을 완료해주세요',
-        );
+        setEmailVerified(true);
+        Alert.alert('중복확인완료', '입력하신 이메일로 가입이 가능합니다');
       })
       .catch((err) => {
-        logApi('idCheck error', err?.response);
-        Alert.alert('이메일인증', err?.response?.data?.message);
+        logApi('idCheckd error', err?.response);
+        setEmailVerified(false);
+        Alert.alert('이메일중복', err?.response?.data?.message);
       });
   };
   const prePostUser = () => {
@@ -163,10 +162,14 @@ export default function Join(props) {
     }
     const checkemail = checkEmail(email);
     const checkpassword = checkPassword(password, repassword);
-    if (props.route?.params?.userCode === undefined && !userAuthkey) {
-      Alert.alert('이메일 인증요청을 해주세요');
+    if (!emailVerified) {
+      Alert.alert('이메일 중복확인을 해주세요');
       return;
     }
+    // if (props.route?.params?.userCode === undefined && !userAuthkey) {
+    //   Alert.alert('이메일 인증요청을 해주세요');
+    //   return;
+    // }
     if (props.route?.params?.userCode === undefined && !checkemail.valid) {
       Alert.alert('이메일 오류', '이메일 형식이 아닙니다');
       return;
@@ -381,7 +384,7 @@ export default function Join(props) {
               text={mobile ? '인증완료' : '인증요청'}
               size={'medium'}
               onPress={
-                () => Linking.openURL('https://kangmin.shop/nice/main')
+                () => Linking.openURL('https://jejubattle.com/nice/main')
                 // () =>
                 //   props.navigation.navigate('Webview', {
                 //     url: 'https://kangmin.shop/nice/main',
@@ -403,7 +406,9 @@ export default function Join(props) {
                 <View style={{flex: 1}}>
                   <TextInput
                     value={email}
-                    onChangeText={(e) => setEmail(e)}
+                    onChangeText={(e) => {
+                      setEmail(e), setEmailVerified(false);
+                    }}
                     borderWidth={0}
                     autoCapitalize={'none'}
                     keyboardType={'email-address'}
@@ -411,7 +416,7 @@ export default function Join(props) {
                   />
                 </View>
                 <Button
-                  text={emailVerified ? '인증완료' : '인증요청'}
+                  text={emailVerified ? '확인완료' : '중복확인'}
                   size={'medium'}
                   onPress={() => {
                     if (email) {
@@ -423,7 +428,6 @@ export default function Join(props) {
                       verifyEmail();
                     }
                   }}
-                  // textColor={'dimgray'}
                   color={emailVerified ? custom.themeColor : 'white'}
                   borderRadius={20}
                 />

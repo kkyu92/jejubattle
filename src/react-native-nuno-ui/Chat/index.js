@@ -13,6 +13,7 @@ import {getBottomSpace} from 'react-native-iphone-x-helper';
 import moment from 'moment';
 import {screenWidth} from '../style';
 import {Nuno} from '..';
+import {logApi} from '../funcs';
 
 export default ({
   messages,
@@ -153,7 +154,21 @@ export default ({
                 }}>
                 {item.lat && item.lon ? (
                   <TouchableOpacity
-                    onPress={() => openMap({lat: item.lat, lng: item.lon})}>
+                    onPress={() => {
+                      logApi('item ::: ', item);
+                      openMap({
+                        // faSubject: item.faSubject,
+                        // faScrapType: item.faScrapType,
+                        // faScopeCnt: item.faScopeCnt,
+                        // faReplyCnt: item.faReplyCnt,
+                        faPk: item.faPk,
+                        // faLikeCnt: item.faLikeCnt,
+                        // faImgUrl: item.faImgUrl,
+                        title: item.text,
+                        lat: item.lat,
+                        lng: item.lon,
+                      });
+                    }}>
                     <Text
                       fontSize={fontSize || 14}
                       color={'white'}
@@ -254,7 +269,20 @@ export default ({
                   }}>
                   {item.lat && item.lon ? (
                     <TouchableOpacity
-                      onPress={() => openMap({lat: item.lat, lng: item.lon})}>
+                      onPress={() =>
+                        openMap({
+                          // faSubject: item.faSubject,
+                          // faScrapType: item.faScrapType,
+                          // faScopeCnt: item.faScopeCnt,
+                          // faReplyCnt: item.faReplyCnt,
+                          faPk: item.faPk,
+                          // faLikeCnt: item.faLikeCnt,
+                          // faImgUrl: item.faImgUrl,
+                          title: item.text,
+                          lat: item.lat,
+                          lng: item.lon,
+                        })
+                      }>
                       <Text
                         fontSize={fontSize || 14}
                         color={'black'}

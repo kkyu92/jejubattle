@@ -184,7 +184,7 @@ export default function Setting(props) {
         <Seperator height={20} />
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
-          onPress={() => Linking.openURL('https://kangmin.shop/privacy')}>
+          onPress={() => Linking.openURL('https://jejubattle.com/privacy')}>
           <Text
             text={'개인정보 처리 방침'}
             fontSize={18}
@@ -194,7 +194,7 @@ export default function Setting(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
-          onPress={() => Linking.openURL('https://kangmin.shop/service')}>
+          onPress={() => Linking.openURL('https://jejubattle.com/service')}>
           <Text
             text={'서비스 이용 약관'}
             fontSize={18}

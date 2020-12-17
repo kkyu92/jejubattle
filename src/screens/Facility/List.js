@@ -258,13 +258,6 @@ export default function FacilityList(props) {
             <Seperator line />
           </View>
         )}
-        // ListEmptyComponent={<Empty />}
-        // ListHeaderComponent={FlatListHeader()}
-        // refreshing={pullToRefresh}
-        // onRefresh={() => {
-        //   setIsLast(false);
-        //   setPullToRefresh(true);
-        // }}
         onEndReached={() => {
           if (!moredone) {
             console.log('more endReched!');
@@ -274,12 +267,6 @@ export default function FacilityList(props) {
             console.log('finish endReched!');
           }
         }}
-        // onEndReached={() => {
-        //   console.log('facility endReched!');
-        //   if (!moredone) {
-        //     getListMore();
-        //   }
-        // }}
       />
       <Modal
         isVisible={filterVisible}

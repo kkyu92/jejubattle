@@ -32,7 +32,7 @@ import Geolocation from 'react-native-geolocation-service';
 const actionSheetRef = React.createRef();
 
 export default function FullMap(props) {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [mapReady, setMapReady] = React.useState('');
   const [keyword, setKeyword] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState({
@@ -42,6 +42,7 @@ export default function FullMap(props) {
   });
   const [result, setResult] = React.useState([]);
   const [actionSheetComponent, setActionSheetComponent] = React.useState(null);
+  const [placeInfo, setPlaceInfo] = React.useState(null);
   const [hideFilterGuide, setHideFilterGuide] = React.useState(
     global.hideFilterGuide,
   );
@@ -51,18 +52,22 @@ export default function FullMap(props) {
 
   const [caCode, setCaCode] = React.useState(0);
   const [clCode, setClCode] = React.useState(0);
+  const [healthCode, setHealthCode] = React.useState(0);
+  const [eatCode, setEatCode] = React.useState(0);
+  const [viewCode, setViewCode] = React.useState(0);
+  const [playCode, setPlayCode] = React.useState(0);
 
   const DEFAULT_BAPK = 195;
 
   React.useEffect(() => {
     let caCode, clCode;
-    if (props.route.params?.sportsList) {
-      console.log('selectedSports : ' + props.route.params.sportsList);
-      caCode = props.route.params.sportsList;
+    if (props.route.params?.itemList) {
+      console.log('selected item : ' + props.route.params.itemList);
+      caCode = props.route.params.itemList;
     }
-    if (props.route.params?.clCodeList) {
-      console.log('selectedClCode : ' + props.route.params.clCodeList);
-      clCode = props.route.params.clCodeList;
+    if (props.route.params?.typeList) {
+      console.log('selected type : ' + props.route.params.typeList);
+      clCode = props.route.params.typeList;
     }
     let ca = [];
     let cl = [];
@@ -88,29 +93,36 @@ export default function FullMap(props) {
       wishMap();
     } else if (props.route?.params?.aroundme) {
       setMapReady('aroundme');
-      aroundme();
+      aroundme(ca, cl);
+      console.log('AROUND ME ::::::::::::::');
     } else if (props.route?.params?.noSearchFilter) {
       setMapReady('noSearchFilter');
-      const temp = props.route.params?.info.map((e) => ({
-        ...e,
-        coords: {latitude: e.faLat, longitude: e.faLon},
-        title: e.faName,
-      }));
-      setResult(temp);
+      // const temp = props.route.params?.info.map((e) => ({
+      //   ...e,
+      //   coords: {latitude: e.faLat, longitude: e.faLon},
+      //   title: e.faName,
+      // }));
+      // setResult(temp);
+    } else if (props.route?.params?.battleChatLink) {
+      setMapReady('battleChatLink');
     }
     console.log('useEffect');
     console.log(
       global.address.coords.latitude,
       global.address.coords.longitude,
     );
-    setLoading(true);
-  }, [props.route.params?.sportsList, props.route.params?.clCodeList]);
+    setLoading(false);
+  }, [props.route.params?.itemList, props.route.params?.typeList]);
 
   const onMapReady = () => {
     if (props.route?.params?.aroundme) {
       // 내 주변 살펴보기
+      getCategoryList(1);
+      getCategoryList(2);
+      getCategoryList(3);
+      getCategoryList(4);
+      getCategoryList(5);
       aroundme();
-      setHideFilter(true);
     } else if (props.route?.params?.facilitySearch) {
       // 배틀 장소 설정
       console.log('여기맞아?');
@@ -141,8 +153,35 @@ export default function FullMap(props) {
         title: e.faName,
       }));
       setResult(temp);
+    } else if (props.route?.params?.battleChatLink) {
+      // 시설정보
+      setHideSearchFilter(true);
+      const temp = props.route.params?.info.map((e) => ({
+        faPk: e.faPk,
+        faLat: e.faLat,
+        faLon: e.faLon,
+        coords: {latitude: e.faLat, longitude: e.faLon},
+        title: e.faName,
+      }));
+      setResult(temp);
+      getPlaceInfo(temp[0].faPk);
     }
     console.log('onMapReady : ' + mapReady);
+  };
+
+  // 배틀방 장소공유 [ 정보가져오기 ]
+  const getPlaceInfo = (faPk) => {
+    Axios.get(`getFacility/${faPk}`)
+      .then((res) => {
+        logApi('getFacility', res.data);
+        let item = res.data;
+        console.log(item);
+        setPlaceInfo(item);
+        console.log(placeinfo);
+      })
+      .catch((err) => {
+        logApi('getFacility error', err.response);
+      });
   };
 
   // 위시리스트 지도
@@ -189,7 +228,34 @@ export default function FullMap(props) {
         logApi('recomMap error', err.response);
       });
   };
-  // 운동시설 검색 + 필터적용 검색 [배틀방, 내주변 살펴보기]
+  // 장소 필터[내주변 살펴보기] 운동시설용은 따로라고하네 뭔소리인지는 모르것다
+  const getCategoryList = (code) => {
+    Axios.get(`getCategoryList/${code}`)
+      .then((res) => {
+        logApi('getCategoryList', res.data);
+        if (code === 1) {
+          // 구기종목
+          setCaCode(res.data.caCode);
+          setClCode(res.data.clCode);
+        } else if (code === 2) {
+          // 건강운동
+          setHealthCode(res.data.caCode);
+        } else if (code === 3) {
+          // 맛집
+          setEatCode(res.data.caCode);
+        } else if (code === 4) {
+          // 관광지
+          setViewCode(res.data.caCode);
+        } else {
+          // 체험
+          setPlayCode(res.data.caCode);
+        }
+      })
+      .catch((err) => {
+        logApi('getCategoryList error', err.response);
+      });
+  };
+  // 운동시설 검색 + 필터적용 검색 [배틀방]
   const facilitySearch = (PK, ca, cl) => {
     let baPk;
     PK === DEFAULT_BAPK
@@ -245,7 +311,7 @@ export default function FullMap(props) {
         logApi('facilitySearch error', err.response);
       });
   };
-  const aroundme = () => {
+  const aroundme = (ca, cl) => {
     // 테스트 좌표
     // "lat": 37.55375859999999,
     // "lon": 126.9809696,
@@ -254,6 +320,8 @@ export default function FullMap(props) {
       lat: currentLocation.latitude, //global.address.coords.latitude,
       lon: currentLocation.longitude, //global.address.coords.longitude,
       keyword: keyword,
+      caCode: ca,
+      clCode: cl,
     })
       .then((res) => {
         logApi('aroundme', res.data);
@@ -274,46 +342,63 @@ export default function FullMap(props) {
       });
   };
   const markerOnSelect = (e) => {
-    setActionSheetComponent(
-      <>
-        <ListItem
-          onPress={() => {
-            props.navigation.navigate('FacilityViewModal', {faPk: e.faPk});
-            actionSheetRef.current?.setModalVisible(false);
-          }}
-          item={e}
-          showScrap={false}
-        />
-        <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
-          <Button
-            text={props.route.params.set === 'set' ? '설정하기' : '공유하기'}
-            size={'large'}
-            onPress={async () => {
-              if (props.route?.params?.share) {
+    mapReady !== 'battleChatLink'
+      ? setActionSheetComponent(
+          <>
+            <ListItem
+              onPress={() => {
+                props.navigation.navigate('FacilityViewModal', {
+                  faPk: e.faPk,
+                });
                 actionSheetRef.current?.setModalVisible(false);
-                await sleep(500);
-                props.navigation.goBack();
-                props.route.params.share(e);
-              } else {
-                share(
-                  `https://jejubattle.com/facility/${e.faPk}`,
-                  e.faName,
-                  e.faSubject,
-                  e.faImgUrl,
-                  '',
-                );
-              }
+              }}
+              item={e}
+              showScrap={false}
+            />
+            <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
+              <Button
+                text={
+                  props.route.params.set === 'set' ? '설정하기' : '공유하기'
+                }
+                size={'large'}
+                onPress={async () => {
+                  if (props.route?.params?.share) {
+                    actionSheetRef.current?.setModalVisible(false);
+                    await sleep(500);
+                    props.navigation.goBack();
+                    props.route.params.share(e);
+                  } else {
+                    share(
+                      `https://jejubattle.com/facility/${e.faPk}`,
+                      e.faName,
+                      e.faSubject,
+                      e.faImgUrl,
+                      '',
+                    );
+                  }
+                }}
+                stretch
+                color={custom.themeColor}
+              />
+              <Seperator bottom />
+            </View>
+          </>,
+        )
+      : setActionSheetComponent(
+          <ListItem
+            onPress={() => {
+              props.navigation.navigate('FacilityViewModal', {
+                faPk: faPk,
+              });
+              actionSheetRef.current?.setModalVisible(false);
             }}
-            stretch
-            color={custom.themeColor}
-          />
-          <Seperator bottom />
-        </View>
-      </>,
-    );
+            item={placeInfo}
+            showScrap={false}
+          />,
+        );
     actionSheetRef.current?.setModalVisible();
   };
-  return loading === false ? (
+  return loading === true ? (
     <Loader />
   ) : (
     <View style={{flex: 1}}>
@@ -393,11 +478,21 @@ export default function FullMap(props) {
           {hideFilter === true || hideSearchFilter === true ? null : (
             <TouchableOpacity
               onPress={() =>
-                props.navigation.navigate('FullMapFilter', {
-                  mapReady: mapReady,
-                  caCode: caCode,
-                  clCode: clCode,
-                })
+                mapReady === 'aroundme'
+                  ? props.navigation.navigate('FullMapFilterAll', {
+                      mapReady: mapReady,
+                      caCode: caCode,
+                      clCode: clCode,
+                      healthCode: healthCode,
+                      eatCode: eatCode,
+                      viewCode: viewCode,
+                      playCode: playCode,
+                    })
+                  : props.navigation.navigate('FullMapFilter', {
+                      mapReady: mapReady,
+                      caCode: caCode,
+                      clCode: clCode,
+                    })
               }
               style={{
                 backgroundColor: 'white',

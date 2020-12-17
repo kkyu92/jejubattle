@@ -1,6 +1,6 @@
 @fcm=https://fcm.googleapis.com/fcm/send
-@host=https://kangmin.shop/api/
-@tokenFb=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudZmIiLCJpc3MiOiJrYW5nbWluLnNob3AiLCJfcGsiOjQxLCJleHAiOjE2MDcxMzI3Mjh9.wYO8KC3F5L8WNZuGZ0Iu7GdqgZBo_OEn1j3lqc73O_Y
+@host=https://jejubattle.com/api/
+@tokenFb=cDNp8zs7T4amhKsghPk45m:APA91bEB7JZIk2PFHLpoWoQF-uOmtm2cVRQKkYV9WxUz0AmsSKUbjI5JhQTXgwL03LRrV3q7LjvbVFHVCP3z_4xgEJ6OEAc-GXSl-07iT4SKgCoUAgN7EMK8zdbU7TB0hAURerRrZNTH
 @tokenKakao=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7Iuda2FrYW8iLCJpc3MiOiJrYW5nbWluLnNob3AiLCJfcGsiOjMyLCJleHAiOjE2MDk0Njc3MzB9.qBhLgEo03PTAjlBEl_Q5NRecVRMe0iSvgigBapkckgA
 @token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjA5NDY3NzUwfQ.qcSt_Arq9B3sb6IHaUb_D65aZ5ledSRz3QElzC0evIM
 @pushKeyKakao=d9P80U8JTPKd8o6OCNbIt4:APA91bENEKBovx8G4mn3aKu9jnIe_xBJVh1_xqLLrUfs3IDCEKyx4UaatPpltqZmCPsRbVSbc-ga8jWJ8PytoNueL0aFndn-s6EKRoVKPWw4S059zc3CsFiTseqcxXMqkDCj-mkQciYx
@@ -9,6 +9,19 @@
 GET {{host}}mainList HTTP/1.1
 token: {{token}}
 
+###
+
+POST {{host}}snsSignin HTTP/1.1
+Content-Type: application/json
+token: {{tokenFb}}
+
+{
+    "userId": "3271555769600856",
+   "userCode": 4,
+   "userPushkey": "",
+    "deviceOs" : 1,
+    "deviceOsVer" : "29"
+}
 
 ###
 

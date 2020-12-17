@@ -26,4 +26,3 @@ export const ShadowStyleUp = {
   shadowRadius: 4,
   elevation: 3,
 };
-

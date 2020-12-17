@@ -44,6 +44,8 @@ export default async () => {
   global.hideFilterGuide = hideFilterGuide;
   const hidePermissionAlert = await AsyncStorage.getItem('hidePermissionAlert');
   global.hidePermissionAlert = hidePermissionAlert;
+  const appStartGuide = await AsyncStorage.getItem('appStartGuide');
+  global.appStartGuide = appStartGuide;
 
   // location
   // Geolocation.requestAuthorization('whenInUse');
@@ -73,6 +75,6 @@ export default async () => {
       logApi('Version', res.data);
     })
     .catch((err) => {
-      logApi('Version error', err.response);
+      logApi('Version error', err);
     });
 };

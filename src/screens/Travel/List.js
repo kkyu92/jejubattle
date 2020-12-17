@@ -27,7 +27,10 @@ export default function TravelList(props) {
   const [travel, setTravel] = React.useState([]);
   const [orderType, setOrderType] = React.useState(0);
   const [category, setCategory] = React.useState([]);
+  const [page, setPage] = React.useState(1);
+  const [moredone, setMoredone] = React.useState(false);
   const isFocused = useIsFocused();
+  const flatListRef = React.useRef();
   let title;
   switch (props.route.params.faCode) {
     case 1:
@@ -45,17 +48,47 @@ export default function TravelList(props) {
     default:
       break;
   }
-  const getTravelList = () => {
+  const getTravelList = (page) => {
     Axios.post('travelList', {
       faCode: props.route.params.faCode,
       code: activeTab,
       orderType: orderType,
       lat: global.address.coords.latitude,
       lon: global.address.coords.longitude,
+      pageNum: page,
     })
       .then((res) => {
         logApi('travelList', res.data);
-        setTravel(res.data.facility);
+        let facilityList = res.data.facility;
+        const list = facilityList.map((item) => ({
+          ...item,
+          id: item.faPk,
+        }));
+        logApi(props.route.params.endpoint, res.data);
+        if (page === 1) {
+          setTravel(res.data.facility);
+        } else {
+          setTravel((old) => [...old, ...list]);
+        }
+        setCategory(res.data.category);
+        if (res.data.facility.length === 10) {
+          Axios.post('travelList', {
+            faCode: props.route.params.faCode,
+            code: activeTab,
+            orderType: orderType,
+            lat: global.address.coords.latitude,
+            lon: global.address.coords.longitude,
+            pageNum: page + 1,
+          }).then(async (res) => {
+            if (res.data.facility.length === 0) {
+              setMoredone(true);
+            }
+          });
+        } else {
+          setMoredone(true);
+        }
+
+        // setTravel(res.data.facility);
         res.data.category && setCategory(res.data.category);
       })
       .catch((err) => {
@@ -63,8 +96,16 @@ export default function TravelList(props) {
       });
   };
   React.useEffect(() => {
-    isFocused && getTravelList();
+    setPage(1);
+    setMoredone(false);
+    isFocused;
+    getTravelList(1);
+    toTop();
   }, [isFocused, activeTab]);
+  const toTop = () => {
+    // use current
+    flatListRef.current.scrollToOffset({animated: true, offset: 0});
+  };
   const renderItem = ({item, index}) => {
     return (
       <ListItem
@@ -192,6 +233,7 @@ export default function TravelList(props) {
         <Seperator height={20} />
       )}
       <FlatList
+        ref={flatListRef}
         data={travel}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItem}
@@ -200,6 +242,15 @@ export default function TravelList(props) {
             <Seperator line />
           </View>
         )}
+        onEndReached={() => {
+          if (!moredone) {
+            console.log('more endReched!');
+            setPage(page + 1);
+            getTravelList(page + 1);
+          } else {
+            console.log('finish endReched!');
+          }
+        }}
         // ListEmptyComponent={<Empty />}
         // ListHeaderComponent={FlatListHeader()}
         // refreshing={pullToRefresh}
