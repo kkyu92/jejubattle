@@ -90,6 +90,14 @@ export default function App() {
       await Axios.post('getme', {})
         .then((res) => {
           logApi('getme', res.data);
+          if (res.data.blackList === 'Y') {
+            showToast(
+              `블랙리스트 회원으로 로그아웃 되었습니다.`,
+              2000,
+              'center',
+            );
+            AuthStackScreen.navigate('Login', {});
+          }
           dispatch({
             type: 'AUTHORIZED',
             data: {...res.data},
@@ -263,6 +271,42 @@ export default function App() {
                 notification: 'N',
               },
             });
+          } else if (notify.screen === 'locker') {
+            const options = {
+              soundName: 'default',
+              playSound: true,
+            };
+            localNotificationService.showNotification(
+              0,
+              notify.title,
+              notify.body,
+              notify,
+              options,
+            );
+            dispatch({
+              type: 'UPDATEME',
+              data: {
+                notification: 'N',
+              },
+            });
+          } else if (notify.screen === 'admin') {
+            const options = {
+              soundName: 'default',
+              playSound: true,
+            };
+            localNotificationService.showNotification(
+              0,
+              notify.title,
+              notify.body,
+              notify,
+              options,
+            );
+            dispatch({
+              type: 'UPDATEME',
+              data: {
+                notification: 'N',
+              },
+            });
           } else if (notify.screen === 'join') {
             dispatch({type: 'UPDATENOTI', data: notify});
           }
@@ -302,6 +346,10 @@ export default function App() {
               showToast(notify.title + '\n' + notify.body, 2000, 'center');
               RootNavigation.navigate('Battle', {});
             }
+          } else if (notify.screen === 'locker') {
+            RootNavigation.navigate('Archive', {});
+          } else if (notify.screen === 'admin') {
+            // showToast('admin push', 2000, 'center');
           }
           // getPush();
         }

@@ -17,7 +17,7 @@ import BattleComponent from './BattleComponent';
 import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
 import Axios from 'axios';
-import {logApi, gotoStore} from '../../react-native-nuno-ui/funcs';
+import {logApi, gotoStore, showToast} from '../../react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppContext} from '../../context';
 import DeviceInfo from 'react-native-device-info';

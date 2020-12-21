@@ -161,7 +161,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-mylocation-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'내 주변 살펴보기'} fontSize={16} color={'dimgray'} />
+              <Text text={'주변 살펴보기'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>

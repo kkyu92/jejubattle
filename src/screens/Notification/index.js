@@ -69,20 +69,21 @@ export default function Notification(props) {
     return (
       <TouchableOpacity
         onPress={() =>
-          item.fmCode === 1
-            ? console.log('관리자 알림')
-            : item.fmCode === 2
+          item.fmCode === 1 // 어드민
+            ? showToast(item.message, 2000, 'center')
+            : item.fmCode === 2 // 보관함
             ? props.navigation.navigate('Archive', {})
-            : item.fmCode === 3 && item.inValid === 'Y'
+            : item.fmCode === 3 && item.inValid === 'Y' // 배틀
             ? props.navigation.navigate('BattleView', {
                 baPk: item.baPk,
               })
             : item.fmCode === 3 && item.inValid === 'N'
             ? showToast('배틀방이 존재하지 않습니다.', 2000, 'center')
-            : item.fmCode === 4
-            ? props.navigation.navigate('Battle', {})
-            : item.fmCode === 5
-            ? console.log('신고 알림')
+            : item.fmCode === 4 // 강퇴
+            ? // ? props.navigation.navigate('Battle', {})
+              showToast(item.message, 2000, 'center')
+            : item.fmCode === 5 // 신고
+            ? showToast(item.message, 2000, 'center')
             : null
         }>
         <HView

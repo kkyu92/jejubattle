@@ -28,6 +28,14 @@
 
 > https://play.google.com/apps/internaltest/4700794782783427988
 
+#### 2020.12.21
+
+> android (2.0.0.32)
+> ios (2.0.0.22)
+
+- blackList
+- locker, admin push
+
 #### 2020.12.17
 
 > android (2.0.0.31)

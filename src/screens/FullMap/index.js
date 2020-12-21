@@ -52,10 +52,14 @@ export default function FullMap(props) {
 
   const [caCode, setCaCode] = React.useState(0);
   const [clCode, setClCode] = React.useState(0);
+
   const [healthCode, setHealthCode] = React.useState(0);
   const [eatCode, setEatCode] = React.useState(0);
   const [viewCode, setViewCode] = React.useState(0);
   const [playCode, setPlayCode] = React.useState(0);
+
+  const [itemCode, setItemCode] = React.useState(0);
+  const [typeCode, setTypeCode] = React.useState(0);
 
   const DEFAULT_BAPK = 195;
 
@@ -93,6 +97,8 @@ export default function FullMap(props) {
       wishMap();
     } else if (props.route?.params?.aroundme) {
       setMapReady('aroundme');
+      setItemCode(ca);
+      setTypeCode(cl);
       aroundme(ca, cl);
       console.log('AROUND ME ::::::::::::::');
     } else if (props.route?.params?.noSearchFilter) {
@@ -325,6 +331,9 @@ export default function FullMap(props) {
     })
       .then((res) => {
         logApi('aroundme', res.data);
+        console.log(keyword);
+        console.log(ca);
+        console.log(cl);
         if (res.data.length === 0) {
           showToast('주변에 등록된 장소가 없습니다.', 2000, 'center');
         } else {
@@ -467,9 +476,13 @@ export default function FullMap(props) {
                   returnKeyType={'search'}
                   returnKeyLabel={'검색'}
                   onSubmitEditing={() => {
-                    mapReady === 'wishList' ? wishMap(keyword) : aroundme();
+                    keyword === ''
+                      ? showToast('키워드를 입력해주세요.', 2000, 'center')
+                      : mapReady === 'wishList'
+                      ? wishMap(keyword)
+                      : aroundme(itemCode, typeCode);
                   }}
-                  placeholder={'검색하실 키워드를 입력해주세요.'}
+                  placeholder={'키워드를 입력해주세요.'}
                 />
               </View>
             </HView>
