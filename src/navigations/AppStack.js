@@ -128,10 +128,10 @@ export default function AppStackScreen() {
 
       {/* Modal Stacks */}
       <Stack.Screen name="Notification" component={Notification} />
-      {/* <Stack.Screen name="MyBattleStack" component={MyBattleStackScreen} /> */}
+      <Stack.Screen name="MyBattle" component={MyBattle} />
       <Stack.Screen name="MyInfoStack" component={MyInfoStackScreen} />
       <Stack.Screen name="TourInfoStack" component={TourInfoStackScreen} />
-      {/* <Stack.Screen name="WishList" component={WishList} /> */}
+      <Stack.Screen name="WishList" component={WishList} />
       <Stack.Screen name="ReviewEdit" component={ReviewEdit} />
       <Stack.Screen name="Archive" component={Archive} />
       <Stack.Screen name="EventStack" component={EventStackScreen} />

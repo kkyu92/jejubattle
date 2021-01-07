@@ -42,20 +42,18 @@ export default function TabReview(props) {
     <Loader />
   ) : (
     <Container>
-      <View style={{padding: 20}}>
-        <Text text={'시설 정보'} fontSize={18} fontWeight={'bold'} />
-      </View>
       <HView style={{padding: 20}}>
-        <View style={{flex: 0.2, alignItems: 'flex-end'}}>
-          <Text text={props.scopeCnt} fontSize={33} fontWeight={'bold'} />
+        <View style={{padding: 0}}>
+          <Text text={'평점'} fontSize={18} fontWeight={'bold'} />
         </View>
-        <View style={{flex: 0.4, paddingLeft: 20}}>
+        <View style={{flex: 0.4, paddingLeft: 20, alignItems: 'center'}}>
+          <Text text={props.scopeCnt} fontSize={33} fontWeight={'bold'} />
           <View style={{alignItems: 'flex-start'}}>
             <StarRating
               disabled={true}
               maxStars={5}
-              rating={5}
-              starSize={11}
+              rating={props.scopeCnt}
+              starSize={18}
               emptyStarColor={custom.themeColor}
               halfStarEnabled={true}
               halfStarColor={custom.themeColor}
@@ -66,10 +64,11 @@ export default function TabReview(props) {
           <Text
             text={`${props.replyCnt}개의 평가`}
             fontSize={14}
-            color={'gray'}
+            color={'black'}
+            fontWeight={'bold'}
           />
         </View>
-        <View style={{flex: 0.4, alignItems: 'flex-end'}}>
+        <View style={{flex: 0.6, alignItems: 'flex-end'}}>
           <Button
             text={'리뷰작성'}
             color={'white'}

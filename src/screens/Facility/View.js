@@ -56,6 +56,7 @@ export default function FacilityView(props) {
         setLoading(false);
       })
       .catch((err) => {
+        console.log(props.route.params.faPk);
         logApi('facilityInfo error', err.response);
       });
   };
@@ -208,7 +209,10 @@ export default function FacilityView(props) {
             <TouchableOpacity
               onPress={() =>
                 share(
-                  `https://jejubattle.com/facility/${props.route.params.faPk}`,
+                  `https://jejubattle.com/facility/${facility.faPk}`,
+                  facility.faName,
+                  facility.faSubject,
+                  facility.faImgUrl,
                   '',
                 )
               }

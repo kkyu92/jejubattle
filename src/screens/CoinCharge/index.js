@@ -377,7 +377,7 @@ export default function CoinCharge(props) {
                   </HView>
                   <Seperator height={6} />
                   <View>
-                    <Text text={'6,000 원'} fontSize={23} />
+                    <Text text={'5,900 원'} fontSize={23} />
                   </View>
                 </View>,
               );
@@ -399,7 +399,7 @@ export default function CoinCharge(props) {
                 </HView>
                 <Seperator height={6} />
                 <HView style={{alignItems: 'flex-end'}}>
-                  <Text text={'6,000 원'} fontSize={23} />
+                  <Text text={'5,900 원'} fontSize={23} />
                 </HView>
               </View>
             </HView>
@@ -624,12 +624,18 @@ export default function CoinCharge(props) {
                 text={'예'}
                 color={custom.themeColor}
                 onPress={() => {
-                  usePoint === true ? addCoin(true) : setLoading(true);
-                  purchase(
-                    Platform.OS === 'ios'
-                      ? product[coinCount === 1 ? 0 : coinCount === 5 ? 1 : 2]
-                      : product[coinCount === 1 ? 1 : coinCount === 5 ? 2 : 0],
-                  );
+                  usePoint === true
+                    ? addCoin(true)
+                    : (setLoading(true),
+                      purchase(
+                        Platform.OS === 'ios'
+                          ? product[
+                              coinCount === 1 ? 0 : coinCount === 5 ? 1 : 2
+                            ]
+                          : product[
+                              coinCount === 1 ? 1 : coinCount === 5 ? 2 : 0
+                            ],
+                      ));
                 }}
                 size={'large'}
                 stretch

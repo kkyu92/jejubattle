@@ -18,7 +18,7 @@ import {ShadowStyle, screenWidth} from '../../styles';
 import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import {useIsFocused} from '@react-navigation/native';
@@ -30,6 +30,10 @@ export default function Battle(props) {
   const [stickyHeaderIndices, setStickyHeaderIndices] = React.useState([]);
   const [pullToRefresh, setPullToRefresh] = React.useState(true);
   const isFocused = useIsFocused();
+  const [page, setPage] = React.useState(1);
+  const [moredone, setMoredone] = React.useState(false);
+  const flatListRef = React.useRef();
+  const [makeBattle, setMakeBattle] = React.useState(false);
 
   const [boCode, setBoCode] = React.useState(1);
   const [baCode, setBaCode] = React.useState(0);
@@ -39,9 +43,14 @@ export default function Battle(props) {
   const [caCode, setCaCode] = React.useState([]);
 
   React.useEffect(() => {
-    if (isFocused || pullToRefresh) {
+    if (props.route.params || pullToRefresh) {
       if (props.route.params === undefined) {
-        get();
+        if (list.length === 0 || makeBattle || pullToRefresh) {
+          get();
+          setPage(1);
+          setMoredone(false);
+          flatListRef.current.scrollToOffset({animated: true, offset: 0});
+        }
       } else {
         setBoCode(props.route.params.boCode);
         setBaCode(props.route.params.baCode);
@@ -57,25 +66,78 @@ export default function Battle(props) {
           props.route.params.bpCode,
           props.route.params.caCode,
         );
+        setPage(1);
+        setMoredone(false);
+        flatListRef.current.scrollToOffset({animated: true, offset: 0});
       }
       getCoin();
+      setPullToRefresh(false);
       console.log('params : ' + JSON.stringify(props.route.params));
     }
-  }, [pullToRefresh, isFocused]);
-  // React.useEffect(() => {
-  //   Axios.post('sportsList', {})
-  //     .then((res) => {
-  //       logApi('sportsList', res.data);
-  //       let temp = [...res.data.gojiList];
-  //       temp = temp.map((e, i) => {
-  //         return {...e, icon: sports1Table[i].icon};
-  //       });
-  //       setSports(temp);
-  //     })
-  //     .catch((err) => {
-  //       logApi('sportsList error', err.response);
-  //     });
-  // }, []);
+  }, [pullToRefresh, props.route.params]);
+
+  const addGet = (page, boCode, baCode, bmCode, blCode, bpCode, caCode) => {
+    Axios.post(
+      'battle',
+      boCode === 3
+        ? {
+            pageNum: page,
+            boCode,
+            baCode,
+            bmCode,
+            blCode,
+            bpCode,
+            caCode,
+            lat: global.address.coords.latitude,
+            lon: global.address.coords.longitude,
+          }
+        : {pageNum: page, boCode, baCode, bmCode, blCode, bpCode, caCode},
+    )
+      .then(async (res) => {
+        let battleList = res.data.battle;
+        const list = battleList.map((item) => ({
+          ...item,
+        }));
+        logApi('battle + add', res.data);
+        setList((old) => [...old, ...list]);
+        if (res.data.battle.length === 10) {
+          Axios.post(
+            'battle',
+            boCode === 3
+              ? {
+                  pageNum: page + 1,
+                  boCode,
+                  baCode,
+                  bmCode,
+                  blCode,
+                  bpCode,
+                  caCode,
+                  lat: global.address.coords.latitude,
+                  lon: global.address.coords.longitude,
+                }
+              : {
+                  pageNum: page + 1,
+                  boCode,
+                  baCode,
+                  bmCode,
+                  blCode,
+                  bpCode,
+                  caCode,
+                },
+          ).then(async (res) => {
+            if (res.data.battle.length === 0) {
+              setMoredone(true);
+            }
+          });
+        } else {
+          setMoredone(true);
+        }
+      })
+      .catch((err) => {
+        console.log('battle + add error', err);
+      });
+  };
+
   const get = (boCode, baCode, bmCode, blCode, bpCode, caCode) => {
     if (caCode !== undefined) {
       if (caCode.length === 0) {
@@ -149,16 +211,6 @@ export default function Battle(props) {
         // logApi('getPay error', err.response);
       });
   };
-  // const handleSports = (e) => {
-  //   const temp = [...selectedSports];
-  //   const found = temp.map((t) => t.code).indexOf(e.code);
-  //   if (found === -1) {
-  //     temp.push(e);
-  //   } else {
-  //     temp.splice(found, 1);
-  //   }
-  //   setSelectedSports(temp);
-  // };
   const renderItem = ({item, index}) => {
     if (item.title) {
       return (
@@ -262,6 +314,7 @@ export default function Battle(props) {
       />
       {/* <Seperator height={20} /> */}
       <FlatList
+        ref={flatListRef}
         data={list}
         keyExtractor={(item) => JSON.stringify(item.baPk)}
         renderItem={renderItem}
@@ -275,8 +328,22 @@ export default function Battle(props) {
           // setIsLast(false);
           setPullToRefresh(true);
         }}
+        onEndReached={() => {
+          if (!moredone) {
+            console.log('more endReched!');
+            setPage(page + 1);
+            addGet(page + 1, boCode, baCode, bmCode, blCode, bpCode, caCode);
+          } else {
+            console.log('finish endReched!');
+          }
+        }}
       />
-      <FloatingButton onPress={() => props.navigation.navigate('BattleEdit')} />
+      <FloatingButton
+        onPress={() => {
+          setMakeBattle(true);
+          props.navigation.navigate('BattleEdit');
+        }}
+      />
     </Container>
   );
 }

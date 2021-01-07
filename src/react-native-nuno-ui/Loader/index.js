@@ -1,6 +1,6 @@
 import React from 'react';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 
-export default function Loader({size, color}) {
+export default function Loader({size = 35, color = 'orange'}) {
   return <ActivityIndicator size={size} color={color} />;
-};
+}

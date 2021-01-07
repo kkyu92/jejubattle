@@ -18,7 +18,7 @@ import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useIsFocused} from '@react-navigation/native';
@@ -121,7 +121,19 @@ export default function MyBattle(props) {
         navigation={props.navigation}
         rightComponent={
           <TouchableOpacity
-            onPress={() => setEdit(!edit)}
+            onPress={() => {
+              setEdit(!edit),
+                Alert.alert(
+                  '완료된 배틀만 삭제할 수 있습니다.',
+                  '현재 진행중인 배틀은 직접 나가주세요!',
+                  [
+                    {
+                      text: '확인',
+                      onPress: () => console.log('cancel'),
+                    },
+                  ],
+                );
+            }}
             style={{
               paddingHorizontal: 20,
               paddingVertical: 5,
@@ -174,20 +186,23 @@ export default function MyBattle(props) {
                 text={'삭제'}
                 color={custom.themeColor}
                 onPress={() =>
-                  Alert.alert(
-                    '선택한 배틀을 삭제합니다',
-                    '해당 방 정보가 모두 삭제되며 복구할 수 없습니다.\n아직보상을 받지않은 경우 보상을 받을 수 없습니다.',
-                    [
-                      {
-                        text: '취소',
-                        onPress: () => console.log('cancel'),
-                      },
-                      {
-                        text: '삭제',
-                        onPress: () => deleteMyBattle(),
-                      },
-                    ],
-                  )
+                  mybattle.filter((e) => e.checked).map((e) => ({baPk: e.baPk}))
+                    .length !== 0
+                    ? Alert.alert(
+                        '선택한 배틀을 삭제합니다',
+                        '해당 방 정보가 모두 삭제되며 복구할 수 없습니다.\n아직보상을 받지않은 경우 보상을 받을 수 없습니다.',
+                        [
+                          {
+                            text: '취소',
+                            onPress: () => console.log('cancel'),
+                          },
+                          {
+                            text: '삭제',
+                            onPress: () => deleteMyBattle(),
+                          },
+                        ],
+                      )
+                    : showToast('선택한 배틀방이 없습니다.', 2000, 'center')
                 }
                 size={'large'}
                 stretch

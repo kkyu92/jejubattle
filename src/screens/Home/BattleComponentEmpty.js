@@ -17,7 +17,7 @@ export default function BattleComponentEmpty(props) {
         }}>
         <HView style={{justifyContent: 'space-between'}}>
           <HView>
-            <Text text={'다가오는 배틀'} fontSize={22} fontWeight={'bold'} />
+            <Text text={'나의 배틀'} fontSize={22} fontWeight={'bold'} />
           </HView>
         </HView>
         <Seperator height={25} />
@@ -29,7 +29,7 @@ export default function BattleComponentEmpty(props) {
             borderRadius: 6,
           }}>
           <Text
-            text={'다가오는 배틀이 없습니다.'}
+            text={'예약된 배틀이 없습니다.'}
             fontSize={18}
             fontWeight={'bold'}
           />

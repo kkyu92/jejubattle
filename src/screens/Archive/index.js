@@ -12,7 +12,7 @@ import {
   Modal,
 } from '../../react-native-nuno-ui';
 import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
-import Icons from '../../commons/Icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import {screenWidth, screenHeight} from '../../styles';
@@ -189,7 +189,7 @@ export default function Archive(props) {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Icons name={'check'} size={38} color={'white'} />
+                  <MaterialIcons name={'check'} color={'white'} size={50} />
                   <Text
                     text={'사용완료'}
                     color={'white'}
@@ -210,22 +210,14 @@ export default function Archive(props) {
             )}
 
             <View style={{padding: 10, alignItems: 'center'}}>
-              <Text
+              {/* <Text
                 text={'상품코드 : ' + clickItem.loGoods}
                 fontWeight={'bold'}
                 fontSize={22}
-              />
+              /> */}
               <Text text={clickItem.loName} color={'#4F4F4F'} fontSize={18} />
-              <Image
-                height={Math.floor((screenWidth - 140) / 3)}
-                width={Math.floor((screenWidth - 140) / 3)}
-                uri={clickItem.loQrcode}
-                // uri={clickItem.loImgUrl}
-                resizeMode={'cover'}
-                borderRadius={10}
-              />
             </View>
-            <View style={{paddingVertical: 30, alignItems: 'center'}}>
+            <View style={{paddingVertical: 10, alignItems: 'center'}}>
               <Text
                 text={
                   '사용기한: ' + clickItem.startDate + ' ~ ' + clickItem.endDate
@@ -235,9 +227,19 @@ export default function Archive(props) {
                 style={{opacity: 0.5}}
               />
             </View>
-            <Seperator line />
-            <View style={{paddingVertical: 30, alignItems: 'center'}}>
+            <View style={{paddingBottom: 30, alignItems: 'center'}}>
               <Text text={clickItem.loText} color={'#4F4F4F'} fontSize={16} />
+            </View>
+            <Seperator line />
+            <View style={{alignSelf: 'center'}}>
+              <Image
+                height={Math.floor((screenWidth - 140) / 3)}
+                width={Math.floor((screenWidth - 140) / 3)}
+                uri={clickItem.loQrcode}
+                // uri={clickItem.loImgUrl}
+                resizeMode={'cover'}
+                borderRadius={10}
+              />
             </View>
           </ScrollView>
           {clickItem.loUsed === 'N' ? (

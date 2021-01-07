@@ -24,14 +24,16 @@ export default function ListItem(props) {
             padding: 20,
             alignItems: props.editMode ? 'center' : 'flex-start',
           }}>
-          <Image
-            height={105}
-            width={140}
-            borderRadius={4}
-            uri={props.item.faImgUrl}
-            onPress={props.onPress}
-            resizeMode={'cover'}
-          />
+          <View style={{alignSelf: 'center'}}>
+            <Image
+              height={105}
+              width={140}
+              borderRadius={4}
+              uri={props.item.faImgUrl}
+              onPress={props.onPress}
+              resizeMode={'cover'}
+            />
+          </View>
           {props.item.faRmType === 'Y' && (
             <View
               style={{

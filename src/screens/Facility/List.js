@@ -16,7 +16,11 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
-import {logApi, getCurrentLocation} from '../../react-native-nuno-ui/funcs';
+import {
+  logApi,
+  getCurrentLocation,
+  showToast,
+} from '../../react-native-nuno-ui/funcs';
 import {useIsFocused} from '@react-navigation/native';
 import {AppContext} from '../../context';
 
@@ -51,10 +55,10 @@ export default function FacilityList(props) {
     isFocused;
     getList(1);
     toTop();
-  }, [activeTab, isFocused]);
+  }, [activeTab]);
   const toTop = () => {
     // use current
-    flatListRef.current.scrollToOffset({animated: true, offset: 0});
+    flatListRef.current.scrollToOffset({animated: false, offset: 0});
   };
   const getList = (page) => {
     Axios.post(
@@ -77,8 +81,11 @@ export default function FacilityList(props) {
             pageNum: page,
           },
     )
-      .then(async (res) => {
+      .then((res) => {
         let facilityList = res.data.facility;
+        if (facilityList.length === 0) {
+          showToast('등록된 데이터가 없습니다.', 2000, 'center');
+        }
         const list = facilityList.map((item) => ({
           ...item,
           id: item.faPk,
@@ -110,8 +117,8 @@ export default function FacilityList(props) {
                   keyword: keyword,
                   pageNum: page + 1,
                 },
-          ).then(async (res) => {
-            if (res.data.length === 0) {
+          ).then((res) => {
+            if (res.data.facility.length === 0) {
               setMoredone(true);
             }
           });
@@ -335,21 +342,21 @@ export default function FacilityList(props) {
                 </View>
                 <View style={{paddingVertical: 10, paddingRight: 20}}>
                   <Checkbox
-                    label={'체육공원'}
+                    label={'공공체육시설'}
                     checked={filter2 === 2}
                     onPress={() => setFilter2(2)}
                   />
                 </View>
                 <View style={{paddingVertical: 10, paddingRight: 20}}>
                   <Checkbox
-                    label={'공공체육시설'}
+                    label={'사설체육시설'}
                     checked={filter2 === 3}
                     onPress={() => setFilter2(3)}
                   />
                 </View>
                 <View style={{paddingVertical: 10, paddingRight: 20}}>
                   <Checkbox
-                    label={'사설체육시설'}
+                    label={'체육공원'}
                     checked={filter2 === 4}
                     onPress={() => setFilter2(4)}
                   />
@@ -372,8 +379,15 @@ export default function FacilityList(props) {
               <Button
                 text={'적용하기'}
                 onPress={() => {
-                  getList(1);
                   setFilterVisible(false);
+                  setList([]);
+                  setPage(1);
+                  setMoredone(false);
+                  getList(1);
+                  flatListRef.current.scrollToOffset({
+                    animated: false,
+                    offset: 0,
+                  });
                 }}
                 color={custom.themeColor}
                 stretch

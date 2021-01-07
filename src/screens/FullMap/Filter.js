@@ -9,6 +9,7 @@ import {
   Button,
   Container,
   Header,
+  Loader,
 } from '../../react-native-nuno-ui';
 import {View, TouchableOpacity, ScrollView} from 'react-native';
 import {ShadowStyle, screenWidth} from '../../styles';
@@ -22,6 +23,7 @@ import ListItem from '../../commons/ListItem';
 const actionSheetRef = React.createRef();
 
 export default function FullMapFilter(props) {
+  const [loading, setLoading] = React.useState(false);
   const [mapReady] = React.useState(props.route?.params?.mapReady);
   const [sports] = React.useState(props.route?.params?.caCode);
   const [selectedSports, setSelectedSports] = React.useState([]);
@@ -30,16 +32,21 @@ export default function FullMapFilter(props) {
   const [checkAll, setCheckAll] = React.useState(false);
   const [checkAll2, setCheckAll2] = React.useState(false);
 
-  // React.useEffect(() => {
-  //   Axios.post('sportsList', {})
-  //     .then((res) => {
-  //       logApi('sportsList', res.data);
-  //       setSports(res.data.gojiList);
-  //     })
-  //     .catch((err) => {
-  //       logApi('sportsList error', err.response);
-  //     });
-  // }, []);
+  React.useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      if (props.route?.params?.selectCa) {
+        let selectCa = props.route.params.selectCa;
+        setSelectedSports(selectCa);
+      }
+      if (props.route?.params?.selectCl) {
+        let selectCl = props.route.params.selectCl;
+        setSelectedClCode(selectCl);
+      }
+      setLoading(false);
+    }, 500);
+  }, [props.route?.params?.selectCa, props.route?.params?.selectCl]);
+
   const handleSportsButton = (e) => {
     const temp = [...selectedSports];
     const found = temp.indexOf(e);
@@ -49,6 +56,7 @@ export default function FullMapFilter(props) {
       temp.splice(found, 1);
     }
     setSelectedSports(temp);
+    console.log('temp:::: ' + temp);
   };
   const handleClCodeButton = (e) => {
     const temp = [...selectedClCode];
@@ -76,7 +84,9 @@ export default function FullMapFilter(props) {
       setSelectedClCode([]);
     }
   }, [checkAll2]);
-  return (
+  return loading === true ? (
+    <Loader />
+  ) : (
     <Container>
       <Header
         left={'close'}

@@ -10,6 +10,7 @@ import {
   Seperator,
   Carousel,
   Image,
+  Button,
 } from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -24,11 +25,14 @@ import DeviceInfo from 'react-native-device-info';
 import BattleComponentEmpty from './BattleComponentEmpty';
 import {useIsFocused} from '@react-navigation/native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import moment from 'moment';
 
 export default function Home(props) {
   const context = React.useContext(AppContext);
   const [loading, setLoading] = React.useState(false);
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
+  const [showPopupModal, setShowPopupModal] = React.useState(false);
+  const [popupImgUrl, setPopupImgUrl] = React.useState('')
   const [alertTitle, setAertTitle] = React.useState('');
   const [alertText, setAlertText] = React.useState('');
   const [banner, setBanner] = React.useState([]);
@@ -36,6 +40,8 @@ export default function Home(props) {
   const [recommand, setRecommand] = React.useState([]);
   const isFocused = useIsFocused();
   const [appStartGuide] = React.useState(global.appStartGuide);
+  const [popup] = React.useState(global.popup)
+  const [popupDate] = React.useState(global.popupDate)
   let list = [];
   React.useEffect(() => {
     if (isFocused) {
@@ -60,6 +66,21 @@ export default function Home(props) {
     }
   }, [isFocused]);
 
+  const getToken = async() => {
+    let token = await AsyncStorage.getItem('fcmToken')
+    Axios.post('updatePushkey', {
+      userPushkey: token,
+    })
+      .then((res) => {
+        logApi('updatePushkey', res.data);
+        console.log(token)
+      })
+      .catch((err) => {
+        logApi('updatePushkey error', err);
+        console.log(token)
+      });
+  }
+
   React.useEffect(() => {
     if (!appStartGuide) {
       props.navigation.navigate('GuideStart');
@@ -81,6 +102,23 @@ export default function Home(props) {
       .catch((err) => {
         console.log('Version error', err.response);
       });
+
+    getToken();
+
+    Axios.get('popup')
+      .then(async(res) => {
+        logApi('popup', res.data.fileUrl)
+        if (res.data.fileUrl) {
+          setPopupImgUrl(res.data.fileUrl)
+          let now = moment().format('LL');  
+          if (popupDate !== now) { // 그만보기 설정한 날짜와 다를경우 보여짐
+            setShowPopupModal(true)
+          } 
+        }
+      })
+      .catch((err) => {
+        logApi('popup error', err)
+      })
   }, []);
   return (
     <Container
@@ -120,11 +158,13 @@ export default function Home(props) {
       <ScrollView>
         <ImageCarousel
           // data={banner.map((e) => e.imgUrl)}
+          autoPlay={true}
+          loop={true}
           data={banner}
           height={200}
           adIndex={true}
           navigation={props.navigation}
-          dotColor={'white'}
+          dotColor={'orange'}
           paginationContainerStyle={{
             position: 'absolute',
             bottom: 0,
@@ -209,6 +249,54 @@ export default function Home(props) {
         </ScrollView>
         <Seperator bottom />
       </ScrollView>
-    </Container>
+
+      <Modal
+        isVisible={showPopupModal}
+        onBackdropPress={() => setShowPopupModal(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            // alignItems: 'center',
+          }}>
+          <View style={{alignItems: 'center', paddingVertical: 10}}>
+          <Image
+                uri={popupImgUrl}
+                height={300}
+                width={300}
+                resizeMode={'contain'}
+              />
+          </View>
+          <Seperator height={20} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'그만보기'}
+                color={'gray'}
+                onPress={async () => {
+                  await AsyncStorage.setItem('popupDate', moment().format('LL'))
+                  setShowPopupModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'닫기'}
+                color={custom.themeColor}
+                onPress={() => {
+                    setShowPopupModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+        </Modal>
+      </Container>
   );
 }

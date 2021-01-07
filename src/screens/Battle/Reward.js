@@ -140,7 +140,11 @@ export default function Reward(props) {
               fontWeight={'bold'}
               color={'black'}
               style={{textAlign: 'center'}}
-              text={'원하시는 배틀박스를 선택해주세요.'}
+              text={
+                props.result === 'win'
+                  ? '승리를 축하합니다!\n원하시는 배틀박스를 선택해주세요.'
+                  : '다음엔 꼭 이길 수 있어요!\n원하시는 배틀박스를 선택해주세요.'
+              }
             />
             <Seperator height={30} />
             <HView style={{flexWrap: 'wrap'}}>
@@ -164,8 +168,17 @@ export default function Reward(props) {
                         width: 70,
                         height: 70,
                         borderRadius: 35,
-                      }}
-                    />
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Image
+                        uri={e.imgUrl}
+                        height={60}
+                        width={60}
+                        borderRadius={30}
+                        resizeMode={'cover'}
+                      />
+                    </View>
                     <Text text={e.name} fontSize={16} />
                   </TouchableOpacity>
                 );

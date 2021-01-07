@@ -37,6 +37,11 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  if (@available(iOS 14, *)) {
+  UIDatePicker *picker = [UIDatePicker appearance];
+  picker.preferredDatePickerStyle = UIDatePickerStyleWheels;
+  }
+
 #if DEBUG
   InitializeFlipper(application);
 #endif

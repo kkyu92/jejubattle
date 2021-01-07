@@ -14,6 +14,9 @@ import FacilityList from '../screens/Facility/List';
 import BattleEdit from '../screens/Battle/Edit';
 import BattleView from '../screens/Battle/View';
 import FacilityView from '../screens/Facility/View';
+import TravelView from '../screens/Travel/View';
+import EventView from '../screens/Event/View';
+import Ad from '../screens/Ad';
 import MyBattle from '../screens/MyBattle';
 import RandomBox from '../screens/Battle/RandomBox';
 import WishList from '../screens/WishList';
@@ -111,6 +114,9 @@ export default function BottomTabStackScreen() {
       <BottomTabStack.Screen name="Search" component={Search} />
       <BottomTabStack.Screen name="FacilityList" component={FacilityList} />
       <BottomTabStack.Screen name="FacilityView" component={FacilityView} />
+      <BottomTabStack.Screen name="TravelView" component={TravelView} />
+      <BottomTabStack.Screen name="EventView" component={EventView} />
+      <BottomTabStack.Screen name="Ad" component={Ad} />
       <BottomTabStack.Screen name="MyBattle" component={MyBattle} />
       <BottomTabStack.Screen name="BattleEdit" component={BattleEdit} />
       <BottomTabStack.Screen name="BattleView" component={BattleView} />

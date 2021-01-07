@@ -1,7 +1,7 @@
 @fcm=https://fcm.googleapis.com/fcm/send
 @host=https://jejubattle.com/api/
 @tokenFb=cDNp8zs7T4amhKsghPk45m:APA91bEB7JZIk2PFHLpoWoQF-uOmtm2cVRQKkYV9WxUz0AmsSKUbjI5JhQTXgwL03LRrV3q7LjvbVFHVCP3z_4xgEJ6OEAc-GXSl-07iT4SKgCoUAgN7EMK8zdbU7TB0hAURerRrZNTH
-@tokenKakao=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7Iuda2FrYW8iLCJpc3MiOiJrYW5nbWluLnNob3AiLCJfcGsiOjMyLCJleHAiOjE2MDk0Njc3MzB9.qBhLgEo03PTAjlBEl_Q5NRecVRMe0iSvgigBapkckgA
+@tokenKakao=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7Iuda2FrYW8iLCJpc3MiOiJrYW5nbWluLnNob3AiLCJfcGsiOjMyLCJleHAiOjE2MTI0MjMyMDV9.722w6arfTOXx0WEnHl3qJX0wI3R_5cCgu-M4CuEOonc
 @token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjA5NDY3NzUwfQ.qcSt_Arq9B3sb6IHaUb_D65aZ5ledSRz3QElzC0evIM
 @pushKeyKakao=d9P80U8JTPKd8o6OCNbIt4:APA91bENEKBovx8G4mn3aKu9jnIe_xBJVh1_xqLLrUfs3IDCEKyx4UaatPpltqZmCPsRbVSbc-ga8jWJ8PytoNueL0aFndn-s6EKRoVKPWw4S059zc3CsFiTseqcxXMqkDCj-mkQciYx
 @pushKey=fITkvNxP80Yon4znlXr-cF:APA91bEb5A-_YB7-pZ1cVjDXfoCCYx8aIalX8yVjgpFJHy7_hA0DUoV-yCSZJ9UZ87QxnqxYUNT65H0nWwLBykEoGn-3q8YQ9Gl65XE3wDgeHPXqD7aoxaKiLvahBUF5krMqT7EusvuP
@@ -138,6 +138,37 @@ token: {{tokenFb}}
 {
 }
 
+### battle 목록
+POST {{host}}battle HTTP/1.1
+Content-Type: application/json
+token: {{tokenKakao}}
+
+{
+        "boCode": 1,
+        "lat": 37.55375859999999,
+        "lon": 126.9809696,
+        "baCode": 1,
+        "bmCode": 1,
+        "blCode": 1,
+        "bpCode": 1,
+        "caCode": [{
+                        "code": 1
+                },
+                {
+                        "code": 4
+                }
+        ],
+        "pageNum": 2
+}
+
+### popup
+GET {{host}}popup HTTP/1.1
+Content-Type: application/json
+token: {{tokenKakao}}
+
+{
+
+}
 
 ####
 POST {{fcm}}
@@ -145,11 +176,10 @@ Authorization: key=AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3
 Content-Type: application/json
 
 {
-  //"to": "d7hOVG1F9UNWkoxTcatfvd:APA91bHplPpNYfDNEyXfU2xuE24Pbi2YK4EzaRp4DPbL7XQW7PdEKdYDuW3XQu1p-5wJHc3Bcf8Z4a5wj5Gv5Z7_uC2XbX8AQk-tZsEhj7IuyD86APuGIJpDI_XlqgZWr9RnqTeeglp9",
-  "to": "cDNp8zs7T4amhKsghPk45m:APA91bGd1VEzl6qb4UD0SRnlml-j-EPxlyVdY_R6ElhN9eOHQgowfGtcjwPVd_eG9W6c6jQ1VI8az5omiVkSgaeiLiYEubDKJp6KedDRUFeW6Kao_dcPiRCTkAy0fN3F_fgQXfpovUsW",
+  //"to": "c2gbJTujCEgiq7PQpGjDNY:APA91bGFQqh5_6ZRW5QgJY6CD_6TVYgCgfddhjob9OnUmTKfO2fw9OKnek1TKnKLXZJGMK2rmMin0yEGzqMArQzFF_X1QZ82HQTsVdGXVA62ej5f7KqTbByh0vZhfhKAwGGoOOX7X24J",
+  "to": "cDNp8zs7T4amhKsghPk45m:APA91bEQmJds3j1Osy9EHceRk5mq4059prPWCvR-6gnWTiA1l8H82vIm9wDzWaa29BEXJG9-wROKDjLL9tENzxGOJvhIhxd_zw0oIze0LmjdJ7y7KpwHAXDIVWu-IpUbQmEGWqig07rK",
+  
   "notification": {
-    //"title": "title",
-    //"body": "body",
     //"image": "https://lespo.s3.ap-northeast-2.amazonaws.com/stroage/img-user2.png"
   },
   "data": {

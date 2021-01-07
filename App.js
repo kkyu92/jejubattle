@@ -117,11 +117,22 @@ export default function App() {
     }
   };
 
+  // const handleDynamicLink = link => {
+  //   console.log('useEffect');
+  //   dynamicLinks()
+  //     .getInitialLink()
+  //     .then((link) => {
+  //       console.log('dynamic link', link);
+  //       link && handleRoute(link.url);
+  //     });
+  // }
+
   React.useEffect(() => {
     if (!ready) {
       init().finally(() => {
         setReady(true);
         RNBootSplash.hide({duration: 500});
+        const dynamicUnsubscribe = dynamicLinks().onLink(handleRoute);
         dynamicLinks()
           .getInitialLink()
           .then((link) => {
@@ -358,6 +369,7 @@ export default function App() {
           console.log('[APP] unRegister');
           fcmService.unRegister();
           localNotificationService.unregister();
+          dynamicUnsubscribe();
         };
       });
     }
@@ -414,15 +426,32 @@ export default function App() {
     }
   };
 
-  const handleRoute = (url) => {
+  const handleRoute = (getUrl) => {
+    let url;
+    if (getUrl.url) {
+      url = getUrl.url;
+      console.log('url ::: JSON\n' + url);
+    } else {
+      url = getUrl;
+      console.log('url ::: NO JSON\n' + url);
+    }
+
     const splitArray = url.split('/');
     const id = splitArray[splitArray.length - 1];
 
+    // 운동시설 공유 링크
     if (url.includes('https://jejubattle.com/facility/')) {
       id && RootNavigation.navigate('FacilityView', {faPk: id});
     }
+    // 여행정보 공유 링크
     if (url.includes('https://jejubattle.com/tourinfo/')) {
       id && RootNavigation.navigate('TravelView', {faPk: id});
+    }
+    // banner, event 공유 링크
+    if (url.includes('https://jejubattle.com/event/ad')) {
+      id && RootNavigation.navigate('Ad', {adPk: id});
+    } else if (url.includes('https://jejubattle.com/event/')) {
+      id && RootNavigation.navigate('EventView', {item: {evPk: id}});
     }
   };
 

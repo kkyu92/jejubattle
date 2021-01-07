@@ -20,6 +20,7 @@ import MatchMember from '../../commons/MatchMember';
 import Axios from 'axios';
 import {logApi} from '../../react-native-nuno-ui/funcs';
 import AsyncStorage from '@react-native-community/async-storage';
+import {useIsFocused} from '@react-navigation/native';
 
 const initialLayout = {width: screenWidth};
 
@@ -42,12 +43,18 @@ export default function BattleView(props) {
   let getBaPk = props.route?.params?.baPk;
   let getTabIndex = props.route?.params?.tabIndex;
 
+  const isFocused = useIsFocused();
+
   React.useEffect(() => {
     if (getBaPk && getTabIndex) {
       setShowMatchMember(false);
       setIndex(1);
     }
   }, [getBaPk, getTabIndex]);
+
+  React.useEffect(() => {
+    coinCheck();
+  }, [isFocused]);
 
   const socketConn = () => {
     const sock = new SockJS(SOCKET_URL);

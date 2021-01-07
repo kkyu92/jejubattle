@@ -42,11 +42,12 @@ export default function DateTime({
   let formattedValue;
   switch (mode) {
     case 'time':
-      formattedValue = value.toLocaleTimeString(locale, {
-        hour12: true,
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+      formattedValue = moment(value).format('LT');
+      // formattedValue = value.toLocaleTimeString(locale, {
+      //   hour12: true,
+      //   hour: '2-digit',
+      //   minute: '2-digit',
+      // });
       break;
     default:
       // formattedValue = value.toLocaleDateString(locale);
@@ -144,15 +145,15 @@ export default function DateTime({
                   mode={mode || 'date'}
                   locale={locale}
                   format="lll"
-                  display="default"
-                  maximumDate={
-                    new Date(
-                      date.getFullYear(),
-                      date.getMonth() + 3,
-                      date.getDate(),
-                    )
-                  }
-                  minimumDate={new Date()}
+                  display={"spinner"}
+                  // maximumDate={
+                  //   new Date(
+                  //     date.getFullYear(),
+                  //     date.getMonth() + 3,
+                  //     date.getDate(),
+                  //   )
+                  // }
+                  // minimumDate={new Date()}
                   minuteInterval={minuteInterval}
                   onChange={(e, date) => {
                     onChange(date);
@@ -171,10 +172,10 @@ export default function DateTime({
             locale={locale}
             format="lll"
             display="spinner"
-            maximumDate={
-              new Date(date.getFullYear(), date.getMonth() + 3, date.getDate())
-            }
-            minimumDate={new Date()}
+            // maximumDate={
+            //   new Date(date.getFullYear(), date.getMonth() + 3, date.getDate())
+            // }
+            // minimumDate={new Date()}
             onChange={(e, date) => {
               setShowPicker(false);
               if (e.type === 'set') {

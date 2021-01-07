@@ -8,6 +8,7 @@ import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 export default ({
+  autoPlay,
   adIndex,
   navigation,
   data,
@@ -53,6 +54,9 @@ export default ({
   return (
     <View>
       <Carousel
+        autoplay={autoPlay === true ? true : false}
+        autoplayDelay={1000}
+        autoplayInterval={3000}
         data={data}
         renderItem={renderItem}
         sliderWidth={width || screenWidth}
@@ -64,7 +68,7 @@ export default ({
       <Pagination
         dotsLength={data.length}
         activeDotIndex={activeIndex}
-        dotColor={dotColor || 'white'}
+        dotColor={dotColor || 'orange'}
         inactiveDotColor={'lightgray'}
         inactiveDotScale={1}
         inactiveDotOpacity={1}

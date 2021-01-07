@@ -65,14 +65,14 @@ export default function TabBattleChat({
               .indexOf(e.userPk);
             if (foundedAtTeamA !== -1) {
               if (foundedAtTeamA === 0) {
-                team = `(${info.teamA.name} 방장)`;
+                team = `(${info.teamA.name} 리더)`;
               } else {
                 team = `(${info.teamA.name})`;
               }
             }
             if (foundedAtTeamB !== -1) {
               if (foundedAtTeamB === 0) {
-                team = `(${info.teamB.name} 팀장)`;
+                team = `(${info.teamB.name} 리더)`;
               } else {
                 team = `(${info.teamB.name})`;
               }
@@ -117,7 +117,8 @@ export default function TabBattleChat({
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('FullMap', {
-                aroundme: true,
+                facilitySearch: true,
+                baPk: info.baPk,
                 share: (data) => {
                   send({
                     // faSubject: data.faSubject,

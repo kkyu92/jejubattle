@@ -61,6 +61,9 @@ export default function FullMap(props) {
   const [itemCode, setItemCode] = React.useState(0);
   const [typeCode, setTypeCode] = React.useState(0);
 
+  const [sendSubject, setSendSubject] = React.useState([]);
+  const [sendType, setSendType] = React.useState([]);
+
   const DEFAULT_BAPK = 195;
 
   React.useEffect(() => {
@@ -68,10 +71,12 @@ export default function FullMap(props) {
     if (props.route.params?.itemList) {
       console.log('selected item : ' + props.route.params.itemList);
       caCode = props.route.params.itemList;
+      setSendSubject(caCode);
     }
     if (props.route.params?.typeList) {
       console.log('selected type : ' + props.route.params.typeList);
       clCode = props.route.params.typeList;
+      setSendType(clCode);
     }
     let ca = [];
     let cl = [];
@@ -86,6 +91,8 @@ export default function FullMap(props) {
       });
     }
     // filter 적용 후
+    setItemCode(ca);
+    setTypeCode(cl);
     if (props.route?.params?.facilityReco) {
       setMapReady('facilityReco');
       facilityReco(ca, cl);
@@ -97,8 +104,6 @@ export default function FullMap(props) {
       wishMap();
     } else if (props.route?.params?.aroundme) {
       setMapReady('aroundme');
-      setItemCode(ca);
-      setTypeCode(cl);
       aroundme(ca, cl);
       console.log('AROUND ME ::::::::::::::');
     } else if (props.route?.params?.noSearchFilter) {
@@ -131,12 +136,12 @@ export default function FullMap(props) {
       aroundme();
     } else if (props.route?.params?.facilitySearch) {
       // 배틀 장소 설정
-      console.log('여기맞아?');
-      facilitySearch();
+      console.log('마커 띄우지말래서 수정함');
+      // facilitySearch();
     } else if (props.route?.params?.facilityReco) {
       // 추천 운동시설
       facilityReco();
-      setHideSearch(true);
+      setHideSearchFilter(true);
     } else if (props.route?.params?.wishList) {
       // 위시리스트 지도
       wishMap();
@@ -181,9 +186,17 @@ export default function FullMap(props) {
       .then((res) => {
         logApi('getFacility', res.data);
         let item = res.data;
-        console.log(item);
         setPlaceInfo(item);
-        console.log(placeinfo);
+        const temp = [
+          {
+            faPk: item.faPk,
+            faLat: item.faLat,
+            faLon: item.faLon,
+            coords: {latitude: item.faLat, longitude: item.faLon},
+            title: item.faName,
+          },
+        ];
+        setResult(temp);
       })
       .catch((err) => {
         logApi('getFacility error', err.response);
@@ -263,6 +276,7 @@ export default function FullMap(props) {
   };
   // 운동시설 검색 + 필터적용 검색 [배틀방]
   const facilitySearch = (PK, ca, cl) => {
+    console.log(PK, ca, cl);
     let baPk;
     PK === DEFAULT_BAPK
       ? (baPk = DEFAULT_BAPK)
@@ -282,7 +296,7 @@ export default function FullMap(props) {
     )
       .then((res) => {
         logApi('facilitySearch', res.data);
-        if (res.data.length === 0) {
+        if (res.data?.length === 0 || res.data?.facility?.length === 0) {
           showToast('조건에 맞는 장소가 없습니다.', 2000, 'center');
         }
         const temp = res.data.facility.map((e) => ({
@@ -299,7 +313,11 @@ export default function FullMap(props) {
           coords: {latitude: e.faLat, longitude: e.faLon},
           title: e.faName,
         }));
-        setResult(temp);
+        console.log('caCode' + JSON.stringify(caCode));
+        console.log('clCode' + JSON.stringify(clCode));
+        if (caCode !== 0 && clCode !== 0) {
+          setResult(temp);
+        }
         // if (
         //   mapReady === 'facilitySearch' ||
         //   mapReady === 'aroundMe' ||
@@ -364,40 +382,42 @@ export default function FullMap(props) {
               item={e}
               showScrap={false}
             />
-            <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
-              <Button
-                text={
-                  props.route.params.set === 'set' ? '설정하기' : '공유하기'
-                }
-                size={'large'}
-                onPress={async () => {
-                  if (props.route?.params?.share) {
-                    actionSheetRef.current?.setModalVisible(false);
-                    await sleep(500);
-                    props.navigation.goBack();
-                    props.route.params.share(e);
-                  } else {
-                    share(
-                      `https://jejubattle.com/facility/${e.faPk}`,
-                      e.faName,
-                      e.faSubject,
-                      e.faImgUrl,
-                      '',
-                    );
+            {mapReady !== 'facilityReco' && mapReady !== 'aroundme' && (
+              <View style={{paddingHorizontal: 20, paddingBottom: 10}}>
+                <Button
+                  text={
+                    props.route.params.set === 'set' ? '설정하기' : '공유하기'
                   }
-                }}
-                stretch
-                color={custom.themeColor}
-              />
-              <Seperator bottom />
-            </View>
+                  size={'large'}
+                  onPress={async () => {
+                    if (props.route?.params?.share) {
+                      actionSheetRef.current?.setModalVisible(false);
+                      await sleep(500);
+                      props.navigation.goBack();
+                      props.route.params.share(e);
+                    } else {
+                      share(
+                        `https://jejubattle.com/facility/${e.faPk}`,
+                        e.faName,
+                        e.faSubject,
+                        e.faImgUrl,
+                        '',
+                      );
+                    }
+                  }}
+                  stretch
+                  color={custom.themeColor}
+                />
+                <Seperator bottom />
+              </View>
+            )}
           </>,
         )
       : setActionSheetComponent(
           <ListItem
             onPress={() => {
               props.navigation.navigate('FacilityViewModal', {
-                faPk: faPk,
+                faPk: e.faPk,
               });
               actionSheetRef.current?.setModalVisible(false);
             }}
@@ -480,6 +500,12 @@ export default function FullMap(props) {
                       ? showToast('키워드를 입력해주세요.', 2000, 'center')
                       : mapReady === 'wishList'
                       ? wishMap(keyword)
+                      : mapReady === 'facilitySearch'
+                      ? facilitySearch(
+                          props.route?.params?.baPk,
+                          itemCode,
+                          typeCode,
+                        )
                       : aroundme(itemCode, typeCode);
                   }}
                   placeholder={'키워드를 입력해주세요.'}
@@ -501,11 +527,24 @@ export default function FullMap(props) {
                       viewCode: viewCode,
                       playCode: playCode,
                     })
-                  : props.navigation.navigate('FullMapFilter', {
-                      mapReady: mapReady,
-                      caCode: caCode,
-                      clCode: clCode,
-                    })
+                  : props.navigation.navigate(
+                      'FullMapFilter',
+                      sendSubject.length === 0 && sendType.length === 0
+                        ? {
+                            mapReady: mapReady,
+                            caCode: caCode,
+                            clCode: clCode,
+                          }
+                        : {
+                            mapReady: mapReady,
+                            caCode: caCode,
+                            clCode: clCode,
+                            selectCa: sendSubject,
+                            selectCl: sendType,
+                            // caCode: sendSubject,
+                            // clCode: sendType,
+                          },
+                    )
               }
               style={{
                 backgroundColor: 'white',
@@ -523,40 +562,42 @@ export default function FullMap(props) {
           )}
         </HView>
       </View>
-      {!hideFilterGuide && (
-        <View
-          style={{
-            backgroundColor: '#303441',
-            borderRadius: 5,
-            paddingHorizontal: 20,
-            paddingTop: 20,
-            position: 'absolute',
-            top: (Platform.OS === 'ios' ? getStatusBarHeight() : 0) + 80,
-            right: 20,
-            alignItems: 'center',
-          }}>
-          <Text
-            text={'필터를 통해 원하는 시설을 찾으세요!'}
-            color={'white'}
-            fontSize={16}
-          />
-          <TouchableOpacity
-            onPress={async () => {
-              await AsyncStorage.setItem(
-                'hideFilterGuide',
-                JSON.stringify(true),
-              );
-              setHideFilterGuide(true);
-              global.hideFilterGuide = true;
-            }}
-            style={{padding: 15}}>
-            <Text text={'X 다시보지않기'} color={'lightgray'} fontSize={12} />
-          </TouchableOpacity>
-          <View style={{position: 'absolute', top: -18, right: 10}}>
-            <Entypo name={'triangle-up'} color={'#303441'} size={26} />
+      {!hideFilterGuide &&
+        mapReady !== 'facilityReco' &&
+        mapReady !== 'battleChatLink' && (
+          <View
+            style={{
+              backgroundColor: '#303441',
+              borderRadius: 5,
+              paddingHorizontal: 20,
+              paddingTop: 20,
+              position: 'absolute',
+              top: (Platform.OS === 'ios' ? getStatusBarHeight() : 0) + 80,
+              right: 20,
+              alignItems: 'center',
+            }}>
+            <Text
+              text={'필터를 통해 원하는 시설을 찾으세요!'}
+              color={'white'}
+              fontSize={16}
+            />
+            <TouchableOpacity
+              onPress={async () => {
+                await AsyncStorage.setItem(
+                  'hideFilterGuide',
+                  JSON.stringify(true),
+                );
+                setHideFilterGuide(true);
+                global.hideFilterGuide = true;
+              }}
+              style={{padding: 15}}>
+              <Text text={'X 다시보지않기'} color={'lightgray'} fontSize={12} />
+            </TouchableOpacity>
+            <View style={{position: 'absolute', top: -18, right: 10}}>
+              <Entypo name={'triangle-up'} color={'#303441'} size={26} />
+            </View>
           </View>
-        </View>
-      )}
+        )}
       <ActionSheet
         ref={actionSheetRef}
         gestureEnabled={true}

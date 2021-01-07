@@ -42,6 +42,7 @@ export default function Report(props) {
     setLoading(true);
     const formData = new FormData();
     formData.append('target', props.route.params.userPk);
+    formData.append('bcName', props.route.params.bcName);
     formData.append('code', code);
     formData.append('text', text);
     props.route.params.rePk && formData.append('rePk', props.route.params.rePk);

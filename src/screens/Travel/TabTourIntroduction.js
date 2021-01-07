@@ -182,7 +182,7 @@ export default function TabTourIntroduction(props) {
         <>
           <Seperator height={20} />
           <View style={{padding: 20}}>
-            <Text text={'이용 수칙'} fontSize={18} fontWeight={'bold'} />
+            <Text text={'이벤트'} fontSize={18} fontWeight={'bold'} />
           </View>
           <HView
             style={{

@@ -34,7 +34,8 @@ import {
 import moment from 'moment';
 import {AppContext} from '../../context';
 import Reward from './Reward';
-import {navigate} from '../../navigations/RootNavigation';
+// import {navigate} from '../../navigations/RootNavigation';
+import * as RootNavigation from '../../navigations/RootNavigation';
 
 export default function TabBattleDetail(props) {
   const context = React.useContext(AppContext);
@@ -260,7 +261,8 @@ export default function TabBattleDetail(props) {
     }
     setModalExit2(false);
     // props.refresh && props.refresh();
-    props.navigation.goBack();
+    // 방나가기
+    RootNavigation.navigate('Battle', {});
   };
 
   return (
@@ -320,7 +322,7 @@ export default function TabBattleDetail(props) {
         <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
           <View style={{flex: 0.1}}>
             <Text
-              text={'방장'}
+              text={'리더'}
               fontSize={14}
               fontWeight={'bold'}
               color={'gray'}
@@ -482,17 +484,11 @@ export default function TabBattleDetail(props) {
                   );
 
                   if (aReady.includes('false') || bReady.includes('false')) {
-                    if (Platform.OS === 'android') {
-                      Alert.alert(
-                        '모든 사용자가 배틀준비가 되어야 시작합니다.',
-                      );
-                    } else {
-                      showToast(
-                        '모든 사용자가 배틀준비가 되어야 시작합니다.',
-                        2000,
-                        'center',
-                      );
-                    }
+                    showToast(
+                      '모든 사용자가 배틀준비가 되어야 시작합니다.',
+                      2000,
+                      'center',
+                    );
                     if (foundedAtTeamA !== -1) {
                       tempTeamA.member[foundedAtTeamA].ready = 'N';
                     }
@@ -531,7 +527,7 @@ export default function TabBattleDetail(props) {
                   });
                 } else {
                   showToast(
-                    '배틀완료 및 평가가 아직 진행중입니다.',
+                    '리더들의 배틀평가가 진행중입니다.',
                     2000,
                     'center',
                   );
@@ -584,7 +580,7 @@ export default function TabBattleDetail(props) {
           <Text
             fontSize={16}
             color={'dimgray'}
-            text={'삭제를 원하지 않으시다면\n방장을 위임하세요!'}
+            text={'삭제를 원하지 않으시다면\n리더를 위임하세요!'}
             style={{textAlign: 'center'}}
           />
           <Seperator height={50} />
@@ -741,7 +737,7 @@ export default function TabBattleDetail(props) {
             />
           </HView>
           <Seperator height={20} />
-          <View style={{alignItems: 'center'}}>
+          {/* <View style={{alignItems: 'center'}}>
             <Button
               size={'medium'}
               text={'랜덤박스 보기'}
@@ -752,7 +748,7 @@ export default function TabBattleDetail(props) {
               color={'white'}
               borderRadius={20}
             />
-          </View>
+          </View> */}
           <Seperator height={30} />
           <HView>
             <View style={{flex: 1}}>
@@ -1073,6 +1069,15 @@ export default function TabBattleDetail(props) {
               ? props.info.teamA.member[foundedAtTeamA]?.coinType
               : foundedAtTeamB !== -1
               ? props.info.teamB.member[foundedAtTeamB]?.coinType
+              : null
+          }
+          result={
+            (foundedAtTeamA !== -1 && props.info.baResultA === '1') ||
+            (foundedAtTeamB !== -1 && props.info.baResultB === '1')
+              ? 'win'
+              : (foundedAtTeamA !== -1 && props.info.baResultA === '2') ||
+                (foundedAtTeamB !== -1 && props.info.baResultB === '2')
+              ? 'lose'
               : null
           }
         />

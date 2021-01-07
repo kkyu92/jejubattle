@@ -17,27 +17,31 @@ export default function TabFacilityInfo(props) {
   console.log(JSON.stringify(props));
   return (
     <Container>
-      <View style={{padding: 20}}>
-        <Text text={'시설 정보'} fontSize={18} fontWeight={'bold'} />
-      </View>
-      <View style={{padding: 20}}>
-        <HView style={{flexWrap: 'wrap'}}>
-          {props.data.feList.map((e, i) => {
-            return (
-              <View style={{padding: 10, alignItems: 'center'}} key={i}>
-                <Image
-                  height={Math.floor((screenWidth - 140) / 5)}
-                  width={Math.floor((screenWidth - 140) / 5)}
-                  uri={e.icon}
-                  resizeMode={'cover'}
-                />
-                <Seperator height={10} />
-                <Text text={e.name} fontSize={14} />
-              </View>
-            );
-          })}
-        </HView>
-      </View>
+      {props.data.feList.length !== 0 && (
+        <>
+          <View style={{padding: 20}}>
+            <Text text={'시설 정보'} fontSize={18} fontWeight={'bold'} />
+          </View>
+          <View style={{padding: 20}}>
+            <HView style={{flexWrap: 'wrap'}}>
+              {props.data.feList.map((e, i) => {
+                return (
+                  <View style={{padding: 10, alignItems: 'center'}} key={i}>
+                    <Image
+                      height={Math.floor((screenWidth - 140) / 5)}
+                      width={Math.floor((screenWidth - 140) / 5)}
+                      uri={e.icon}
+                      resizeMode={'cover'}
+                    />
+                    <Seperator height={10} />
+                    <Text text={e.name} fontSize={14} />
+                  </View>
+                );
+              })}
+            </HView>
+          </View>
+        </>
+      )}
 
       {props.data.faTimeList[0].name !== '' && (
         <>

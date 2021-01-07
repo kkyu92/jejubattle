@@ -6,15 +6,19 @@ import {
   Image,
   HView,
   Seperator,
+  Modal,
+  Button,
 } from '../../react-native-nuno-ui';
 import {View, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import Icons from '../../commons/Icons';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
+import { custom } from '../../config';
 
 export default function Notification(props) {
   const context = React.useContext(AppContext);
+  const [deleteAllModal, setDeleteAllModal] = React.useState(false)
   const [notification, setNotification] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [moredone, setMoredone] = React.useState(false);
@@ -59,6 +63,17 @@ export default function Notification(props) {
       },
     });
   };
+
+  const deleteAll = () => {
+    Axios.delete('deleteNotification', {})
+      .then(res => {
+        logApi('deleteNotification [success]')
+      })
+      .catch(err => {
+        logApi('deleteNotification [error]')
+      })
+      setNotification([])
+  }
 
   React.useEffect(() => {
     getNoti(page);
@@ -121,7 +136,19 @@ export default function Notification(props) {
 
   return (
     <Container flex={1}>
-      <Header left={'close'} navigation={props.navigation} title={'알림'} />
+      <Header left={'close'} navigation={props.navigation} title={'알림'} rightComponent={
+          <TouchableOpacity
+            onPress={() => setDeleteAllModal(true)}
+            style={{
+              paddingHorizontal: 20,
+              paddingVertical: 5,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text text={'전체삭제'} color={custom.themeColor} fontSize={17} />
+          </TouchableOpacity>
+        }
+      />
       <Seperator marginTop={1} marginBottom={1} />
       <FlatList
         data={notification}
@@ -143,61 +170,59 @@ export default function Notification(props) {
           }
         }}
       />
-      {/* <ScrollView>
-        <View style={{padding: 20}}>
-          <Text fontWeight={'bold'} fontSize={18} text={'06.03 (수)'} />
-        </View>
-         <HView
+     
+      {/* 알림 전체삭제 */}
+      <Modal
+        isVisible={deleteAllModal}
+        onBackdropPress={() => setDeleteAllModal(false)}>
+        <View
           style={{
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            backgroundColor: 'rgba(244, 161, 0, 0.3)',
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            alignItems: 'center',
           }}>
-          <Image
-            height={52}
-            width={52}
-            borderRadius={4}
-            uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-            onPress={() => null}
-            resizeMode={'cover'}
-          />
-          <Seperator width={10} />
-          <View style={{flex: 1}}>
-            <Text
-              fontWeight={'bold'}
-              fontSize={14}
-              text={
-                '스포츠배틀방이름의 모든 인원이 배틀 준비가 되었습니다. 배틀을 시작하세요!'
-              }
-            />
-            <Seperator height={5} />
-            <Text color={'gray'} fontSize={12} text={'1시간 전'} />
+          <View style={{padding: 20}}>
+            <View style={{alignItems: 'center'}}>
+              <Text text={'알림 전체삭제'} fontWeight={'bold'} fontSize={18} />
+            </View>
           </View>
-        </HView>
-        <Seperator marginTop={10} marginBottom={10} line />
-        <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
-          <Image
-            height={52}
-            width={52}
-            borderRadius={4}
-            uri={'https://homepages.cae.wisc.edu/~ece533/images/airplane.png'}
-            onPress={() => null}
-            resizeMode={'cover'}
+          <Seperator height={10} />
+          <Text
+            fontSize={16}
+            color={'dimgray'}
+            text={'전체 알림을 삭제하시겠습니까?'}
+            style={{textAlign: 'center'}}
           />
-          <Seperator width={10} />
-          <View style={{flex: 1}}>
-            <Text
-              fontWeight={'bold'}
-              fontSize={14}
-              text={
-                '스포츠배틀방이름의 모든 인원이 배틀 준비가 되었습니다. 배틀을 시작하세요!'
-              }
-            />
-            <Seperator height={5} />
-            <Text color={'gray'} fontSize={12} text={'1시간 전'} />
-          </View>
-        </HView>
-      </ScrollView> */}
+          <Seperator height={30} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setDeleteAllModal(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'삭제'}
+                color={custom.themeColor}
+                onPress={async () => {
+                  deleteAll(),
+                  setDeleteAllModal(false)
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
     </Container>
   );
 }

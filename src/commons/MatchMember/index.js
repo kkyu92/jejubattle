@@ -8,6 +8,7 @@ import {
   Image,
   TextInput,
   Container,
+  Loader,
 } from '../../react-native-nuno-ui';
 import {View, TouchableOpacity} from 'react-native';
 import {custom} from '../../config';
@@ -46,14 +47,18 @@ export default function MatchMember(props) {
   React.useEffect(() => {
     const newLeaderA = props.info?.teamA?.member[0]?.userPk;
     const newLeaderB = props.info?.teamB?.member[0]?.userPk;
+    console.log('leaderA' + leaderA);
+    console.log('newLeaderA' + newLeaderA);
+    console.log('context.me.userPk' + context.me.userPk);
+    console.log('newLeaderB' + newLeaderB);
     if (leaderA !== newLeaderA) {
-      if (context.me.userPk === newLeaderB) {
-        showToast('방장을 위임 받았습니다.', 2000, 'center');
+      if (context.me.userPk === newLeaderA) {
+        showToast('리더를 위임 받았습니다.', 2000, 'center');
       }
     }
     if (leaderB !== newLeaderB) {
       if (context.me.userPk === newLeaderB) {
-        showToast('팀장을 위임 받았습니다.', 2000, 'center');
+        showToast('리더를 위임 받았습니다.', 2000, 'center');
       }
     }
     setLeaderA(props.info?.teamA?.member[0]?.userPk);
@@ -97,7 +102,7 @@ export default function MatchMember(props) {
     if (foundedAtTeamA !== -1) {
       if (foundedAtTeamA === 0) {
         setAlertTitle('알림');
-        setAlertText('방장위임을 해야만 변경이 가능합니다.');
+        setAlertText('리더변경을 해야만 변경이 가능합니다.');
         setSwitchAlert(true);
         return;
       }
@@ -136,7 +141,9 @@ export default function MatchMember(props) {
     }
     showToast('팀이 변경되었습니다.', 2000, 'center');
   };
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <Container
       alertVisible={switchAlert}
       alertTitle={alertTitle}
@@ -157,19 +164,19 @@ export default function MatchMember(props) {
               flex: 0.4,
               alignItems: 'center',
             }}>
-            <View>
+            <TouchableOpacity 
+                onPress={() => {
+                  if (props.info.teamA.member.length > 0) {
+                    setMemberModalTeam(props.info.teamA);
+                    setMemberModal(true);
+                  }
+                }}>
               {props.info.teamA?.member[0]?.userImgUrl ? (
                 <Image
                   uri={props.info.teamA.member[0]?.userImgUrl}
                   width={72}
                   height={72}
                   borderRadius={36}
-                  onPress={() => {
-                    if (props.info.teamA.member.length > 0) {
-                      setMemberModalTeam(props.info.teamA);
-                      setMemberModal(true);
-                    }
-                  }}
                 />
               ) : (
                 <Image
@@ -178,12 +185,6 @@ export default function MatchMember(props) {
                   width={72}
                   height={72}
                   borderRadius={36}
-                  onPress={() => {
-                    if (props.info.teamA?.member.length > 0) {
-                      setMemberModalTeam(props.info.teamA);
-                      setMemberModal(true);
-                    }
-                  }}
                 />
               )}
               <View
@@ -213,7 +214,7 @@ export default function MatchMember(props) {
                   height={100}
                 />
               </View>
-            </View>
+            </TouchableOpacity>
             <Seperator height={10} />
             <Text
               text={props.info.teamA?.member[0]?.userName}
@@ -253,19 +254,19 @@ export default function MatchMember(props) {
                   style={{textAlign: 'center'}}
                 />
               ) : (
-                <>
+                <TouchableOpacity
+                onPress={() => {
+                  if (props.info.teamB.member.length > 0) {
+                    setMemberModalTeam(props.info.teamB);
+                    setMemberModal(true);
+                  }
+                }}>
                   {props.info.teamB?.member[0]?.userImgUrl ? (
                     <Image
                       uri={props.info.teamB.member[0]?.userImgUrl}
                       width={72}
                       height={72}
                       borderRadius={36}
-                      onPress={() => {
-                        if (props.info.teamB.member.length > 0) {
-                          setMemberModalTeam(props.info.teamB);
-                          setMemberModal(true);
-                        }
-                      }}
                     />
                   ) : (
                     <Image
@@ -274,15 +275,8 @@ export default function MatchMember(props) {
                       width={72}
                       height={72}
                       borderRadius={36}
-                      onPress={() => {
-                        if (props.info.teamA?.member.length > 0) {
-                          setMemberModalTeam(props.info.teamA);
-                          setMemberModal(true);
-                        }
-                      }}
                     />
                   )}
-
                   <View
                     style={{
                       position: 'absolute',
@@ -310,7 +304,7 @@ export default function MatchMember(props) {
                       height={100}
                     />
                   </View>
-                </>
+                </TouchableOpacity>
               )}
             </View>
             <Seperator height={10} />
@@ -662,6 +656,7 @@ export default function MatchMember(props) {
         </View>
       </Modal>
 
+      {/* 프로필 보기 */}
       <Modal
         isVisible={memberModal}
         onBackdropPress={() => setMemberModal(false)}>

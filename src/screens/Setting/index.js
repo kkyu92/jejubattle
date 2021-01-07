@@ -246,7 +246,10 @@ export default function Setting(props) {
 
         <TouchableOpacity
           style={{paddingHorizontal: 20, paddingVertical: 15}}
-          onPress={() => setModalLogout(true)}>
+          onPress={() => {
+            setUserDelete(false);
+            setModalLogout(true);
+          }}>
           <Text
             text={'로그아웃'}
             fontSize={18}
@@ -279,12 +282,13 @@ export default function Setting(props) {
             alignItems: 'center',
           }}>
           <Text
+            style={{textAlign: 'center'}}
             fontSize={18}
             fontWeight={'bold'}
             color={'black'}
             text={
               userDelete === true
-                ? '회원탈퇴 하시겠습니까?'
+                ? '지금까지의 전적과 정보는 사라지며 복구할 수 없습니다.\n정말로 회원탈퇴하시겠습니까?'
                 : '로그아웃 하시겠습니까?'
             }
           />

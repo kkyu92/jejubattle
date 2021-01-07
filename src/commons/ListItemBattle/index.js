@@ -5,7 +5,7 @@ import {Alert, TouchableOpacity, View, CheckBox} from 'react-native';
 import {ShadowStyle} from '../../styles';
 import {AppContext} from '../../context';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {
   HView,
   Seperator,
@@ -110,7 +110,13 @@ export default function ListItemBattle({
     <View keyboardShouldPersistTaps={'handled'}>
       <View style={{padding: 20}}>
         <TouchableOpacity
-          onPress={() => (editMode ? handleCheck(index) : onPress())}
+          onPress={() =>
+            !editMode
+              ? onPress()
+              : editMode && item.baState === '배틀완료'
+              ? handleCheck(index)
+              : showToast('완료한 배틀만 삭제 가능합니다.', 2000, 'center')
+          }
           style={
             item.baState === '배틀완료'
               ? item.gameResult === '1'
@@ -150,11 +156,7 @@ export default function ListItemBattle({
                   <Seperator width={5} />
                 </>
               )}
-              <Text
-                text={item.baPk + '   |   ' + item.baSubject}
-                fontSize={16}
-                fontWeight={'bold'}
-              />
+              <Text text={item.baSubject} fontSize={16} fontWeight={'bold'} />
               <Seperator width={9} />
               <Button
                 text={item.blName}

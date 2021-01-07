@@ -73,6 +73,7 @@ export default function BattleMemberReport(props) {
                       userPk: e.userPk,
                       userName: e.userName,
                       userImgUrl: e.userImgUrl,
+                      bcName: props.route.params.info.bcName,
                     })
                   }
                   style={{

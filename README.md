@@ -16,6 +16,7 @@
 
 #### 4). android cmd build
 
+- android 디렉토리 이동 "./gradlew cleanBuildCache"
 - android 디렉토리로 이동하여 cmd 상에서 "./gradlew bundleRelease" 하여 빌드한다.
 
 #### 5). ios xcode build
@@ -27,6 +28,20 @@
 #### Android Internal Test Links
 
 > https://play.google.com/apps/internaltest/4700794782783427988
+
+#### 2021.01.07
+
+> android (2.0.0.34)
+> ios (2.0.0.24)
+
+- QA 3차 완료
+
+#### 2020.12.24
+
+> android (2.0.0.33)
+> ios (2.0.0.23)
+
+- QA 2차 진행중
 
 #### 2020.12.21
 

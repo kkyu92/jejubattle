@@ -67,11 +67,16 @@ export default function BattleTeamMember(props) {
             <Text
               text={
                 selectedTeam.member[0].userPk === context.me.userPk
-                  ? props.route.params.teamSide === 'A'
-                    ? '방장위임'
-                    : '팀장위임'
+                  ? '리더변경'
                   : ''
               }
+              // text={
+              //   selectedTeam.member[0].userPk === context.me.userPk
+              //     ? props.route.params.teamSide === 'A'
+              //       ? '방장위임'
+              //       : '팀장위임'
+              //     : ''
+              // }
               color={custom.themeColor}
               fontSize={17}
             />
@@ -129,9 +134,10 @@ export default function BattleTeamMember(props) {
                         padding: 5,
                       }}>
                       <Text
-                        text={
-                          props.route.params.teamSide === 'A' ? '방장' : '팀장'
-                        }
+                        text={'리더'}
+                        // text={
+                        //   props.route.params.teamSide === 'A' ? '방장' : '팀장'
+                        // }
                         fontSize={12}
                         color={'white'}
                       />
@@ -448,7 +454,10 @@ export default function BattleTeamMember(props) {
                     const foundedIndex = teamB.member
                       .map((f) => f.userPk)
                       .indexOf(selectedMember.userPk);
-                    kickUser(e.userPk, props.route.params.info.baPk);
+                    kickUser(
+                      selectedMember.userPk,
+                      props.route.params.info.baPk,
+                    );
                     if (foundedIndex !== -1) {
                       const localHistory = [
                         ...props.route.params.info.history.map((h) => ({

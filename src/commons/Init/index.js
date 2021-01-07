@@ -46,6 +46,10 @@ export default async () => {
   global.hidePermissionAlert = hidePermissionAlert;
   const appStartGuide = await AsyncStorage.getItem('appStartGuide');
   global.appStartGuide = appStartGuide;
+  const popup = await AsyncStorage.getItem('popup')
+  global.popup = popup;
+  const popupDate = await AsyncStorage.getItem('popupDate')
+  global.popupDate = popupDate
 
   // location
   // Geolocation.requestAuthorization('whenInUse');

@@ -23,7 +23,7 @@ export default function BattleComponent(props) {
         }}>
         <HView style={{justifyContent: 'space-between'}}>
           <HView>
-            <Text text={'다가오는 배틀'} fontSize={22} fontWeight={'bold'} />
+            <Text text={'나의 배틀'} fontSize={22} fontWeight={'bold'} />
             <Seperator width={10} />
             <View
               style={{

@@ -50,6 +50,7 @@ export default function Join(props) {
   const [agreement4, setAgreement4] = React.useState(false);
 
   React.useEffect(() => {
+    console.log('userCode : ' + props.route?.params?.userCode);
     Linking.getInitialURL()
       .then((url) => {
         if (url) {
@@ -138,7 +139,7 @@ export default function Join(props) {
       !agreement3 ||
       !agreement4 ||
       !gender ||
-      !email ||
+      (!email && props.route?.params?.userCode) ||
       !mobile
     ) {
       if (!name) {
@@ -162,7 +163,7 @@ export default function Join(props) {
     }
     const checkemail = checkEmail(email);
     const checkpassword = checkPassword(password, repassword);
-    if (!emailVerified) {
+    if (!emailVerified && !props.route?.params?.userCode) {
       Alert.alert('이메일 중복확인을 해주세요');
       return;
     }

@@ -16,7 +16,7 @@ import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {useIsFocused} from '@react-navigation/native';
 
@@ -60,18 +60,20 @@ export default function TravelList(props) {
       .then((res) => {
         logApi('travelList', res.data);
         let facilityList = res.data.facility;
+        if (facilityList.length === 0) {
+          showToast('등록된 데이터가 없습니다.', 2000, 'center');
+        }
         const list = facilityList.map((item) => ({
           ...item,
           id: item.faPk,
         }));
-        logApi(props.route.params.endpoint, res.data);
         if (page === 1) {
           setTravel(res.data.facility);
         } else {
           setTravel((old) => [...old, ...list]);
         }
         setCategory(res.data.category);
-        if (res.data.facility.length === 10) {
+        if (facilityList.length === 10) {
           Axios.post('travelList', {
             faCode: props.route.params.faCode,
             code: activeTab,
@@ -87,12 +89,11 @@ export default function TravelList(props) {
         } else {
           setMoredone(true);
         }
-
         // setTravel(res.data.facility);
         res.data.category && setCategory(res.data.category);
       })
       .catch((err) => {
-        logApi('travelList error', props.route.params.faCode, err.response);
+        logApi('travelList error', err);
       });
   };
   React.useEffect(() => {
@@ -101,10 +102,10 @@ export default function TravelList(props) {
     isFocused;
     getTravelList(1);
     toTop();
-  }, [isFocused, activeTab]);
+  }, [activeTab]);
   const toTop = () => {
     // use current
-    flatListRef.current.scrollToOffset({animated: true, offset: 0});
+    flatListRef.current.scrollToOffset({animated: false, offset: 0});
   };
   const renderItem = ({item, index}) => {
     return (
@@ -322,7 +323,14 @@ export default function TravelList(props) {
                 text={'적용하기'}
                 onPress={() => {
                   setFilterVisible(false);
-                  getTravelList();
+                  setTravel([]);
+                  setPage(1);
+                  setMoredone(false);
+                  getTravelList(1);
+                  flatListRef.current.scrollToOffset({
+                    animated: false,
+                    offset: 0,
+                  });
                 }}
                 color={custom.themeColor}
                 stretch

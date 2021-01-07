@@ -63,7 +63,7 @@ export default function TravelView(props) {
         setReply(res.data.replyList);
       })
       .catch((err) => {
-        logApi('advertInfo error', err.response);
+        console.log(props.route.params.faPk);
       });
   };
   const travel = () => {
@@ -128,7 +128,7 @@ export default function TravelView(props) {
             replyCnt={facility.faReplyCnt}
             scopeCnt={facility.faScopeCnt}
             faPk={facility.faPk}
-            refresh={advert}
+            refresh={travel}
           />
         );
     }
@@ -161,7 +161,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('scrapOn', res.data);
-        advert();
+        props.route.params.showScrap === false ? travel() : advert();
       })
       .catch((err) => {
         logApi('scrapOn error', err.response);
@@ -174,7 +174,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('scrapOff', res.data);
-        advert();
+        props.route.params.showScrap === false ? travel() : advert();
       })
       .catch((err) => {
         logApi('scrapOff error', err.response);
@@ -187,7 +187,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('likeOn', res.data);
-        advert();
+        props.route.params.showScrap === false ? travel() : advert();
         // props.route.params?.refresh();
       })
       .catch((err) => {
@@ -201,7 +201,7 @@ export default function TravelView(props) {
     })
       .then((res) => {
         logApi('likeOff', res.data);
-        advert();
+        props.route.params.showScrap === false ? travel() : advert();
         // props.route.params?.refresh();
       })
       .catch((err) => {
@@ -249,7 +249,10 @@ export default function TravelView(props) {
             <TouchableOpacity
               onPress={() =>
                 share(
-                  `https://jejubattle.com/tourinfo/${props.route.params.faPk}`,
+                  `https://jejubattle.com/tourinfo/${facility.faPk}`,
+                  facility.faName,
+                  facility.faSubject,
+                  facility.faImgUrl,
                   '',
                 )
               }

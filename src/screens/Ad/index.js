@@ -26,7 +26,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import {screenWidth} from '../../styles';
-import {share, logApi} from '../../react-native-nuno-ui/funcs';
+import {share, logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import Axios from 'axios';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {AppContext} from '../../context';
@@ -40,13 +40,18 @@ export default function Ad(props) {
   const [file, setFile] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
+  let adPk = props.route.params.adPk;
+
   React.useEffect(() => {
+    if (String(props.route.params.adPk).includes('ad')) {
+      adPk = String(props.route.params.adPk).substr(2);
+    }
     console.log('get adPk: ' + props.route.params.adPk);
-    get();
+    get(adPk);
   }, []);
 
-  const get = () => {
-    Axios.get(`bannerInfo/${props.route.params.adPk}`)
+  const get = (adPk) => {
+    Axios.get(`bannerInfo/${adPk}`)
       .then((res) => {
         logApi('bannerInfo', res.data);
         setBanner(res.data.banner);
@@ -62,7 +67,7 @@ export default function Ad(props) {
     Axios.delete(`advertReply/${arPk}`)
       .then((res) => {
         logApi('delete advertReply', res.data);
-        get();
+        get(adPk);
       })
       .catch((err) => {
         logApi('delete advertReply error', err.response);
@@ -74,7 +79,7 @@ export default function Ad(props) {
     })
       .then((res) => {
         logApi('advertLikeOn', res.data);
-        get();
+        get(adPk);
       })
       .catch((err) => {
         logApi('advertLikeOn error', err.response);
@@ -86,7 +91,7 @@ export default function Ad(props) {
     })
       .then((res) => {
         logApi('advertLikeOff', res.data);
-        get();
+        get(adPk);
       })
       .catch((err) => {
         logApi('advertLikeOff error', err.response);
@@ -137,7 +142,8 @@ export default function Ad(props) {
           setLoading(false);
           logApi('advertReplyInsert', res.data);
           setReply('');
-          get();
+          setFile('');
+          get(adPk);
         })
         .catch((err) => {
           setLoading(false);
@@ -222,25 +228,19 @@ export default function Ad(props) {
           </View>
           <Seperator width={20} />
           <View style={{alignItems: 'center'}}>
-            {context.me.userImgUrl ? (
-              <Image
-                height={50}
-                width={50}
-                borderRadius={25}
-                uri={context.me.userImgUrl}
-                onPress={() => null}
-                resizeMode={'cover'}
-              />
-            ) : (
-              <Image
-                local
-                uri={require('../../../assets/img/img-user2.png')}
-                width={50}
-                height={50}
-                borderRadius={25}
-                onPress={() => null}
-              />
-            )}
+            <Image
+              local
+              height={50}
+              width={50}
+              borderRadius={25}
+              uri={
+                item.userImgUrl === ''
+                  ? require('../../../assets/img/img-user2.png')
+                  : item.userImgUrl
+              }
+              onPress={() => null}
+              resizeMode={'cover'}
+            />
             <Seperator height={5} />
             <Text
               text={item.userName}
@@ -266,9 +266,12 @@ export default function Ad(props) {
       .then(async (res) => {
         console.log('ImagePicker openPicker', res);
         setFile(res.path);
+        showToast('이미지선택완료', 2000, 'center');
+        console.log(res);
       })
       .catch((err) => {
         console.log('ImagePicker openPicker error', err);
+        showToast('이미지선택취소', 2000, 'center');
       });
   };
 
@@ -276,7 +279,7 @@ export default function Ad(props) {
     <Container>
       <Header
         left={'close'}
-        title={'이벤트'}
+        title={'메인광고'}
         navigation={props.navigation}
         rightComponent={
           <HView>
@@ -287,7 +290,13 @@ export default function Ad(props) {
             </TouchableOpacity> */}
             <TouchableOpacity
               onPress={() =>
-                share(`https://jejubattle.com/event/${event.evPk}`, '')
+                share(
+                  `https://jejubattle.com/event/ad${props.route.params.adPk}`,
+                  '',
+                  '',
+                  bannerImgList[0].adImgUrl,
+                  '',
+                )
               }
               style={{paddingHorizontal: 20, paddingVertical: 5}}>
               <Icons name={'icon-share-20'} size={20} color={'black'} />
@@ -312,20 +321,46 @@ export default function Ad(props) {
       {/* <View style={{position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'white'}}> */}
       <HView style={{paddingHorizontal: 20}}>
         <TouchableOpacity onPress={() => getPhoto()}>
-          <EvilIcons name={'paperclip'} size={24} color={'gray'} />
+          {file === '' ? (
+            <EvilIcons name={'paperclip'} size={24} color={'gray'} />
+          ) : (
+            <View>
+              <TouchableOpacity
+                style={{zIndex: 1}}
+                onPress={() => {
+                  setFile('');
+                  showToast('이미지를 선택 취소했습니다.', 2000, 'center');
+                }}>
+                <AntDesign
+                  style={{alignSelf: 'center'}}
+                  name={'closecircle'}
+                  size={24}
+                  color={'red'}
+                />
+                <Seperator height={5} />
+              </TouchableOpacity>
+              <Image width={50} height={50} uri={file} />
+            </View>
+          )}
         </TouchableOpacity>
         <View style={{flex: 1}}>
           <TextInput
             placeholder={'댓글입력'}
             value={reply}
-            onChangeText={(e) => setReply(e)}
+            onChangeText={(e) => {
+              setReply(e), console.log(e);
+            }}
             borderWidth={0}
           />
         </View>
         <Button
-          text={'전송'}
+          text={'완료'}
           size={'medium'}
-          onPress={save}
+          onPress={() =>
+            reply !== ''
+              ? save()
+              : showToast('댓글을 입력해주세요.', 2000, 'center')
+          }
           loading={loading}
           color={'gray'}
         />
