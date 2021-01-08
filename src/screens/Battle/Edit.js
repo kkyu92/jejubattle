@@ -82,8 +82,7 @@ export default function BattleEdit(props) {
       .then((res) => {
         logApi('InsertBattle', res.data);
         setLoading(false);
-        // props.route?.params?.refresh();
-        props.navigation.goBack();
+        props.navigation.navigate('Battle', {});
       })
       .catch((err) => {
         logApi('InsertBattle error', err.response);

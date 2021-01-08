@@ -215,19 +215,26 @@ export default function EventView(props) {
           </View>
           <Seperator width={20} />
           <View style={{alignItems: 'center'}}>
-            <Image
-              local
-              height={50}
-              width={50}
-              borderRadius={25}
-              uri={
-                item.userImgUrl === ''
-                  ? require('../../../assets/img/img-user2.png')
-                  : item.userImgUrl
-              }
-              onPress={() => null}
-              resizeMode={'cover'}
-            />
+            {item.userImgUrl === '' ? (
+              <Image
+                local
+                height={50}
+                width={50}
+                borderRadius={25}
+                uri={require('../../../assets/img/img-user2.png')}
+                onPress={() => null}
+                resizeMode={'cover'}
+              />
+            ) : (
+              <Image
+                height={50}
+                width={50}
+                borderRadius={25}
+                uri={item.userImgUrl}
+                onPress={() => null}
+                resizeMode={'cover'}
+              />
+            )}
             <Seperator height={5} />
             <Text
               text={item.userName}

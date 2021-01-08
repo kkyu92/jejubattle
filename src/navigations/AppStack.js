@@ -37,6 +37,7 @@ import Report from '../screens/Report';
 import Evaluation from '../screens/Battle/Evaluation';
 import Guide from '../screens/Guide/index';
 import GuideStart from '../screens/GuideStart/index';
+import FacilityView from '../screens/Facility/View';
 
 import FacilityViewModal from '../screens/Facility/View';
 
@@ -150,6 +151,8 @@ export default function AppStackScreen() {
       <Stack.Screen name="Ad" component={Ad} />
       <Stack.Screen name="Guide" component={Guide} />
       <Stack.Screen name="GuideStart" component={GuideStart} />
+      <Stack.Screen name="FacilityView" component={FacilityView} />
+      <Stack.Screen name="BattleView" component={BattleView} />
 
       <Stack.Screen name="FacilityViewModal" component={FacilityViewModal} />
     </Stack.Navigator>

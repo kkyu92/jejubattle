@@ -264,7 +264,7 @@ export async function getCurrentLocation(lang) {
             console.log('getCurrentPosition2 error', error.code, error.message);
             reject(error);
           },
-          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+          {enableHighAccuracy: false, timeout: 15000, maximumAge: 10000},
         );
       }
     } else {

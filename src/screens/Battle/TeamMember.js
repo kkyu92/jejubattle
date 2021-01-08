@@ -66,7 +66,7 @@ export default function BattleTeamMember(props) {
             }}>
             <Text
               text={
-                selectedTeam.member[0].userPk === context.me.userPk
+                selectedTeam?.member[0]?.userPk === context.me.userPk
                   ? '리더변경'
                   : ''
               }
@@ -122,28 +122,6 @@ export default function BattleTeamMember(props) {
                     paddingHorizontal={20}
                   />
 
-                  {/* 방장/팀장 표시 */}
-                  {i === 0 && (
-                    <View
-                      style={{
-                        position: 'absolute',
-                        top: -15,
-                        right: -7,
-                        backgroundColor: custom.themeColor,
-                        borderRadius: 5,
-                        padding: 5,
-                      }}>
-                      <Text
-                        text={'리더'}
-                        // text={
-                        //   props.route.params.teamSide === 'A' ? '방장' : '팀장'
-                        // }
-                        fontSize={12}
-                        color={'white'}
-                      />
-                    </View>
-                  )}
-
                   {/* Ready 상태 표시 */}
                   {e.ready === 'Y' && mode === '' && (
                     <TouchableOpacity
@@ -173,17 +151,14 @@ export default function BattleTeamMember(props) {
                    * 대신 내가 (context.me.userPk) 팀장이거나 A팀의 방장인경우에만
                    * 삭제 버튼을 보여준다.
                    */}
-                  {i !== 0 &&
+                  {e.userPk !== context.me.userPk &&
                     mode === '' &&
-                    (context.me.userPk === selectedTeam?.member[0].userPk ||
-                      context.me.userPk ===
-                        props.route.params.info.teamA.member[0].userPk) && (
+                    context.me.userPk ===
+                      props.route.params.info.teamA.member[0].userPk && (
                       <View
-                        style={
-                          {
-                            // marginLeft: -5,
-                          }
-                        }>
+                        style={{
+                          marginLeft: -15,
+                        }}>
                         <Button
                           text={'X'}
                           size={'medium'}
@@ -198,6 +173,28 @@ export default function BattleTeamMember(props) {
                         />
                       </View>
                     )}
+
+                  {/* 방장/팀장 표시 */}
+                  {i === 0 && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: -15,
+                        right: -7,
+                        backgroundColor: custom.themeColor,
+                        borderRadius: 5,
+                        padding: 5,
+                      }}>
+                      <Text
+                        text={'리더'}
+                        // text={
+                        //   props.route.params.teamSide === 'A' ? '방장' : '팀장'
+                        // }
+                        fontSize={12}
+                        color={'white'}
+                      />
+                    </View>
+                  )}
                 </HView>
               );
             })}
