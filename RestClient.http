@@ -176,18 +176,22 @@ Authorization: key=AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3
 Content-Type: application/json
 
 {
-  //"to": "c2gbJTujCEgiq7PQpGjDNY:APA91bGFQqh5_6ZRW5QgJY6CD_6TVYgCgfddhjob9OnUmTKfO2fw9OKnek1TKnKLXZJGMK2rmMin0yEGzqMArQzFF_X1QZ82HQTsVdGXVA62ej5f7KqTbByh0vZhfhKAwGGoOOX7X24J",
-  "to": "cDNp8zs7T4amhKsghPk45m:APA91bEQmJds3j1Osy9EHceRk5mq4059prPWCvR-6gnWTiA1l8H82vIm9wDzWaa29BEXJG9-wROKDjLL9tENzxGOJvhIhxd_zw0oIze0LmjdJ7y7KpwHAXDIVWu-IpUbQmEGWqig07rK",
+  //"to": "cSU1jr8rQGSM4JEBlsWY1f:APA91bETzqnC8mOLap0aEAQmKpuBEwUutL6pPKoah0qXmxM-ij-8dwa5LbDQl7EiXvOmJafBtcJea6_jVDltTm8Bkj3brebM-Aaia5VsrBSOqG11BK0tVTF5I33ixnTAlpModYYDEtTg",
+  //"to": "eWfm_D8SR-WAl2oiPV37-8:APA91bG8IEMwAU1KubcWdkcWsNb9S7MT2S37Ep1UVPKhuRL7eR9HdN9CETyY-8U2d-c8DBAvDvidF4H2fNQXDwON7HcUEKYKghqkbibWwVx10Y8E8LrAYvxqbF1uKYnt6-ApoGiNUkJJ",
+  "to": "cDNp8zs7T4amhKsghPk45m:APA91bFwmKwUh6AdBM-_3dYTOsvHFKWipK3d7i1YMAn-zn4qqeB-QgqoOF1owq_2__DtVQRMToqsgBy_f6f2yp4p7xFAjpCqCXRzA5Yp5et-xw4MDOR3vThMgnp3VAdUWcRR1kmqfQVn",
   
   "notification": {
-    //"image": "https://lespo.s3.ap-northeast-2.amazonaws.com/stroage/img-user2.png"
+    // "title": "noti-title",
+    // "body": "noti-body"
+    // "image": "123"
+    // "smallIcon": "123"
   },
   "data": {
     "baPk": "192", 
-    "body": "Qqq", 
+    "body": "data-dody", 
     "imgUrl": "https://lespo.s3.ap-northeast-2.amazonaws.com/stroage/img-user2.png", 
     "screen": "battlechat", 
-    "tabIndex": "1", 
-    "title": "김규식"
+    "tabIndex": "2", 
+    "title": "data-title"
   }
 }

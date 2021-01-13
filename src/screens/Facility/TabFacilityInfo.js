@@ -57,14 +57,14 @@ export default function TabFacilityInfo(props) {
                   marginBottom: 30,
                 }}
                 key={i}>
-                <View style={{flex: 0.3}}>
-                  <Text text={e.name} fontSize={18} color={'dimgray'} />
+                <View style={{flex: 0.4}}>
+                  <Text text={e.name} fontSize={16} color={'dimgray'} />
                 </View>
-                <View style={{flex: 0.3, alignItems: 'center'}}>
-                  <Text text={'••••••••••'} fontSize={12} color={'dimgray'} />
+                <View style={{flex: 0.2, alignItems: 'center'}}>
+                  <Text text={'••••••••••'} fontSize={10} color={'dimgray'} />
                 </View>
                 <View style={{flex: 0.4, alignItems: 'flex-end'}}>
-                  <Text text={e.time} fontSize={18} color={'dimgray'} />
+                  <Text text={e.time} fontSize={16} color={'dimgray'} />
                 </View>
               </HView>
             );
@@ -87,14 +87,14 @@ export default function TabFacilityInfo(props) {
                   marginBottom: 30,
                 }}
                 key={i}>
-                <View style={{flex: 0.3}}>
-                  <Text text={e.name} fontSize={18} color={'dimgray'} />
+                <View style={{flex: 0.4}}>
+                  <Text text={e.name} fontSize={16} color={'dimgray'} />
                 </View>
-                <View style={{flex: 0.3, alignItems: 'center'}}>
-                  <Text text={'••••••••••'} fontSize={12} color={'dimgray'} />
+                <View style={{flex: 0.2, alignItems: 'center'}}>
+                  <Text text={'••••••••••'} fontSize={10} color={'dimgray'} />
                 </View>
                 <View style={{flex: 0.4, alignItems: 'flex-end'}}>
-                  <Text text={e.fare} fontSize={18} color={'dimgray'} />
+                  <Text text={e.fare} fontSize={16} color={'dimgray'} />
                 </View>
               </HView>
             );
@@ -113,7 +113,7 @@ export default function TabFacilityInfo(props) {
             <Seperator width={20} />
             <TouchableOpacity
               onPress={() => Linking.openURL(`tel:${props.data.faPhone}`)}>
-              <Text text={props.data.faPhone} fontSize={18} color={'dimgray'} />
+              <Text text={props.data.faPhone} fontSize={16} color={'dimgray'} />
             </TouchableOpacity>
           </HView>
         </>
@@ -161,7 +161,7 @@ export default function TabFacilityInfo(props) {
               }}>
               <Text
                 text={props.data.faAddr}
-                fontSize={18}
+                fontSize={16}
                 color={'dimgray'}
                 selectable={true}
               />

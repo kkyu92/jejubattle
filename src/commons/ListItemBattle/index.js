@@ -19,6 +19,7 @@ import {
 
 export default function ListItemBattle({
   item,
+  myBattle,
   navigation,
   refresh,
   editMode,
@@ -76,6 +77,7 @@ export default function ListItemBattle({
       // 이미 배틀방에 참여하고 있다면
       navigation.navigate('BattleView', {
         baPk: item.baPk,
+        myBattle: myBattle,
         gameResult: item.gameResult,
         refresh: refresh,
       });
@@ -104,6 +106,7 @@ export default function ListItemBattle({
     navigation.navigate('BattleView', {
       baPk: item.baPk,
       refresh: refresh,
+      myBattle: myBattle,
     });
   };
   return (

@@ -32,7 +32,7 @@ export default function Home(props) {
   const [loading, setLoading] = React.useState(false);
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
   const [showPopupModal, setShowPopupModal] = React.useState(false);
-  const [popupImgUrl, setPopupImgUrl] = React.useState('')
+  const [popupImgUrl, setPopupImgUrl] = React.useState('');
   const [alertTitle, setAertTitle] = React.useState('');
   const [alertText, setAlertText] = React.useState('');
   const [banner, setBanner] = React.useState([]);
@@ -40,8 +40,9 @@ export default function Home(props) {
   const [recommand, setRecommand] = React.useState([]);
   const isFocused = useIsFocused();
   const [appStartGuide] = React.useState(global.appStartGuide);
-  const [popup] = React.useState(global.popup)
-  const [popupDate] = React.useState(global.popupDate)
+  const [pop, setPop] = React.useState(props?.route?.params?.pop);
+  const [popup] = React.useState(global.popup);
+  const [popupDate] = React.useState(global.popupDate);
   let list = [];
   React.useEffect(() => {
     if (isFocused) {
@@ -63,28 +64,64 @@ export default function Home(props) {
       };
       let check = teamB.member.findIndex((e) => e.ready === 'N');
       console.log('findIndex: ' + check);
+      console.log('pop: ' + pop);
+      if (pop === false) {
+        Axios.get('popup')
+          .then(async (res) => {
+            logApi('popup', res.data.fileUrl);
+            if (res.data.fileUrl) {
+              setPopupImgUrl(res.data.fileUrl);
+              let now = moment().format('LL');
+              if (popupDate !== now) {
+                // 그만보기 설정한 날짜와 다를경우 보여짐
+                setShowPopupModal(true);
+              }
+            }
+          })
+          .catch((err) => {
+            logApi('popup error', err);
+          });
+      }
     }
   }, [isFocused]);
 
-  const getToken = async() => {
-    let token = await AsyncStorage.getItem('fcmToken')
+  const getToken = async () => {
+    let token = await AsyncStorage.getItem('fcmToken');
     Axios.post('updatePushkey', {
       userPushkey: token,
     })
       .then((res) => {
         logApi('updatePushkey', res.data);
-        console.log(token)
+        console.log(token);
       })
       .catch((err) => {
         logApi('updatePushkey error', err);
-        console.log(token)
+        console.log(token);
       });
-  }
+  };
 
   React.useEffect(() => {
     if (!appStartGuide) {
       props.navigation.navigate('GuideStart');
+    } else {
+      Axios.get('popup')
+        .then(async (res) => {
+          logApi('popup', res.data.fileUrl);
+          if (res.data.fileUrl) {
+            setPopupImgUrl(res.data.fileUrl);
+            let now = moment().format('LL');
+            if (popupDate !== now) {
+              // 그만보기 설정한 날짜와 다를경우 보여짐
+              setShowPopupModal(true);
+              // props.route.params.pop = false;
+            }
+          }
+        })
+        .catch((err) => {
+          logApi('popup error', err);
+        });
     }
+
     Axios.post('version', {})
       .then(async (res) => {
         const version = DeviceInfo.getVersion();
@@ -104,21 +141,6 @@ export default function Home(props) {
       });
 
     getToken();
-
-    Axios.get('popup')
-      .then(async(res) => {
-        logApi('popup', res.data.fileUrl)
-        if (res.data.fileUrl) {
-          setPopupImgUrl(res.data.fileUrl)
-          let now = moment().format('LL');  
-          if (popupDate !== now) { // 그만보기 설정한 날짜와 다를경우 보여짐
-            setShowPopupModal(true)
-          } 
-        }
-      })
-      .catch((err) => {
-        logApi('popup error', err)
-      })
   }, []);
   return (
     <Container
@@ -159,7 +181,7 @@ export default function Home(props) {
         <ImageCarousel
           // data={banner.map((e) => e.imgUrl)}
           autoPlay={true}
-          loop={true}
+          loop={false}
           data={banner}
           height={200}
           adIndex={true}
@@ -261,42 +283,47 @@ export default function Home(props) {
             // alignItems: 'center',
           }}>
           <View style={{alignItems: 'center', paddingVertical: 10}}>
-          <Image
-                uri={popupImgUrl}
-                height={300}
-                width={300}
-                resizeMode={'contain'}
-              />
+            <Image
+              uri={popupImgUrl}
+              height={350}
+              width={350}
+              resizeMode={'contain'}
+            />
           </View>
           <Seperator height={20} />
-          <HView>
-            <View style={{flex: 1}}>
+          <View>
+            <View>
               <Button
-                text={'그만보기'}
+                text={'오늘 하루 그만보기'}
                 color={'gray'}
                 onPress={async () => {
-                  await AsyncStorage.setItem('popupDate', moment().format('LL'))
+                  await AsyncStorage.setItem(
+                    'popupDate',
+                    moment().format('LL'),
+                  );
                   setShowPopupModal(false);
+                  setPop(true);
                 }}
-                size={'large'}
+                size={'middle'}
                 stretch
               />
             </View>
-            <Seperator width={20} />
-            <View style={{flex: 1}}>
+            <Seperator height={10} />
+            <View>
               <Button
                 text={'닫기'}
                 color={custom.themeColor}
                 onPress={() => {
-                    setShowPopupModal(false);
+                  setShowPopupModal(false);
+                  setPop(true);
                 }}
-                size={'large'}
+                size={'middle'}
                 stretch
               />
             </View>
-          </HView>
+          </View>
         </View>
-        </Modal>
-      </Container>
+      </Modal>
+    </Container>
   );
 }

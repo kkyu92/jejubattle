@@ -83,8 +83,6 @@ export default function TabReview(props) {
         </View>
       </HView>
 
-      <Seperator height={40} />
-
       <HView style={{padding: 20}}>
         <Text text={'최근 리뷰'} fontSize={18} fontWeight={'bold'} />
         <Text text={`(${props.replyCnt})`} fontSize={18} color={'gray'} />
@@ -115,7 +113,7 @@ export default function TabReview(props) {
 
       {props.data.length === 0 && (
         <View style={{padding: 20}}>
-          <Text text={'리뷰가 없습니다.'} fontSize={16} color={'dimgray'} />
+          <Text text={'리뷰가 없습니다.'} fontSize={14} color={'dimgray'} />
         </View>
       )}
       <Seperator bottom />

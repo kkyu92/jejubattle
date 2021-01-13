@@ -74,6 +74,7 @@ export default function Evaluation(props) {
     })
       .then((res) => {
         logApi('resultBattle ', res);
+        console.log(res.data.message);
         if (res.status === 201) {
           if (
             res.data.message ===

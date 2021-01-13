@@ -56,7 +56,8 @@ export default function Facility(props) {
           resizeMode={'contain'}
         />
         <Seperator height={10} />
-        <Text text={item.name} fontSize={14} />
+        <Text text={item.name} fontSize={12} />
+        <Seperator height={10} />
       </View>
     );
   };
@@ -79,7 +80,7 @@ export default function Facility(props) {
           resizeMode={'contain'}
         />
         <Seperator height={10} />
-        <Text text={item.name} fontSize={14} />
+        <Text text={item.name} fontSize={12} />
       </View>
     );
   };

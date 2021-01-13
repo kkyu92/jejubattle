@@ -40,6 +40,15 @@ export default function BattleFilter(props) {
       .catch((err) => {
         logApi('sportsList error', err.response);
       });
+    console.log(props.route.params);
+    console.log(
+      `정렬::: ${boCode}
+      \n배틀상태::: ${baCode}
+      \n게임형태::: ${bmCode}
+      \n실력::: ${blCode}
+      \n공개여부::: ${bpCode}
+      \n종목선택::: ${caCode}`,
+    );
   }, []);
   const handleSports = (e) => {
     const temp = [...caCode];

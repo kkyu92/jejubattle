@@ -240,7 +240,7 @@ export default function FacilityView(props) {
           // onPress={() => setImageViewer(true)}
         /> */}
         <Seperator height={20} />
-        <HView style={{padding: 20, justifyContent: 'space-between'}}>
+        <HView style={{paddingHorizontal: 20, justifyContent: 'space-between'}}>
           <Text text={facility.faName} fontWeight={'bold'} fontSize={21} />
           <TouchableOpacity
             onPress={() => (facility.faLikeType === 'N' ? likeOn() : likeOff())}
@@ -260,10 +260,11 @@ export default function FacilityView(props) {
             <Text text={facility.faLikeCnt} fontSize={14} color={'gray'} />
           </TouchableOpacity>
         </HView>
-        <View style={{padding: 20}}>
-          <Text text={facility.faSubject} color={'dimgray'} fontSize={18} />
+        <Seperator height={10} />
+        <View style={{paddingHorizontal: 20}}>
+          <Text text={facility.faSubject} color={'dimgray'} fontSize={16} />
         </View>
-        <Seperator height={20} />
+        <Seperator height={10} />
         <TabView
           lazy
           renderTabBar={renderTabBar}

@@ -254,6 +254,7 @@ export default function BattleView(props) {
         return (
           <TabBattleDetail
             navigation={props.navigation}
+            myBattle={props.route.params.myBattle}
             info={info}
             refresh={props.route.params.refresh}
             refreshBattleView={() => get()}

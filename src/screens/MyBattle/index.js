@@ -102,6 +102,7 @@ export default function MyBattle(props) {
     return (
       <ListItemBattle
         item={item}
+        myBattle={true}
         editMode={edit}
         index={index}
         handleCheck={handleCheck}

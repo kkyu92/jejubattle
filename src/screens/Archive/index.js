@@ -233,8 +233,8 @@ export default function Archive(props) {
             <Seperator line />
             <View style={{alignSelf: 'center'}}>
               <Image
-                height={Math.floor((screenWidth - 140) / 3)}
-                width={Math.floor((screenWidth - 140) / 3)}
+                height={Math.floor((screenWidth - 140) / 2)}
+                width={Math.floor((screenWidth - 140) / 2)}
                 uri={clickItem.loQrcode}
                 // uri={clickItem.loImgUrl}
                 resizeMode={'cover'}

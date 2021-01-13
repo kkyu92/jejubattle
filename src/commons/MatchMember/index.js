@@ -164,13 +164,13 @@ export default function MatchMember(props) {
               flex: 0.4,
               alignItems: 'center',
             }}>
-            <TouchableOpacity 
-                onPress={() => {
-                  if (props.info.teamA.member.length > 0) {
-                    setMemberModalTeam(props.info.teamA);
-                    setMemberModal(true);
-                  }
-                }}>
+            <TouchableOpacity
+              onPress={() => {
+                if (props.info.teamA.member.length > 0) {
+                  setMemberModalTeam(props.info.teamA);
+                  setMemberModal(true);
+                }
+              }}>
               {props.info.teamA?.member[0]?.userImgUrl ? (
                 <Image
                   uri={props.info.teamA.member[0]?.userImgUrl}
@@ -255,12 +255,12 @@ export default function MatchMember(props) {
                 />
               ) : (
                 <TouchableOpacity
-                onPress={() => {
-                  if (props.info.teamB.member.length > 0) {
-                    setMemberModalTeam(props.info.teamB);
-                    setMemberModal(true);
-                  }
-                }}>
+                  onPress={() => {
+                    if (props.info.teamB.member.length > 0) {
+                      setMemberModalTeam(props.info.teamB);
+                      setMemberModal(true);
+                    }
+                  }}>
                   {props.info.teamB?.member[0]?.userImgUrl ? (
                     <Image
                       uri={props.info.teamB.member[0]?.userImgUrl}
@@ -364,7 +364,7 @@ export default function MatchMember(props) {
             <TextTicker
               style={{
                 color: '#FE7262',
-                fontSize: 36,
+                fontSize: 34,
                 fontWeight: 'bold',
                 textAlign: 'center',
                 justifyContent: 'center',
@@ -501,7 +501,7 @@ export default function MatchMember(props) {
             <TextTicker
               style={{
                 color: '#0752AB',
-                fontSize: 36,
+                fontSize: 34,
                 fontWeight: 'bold',
                 textAlign: 'center',
                 justifyContent: 'center',

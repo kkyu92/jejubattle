@@ -151,7 +151,8 @@ export default function BattleTeamMember(props) {
                    * 대신 내가 (context.me.userPk) 팀장이거나 A팀의 방장인경우에만
                    * 삭제 버튼을 보여준다.
                    */}
-                  {e.userPk !== context.me.userPk &&
+                  {props.route.params.info.baCode < 3 &&
+                    e.userPk !== context.me.userPk &&
                     mode === '' &&
                     context.me.userPk ===
                       props.route.params.info.teamA.member[0].userPk && (

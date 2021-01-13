@@ -170,7 +170,6 @@ export default function App() {
               baPk === notify.baPk ||
               baPk === JSON.stringify(notify.baPk)
             ) {
-              // 해당 배틀방 화면
               console.log('해당 배틀방 화면');
               showToast(notify.title + '\n' + notify.body, 2000, 'center');
             } else {
@@ -188,12 +187,21 @@ export default function App() {
                 options,
               );
             }
-            dispatch({
-              type: 'UPDATEME',
-              data: {
-                notification: 'N',
-              },
-            });
+            Axios.get(`getPay`)
+              .then((res) => {
+                logApi('getPay', res.data);
+                dispatch({
+                  type: 'UPDATEME',
+                  data: {
+                    notification: 'N',
+                    userCoin: res.data.userCoin,
+                    userPoint: res.data.userPoint,
+                  },
+                });
+              })
+              .catch((err) => {
+                logApi('getPay error', err.response);
+              });
           } else if (notify.screen === 'battlechat') {
             // chat msg
             if (baPk === '0') {
@@ -214,7 +222,6 @@ export default function App() {
               baPk === notify.baPk ||
               baPk === JSON.stringify(notify.baPk)
             ) {
-              // 해당 배틀방 화면
               console.log('해당 배틀방 화면');
             } else {
               // 다른 배틀방 화면
@@ -250,12 +257,11 @@ export default function App() {
               baPk === notify.baPk ||
               baPk === JSON.stringify(notify.baPk)
             ) {
-              // 해당 배틀방 화면
-              showToast(notify.title + '\n' + notify.body, 2000, 'center');
+              showToast(notify.body, 2000, 'center');
               RootNavigation.navigate('Battle', {});
             } else {
               // 다른 배틀방 화면
-              showToast(notify.title + '\n' + notify.body, 2000, 'center');
+              showToast(notify.body, 2000, 'center');
             }
             dispatch({
               type: 'UPDATEME',

@@ -101,9 +101,11 @@ export default function CoinCharge(props) {
             console.log(purchase);
             addCoin(
               false,
-              purchase.productId === '1'
+              purchase.productId === '1' ||
+                purchase.productId === 'battlecoin1200'
                 ? 1
-                : purchase.productId === '2'
+                : purchase.productId === '2' ||
+                  purchase.productId === 'battlecoin6000'
                 ? 5
                 : 10,
             );

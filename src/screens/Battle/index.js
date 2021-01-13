@@ -52,20 +52,30 @@ export default function Battle(props) {
           flatListRef.current.scrollToOffset({animated: true, offset: 0});
         }
       } else {
-        setBoCode(props.route.params.boCode);
-        setBaCode(props.route.params.baCode);
-        setBmCode(props.route.params.bmCode);
-        setBlCode(props.route.params.blCode);
-        setBpCode(props.route.params.bpCode);
-        setCaCode(props.route.params.caCode);
-        get(
-          props.route.params.boCode,
-          props.route.params.baCode,
-          props.route.params.bmCode,
-          props.route.params.blCode,
-          props.route.params.bpCode,
-          props.route.params.caCode,
-        );
+        if (props.route.params.caCode === undefined) {
+          setBoCode(1);
+          setBaCode(0);
+          setBmCode(0);
+          setBlCode(0);
+          setBpCode(0);
+          setCaCode([]);
+          get();
+        } else {
+          setBoCode(props.route.params.boCode);
+          setBaCode(props.route.params.baCode);
+          setBmCode(props.route.params.bmCode);
+          setBlCode(props.route.params.blCode);
+          setBpCode(props.route.params.bpCode);
+          setCaCode(props.route.params.caCode);
+          get(
+            props.route.params.boCode,
+            props.route.params.baCode,
+            props.route.params.bmCode,
+            props.route.params.blCode,
+            props.route.params.bpCode,
+            props.route.params.caCode,
+          );
+        }
         setPage(1);
         setMoredone(false);
         flatListRef.current.scrollToOffset({animated: true, offset: 0});

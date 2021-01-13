@@ -27,6 +27,7 @@ import {
   showToast,
 } from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
+import ListItemReco from '../../commons/ListItemReco';
 
 export default function Search(props) {
   const context = React.useContext(AppContext);
@@ -143,7 +144,21 @@ export default function Search(props) {
         </HView>
       );
     } else {
-      return (
+      return item.faType === 1 ? (
+        <ListItem
+          onPress={() =>
+            props.navigation.navigate('TravelView', {
+              faPk: item.faPk,
+              showScrap: false,
+            })
+          }
+          item={item}
+          index={index}
+          scrapOn={scrapOn}
+          scrapOff={scrapOff}
+          showScrap={false}
+        />
+      ) : (
         <ListItem
           onPress={() =>
             props.navigation.navigate('FacilityView', {faPk: item.faPk})
@@ -274,6 +289,7 @@ export default function Search(props) {
 
       <FlatList
         data={result}
+        key={(item) => item.faPk}
         keyExtractor={(item) => JSON.stringify(item.faPk)}
         renderItem={renderItems}
         stickyHeaderIndices={

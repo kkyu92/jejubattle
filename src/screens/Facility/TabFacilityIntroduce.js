@@ -19,7 +19,7 @@ export default function TabFacilityIntroduce(props) {
             <View style={{flex: 1}}>
               <Text
                 text={props.data.fa1Subj?.replace(/<br>/g, '\n')}
-                fontSize={18}
+                fontSize={16}
                 color={'dimgray'}
               />
             </View>
@@ -42,7 +42,7 @@ export default function TabFacilityIntroduce(props) {
             <View style={{flex: 1}}>
               <Text
                 text={props.data.fa2Subj?.replace(/<br>/g, '\n')}
-                fontSize={18}
+                fontSize={16}
                 color={'dimgray'}
               />
             </View>
@@ -65,7 +65,7 @@ export default function TabFacilityIntroduce(props) {
             <View style={{flex: 1}}>
               <Text
                 text={props.data.fa3Subj?.replace(/<br>/g, '\n')}
-                fontSize={18}
+                fontSize={16}
                 color={'dimgray'}
               />
             </View>

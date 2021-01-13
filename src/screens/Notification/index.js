@@ -14,11 +14,11 @@ import Icons from '../../commons/Icons';
 import {AppContext} from '../../context';
 import Axios from 'axios';
 import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
-import { custom } from '../../config';
+import {custom} from '../../config';
 
 export default function Notification(props) {
   const context = React.useContext(AppContext);
-  const [deleteAllModal, setDeleteAllModal] = React.useState(false)
+  const [deleteAllModal, setDeleteAllModal] = React.useState(false);
   const [notification, setNotification] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [moredone, setMoredone] = React.useState(false);
@@ -66,14 +66,14 @@ export default function Notification(props) {
 
   const deleteAll = () => {
     Axios.delete('deleteNotification', {})
-      .then(res => {
-        logApi('deleteNotification [success]')
+      .then((res) => {
+        logApi('deleteNotification [success]');
       })
-      .catch(err => {
-        logApi('deleteNotification [error]')
-      })
-      setNotification([])
-  }
+      .catch((err) => {
+        logApi('deleteNotification [error]');
+      });
+    setNotification([]);
+  };
 
   React.useEffect(() => {
     getNoti(page);
@@ -136,7 +136,11 @@ export default function Notification(props) {
 
   return (
     <Container flex={1}>
-      <Header left={'close'} navigation={props.navigation} title={'알림'} rightComponent={
+      <Header
+        left={'close'}
+        navigation={props.navigation}
+        title={'알림'}
+        rightComponent={
           <TouchableOpacity
             onPress={() => setDeleteAllModal(true)}
             style={{
@@ -151,6 +155,7 @@ export default function Notification(props) {
       />
       <Seperator marginTop={1} marginBottom={1} />
       <FlatList
+        key={(item) => item.index}
         data={notification}
         keyExtractor={(item) => item.index}
         renderItem={renderItem}
@@ -170,7 +175,7 @@ export default function Notification(props) {
           }
         }}
       />
-     
+
       {/* 알림 전체삭제 */}
       <Modal
         isVisible={deleteAllModal}
@@ -213,8 +218,7 @@ export default function Notification(props) {
                 text={'삭제'}
                 color={custom.themeColor}
                 onPress={async () => {
-                  deleteAll(),
-                  setDeleteAllModal(false)
+                  deleteAll(), setDeleteAllModal(false);
                 }}
                 size={'large'}
                 stretch

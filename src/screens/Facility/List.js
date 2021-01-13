@@ -83,48 +83,27 @@ export default function FacilityList(props) {
     )
       .then((res) => {
         let facilityList = res.data.facility;
-        if (facilityList.length === 0) {
-          showToast('등록된 데이터가 없습니다.', 2000, 'center');
-        }
-        const list = facilityList.map((item) => ({
+        const addList = facilityList.map((item) => ({
           ...item,
           id: item.faPk,
         }));
         logApi(props.route.params.endpoint, res.data);
         if (page === 1) {
-          setList(res.data.facility);
+          if (facilityList.length === 0) {
+            setList([]);
+            showToast('등록된 데이터가 없습니다.', 2000, 'center');
+          } else {
+            setList(res.data.facility);
+          }
         } else {
-          setList((old) => [...old, ...list]);
+          if (addList.length === 0) {
+            setMoredone(true);
+            // showToast('마지막 페이지 입니다.', 2000, 'center');
+          } else {
+            setList((old) => [...old, ...addList]);
+          }
         }
         setCategory(res.data.category);
-        if (res.data.facility.length === 10) {
-          Axios.post(
-            props.route.params.endpoint,
-            filter1 === 3
-              ? {
-                  code: activeTab,
-                  clCode: filter2,
-                  orderType: filter1,
-                  keyword: keyword,
-                  pageNum: page + 1,
-                  lat: coords.latitude,
-                  lon: coords.longitude,
-                }
-              : {
-                  code: activeTab,
-                  clCode: filter2,
-                  orderType: filter1,
-                  keyword: keyword,
-                  pageNum: page + 1,
-                },
-          ).then((res) => {
-            if (res.data.facility.length === 0) {
-              setMoredone(true);
-            }
-          });
-        } else {
-          setMoredone(true);
-        }
       })
       .catch((err) => {
         logApi(props.route.params.endpoint + ' error', err.response);

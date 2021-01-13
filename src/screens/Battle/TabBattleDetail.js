@@ -260,9 +260,13 @@ export default function TabBattleDetail(props) {
       updateBattle({teamB: localTeam, history: localHistory}, false);
     }
     setModalExit2(false);
-    // props.refresh && props.refresh();
-    // 방나가기
-    RootNavigation.navigate('Battle', {});
+    // myBattle -> 나가기 -> myBattle
+    if (props?.myBattle) {
+      props.navigation.goBack();
+    } else {
+      // battle -> 나가기 -> battle
+      RootNavigation.navigate('Battle', {});
+    }
   };
 
   return (
@@ -299,7 +303,7 @@ export default function TabBattleDetail(props) {
               text={
                 context.me.userPk === props.info.teamA.member[0].userPk
                   ? '필수설정'
-                  : '배틀조건확인'
+                  : '경기정보'
               }
               fontSize={13}
               fontWeight={'500'}
@@ -931,7 +935,7 @@ export default function TabBattleDetail(props) {
               text={
                 context.me.userPk === props.info.teamA.member[0].userPk
                   ? '필수설정'
-                  : '배틀조건확인'
+                  : '경기정보'
               }
             />
           </View>

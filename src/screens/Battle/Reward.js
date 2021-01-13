@@ -172,7 +172,9 @@ export default function Reward(props) {
                         alignItems: 'center',
                       }}>
                       <Image
-                        uri={e.imgUrl}
+                        local
+                        // uri={e.imgUrl}
+                        uri={require('../../../assets/img/icon_synthesis.png')}
                         height={60}
                         width={60}
                         borderRadius={30}

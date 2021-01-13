@@ -44,9 +44,9 @@ export default function FirstScreen({navigation}) {
       />
       <Text
         onPress={async () => {
-          await AsyncStorage.setItem('appStartGuide', JSON.stringify(true));
+          await AsyncStorage.setItem('apepStartGuide', JSON.stringify(true));
           global.appStartGuide = true;
-          navigation.goBack();
+          navigation.navigate('Home', {pop: false});
         }}
         style={{
           position: 'absolute',
@@ -60,7 +60,7 @@ export default function FirstScreen({navigation}) {
         fontWeight={'bold'}
       />
       <Text
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('Home', {pop: false})}
         style={{
           position: 'absolute',
           bottom: 60,

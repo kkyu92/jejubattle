@@ -14,9 +14,9 @@ import {
 
 export default function ListItemReco(props) {
   let tagList = '';
-  props.item.faHashtag.map((tag) => {
-    tagList = tagList + tag.tag + ' ';
-  });
+  // props.item.faHashtag.map((tag) => {
+  //   tagList = tagList + tag.tag + ' ';
+  // });
   return (
     <View
       style={{
