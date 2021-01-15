@@ -142,7 +142,7 @@ export default function DateTime({
                   justifyContent: 'center',
                 }}>
                 <RNDateTimePicker
-                style={{width: 320, backgroundColor: "white"}}
+                style={{width: 320, backgroundColor: "white", alignSelf: 'center'}}
                   mode={mode || 'date'}
                   locale={locale}
                   format="lll"
