@@ -341,7 +341,7 @@ export default function Login(props) {
             console.log(error);
             Alert.alert('Facebook getAccessToken fail', JSON.stringify(error));
           } else {
-            console.log(profile);
+            console.log('FB Profile : '+JSON.stringify(profile));
             startWithSNS(profile.id, profile.email, 4);
           }
         };

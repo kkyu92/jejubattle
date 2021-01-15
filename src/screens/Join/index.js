@@ -50,7 +50,10 @@ export default function Join(props) {
   const [agreement4, setAgreement4] = React.useState(false);
 
   React.useEffect(() => {
-    console.log('userCode : ' + props.route?.params?.userCode);
+    Alert.alert('SNS 받아오는 정보',
+    `userCode [SNS] : ${props.route?.params?.userCode}
+    userId [email] : ${props.route?.params?.userId}
+    uid [고유ID] : ${props.route?.params?.uid}`)
     Linking.getInitialURL()
       .then((url) => {
         if (url) {
