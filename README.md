@@ -29,6 +29,13 @@
 
 > https://play.google.com/apps/internaltest/4700794782783427988
 
+#### 2021.01.15
+
+> android (2.0.0.37)
+> ios (2.0.0.27)
+
+- QA 5
+
 #### 2021.01.13
 
 > android (2.0.0.36)

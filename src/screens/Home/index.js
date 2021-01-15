@@ -40,7 +40,7 @@ export default function Home(props) {
   const [recommand, setRecommand] = React.useState([]);
   const isFocused = useIsFocused();
   const [appStartGuide] = React.useState(global.appStartGuide);
-  const [pop, setPop] = React.useState(props?.route?.params?.pop);
+  const [pop, setPop] = React.useState(false);
   const [popup] = React.useState(global.popup);
   const [popupDate] = React.useState(global.popupDate);
   let list = [];
@@ -64,26 +64,29 @@ export default function Home(props) {
       };
       let check = teamB.member.findIndex((e) => e.ready === 'N');
       console.log('findIndex: ' + check);
-      console.log('pop: ' + pop);
-      if (pop === false) {
-        Axios.get('popup')
-          .then(async (res) => {
-            logApi('popup', res.data.fileUrl);
-            if (res.data.fileUrl) {
-              setPopupImgUrl(res.data.fileUrl);
-              let now = moment().format('LL');
-              if (popupDate !== now) {
-                // 그만보기 설정한 날짜와 다를경우 보여짐
-                setShowPopupModal(true);
-              }
-            }
-          })
-          .catch((err) => {
-            logApi('popup error', err);
-          });
-      }
     }
   }, [isFocused]);
+
+  React.useEffect(() => {
+    setPop(true);
+    if (pop === true) {
+      Axios.get('popup')
+        .then(async (res) => {
+          logApi('popup', res.data.fileUrl);
+          if (res.data.fileUrl) {
+            setPopupImgUrl(res.data.fileUrl);
+            let now = moment().format('LL');
+            if (popupDate !== now) {
+              // 그만보기 설정한 날짜와 다를경우 보여짐
+              setShowPopupModal(true);
+            }
+          }
+        })
+        .catch((err) => {
+          logApi('popup error', err);
+        });
+    }
+  }, [props.route.params?.pop]);
 
   const getToken = async () => {
     let token = await AsyncStorage.getItem('fcmToken');
@@ -286,8 +289,8 @@ export default function Home(props) {
             <Image
               uri={popupImgUrl}
               height={350}
-              width={350}
-              resizeMode={'contain'}
+              width={'100%'}
+              resizeMode={'cover'}
             />
           </View>
           <Seperator height={20} />
@@ -302,7 +305,7 @@ export default function Home(props) {
                     moment().format('LL'),
                   );
                   setShowPopupModal(false);
-                  setPop(true);
+                  setPop(false);
                 }}
                 size={'middle'}
                 stretch
@@ -315,7 +318,7 @@ export default function Home(props) {
                 color={custom.themeColor}
                 onPress={() => {
                   setShowPopupModal(false);
-                  setPop(true);
+                  setPop(false);
                 }}
                 size={'middle'}
                 stretch

@@ -262,7 +262,9 @@ export default function TabBattleDetail(props) {
     setModalExit2(false);
     // myBattle -> 나가기 -> myBattle
     if (props?.myBattle) {
-      props.navigation.goBack();
+      console.log('마이배틀에서 나가는 부분');
+      RootNavigation.navigate('Battle', {navigate: 'myBattle'});
+      // props.navigation.goBack();
     } else {
       // battle -> 나가기 -> battle
       RootNavigation.navigate('Battle', {});
@@ -354,14 +356,22 @@ export default function TabBattleDetail(props) {
         <HView style={{paddingHorizontal: 20, paddingVertical: 10}}>
           <View style={{flex: 0.1}}>
             <Text
-              text={'지역'}
+              text={'장소'}
               fontSize={14}
               fontWeight={'bold'}
               color={'gray'}
             />
           </View>
           <View style={{flex: 0.4}}>
-            <Text text={props.info.bzName} fontSize={14} color={'gray'} />
+            <Text
+              text={
+                props.info.baPlace.faName
+                  ? props.info.baPlace.faName
+                  : props.info.bzName
+              }
+              fontSize={14}
+              color={'gray'}
+            />
           </View>
           <View style={{flex: 0.1}}>
             <Text

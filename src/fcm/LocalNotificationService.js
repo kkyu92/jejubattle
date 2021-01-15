@@ -6,6 +6,18 @@ import moment from 'moment';
 
 class LocalNotificationService {
   configure = (onOpenNotification) => {
+    PushNotification.createChannel(
+      {
+        channelId: "3429", // (required)
+        channelName: "My channel", // (required)
+        channelDescription: "A channel to categorise your notifications", // (optional) default: undefined.
+        playSound: true, // (optional) default: true
+        soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+        importance: 4, // (optional) default: 4. Int value of the Android notification importance
+        vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+      },
+      (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+    );
     PushNotification.configure({
       // onRegister: function (token) {
       //   console.log('[LocalNotificationService] onRegister', token);
@@ -69,6 +81,7 @@ class LocalNotificationService {
       playSound: options.playSound || false,
       soundName: options.soundName || 'default',
       userInteraction: false, // If the notification was opened by the user from the notification area or not
+      channelId: '3429'
     });
   };
 

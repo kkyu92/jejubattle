@@ -87,7 +87,7 @@ export default function Search(props) {
               stickyIndex.push(temp.length);
               temp.push({
                 faPk: 3000000000,
-                title: '추천시설',
+                title: '추천코스',
                 cnt: res.data.recommend.length,
               });
               temp = temp.concat(res.data.recommend);

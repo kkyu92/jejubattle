@@ -256,7 +256,7 @@ export default function Archive(props) {
               <Button
                 text={'삭제하기'}
                 onPress={() => {
-                  setModalVisible(false), deleteArchive(clickItem.id);
+                  setModalVisible(false), deleteArchive(clickItem.loPk);
                 }}
                 color={custom.themeColor}
                 stretch

@@ -83,6 +83,14 @@ export default function Battle(props) {
       getCoin();
       setPullToRefresh(false);
       console.log('params : ' + JSON.stringify(props.route.params));
+
+      console.log(
+        'props.route.params.navigate: ' + props.route.params?.navigate,
+      );
+      if (props.route.params?.navigate === 'myBattle') {
+        props.navigation.toggleDrawer();
+        props.navigation.navigate('MyBattle');
+      }
     }
   }, [pullToRefresh, props.route.params]);
 
@@ -264,7 +272,7 @@ export default function Battle(props) {
             borderTopWidth: 1,
             borderTopColor: 'lightgray',
           }}>
-          <Seperator height={10} color={'whitesmoke'} />
+          <Seperator height={10} color={'orange'} />
         </View>
       );
     } else {

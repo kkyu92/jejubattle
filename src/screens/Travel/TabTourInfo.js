@@ -12,32 +12,46 @@ import {screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {showToast} from '../../react-native-nuno-ui/funcs';
+import { FlatList } from 'react-native-gesture-handler';
 
 export default function TabTourInfo(props) {
+  const renderItemHealth = ({item}) => {
+    return (
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <Image
+          height={Math.floor((screenWidth - 180) / 4)}
+          width={Math.floor((screenWidth - 180) / 4)}
+          uri={item.icon}
+          onPress={() =>
+            props.navigation.navigate('FacilityList', {
+              title: '건강운동',
+              endpoint: 'healthList',
+              code: item.code,
+              tablist: sports2,
+            })
+          }
+          resizeMode={'contain'}
+        />
+        <Seperator height={10} />
+        <Text text={item.name} fontSize={12} />
+        <Seperator height={15} />
+      </View>
+    );
+  };
   return (
     <Container>
-      {props.data.feList.length > 0 && (
+      {props.data.feList.length !== 0 && (
         <>
           <View style={{padding: 20}}>
             <Text text={'시설 정보'} fontSize={18} fontWeight={'bold'} />
           </View>
-          <View style={{padding: 20}}>
-            <HView style={{flexWrap: 'wrap'}}>
-              {props.data.feList.map((e, i) => {
-                return (
-                  <View style={{padding: 10, alignItems: 'center'}} key={i}>
-                    <Image
-                      height={Math.floor((screenWidth - 140) / 5)}
-                      width={Math.floor((screenWidth - 140) / 5)}
-                      uri={e.icon}
-                      resizeMode={'cover'}
-                    />
-                    <Seperator height={10} />
-                    <Text text={e.name} fontSize={14} />
-                  </View>
-                );
-              })}
-            </HView>
+          <View style={{padding: 10}}>
+          <FlatList
+            data={props.data.feList}
+            keyExtractor={(item) => JSON.stringify(item.code)}
+            renderItem={renderItemHealth}
+            numColumns={4}
+          />
           </View>
         </>
       )}

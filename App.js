@@ -7,7 +7,7 @@
  */
 
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {
   useColorScheme,
   AppState,
@@ -70,6 +70,8 @@ export default function App() {
   const colorScheme = useColorScheme();
   const {state, dispatch} = useAppReducer();
   const [ready, setReady] = React.useState(false);
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
   const theme = {
     colors: {
@@ -130,6 +132,7 @@ export default function App() {
   React.useEffect(() => {
     if (!ready) {
       init().finally(() => {
+        console.log('init-start');
         setReady(true);
         RNBootSplash.hide({duration: 500});
         const dynamicUnsubscribe = dynamicLinks().onLink(handleRoute);
@@ -203,6 +206,8 @@ export default function App() {
                 logApi('getPay error', err.response);
               });
           } else if (notify.screen === 'battlechat') {
+            console.log(`appStateVisible: ${appStateVisible}`)
+            console.log(`appState: ${appState.current}`)
             // chat msg
             if (baPk === '0') {
               // 배틀방이 아님
@@ -219,8 +224,8 @@ export default function App() {
                 options,
               );
             } else if (
-              baPk === notify.baPk ||
-              baPk === JSON.stringify(notify.baPk)
+              (baPk === notify.baPk ||
+              baPk === JSON.stringify(notify.baPk)) && appState.current === 'active'
             ) {
               console.log('해당 배틀방 화면');
             } else {
@@ -370,7 +375,7 @@ export default function App() {
           }
           // getPush();
         }
-
+        console.log('init-fin');
         return () => {
           console.log('[APP] unRegister');
           fcmService.unRegister();
@@ -427,8 +432,19 @@ export default function App() {
   };
 
   const handleAppState = (newState) => {
+    appState.current = newState;
+    setAppStateVisible(appState.current);
+
     if (newState === 'active') {
+      console.log('state::: '+newState);
+      console.log(JSON.stringify(appState));
       global.fcmToken && getPush();
+    } else if (newState === 'background') {
+      console.log('state::: '+newState);
+      console.log(JSON.stringify(appState));
+    } else {
+      console.log('state::: '+newState);
+      console.log(JSON.stringify(appState));
     }
   };
 

@@ -128,7 +128,7 @@ export default function MatchMember(props) {
     if (foundedAtTeamB !== -1) {
       if (foundedAtTeamB === 0) {
         setAlertTitle('알림');
-        setAlertText('팀장위임을 해야만 변경이 가능합니다.');
+        setAlertText('리더위임을 해야만 변경이 가능합니다.');
         setSwitchAlert(true);
         return;
       }

@@ -174,20 +174,21 @@ token: {{tokenKakao}}
 POST {{fcm}}
 Authorization: key=AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH
 Content-Type: application/json
+token: {{tokenKakao}}
 
 {
   //"to": "cSU1jr8rQGSM4JEBlsWY1f:APA91bETzqnC8mOLap0aEAQmKpuBEwUutL6pPKoah0qXmxM-ij-8dwa5LbDQl7EiXvOmJafBtcJea6_jVDltTm8Bkj3brebM-Aaia5VsrBSOqG11BK0tVTF5I33ixnTAlpModYYDEtTg",
   //"to": "eWfm_D8SR-WAl2oiPV37-8:APA91bG8IEMwAU1KubcWdkcWsNb9S7MT2S37Ep1UVPKhuRL7eR9HdN9CETyY-8U2d-c8DBAvDvidF4H2fNQXDwON7HcUEKYKghqkbibWwVx10Y8E8LrAYvxqbF1uKYnt6-ApoGiNUkJJ",
-  "to": "cDNp8zs7T4amhKsghPk45m:APA91bFwmKwUh6AdBM-_3dYTOsvHFKWipK3d7i1YMAn-zn4qqeB-QgqoOF1owq_2__DtVQRMToqsgBy_f6f2yp4p7xFAjpCqCXRzA5Yp5et-xw4MDOR3vThMgnp3VAdUWcRR1kmqfQVn",
+  "to": "cDNp8zs7T4amhKsghPk45m:APA91bGnjHLYP5aHd9FRfiCbCKyCGDnyqtc2gONfYFyIylH8rka7NSu5W-KkzWde09i5dPiajDJbk6TCrBbVGxC_xNZYJx6sS-yIRNUiFHXXeA3hsPHPjkTx-tNFsOCVuXx4dVh7Mi0v",
   
   "notification": {
-    // "title": "noti-title",
-    // "body": "noti-body"
+    "title": "noti-title",
+    "body": "noti-body"
     // "image": "123"
     // "smallIcon": "123"
   },
   "data": {
-    "baPk": "192", 
+    "baPk": "698", 
     "body": "data-dody", 
     "imgUrl": "https://lespo.s3.ap-northeast-2.amazonaws.com/stroage/img-user2.png", 
     "screen": "battlechat", 

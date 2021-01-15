@@ -205,7 +205,7 @@ export default function ListItemBattle({
               </HView>
               <HView style={{paddingVertical: 4}}>
                 <View style={{flex: 0.2}}>
-                  <Text text={'지역'} fontSize={14} color={'gray'} />
+                  <Text text={'장소'} fontSize={14} color={'gray'} />
                 </View>
                 <View style={{flex: 0.8}}>
                   <Text text={item.bzName} fontSize={14} color={'gray'} />
