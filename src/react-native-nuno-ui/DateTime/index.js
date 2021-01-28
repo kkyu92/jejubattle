@@ -5,6 +5,7 @@ import {
   Modal,
   View,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import Seperator from '../Seperator';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
@@ -29,7 +30,7 @@ export default function DateTime({
 }) {
   const [showPicker, setShowPicker] = React.useState(false);
   const date = new Date();
-
+  console.log(useColorScheme() + '<-- useColor');
   if (!locale) {
     locale =
       Platform.OS === 'ios'
@@ -142,11 +143,17 @@ export default function DateTime({
                   justifyContent: 'center',
                 }}>
                 <RNDateTimePicker
-                style={{width: 320, backgroundColor: "white", alignSelf: 'center'}}
+                  style={{
+                    width: 320,
+                    backgroundColor:
+                      useColorScheme() === 'dark' ? 'black' : 'white',
+                    // 'black',
+                    alignSelf: 'center',
+                  }}
                   mode={mode || 'date'}
                   locale={locale}
                   format="lll"
-                  display={"spinner"}
+                  display={'spinner'}
                   // maximumDate={
                   //   new Date(
                   //     date.getFullYear(),

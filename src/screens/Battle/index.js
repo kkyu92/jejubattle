@@ -35,6 +35,7 @@ export default function Battle(props) {
   const flatListRef = React.useRef();
   const [makeBattle, setMakeBattle] = React.useState(false);
 
+  const [bdCode, setBdCode] = React.useState(0);
   const [boCode, setBoCode] = React.useState(1);
   const [baCode, setBaCode] = React.useState(0);
   const [bmCode, setBmCode] = React.useState(0);
@@ -53,6 +54,7 @@ export default function Battle(props) {
         }
       } else {
         if (props.route.params.caCode === undefined) {
+          setBdCode(0);
           setBoCode(1);
           setBaCode(0);
           setBmCode(0);
@@ -61,6 +63,7 @@ export default function Battle(props) {
           setCaCode([]);
           get();
         } else {
+          setBdCode(props.route.params.bdCode);
           setBoCode(props.route.params.boCode);
           setBaCode(props.route.params.baCode);
           setBmCode(props.route.params.bmCode);
@@ -68,6 +71,7 @@ export default function Battle(props) {
           setBpCode(props.route.params.bpCode);
           setCaCode(props.route.params.caCode);
           get(
+            props.route.params.bdCode,
             props.route.params.boCode,
             props.route.params.baCode,
             props.route.params.bmCode,
@@ -94,12 +98,22 @@ export default function Battle(props) {
     }
   }, [pullToRefresh, props.route.params]);
 
-  const addGet = (page, boCode, baCode, bmCode, blCode, bpCode, caCode) => {
+  const addGet = (
+    page,
+    bdCode,
+    boCode,
+    baCode,
+    bmCode,
+    blCode,
+    bpCode,
+    caCode,
+  ) => {
     Axios.post(
       'battle',
       boCode === 3
         ? {
             pageNum: page,
+            bdCode,
             boCode,
             baCode,
             bmCode,
@@ -109,7 +123,16 @@ export default function Battle(props) {
             lat: global.address.coords.latitude,
             lon: global.address.coords.longitude,
           }
-        : {pageNum: page, boCode, baCode, bmCode, blCode, bpCode, caCode},
+        : {
+            pageNum: page,
+            bdCode,
+            boCode,
+            baCode,
+            bmCode,
+            blCode,
+            bpCode,
+            caCode,
+          },
     )
       .then(async (res) => {
         let battleList = res.data.battle;
@@ -124,6 +147,7 @@ export default function Battle(props) {
             boCode === 3
               ? {
                   pageNum: page + 1,
+                  bdCode,
                   boCode,
                   baCode,
                   bmCode,
@@ -135,6 +159,7 @@ export default function Battle(props) {
                 }
               : {
                   pageNum: page + 1,
+                  bdCode,
                   boCode,
                   baCode,
                   bmCode,
@@ -156,7 +181,7 @@ export default function Battle(props) {
       });
   };
 
-  const get = (boCode, baCode, bmCode, blCode, bpCode, caCode) => {
+  const get = (bdCode, boCode, baCode, bmCode, blCode, bpCode, caCode) => {
     if (caCode !== undefined) {
       if (caCode.length === 0) {
         console.log('length : 0');
@@ -168,6 +193,7 @@ export default function Battle(props) {
       'battle',
       boCode === 3
         ? {
+            bdCode,
             boCode,
             baCode,
             bmCode,
@@ -177,7 +203,7 @@ export default function Battle(props) {
             lat: global.address.coords.latitude,
             lon: global.address.coords.longitude,
           }
-        : {boCode, baCode, bmCode, blCode, bpCode, caCode},
+        : {bdCode, boCode, baCode, bmCode, blCode, bpCode, caCode},
     )
       .then((res) => {
         logApi('battle', res.data);
@@ -310,6 +336,7 @@ export default function Battle(props) {
           <TouchableOpacity
             onPress={() =>
               props.navigation.navigate('BattleFilter', {
+                bdCode,
                 boCode,
                 baCode,
                 bmCode,
@@ -350,7 +377,16 @@ export default function Battle(props) {
           if (!moredone) {
             console.log('more endReched!');
             setPage(page + 1);
-            addGet(page + 1, boCode, baCode, bmCode, blCode, bpCode, caCode);
+            addGet(
+              page + 1,
+              bdCode,
+              boCode,
+              baCode,
+              bmCode,
+              blCode,
+              bpCode,
+              caCode,
+            );
           } else {
             console.log('finish endReched!');
           }

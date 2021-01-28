@@ -69,7 +69,7 @@ export default function Search(props) {
               stickyIndex.push(0);
               temp.push({
                 faPk: 1000000000,
-                title: '운동시설',
+                title: '구기종목',
                 cnt: res.data.goji.length,
               });
               temp = temp.concat(res.data.goji);
@@ -296,7 +296,6 @@ export default function Search(props) {
           Platform.OS === 'ios' ? stickyHeaderIndices : undefined
         }
         ItemSeparatorComponent={(e) => {
-          console.log('ItemSeparatorComponent', e);
           if (e.leadingItem.title) {
             return null;
           } else {

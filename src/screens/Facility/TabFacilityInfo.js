@@ -12,7 +12,7 @@ import {screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {showToast} from '../../react-native-nuno-ui/funcs';
-import { FlatList } from 'react-native-gesture-handler';
+import {FlatList} from 'react-native-gesture-handler';
 
 export default function TabFacilityInfo(props) {
   console.log(JSON.stringify(props));
@@ -23,14 +23,6 @@ export default function TabFacilityInfo(props) {
           height={Math.floor((screenWidth - 180) / 4)}
           width={Math.floor((screenWidth - 180) / 4)}
           uri={item.icon}
-          onPress={() =>
-            props.navigation.navigate('FacilityList', {
-              title: '건강운동',
-              endpoint: 'healthList',
-              code: item.code,
-              tablist: sports2,
-            })
-          }
           resizeMode={'contain'}
         />
         <Seperator height={10} />
@@ -47,12 +39,12 @@ export default function TabFacilityInfo(props) {
             <Text text={'시설 정보'} fontSize={18} fontWeight={'bold'} />
           </View>
           <View style={{padding: 10}}>
-          <FlatList
-            data={props.data.feList}
-            keyExtractor={(item) => JSON.stringify(item.code)}
-            renderItem={renderItemHealth}
-            numColumns={4}
-          />
+            <FlatList
+              data={props.data.feList}
+              keyExtractor={(item) => JSON.stringify(item.code)}
+              renderItem={renderItemHealth}
+              numColumns={4}
+            />
           </View>
         </>
       )}

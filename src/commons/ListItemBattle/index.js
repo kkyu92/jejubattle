@@ -34,12 +34,19 @@ export default function ListItemBattle({
   const [password, setPassword] = React.useState('');
 
   const updateBattle = async (data) => {
-    await Axios.post('updateBattle', data)
+    // await Axios.post('updateBattle', data)
+    //   .then((res) => {
+    //     logApi('updateBattle', res.data);
+    //   })
+    //   .catch((err) => {
+    //     logApi('updateBattle error', err.response);
+    //   });
+    await Axios.post('updateTeam', data)
       .then((res) => {
-        logApi('updateBattle', res.data);
+        logApi('updateTeam', res.data);
       })
       .catch((err) => {
-        logApi('updateBattle error', err.response);
+        logApi('updateTeam error', err.response);
       });
   };
   const onPress = () => {
@@ -84,30 +91,55 @@ export default function ListItemBattle({
     }
   };
   const battleJoin = async () => {
-    if (item.teamA.member.length >= item.teamB.member.length) {
-      const team = {...item.teamB};
-      team.member.push({
-        userPk: context.me.userPk,
-        ready: 'N',
-        regdate: new Date(),
-        coinType: '',
+    let teamA = {};
+    let teamB = {};
+    await Axios.get(`getTeam/${item.baPk}`)
+      .then((res) => {
+        logApi('getTeam', res.data);
+        teamA = {...res.data.teamA};
+        teamB = {...res.data.teamB};
+        if (
+          teamA.member.filter((e) => e.userPk === context.me.userPk).length ===
+            0 &&
+          teamB.member.filter((e) => e.userPk === context.me.userPk).length ===
+            0
+        ) {
+          if (teamA.member.length >= teamB.member.length) {
+            updateBattle({team: 2, baPk: item.baPk});
+          } else {
+            updateBattle({team: 1, baPk: item.baPk});
+          }
+        }
+      })
+      .catch((err) => {
+        logApi('getTeam error', err.response);
       });
-      await updateBattle({baPk: item.baPk, teamB: team});
-    } else {
-      const team = {...item.teamA};
-      team.member.push({
-        userPk: context.me.userPk,
-        ready: 'N',
-        regdate: new Date(),
-        coinType: '',
-      });
-      await updateBattle({baPk: item.baPk, teamA: team});
-    }
+
+    // if (item.teamA.member.length >= item.teamB.member.length) {
+    //   const team = {...item.teamB};
+    //   team.member.push({
+    //     userPk: context.me.userPk,
+    //     ready: 'N',
+    //     regdate: new Date(),
+    //     coinType: '',
+    //   });
+    //   await updateBattle({baPk: item.baPk, teamB: team});
+    // } else {
+    //   const team = {...item.teamA};
+    //   team.member.push({
+    //     userPk: context.me.userPk,
+    //     ready: 'N',
+    //     regdate: new Date(),
+    //     coinType: '',
+    //   });
+    //   await updateBattle({baPk: item.baPk, teamA: team});
+    // }
     navigation.navigate('BattleView', {
       baPk: item.baPk,
       refresh: refresh,
       myBattle: myBattle,
     });
+    console.log(`userPk:: ${context.me.userPk}`);
   };
   return (
     <View keyboardShouldPersistTaps={'handled'}>

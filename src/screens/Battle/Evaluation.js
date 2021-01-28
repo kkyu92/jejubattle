@@ -32,6 +32,7 @@ import StarRating from 'react-native-star-rating';
 
 export default function Evaluation(props) {
   const context = React.useContext(AppContext);
+  const [loading, setLoading] = React.useState(false);
   const [getBaCode] = React.useState(props.route.params.info.baCode);
   const [gameResult, setGameResult] = React.useState(0);
   const [timeScope, setTimeScope] = React.useState(0);
@@ -55,13 +56,17 @@ export default function Evaluation(props) {
   }, [props.route?.params?.info, getBaCode]);
 
   const complete = async () => {
+    setLoading(true);
     const team =
       props.route.params.info.teamA.member.filter(
         (e) => e.userPk === context.me.userPk,
       ).length === 0
         ? 'teamA'
         : 'teamB';
-    const coords = getCurrentCoords();
+    const coords = await getCurrentCoords();
+    console.log(
+      `resultBattle > getCurrentCoords > lat : ${coords.latitude} || lon : ${coords.longitude}`,
+    );
     Axios.post('resultBattle', {
       baPk: props.route.params.info.baPk,
       [team]: {
@@ -97,6 +102,7 @@ export default function Evaluation(props) {
           props.navigation.goBack();
           showToast('평가를 완료했습니다.', 2000, 'center');
         }
+        setLoading(false);
       })
       .catch((err) => {
         if (err.response.status === 403) {
@@ -104,6 +110,7 @@ export default function Evaluation(props) {
         } else {
           logApi('resultBattle error', err.response);
         }
+        setLoading(false);
       });
   };
   let userProfileComponent = null;
@@ -252,6 +259,7 @@ export default function Evaluation(props) {
           onPress={() => complete()}
           color={custom.themeColor}
           disable={!timeScope || !playScope || !gameResult}
+          loading={loading}
           size={'large'}
           stretch
         />

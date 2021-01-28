@@ -19,6 +19,7 @@ import {screenWidth} from '../../styles';
 
 export default function BattleFilter(props) {
   const context = React.useContext(AppContext);
+  const [bdCode, setBdCode] = React.useState(props.route.params.bdCode);
   const [boCode, setBoCode] = React.useState(props.route.params.boCode);
   const [baCode, setBaCode] = React.useState(props.route.params.baCode);
   const [bmCode, setBmCode] = React.useState(props.route.params.bmCode);
@@ -42,7 +43,8 @@ export default function BattleFilter(props) {
       });
     console.log(props.route.params);
     console.log(
-      `정렬::: ${boCode}
+      `지난날짜보지않기::: ${bdCode}
+      \n정렬::: ${boCode}
       \n배틀상태::: ${baCode}
       \n게임형태::: ${bmCode}
       \n실력::: ${blCode}
@@ -69,6 +71,7 @@ export default function BattleFilter(props) {
     });
     console.log(JSON.stringify(code));
     props.navigation.navigate('Battle', {
+      bdCode,
       boCode,
       baCode,
       bmCode,
@@ -79,6 +82,7 @@ export default function BattleFilter(props) {
     });
   };
   const reset = () => {
+    setBdCode(0);
     setBoCode(1);
     setBaCode(0);
     setBmCode(0);
@@ -107,6 +111,19 @@ export default function BattleFilter(props) {
       />
       <ScrollView>
         <View style={{padding: 20}}>
+          <Seperator height={20} />
+          <Text text={'날짜 필터'} fontWeight={'bold'} fontSize={18} />
+          <Seperator height={10} />
+          <HView style={{flexWrap: 'wrap'}}>
+            <View style={{paddingVertical: 10, paddingRight: 20}}>
+              <Checkbox
+                label={'지난날짜 보지않기'}
+                checked={bdCode === 1}
+                onPress={() => setBdCode(1)}
+              />
+            </View>
+          </HView>
+
           <Seperator height={20} />
           <Text text={'정렬'} fontWeight={'bold'} fontSize={18} />
           <Seperator height={10} />

@@ -154,12 +154,12 @@ export default function MyInfo(props) {
             <Text text={'전적'} fontWeight={'bold'} fontSize={18} />
           </View>
           <Seperator height={30} />
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
+          <View style={{paddingHorizontal: 5, paddingVertical: 5}}>
             <HView>
               <View style={{flex: 0.3}}>
                 <Text
                   text={'종합전적'}
-                  fontSize={16}
+                  fontSize={14}
                   fontWeight={'bold'}
                   color={'dimgray'}
                 />
@@ -169,18 +169,18 @@ export default function MyInfo(props) {
                   text={
                     totalMatch + '전 ' + totalWin + '승 ' + totalLose + '패'
                   }
-                  fontSize={16}
+                  fontSize={14}
                   color={'dimgray'}
                 />
               </View>
             </HView>
           </View>
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
+          <View style={{paddingHorizontal: 5, paddingVertical: 5}}>
             <HView>
               <View style={{flex: 0.3}}>
                 <Text
                   text={'전체승률'}
-                  fontSize={16}
+                  fontSize={14}
                   fontWeight={'bold'}
                   color={'dimgray'}
                 />
@@ -188,35 +188,35 @@ export default function MyInfo(props) {
               <View style={{flex: 0.7}}>
                 <Text
                   text={totalWinRate + '%'}
-                  fontSize={16}
+                  fontSize={14}
                   color={'dimgray'}
                 />
               </View>
             </HView>
           </View>
           <Seperator height={30} />
-          <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
+          <View style={{paddingHorizontal: 5, paddingVertical: 5}}>
             <Text
               text={'세부전적'}
-              fontSize={16}
+              fontSize={14}
               fontWeight={'bold'}
               color={'dimgray'}
             />
           </View>
 
           {detailList.length == 0 ? (
-            <View style={{paddingHorizontal: 20, paddingVertical: 5}}>
+            <View style={{paddingHorizontal: 5, paddingVertical: 5}}>
               <HView>
                 <View style={{flex: 0.3}}>
                   <Text
                     text={'전적없음'}
-                    fontSize={16}
+                    fontSize={14}
                     fontWeight={'bold'}
                     color={'dimgray'}
                   />
                 </View>
                 <View style={{flex: 0.7}}>
-                  <Text text={'0전 0승 0패'} fontSize={16} color={'dimgray'} />
+                  <Text text={'0전 0승 0패'} fontSize={14} color={'dimgray'} />
                 </View>
               </HView>
             </View>
@@ -224,18 +224,18 @@ export default function MyInfo(props) {
             detailList.map((e) => {
               return (
                 <View
-                  style={{paddingHorizontal: 20, paddingVertical: 5}}
+                  style={{paddingHorizontal: 5, paddingVertical: 5}}
                   key={e.name}>
                   <HView>
-                    <View style={{flex: 0.3}}>
+                    <View style={{flex: 0.25}}>
                       <Text
                         text={e.name}
-                        fontSize={16}
+                        fontSize={14}
                         fontWeight={'bold'}
                         color={'dimgray'}
                       />
                     </View>
-                    <View style={{flex: 0.7}}>
+                    <View style={{flex: 0.75}}>
                       <Text
                         text={
                           e.ago +
@@ -248,7 +248,7 @@ export default function MyInfo(props) {
                           ((e.win / e.ago) * 100).toFixed(1) +
                           '%'
                         }
-                        fontSize={16}
+                        fontSize={14}
                         color={'dimgray'}
                       />
                     </View>

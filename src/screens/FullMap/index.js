@@ -61,13 +61,21 @@ export default function FullMap(props) {
   const [itemCode, setItemCode] = React.useState(0);
   const [typeCode, setTypeCode] = React.useState(0);
 
+  const [sendCategory, setSendCategory] = React.useState();
   const [sendSubject, setSendSubject] = React.useState([]);
   const [sendType, setSendType] = React.useState([]);
 
   const DEFAULT_BAPK = 195;
 
   React.useEffect(() => {
-    let caCode, clCode;
+    let category, caCode, clCode;
+    if (props.route.params?.selectedCategory) {
+      console.log(
+        `selected category : ${props.route.params?.selectedCategory}`,
+      );
+      category = props.route.params.selectedCategory;
+      setSendCategory(category);
+    }
     if (props.route.params?.itemList) {
       console.log('selected item : ' + props.route.params.itemList);
       caCode = props.route.params.itemList;
@@ -350,18 +358,25 @@ export default function FullMap(props) {
       .then((res) => {
         logApi('aroundme', res.data);
         console.log(keyword);
-        console.log(ca);
-        console.log(cl);
-        if (res.data.length === 0) {
-          showToast('주변에 등록된 장소가 없습니다.', 2000, 'center');
+        console.log(`ca ${JSON.stringify(ca)}`);
+        console.log(`cl ${cl}`);
+        if (
+          keyword === '' &&
+          (JSON.stringify(ca) === '[]' || ca === undefined) &&
+          (JSON.stringify(cl) === '[]' || cl === undefined)
+        ) {
         } else {
-          const temp = res.data.map((e) => ({
-            ...e,
-            coords: {latitude: e.faLat, longitude: e.faLon},
-            title: e.faName,
-            // markerComponent: require('../../../assets/img/icon-mylocation.png'),
-          }));
-          setResult(temp);
+          if (res.data.length === 0) {
+            showToast('주변에 등록된 장소가 없습니다.', 2000, 'center');
+          } else {
+            const temp = res.data.map((e) => ({
+              ...e,
+              coords: {latitude: e.faLat, longitude: e.faLon},
+              title: e.faName,
+              // markerComponent: require('../../../assets/img/icon-mylocation.png'),
+            }));
+            setResult(temp);
+          }
         }
       })
       .catch((err) => {
@@ -520,8 +535,11 @@ export default function FullMap(props) {
                 mapReady === 'aroundme'
                   ? props.navigation.navigate('FullMapFilterAll', {
                       mapReady: mapReady,
+                      category: sendCategory,
                       caCode: caCode,
                       clCode: clCode,
+                      selectCa: sendSubject.length === 0 ? caCode : sendSubject,
+                      selectCl: sendType.length === 0 ? clCode : sendType,
                       healthCode: healthCode,
                       eatCode: eatCode,
                       viewCode: viewCode,

@@ -17,6 +17,7 @@ export default function Checkbox({
   disabled,
   customChecked,
   customUnChecked,
+  labelPress,
 }) {
   let iconChecked, iconUnchecked, labelSize, iconSize;
   switch (size) {
@@ -65,7 +66,23 @@ export default function Checkbox({
     );
   }
 
-  return (
+  return labelPress ? (
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <TouchableOpacity onPress={onPress}>
+        {checked ? iconChecked : iconUnchecked}
+      </TouchableOpacity>
+      {label && (
+        <TouchableOpacity onPress={labelPress} style={{marginLeft: 6}}>
+          <Text
+            fontSize={labelSize}
+            fontWeight={fontWeight ? fontWeight : checked ? 'bold' : '300'}
+            color={disabled || !checked ? 'gray' : labelColor || 'dimgray'}
+            text={label}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
+  ) : (
     <TouchableOpacity
       onPress={onPress}
       style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -82,4 +99,4 @@ export default function Checkbox({
       )}
     </TouchableOpacity>
   );
-};
+}

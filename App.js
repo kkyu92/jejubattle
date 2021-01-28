@@ -14,7 +14,10 @@ import {
   Platform,
   Alert,
   BackHandler,
+  StatusBar,
+  Linking,
 } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './src/navigations/RootNavigation';
@@ -85,8 +88,10 @@ export default function App() {
     // await registerAppWithFCM(); // auto registration firebase.json
     await fcmService.requestPermission();
     await fcmService.getFcmToken();
+    // if (Platform.OS === 'android') {
     await Init();
     await getPush();
+    // }
     // await locationInit();
     if (global.token) {
       await Axios.post('getme', {})
@@ -206,8 +211,8 @@ export default function App() {
                 logApi('getPay error', err.response);
               });
           } else if (notify.screen === 'battlechat') {
-            console.log(`appStateVisible: ${appStateVisible}`)
-            console.log(`appState: ${appState.current}`)
+            console.log(`appStateVisible: ${appStateVisible}`);
+            console.log(`appState: ${appState.current}`);
             // chat msg
             if (baPk === '0') {
               // 배틀방이 아님
@@ -224,8 +229,8 @@ export default function App() {
                 options,
               );
             } else if (
-              (baPk === notify.baPk ||
-              baPk === JSON.stringify(notify.baPk)) && appState.current === 'active'
+              (baPk === notify.baPk || baPk === JSON.stringify(notify.baPk)) &&
+              appState.current === 'active'
             ) {
               console.log('해당 배틀방 화면');
             } else {
@@ -427,27 +432,63 @@ export default function App() {
         });
       })
       .catch((err) => {
-        logApi('getPush error', err.response);
+        logApi('getPush error', err);
       });
   };
 
-  const handleAppState = (newState) => {
+  const handleAppState = async (newState) => {
     appState.current = newState;
     setAppStateVisible(appState.current);
 
     if (newState === 'active') {
-      console.log('state::: '+newState);
+      console.log('state::: ' + newState);
       console.log(JSON.stringify(appState));
       global.fcmToken && getPush();
+      // if (Platform.OS === 'ios') {
+      //   let getLocationPermission = await AsyncStorage.getItem(
+      //     'locationPermission',
+      //   );
+      //   let locationPermission = await Geolocation.requestAuthorization(
+      //     'whenInUse',
+      //   );
+      //   console.log(`getLocationPermission : ${getLocationPermission}`);
+      //   console.log(`locationPermission : ${locationPermission}`);
+      //   console.log(`ready : ${ready}`);
+      //   if (locationPermission !== 'granted') {
+      //     console.log('거부 --> 거부 ' + getLocationPermission);
+      //     // await RNBootSplash.hide({duration: 500});
+      //     // if (getLocationPermission) {
+      //     //   await Init();
+      //     // }
+      //     // await getPush();
+      //     // await RNBootSplash.hide({duration: 500});
+      //     await AsyncStorage.setItem('locationPermission', locationPermission);
+      //     // await AuthStackScreen.navigate('Login', {});
+      //   } else if (getLocationPermission !== locationPermission) {
+      //     console.log('거부 --> 허용 ' + getLocationPermission);
+      //     await Init();
+      //     await getPush();
+      //     await AsyncStorage.setItem('locationPermission', locationPermission);
+      //   } else {
+      //     console.log('허용 --> 허용 ' + getLocationPermission);
+      //     await Init();
+      //     await getPush();
+      //     await AsyncStorage.setItem('locationPermission', locationPermission);
+      //   }
+      // }
     } else if (newState === 'background') {
-      console.log('state::: '+newState);
+      console.log('state::: ' + newState);
       console.log(JSON.stringify(appState));
     } else {
-      console.log('state::: '+newState);
+      console.log('state::: ' + newState);
       console.log(JSON.stringify(appState));
     }
   };
-
+  const openSetting = () => {
+    Linking.openSettings().catch(() => {
+      Alert.alert('Unable to open settings');
+    });
+  };
   const handleRoute = (getUrl) => {
     let url;
     if (getUrl.url) {
@@ -482,11 +523,25 @@ export default function App() {
   console.groupEnd();
 
   if (!ready) {
-    return null;
+    return (
+      <NavigationContainer theme={theme} ref={navigationRef}>
+        {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+        <AppContext.Provider value={{...state, dispatch}}>
+          <Stack.Navigator headerMode="none">
+            {state.me?.userPk ? (
+              <Stack.Screen name="App" component={AppStackScreen} />
+            ) : (
+              <Stack.Screen name="Auth" component={AuthStackScreen} />
+            )}
+          </Stack.Navigator>
+        </AppContext.Provider>
+      </NavigationContainer>
+    );
   }
 
   return (
     <NavigationContainer theme={theme} ref={navigationRef}>
+      {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
       <AppContext.Provider value={{...state, dispatch}}>
         <Stack.Navigator headerMode="none">
           {state.me?.userPk ? (

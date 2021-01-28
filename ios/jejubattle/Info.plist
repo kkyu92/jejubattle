@@ -51,6 +51,12 @@
 	<string>277258110177997</string>
 	<key>FacebookDisplayName</key>
 	<string>jejubattle</string>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://jejubattle.com/event</string>
+		<string>https://jejubattle.com/facility</string>
+		<string>https://jejubattle.com/tourinfo</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>KAKAO_APP_KEY</key>
@@ -134,6 +140,8 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

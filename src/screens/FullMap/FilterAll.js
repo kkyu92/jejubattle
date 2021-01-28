@@ -23,12 +23,11 @@ import ListItem from '../../commons/ListItem';
 const actionSheetRef = React.createRef();
 
 export default function FullMapFilterAll(props) {
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [mapReady] = React.useState(props.route?.params?.mapReady);
 
   const [sports] = React.useState(props.route?.params?.caCode);
   const [clCode] = React.useState(props.route?.params?.clCode);
-  const [selectedClCode, setSelectedClCode] = React.useState([]);
   const [health] = React.useState(props.route?.params?.healthCode);
   const [eat] = React.useState(props.route?.params?.eatCode);
   const [view] = React.useState(props.route?.params?.viewCode);
@@ -45,22 +44,72 @@ export default function FullMapFilterAll(props) {
     {code: 5, name: '건강운동'},
   ]);
   const [selectedCategory, setSelectedCategory] = React.useState([]);
+  const [selectedCaCode, setSelectedCaCode] = React.useState(
+    props.route?.params?.selectCa,
+  );
+  const [selectedClCode, setSelectedClCode] = React.useState(
+    props.route?.params?.selectCl,
+  );
   const [item, setItem] = React.useState([]);
-  const [selectedItem, setSelectedItem] = React.useState([]);
   const [type, setType] = React.useState([]);
-  const [selectedType, setSelectedType] = React.useState([]);
 
-  React.useState(() => {
-    setLoading(false);
-  }, []);
   React.useEffect(() => {
-    console.log('selected category');
+    setLoading(true);
+    console.log(`get`);
     setCheckAll(false);
     setCheckAll2(false);
-    setSelectedItem([]);
-    setSelectedClCode([]);
-    if (selectedCategory.length !== 0) {
-      setLoading(true);
+    if (props.route?.params?.category) {
+      console.log(`get category ::: ${props.route?.params?.category}`);
+      console.log(`get caCode ::: ${selectedCaCode}`);
+      console.log(`get clCode ::: ${selectedClCode}`);
+      const category = props.route?.params?.category;
+      setSelectedCategory(category);
+
+      console.log(`selectedCaCode1 : ${selectedCaCode}`);
+    } else {
+      console.log(`init`);
+      setSelectedCaCode([]);
+      setSelectedClCode([]);
+    }
+  }, [props.route?.params?.category]);
+  React.useEffect(() => {
+    setLoading(true);
+    if (
+      selectedCategory.length !== 0 &&
+      props.route?.params?.category?.length !== 0 &&
+      selectedCategory === props.route?.params?.category
+    ) {
+      // get ca, cl setting
+      if (selectedCategory[0] === 1) {
+        setItem(eat);
+        setType();
+      } else if (selectedCategory[0] === 2) {
+        setItem(view);
+        setType();
+      } else if (selectedCategory[0] === 3) {
+        setItem(play);
+        setType();
+      } else if (selectedCategory[0] === 4) {
+        setItem(sports);
+        setType(clCode);
+      } else if (selectedCategory[0] === 5) {
+        setItem(health);
+        setType();
+      } else {
+        console.log(selectedCategory);
+        showToast('또 뭔 카테고리 추가?', 2000, 'center');
+      }
+      setSelectedCaCode(props.route?.params?.selectCa);
+      setSelectedClCode(props.route?.params?.selectCl);
+      setLoading(false);
+    } else if (
+      selectedCategory.length !== 0 &&
+      props.route?.params?.category?.length !== 0 &&
+      selectedCategory !== props.route?.params?.category
+    ) {
+      // category change
+      setSelectedCaCode([]);
+      setSelectedClCode([]);
       if (selectedCategory[0] === 1) {
         setItem(eat);
         setType();
@@ -81,6 +130,9 @@ export default function FullMapFilterAll(props) {
         showToast('또 뭔 카테고리 추가?', 2000, 'center');
       }
       setLoading(false);
+    } else {
+      // noState
+      setLoading(false);
     }
   }, [selectedCategory]);
 
@@ -90,14 +142,14 @@ export default function FullMapFilterAll(props) {
     setSelectedCategory(temp);
   };
   const handleItemsButton = (e) => {
-    const temp = [...selectedItem];
+    const temp = [...selectedCaCode];
     const found = temp.indexOf(e);
     if (found === -1) {
       temp.push(e);
     } else {
       temp.splice(found, 1);
     }
-    setSelectedItem(temp);
+    setSelectedCaCode(temp);
   };
   const handleClCodeButton = (e) => {
     const temp = [...selectedClCode];
@@ -113,9 +165,9 @@ export default function FullMapFilterAll(props) {
   React.useEffect(() => {
     if (checkAll) {
       const temp = [...item.map((e) => e.code)];
-      setSelectedItem(temp);
+      setSelectedCaCode(temp);
     } else {
-      setSelectedItem([]);
+      setSelectedCaCode([]);
     }
   }, [checkAll]);
   React.useEffect(() => {
@@ -186,7 +238,7 @@ export default function FullMapFilterAll(props) {
                       paddingVertical={15}
                       size={'medium'}
                       color={
-                        selectedItem.indexOf(e.code) === -1
+                        selectedCaCode.indexOf(e.code) === -1
                           ? 'white'
                           : custom.themeColor
                       }
@@ -246,7 +298,8 @@ export default function FullMapFilterAll(props) {
           text={'설정하기'}
           onPress={() =>
             props.navigation.navigate('FullMap', {
-              itemList: selectedItem,
+              selectedCategory: selectedCategory,
+              itemList: selectedCaCode,
               typeList: selectedClCode,
             })
           }

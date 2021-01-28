@@ -1,5 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {
   Container,
   Text,
@@ -16,14 +17,14 @@ import {screenHeight, screenWidth} from '../../react-native-nuno-ui/style';
 
 export default function FindBattle() {
   return (
-    <View style={{padding: 20}}>
+    <ScrollView style={{padding: 20}}>
       <Image
         local
-        uri={require('../../../assets/img/img-guide-findbattle1.png')}
+        uri={require('../../../assets/img/img_guide_findbattle1.png')}
         height={Math.floor(screenWidth * 2 - 130)}
         width={Math.floor(screenWidth - 40)}
         resizeMode={'contain'}
       />
-    </View>
+    </ScrollView>
   );
 }

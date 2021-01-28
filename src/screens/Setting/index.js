@@ -62,7 +62,7 @@ export default function Setting(props) {
         logApi('signout error : ' + e);
       });
     await AsyncStorage.removeItem('token');
-    await Init();
+    // await Init();
     context.dispatch({type: 'UNAUTHORIZED'});
     setLoading(false);
   };
@@ -80,7 +80,7 @@ export default function Setting(props) {
         logApi('delete user error : ' + e);
       });
     await AsyncStorage.removeItem('token');
-    await Init();
+    // await Init();
     context.dispatch({type: 'UNAUTHORIZED'});
     setLoading(false);
   };

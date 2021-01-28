@@ -225,7 +225,7 @@ export default function FacilityView(props) {
         navigation={props.navigation}
         // containerStyle={{borderBottomWidth: 0}}
       />
-      <ScrollView>
+      <ScrollView scrollIndicatorInsets={{right: 1}}>
         <View>
           <ImageCarousel
             data={facilityImgList.map((e) => e.fileUrl)}

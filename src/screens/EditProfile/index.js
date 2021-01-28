@@ -9,6 +9,7 @@ import {
   TextInput,
   Button,
   Modal,
+  Checkbox,
 } from '../../react-native-nuno-ui';
 import {
   View,
@@ -35,7 +36,11 @@ export default function EditProfile(props) {
   const context = React.useContext(AppContext);
   const [photo, setPhoto] = React.useState('');
   const [introduce, setIntroduce] = React.useState(context.me.userIntro || '');
+  const [nickName, setNickName] = React.useState(context.me.userName || '');
+  const [gender, setGender] = React.useState(context.me.userSex || '');
   const [introduceModal, setIntroduceModal] = React.useState('');
+  const [nickNameModal, setNickNameModal] = React.useState('');
+  const [genderModal, setGenderModal] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
   const [currentPassword, setCurrentPassword] = React.useState('');
   const [passwordModal, setPasswordModal] = React.useState('');
@@ -45,6 +50,8 @@ export default function EditProfile(props) {
     context.me.userSport || [],
   );
   const [modalIntroduce, setModalIntroduce] = React.useState(false);
+  const [modalNickName, setModalNickName] = React.useState(false);
+  const [modalGender, setModalGender] = React.useState(false);
   const [modalPassword, setModalPassword] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -54,13 +61,16 @@ export default function EditProfile(props) {
       provider = '없음';
       break;
     case 2:
-      provider = '연동완료(네이버)';
+      provider = '연동완료 (네이버)';
       break;
     case 3:
-      provider = '연동완료(카카오)';
+      provider = '연동완료 (카카오)';
       break;
     case 4:
-      provider = '연동완료(페이스북)';
+      provider = '연동완료 (페이스북)';
+      break;
+    case 5:
+      provider = '연동완료 (애플)';
       break;
   }
   React.useEffect(() => {
@@ -137,6 +147,8 @@ export default function EditProfile(props) {
     const formData = new FormData();
     newPassword && formData.append('userPwd', newPassword);
     introduce && formData.append('userIntro', introduce);
+    nickName && formData.append('userName', nickName);
+    gender && formData.append('userSex', gender);
     formData.append('userSport', JSON.stringify(selectedSports));
     if (photo) {
       const response = await fetch(photo);
@@ -219,26 +231,38 @@ export default function EditProfile(props) {
               />
             )}
           </HView>
-          <HView style={{paddingVertical: 30}}>
+          <Seperator height={20} />
+          <HView style={{paddingVertical: 10, alignItems: 'center'}}>
             <View style={{flex: 0.2}}>
-              <Text text={'이름'} fontSize={18} fontWeight={'500'} />
+              <Text text={'닉네임'} fontSize={18} fontWeight={'500'} />
             </View>
-            <View style={{flex: 0.8}}>
+            <View style={{flex: 0.7}}>
               <Text
-                text={context.me.userName}
+                text={nickName}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
               />
             </View>
+            <View style={{flex: 0.1, alignItems: 'flex-end'}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setNickNameModal(nickName);
+                  setModalNickName(true);
+                }}>
+                <Icons name={'icon-pencil-12'} size={16} />
+              </TouchableOpacity>
+            </View>
           </HView>
+          <Seperator line />
+
           <HView style={{paddingVertical: 10}}>
             <View style={{flex: 0.2}}>
               <Text text={'전화번호'} fontSize={18} fontWeight={'500'} />
             </View>
             <View style={{flex: 0.8}}>
               <Text
-                text={context.me.userPhone}
+                text={context.me.userPhone || '인증안함'}
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
@@ -254,20 +278,23 @@ export default function EditProfile(props) {
               />
             </View> */}
           </HView>
+          <Seperator line />
+
           {context.me.userCode === 1 && (
-            <HView style={{paddingVertical: 10}}>
-              <View style={{flex: 0.2}}>
-                <Text text={'이메일'} fontSize={18} fontWeight={'500'} />
-              </View>
-              <View style={{flex: 0.8}}>
-                <Text
-                  text={context.me.userId}
-                  color={'gray'}
-                  fontSize={18}
-                  fontWeight={'500'}
-                />
-              </View>
-              {/* <View style={{flex: 0.2}}>
+            <>
+              <HView style={{paddingVertical: 10}}>
+                <View style={{flex: 0.2}}>
+                  <Text text={'이메일'} fontSize={18} fontWeight={'500'} />
+                </View>
+                <View style={{flex: 0.8}}>
+                  <Text
+                    text={context.me.userId}
+                    color={'gray'}
+                    fontSize={18}
+                    fontWeight={'500'}
+                  />
+                </View>
+                {/* <View style={{flex: 0.2}}>
                 <Button
                   text={'인증'}
                   size={'medium'}
@@ -276,37 +303,55 @@ export default function EditProfile(props) {
                   stretch
                 />
               </View> */}
-            </HView>
+              </HView>
+              <Seperator line />
+            </>
           )}
-          <HView style={{paddingVertical: 10}}>
+
+          <HView style={{paddingVertical: 10, alignItems: 'center'}}>
             <View style={{flex: 0.2}}>
               <Text text={'성별'} fontSize={18} fontWeight={'500'} />
             </View>
-            <View style={{flex: 0.8}}>
+            <View style={{flex: 0.7}}>
               <Text
-                text={context.me.userSex === 'M' ? '남성' : '여성'}
+                text={
+                  gender === 'M' ? '남성' : gender === 'F' ? '여성' : '미정'
+                }
                 color={'gray'}
                 fontSize={18}
                 fontWeight={'500'}
               />
             </View>
+            <View style={{flex: 0.1, alignItems: 'flex-end'}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setGenderModal(gender);
+                  setModalGender(true);
+                }}>
+                <Icons name={'icon-pencil-12'} size={16} />
+              </TouchableOpacity>
+            </View>
           </HView>
+          <Seperator line />
           {context.me.userCode !== 1 && (
-            <HView style={{paddingVertical: 10}}>
-              <View style={{flex: 0.2}}>
-                <Text text={'SNS연동'} fontSize={18} fontWeight={'500'} />
-              </View>
-              <View style={{flex: 0.8}}>
-                <Text
-                  text={provider}
-                  color={'gray'}
-                  fontSize={18}
-                  fontWeight={'500'}
-                />
-              </View>
-            </HView>
+            <>
+              <HView style={{paddingVertical: 10}}>
+                <View style={{flex: 0.2}}>
+                  <Text text={'SNS'} fontSize={18} fontWeight={'500'} />
+                </View>
+                <View style={{flex: 0.8}}>
+                  <Text
+                    text={provider}
+                    color={'gray'}
+                    fontSize={18}
+                    fontWeight={'500'}
+                  />
+                </View>
+              </HView>
+              <Seperator line />
+            </>
           )}
-          <HView style={{paddingVertical: 10, alignItems: 'flex-start'}}>
+          <HView style={{paddingVertical: 10, alignItems: 'center'}}>
             <View style={{flex: 0.2}}>
               <Text text={'소개'} fontSize={18} fontWeight={'500'} />
             </View>
@@ -328,21 +373,26 @@ export default function EditProfile(props) {
               </TouchableOpacity>
             </View>
           </HView>
+          <Seperator line />
+
           {context.me.userCode === 1 && (
-            <HView style={{paddingVertical: 10}}>
-              <View style={{flex: 0.2}}>
-                <Text text={'비밀번호'} fontSize={18} fontWeight={'500'} />
-              </View>
-              <View style={{flex: 0.8}}>
-                <Button
-                  text={'비밀번호 변경'}
-                  size={'medium'}
-                  borderRadius={20}
-                  color={custom.themeColor}
-                  onPress={() => setModalPassword(true)}
-                />
-              </View>
-            </HView>
+            <>
+              <HView style={{paddingVertical: 10}}>
+                <View style={{flex: 0.2}}>
+                  <Text text={'비밀번호'} fontSize={18} fontWeight={'500'} />
+                </View>
+                <View style={{flex: 0.8}}>
+                  <Button
+                    text={'비밀번호 변경'}
+                    size={'medium'}
+                    borderRadius={20}
+                    color={custom.themeColor}
+                    onPress={() => setModalPassword(true)}
+                  />
+                </View>
+              </HView>
+              <Seperator line />
+            </>
           )}
 
           <Seperator height={40} />
@@ -374,6 +424,130 @@ export default function EditProfile(props) {
         />
       </HView>
       <Seperator bottom />
+      {/* 닉네임변경 */}
+      <Modal
+        isVisible={modalNickName}
+        onBackdropPress={() => setModalNickName(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+          }}>
+          <View style={{alignItems: 'center'}}>
+            <Text
+              fontSize={18}
+              fontWeight={'bold'}
+              color={'black'}
+              text={'닉네임 변경'}
+            />
+          </View>
+          <Seperator height={50} />
+          <View>
+            <TextInput
+              multiline={false}
+              maxLength={20}
+              showRemain={true}
+              value={nickNameModal}
+              onChangeText={(e) => setNickNameModal(e)}
+              placeholder={'최대 20자 까지 작성 가능합니다.'}
+            />
+          </View>
+          <Seperator height={20} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setModalNickName(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'완료'}
+                color={custom.themeColor}
+                onPress={() => {
+                  setNickName(nickNameModal);
+                  setModalNickName(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
+      {/* 성별변경 */}
+      <Modal
+        isVisible={modalGender}
+        onBackdropPress={() => setModalGender(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+          }}>
+          <View style={{alignItems: 'center'}}>
+            <Text
+              fontSize={18}
+              fontWeight={'bold'}
+              color={'black'}
+              text={'성별 변경'}
+            />
+          </View>
+          <Seperator height={50} />
+          <HView style={{flexWrap: 'wrap'}}>
+            <View style={{paddingVertical: 10, paddingRight: 20}}>
+              <Checkbox
+                label={'남성'}
+                checked={genderModal === 'M'}
+                onPress={() => setGenderModal('M')}
+              />
+            </View>
+            <View style={{paddingVertical: 10, paddingRight: 20}}>
+              <Checkbox
+                label={'여성'}
+                checked={genderModal === 'F'}
+                onPress={() => setGenderModal('F')}
+              />
+            </View>
+          </HView>
+
+          <Seperator height={20} />
+          <HView>
+            <View style={{flex: 1}}>
+              <Button
+                text={'취소'}
+                color={'gray'}
+                onPress={() => {
+                  setGenderModal(gender);
+                  setModalGender(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+            <Seperator width={20} />
+            <View style={{flex: 1}}>
+              <Button
+                text={'완료'}
+                color={custom.themeColor}
+                onPress={() => {
+                  setGender(genderModal);
+                  setModalGender(false);
+                }}
+                size={'large'}
+                stretch
+              />
+            </View>
+          </HView>
+        </View>
+      </Modal>
       {/* 소개작성 */}
       <Modal
         isVisible={modalIntroduce}

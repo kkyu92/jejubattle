@@ -71,6 +71,11 @@ static void InitializeFlipper(UIApplication *application) {
   center.delegate = self;
   
   [[NaverThirdPartyLoginConnection getSharedInstance] setIsInAppOauthEnable:YES];
+
+  // // datetimepicker darkmode
+  // if (@available(iOS 13, *)) {
+  //   self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+  // }
   return YES;
 }
 

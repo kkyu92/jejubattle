@@ -51,9 +51,9 @@ export default function BattleEdit(props) {
         logApi('getBattleEtc error', err.response);
       });
   }, []);
-  const save = () => {
-    setLoading(true);
-    Axios.post('insertBattle', {
+  const save = async () => {
+    await setLoading(true);
+    await Axios.post('insertBattle', {
       baSubject: name,
       baPwd: password,
       bcCode: sports,
@@ -207,7 +207,9 @@ export default function BattleEdit(props) {
           text={'등록완료'}
           onPress={save}
           color={custom.themeColor}
-          disable={!name || !sports || !region || !type || !date || !level}
+          disable={
+            !name || !sports || !region || !type || !date || !level || loading
+          }
           loading={loading}
           size={'large'}
           stretch

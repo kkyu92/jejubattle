@@ -33,7 +33,7 @@ export default function Archive(props) {
     Axios.post('locker', {pageNum: 1})
       .then((res) => {
         logApi('getArchive', res.data);
-        res.data.length < 9 ? setMoredone(true) : setPage(page + 1);
+        res.data.length < 9 ? setMoredone(true) : moreArchive();
         setArchive(
           res.data.map((f) => ({
             ...f,
@@ -50,7 +50,7 @@ export default function Archive(props) {
       });
   };
   const moreArchive = () => {
-    Axios.post('locker', {pageNum: page}).then((res) => {
+    Axios.post('locker', {pageNum: page + 1}).then((res) => {
       logApi('moreArchive', res.data);
       res.data.length < 9 ? setMoredone(true) : setPage(page + 1);
       const temp = res.data.map((f) => ({

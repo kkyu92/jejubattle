@@ -25,6 +25,7 @@ class FCMService {
       console.log('authorizationStatus', authorizationStatus);
       console.groupEnd();
     } else {
+      // 알림권한 허용안함
       console.groupCollapsed('[Messaging Permission Denied]');
       console.log('authorizationStatus', authorizationStatus);
       console.groupEnd();

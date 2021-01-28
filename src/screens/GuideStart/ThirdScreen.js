@@ -44,7 +44,7 @@ export default function FirstScreen({navigation}) {
       />
       <Text
         onPress={async () => {
-          await AsyncStorage.setItem('apepStartGuide', JSON.stringify(true));
+          await AsyncStorage.setItem('appStartGuide', JSON.stringify(true));
           global.appStartGuide = true;
           navigation.navigate('Home', {pop: true});
         }}

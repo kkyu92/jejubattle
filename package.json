@@ -88,6 +88,7 @@
     "redux": "^4.0.5",
     "sockjs-client": "^1.5.0",
     "stompjs": "^2.3.3",
+    "unique-names-generator": "^4.3.1",
     "yarn": "^1.22.4"
   },
   "devDependencies": {

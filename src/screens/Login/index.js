@@ -10,12 +10,19 @@ import {
   Modal,
   Checkbox,
 } from '../../react-native-nuno-ui';
-import {View, Alert, Platform, Linking, StyleSheet} from 'react-native';
+import {
+  View,
+  Alert,
+  Platform,
+  Linking,
+  StyleSheet,
+  PermissionsAndroid,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {listenToKeyboardEvents} from 'react-native-keyboard-aware-scroll-view';
 // import {ScrollView} from 'react-native';
-
-import {custom} from '../../config';
+import Geolocation from 'react-native-geolocation-service';
+import {custom, API_URL} from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {screenWidth} from '../../styles';
 import Axios from 'axios';
@@ -57,6 +64,19 @@ export default function Login(props) {
   // const [hidePermissionAlert, setHidePermissionAlert] = React.useState(
   //   global.hidePermissionAlert,
   // );
+  const {
+    uniqueNamesGenerator,
+    adjectives,
+    colors,
+    animals,
+  } = require('unique-names-generator');
+  // const randomName = uniqueNamesGenerator({
+  //   dictionaries: [adjectives, colors, animals],
+  // }); // big_red_donkey
+  const shortName = uniqueNamesGenerator({
+    dictionaries: [adjectives, animals, colors], // colors can be omitted here as not used
+    length: 2,
+  }); // big-donkey
 
   let user = null;
   const [credentialStateForUser, updateCredentialStateForUser] = React.useState(
@@ -94,17 +114,20 @@ export default function Login(props) {
       fetchAndUpdateCredentialState(
         updateCredentialStateForUser,
       ).catch((error) => updateCredentialStateForUser(`Error: ${error.code}`));
-      // Alert.alert(
-      //   'get apple info\n아직 미구현\n\n',
-      //   JSON.stringify(appleAuthRequestResponse),
-      // );
       console.warn(`Apple Authentication Completed, ${user}, ${email}`);
       if (email === null) {
         var decoded = jwt_decode(identityToken);
-        console.log(JSON.stringify(decoded));
+        console.log('decoded:: ' + JSON.stringify(decoded));
         email = decoded.email;
       }
-      startWithSNS(user, email, 5);
+      startWithSNS(
+        user,
+        email,
+        5,
+        appleAuthRequestResponse.fullName.givenName === null
+          ? shortName
+          : `${appleAuthRequestResponse.fullName.givenName}`,
+      );
     } catch (error) {
       if (error.code === appleAuth.Error.CANCELED) {
         console.warn('User canceled Apple Sign in.');
@@ -147,7 +170,7 @@ export default function Login(props) {
     // if (!hidePermissionAlert) {
     //   setPermissionVisible(true);
     // }
-    GCL();
+    // GCL();
     if (!appleAuth.isSupported) return;
 
     fetchAndUpdateCredentialState(updateCredentialStateForUser).catch((error) =>
@@ -170,67 +193,133 @@ export default function Login(props) {
     global.address = getCurrentLocation(global.lang);
   }
   const signin = async () => {
-    global.address = getCurrentLocation(global.lang);
-    setLoading(true);
-    Axios.post('signin', {
-      userId: email,
-      userPwd: password,
-      userPushkey: global.fcmToken,
-      deviceOs: Platform.OS === 'android' ? 1 : 2,
-      deviceOsVer: Platform.Version,
-    })
-      .then(async (res) => {
-        logApi('signin success', res.data);
-        await AsyncStorage.setItem('token', res.data.token);
-        await Init();
-        context.dispatch({type: 'AUTHORIZED', data: res.data});
-        setLoading(false);
+    let result;
+    if (Platform.OS === 'android') {
+      result = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      console.log(JSON.stringify(result));
+    } else {
+      result = await Geolocation.requestAuthorization('whenInUse');
+    }
+    if (result === 'granted') {
+      global.address = getCurrentLocation(global.lang);
+      setLoading(true);
+      Axios.post('signin', {
+        userId: email,
+        userPwd: password,
+        userPushkey: global.fcmToken,
+        deviceOs: Platform.OS === 'android' ? 1 : 2,
+        deviceOsVer: Platform.Version,
       })
-      .catch((err) => {
-        logApi('signin error', err?.response);
-        console.log('e : ' + JSON.stringify(err));
-        if (err.code !== 1) {
+        .then(async (res) => {
+          logApi('signin success', res.data);
+          await AsyncStorage.setItem('token', res.data.token);
+          await Init();
+          context.dispatch({type: 'AUTHORIZED', data: res.data});
           setLoading(false);
-          setTimeout(() => {
-            Alert.alert('로그인 실패', err.response?.data?.message);
-          }, 200);
-        }
-      });
+        })
+        .catch((err) => {
+          logApi('signin error', err?.response);
+          console.log('e : ' + JSON.stringify(err));
+          if (err.code !== 1) {
+            setLoading(false);
+            setTimeout(() => {
+              if (err.response?.data?.message) {
+                Alert.alert('로그인 실패', err.response?.data?.message);
+              }
+            }, 200);
+          }
+        });
+    } else if (result !== 'granted' && Platform.OS === 'ios') {
+      await Init();
+    }
   };
-  const startWithSNS = async (userId, userEmail, userCode) => {
+  const startWithSNS = async (userId, userEmail, userCode, appleName) => {
     console.log('userId : ' + userId);
     console.log('userCode : ' + userCode);
     console.log('userEmail : ' + userEmail);
     console.log('token : ' + global.fcmToken);
-    global.address = getCurrentLocation(global.lang);
-    setLoading(true);
-    Axios.post('snsSignin', {
-      userId: userId,
-      userCode: userCode,
-      userPushkey: global.fcmToken,
-      deviceOs: Platform.OS === 'android' ? 1 : 2,
-      deviceOsVer: Platform.Version,
-    })
-      .then(async (res) => {
-        logApi('snsSignin', res.data);
-        await AsyncStorage.setItem('token', res.data.token);
-        await Init();
-        context.dispatch({type: 'AUTHORIZED', data: res.data});
-        setLoading(false);
+    let result;
+    if (Platform.OS === 'android') {
+      result = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      console.log(JSON.stringify(result));
+    } else {
+      result = await Geolocation.requestAuthorization('whenInUse');
+    }
+    if (result === 'granted') {
+      global.address = getCurrentLocation(global.lang);
+      setLoading(true);
+      Axios.post('snsSignin', {
+        userId: userId,
+        userCode: userCode,
+        userPushkey: global.fcmToken,
+        deviceOs: Platform.OS === 'android' ? 1 : 2,
+        deviceOsVer: Platform.Version,
       })
-      .catch((err) => {
-        logApi('snsSignin error', err);
-        if (err?.response.status === 403) {
-          props.navigation.navigate('Join', {
-            uid: userId,
-            userId: userEmail,
-            userCode: userCode,
-          });
-        } else {
-          Alert.alert('로그인', err.response?.data?.message);
-        }
-        setLoading(false);
-      });
+        .then(async (res) => {
+          logApi('snsSignin', res.data);
+          await AsyncStorage.setItem('token', res.data.token);
+          await Init();
+          context.dispatch({type: 'AUTHORIZED', data: res.data});
+          setLoading(false);
+        })
+        .catch((err) => {
+          logApi('snsSignin error', err);
+          if (err?.response?.status === 403) {
+            if (userCode === 5) {
+              const formData = new FormData();
+              formData.append('userCode', userCode);
+              formData.append('userId', userId);
+              formData.append('userName', appleName || '이름없음');
+              formData.append('userEmail', userEmail);
+              formData.append('userSex', '');
+              formData.append('userPhone', '');
+              formData.append('userPushkey', global.fcmToken);
+              formData.append('deviceOs', Platform.OS === 'android' ? 1 : 2);
+              formData.append('deviceOsVer', Platform.Version);
+
+              Axios({
+                url: API_URL + 'snsSignup',
+                method: 'POST',
+                data: formData,
+                headers: {
+                  Accept: 'application/json',
+                  token: global.token,
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+                .then(async (res) => {
+                  logApi('snsSignup', res.data);
+                  if (res.data.token) {
+                    await AsyncStorage.setItem('token', res.data.token);
+                    await Init();
+                    context.dispatch({type: 'AUTHORIZED', data: res.data});
+                  }
+                  setLoading(false);
+                })
+                .catch((err) => {
+                  logApi('snsSignup error', err?.response);
+                  Alert.alert(err.response?.data?.message);
+                  setLoading(false);
+                });
+            } else {
+              props.navigation.navigate('Join', {
+                uid: userId,
+                userId: userEmail,
+                userCode: userCode,
+              });
+            }
+          } else if (err.response?.data?.message) {
+            Alert.alert('로그인', err.response?.data?.message);
+          }
+          setLoading(false);
+        });
+    } else if (result === 'denied' && Platform.OS === 'ios') {
+      await Init();
+    }
   };
   const pwInquiry = () => {
     setLoading(true);
@@ -299,6 +388,8 @@ export default function Login(props) {
       .catch((err) => {
         if (err.code === 'E_CANCELLED_OPERATION') {
           console.log(`Login Cancelled:${err.message}`);
+        } else if (err.code === 'E_AUTHORIZATION_FAILED') {
+          Alert.alert('다시 시도해주세요.');
         } else {
           console.log(`Login Failed:${err.code} ${err.message}`);
         }
@@ -341,7 +432,7 @@ export default function Login(props) {
             console.log(error);
             Alert.alert('Facebook getAccessToken fail', JSON.stringify(error));
           } else {
-            console.log('FB Profile : '+JSON.stringify(profile));
+            console.log('FB Profile : ' + JSON.stringify(profile));
             startWithSNS(profile.id, profile.email, 4);
           }
         };
@@ -461,7 +552,7 @@ export default function Login(props) {
               style={{
                 width: 60,
                 height: 60,
-                borderRadius: 30,
+                borderRadius: 5,
                 backgroundColor: '#FFEB3B',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -479,7 +570,7 @@ export default function Login(props) {
               style={{
                 width: 60,
                 height: 60,
-                borderRadius: 30,
+                borderRadius: 5,
                 backgroundColor: '#03CF5D',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -497,7 +588,7 @@ export default function Login(props) {
               style={{
                 width: 60,
                 height: 60,
-                borderRadius: 30,
+                borderRadius: 5,
                 backgroundColor: '#1976D2',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -517,7 +608,7 @@ export default function Login(props) {
                 style={{
                   width: 60,
                   height: 60,
-                  // borderRadius: 30,
+                  borderRadius: 5,
                   //   backgroundColor: '#000000',
                   //   alignItems: 'center',
                   //   justifyContent: 'center',

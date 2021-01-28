@@ -46,14 +46,20 @@ export default function Join(props) {
   const [agreement, setAgreement] = React.useState(false);
   const [agreement1, setAgreement1] = React.useState(false);
   const [agreement2, setAgreement2] = React.useState(false);
-  const [agreement3, setAgreement3] = React.useState(false);
-  const [agreement4, setAgreement4] = React.useState(false);
 
   React.useEffect(() => {
-    Alert.alert('SNS 받아오는 정보',
-    `userCode [SNS] : ${props.route?.params?.userCode}
-    userId [email] : ${props.route?.params?.userId}
-    uid [고유ID] : ${props.route?.params?.uid}`)
+    if (
+      props.route?.params?.userCode &&
+      props.route?.param?.userId === undefined
+    ) {
+      setEmail(`${uid}@undefined.com`);
+    }
+    // Alert.alert(
+    //   'SNS 받아오는 정보',
+    //   `userCode [SNS] : ${props.route?.params?.userCode}
+    // userId [email] : ${props.route?.params?.userId}
+    // uid [고유ID] : ${props.route?.params?.uid}`,
+    // );
     Linking.getInitialURL()
       .then((url) => {
         if (url) {
@@ -102,14 +108,10 @@ export default function Join(props) {
       setAgreement(!agreement);
       setAgreement1(false);
       setAgreement2(false);
-      setAgreement3(false);
-      setAgreement4(false);
     } else {
       setAgreement(!agreement);
       setAgreement1(true);
       setAgreement2(true);
-      setAgreement3(true);
-      setAgreement4(true);
     }
   };
   const verifyEmail = () => {
@@ -136,25 +138,15 @@ export default function Join(props) {
   const prePostUser = () => {
     if (
       !name ||
-      !agreement ||
       !agreement1 ||
-      !agreement2 ||
-      !agreement3 ||
-      !agreement4 ||
       !gender ||
       (!email && props.route?.params?.userCode) ||
       !mobile
     ) {
       if (!name) {
         showToast('이름을 확인해주세요', 2000, 'center');
-      } else if (
-        !agreement ||
-        !agreement1 ||
-        !agreement2 ||
-        !agreement3 ||
-        !agreement4
-      ) {
-        showToast('약관에 동의해주세요', 2000, 'center');
+      } else if (!agreement1) {
+        showToast('(필수) 이용약관에 동의해주세요', 2000, 'center');
       } else if (!gender) {
         showToast('성별을 체크해주세요', 2000, 'center');
       } else if (!email) {
@@ -468,28 +460,45 @@ export default function Join(props) {
               <Seperator line />
             </>
           )}
-          <Seperator height={20} />
+          <Seperator height={30} />
+          <Text text={'마케팅 수신동의서'} fontSize={16} fontWeight={'500'} />
+          <Seperator height={10} />
           {/* 약관동의 */}
-          <HView>
-            <View style={{flex: 1, alignItems: 'flex-start'}}>
-              <Checkbox
-                multiple
-                // customChecked={<Icons name={'icon-radiocheck-28'} size={28} color={custom.themeColor} />}
-                label={'약관1'}
-                onPress={() => setAgreement1(!agreement1)}
-                checked={agreement1}
-              />
-            </View>
-            <View style={{flex: 1, alignItems: 'flex-start'}}>
-              <Checkbox
-                multiple
-                label={'약관2'}
-                onPress={() => setAgreement2(!agreement2)}
-                checked={agreement2}
-              />
-            </View>
-          </HView>
+          <View style={{flex: 1, alignItems: 'flex-start'}}>
+            <Checkbox
+              multiple
+              // customChecked={<Icons name={'icon-radiocheck-28'} size={28} color={custom.themeColor} />}
+              label={'개인정보 수집 및 이용 동의서 (필수)'}
+              onPress={() => {
+                setAgreement(
+                  agreement ? !agreement : agreement2 ? !agreement : agreement,
+                ),
+                  setAgreement1(!agreement1);
+              }}
+              checked={agreement1}
+              labelPress={() =>
+                Linking.openURL('https://jejubattle.com/privacyRequired')
+              }
+            />
+          </View>
           <Seperator height={5} />
+          <View style={{flex: 1, alignItems: 'flex-start'}}>
+            <Checkbox
+              multiple
+              label={'개인정보 수집 및 이용 동의서 (선택)'}
+              onPress={() => {
+                setAgreement(
+                  agreement ? !agreement : agreement1 ? !agreement : agreement,
+                ),
+                  setAgreement2(!agreement2);
+              }}
+              checked={agreement2}
+              labelPress={() =>
+                Linking.openURL('https://jejubattle.com/privacySelect')
+              }
+            />
+          </View>
+          {/* <Seperator height={5} />
           <HView>
             <View style={{flex: 1, alignItems: 'flex-start'}}>
               <Checkbox
@@ -507,10 +516,10 @@ export default function Join(props) {
                 checked={agreement4}
               />
             </View>
-          </HView>
+          </HView> */}
           <Seperator height={20} />
           <Checkbox
-            label={'약관에 동의하였습니다'}
+            label={'모두선택'}
             checked={agreement}
             onPress={() => handleAgreementAll()}
           />

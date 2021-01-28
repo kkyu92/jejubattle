@@ -105,6 +105,7 @@ export default function Home(props) {
 
   React.useEffect(() => {
     if (!appStartGuide) {
+      console.log(`appStartGuide::: ${appStartGuide}`);
       props.navigation.navigate('GuideStart');
     } else {
       Axios.get('popup')

@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Geolocation from 'react-native-geolocation-service';
 // import DeviceInfo from 'react-native-device-info';
 import deviceInfoModule from 'react-native-device-info';
+import RNBootSplash from 'react-native-bootsplash';
 
 export function log(func, data) {
   console.log(func, data);
@@ -168,7 +169,7 @@ export async function getCurrentCoords() {
           console.log('getCurrentPosition1 error', error.code, error.message);
           reject(error);
         },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        {enableHighAccuracy: false, timeout: 15000, maximumAge: 10000},
       );
     }
   });
@@ -189,14 +190,16 @@ export async function getCurrentLocation(lang) {
     result = await Geolocation.requestAuthorization('whenInUse');
     console.log('geolocation : ' + result);
     if (result !== 'granted') {
-      Alert.alert(
-        `근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요.`,
-        '',
-        [
-          {text: '권한 설정하기', onPress: () => openSetting()},
-          {text: '취소', onPress: () => {}},
-        ],
-      );
+      setTimeout(async () => {
+        await Alert.alert(
+          `근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요.`,
+          '',
+          [
+            {text: '권한 설정하기', onPress: () => openSetting()},
+            {text: '취소', onPress: () => {}},
+          ],
+        );
+      }, 400);
       granted = result;
     } else {
       granted = PermissionsAndroid.RESULTS.GRANTED;
@@ -209,7 +212,7 @@ export async function getCurrentLocation(lang) {
   };
   const isEmulator = await deviceInfoModule.isEmulator();
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (granted === 'granted') {
       if (isEmulator) {
         resolve({
@@ -217,7 +220,7 @@ export async function getCurrentLocation(lang) {
           coords: {latitude: 37.568676, longitude: 126.978031},
         });
       } else {
-        Geolocation.getCurrentPosition(
+        await Geolocation.getCurrentPosition(
           (position) => {
             console.log('current location', position);
             fetch(
@@ -382,7 +385,7 @@ export const swap = (arr, index1, index2) =>
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export function share(deeplink, title, contents, img, callback) {
+export function share(deeplink, title, contents, img, callback, efr = '1') {
   fetch(
     `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${Nuno.config.FIREBASE_WEB_API}`,
     {
@@ -393,7 +396,8 @@ export function share(deeplink, title, contents, img, callback) {
       body: JSON.stringify({
         longDynamicLink: `${Nuno.config.dynamicLink}/?link=${deeplink}&ibi=${Nuno.config.BUNDLE_ID}&isi=${Nuno.config.IOS_STORE_ID}&apn=${Nuno.config.PACKAGE_NAME}&st=${title}
         &sd=${contents}
-        &si=${img}`,
+        &si=${img}
+        &efr=${efr}`,
       }),
     },
   )
