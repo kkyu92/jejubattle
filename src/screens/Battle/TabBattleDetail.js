@@ -270,6 +270,57 @@ export default function TabBattleDetail(props) {
       RootNavigation.navigate('Battle', {});
     }
   };
+  const readyCheck = (state) => {
+    // ready check
+    const tempTeamA = {...props.info.teamA};
+    const tempTeamB = {...props.info.teamB};
+    if (foundedAtTeamA !== -1) {
+      tempTeamA.member[foundedAtTeamA].ready = 'Y';
+    }
+    let readyTeamA = tempTeamA.member.map((e) => ({
+      ready: e.ready,
+    }));
+    let readyTeamB = tempTeamB.member.map((e) => ({
+      ready: e.ready,
+    }));
+    let aReady, bReady;
+    aReady = JSON.stringify(readyTeamA.map((e) => e.ready === 'Y'));
+    bReady = JSON.stringify(readyTeamB.map((e) => e.ready === 'Y'));
+
+    // state = 1 : 코인사용 아니요
+    // state = 2 : 코인사용 예
+    // state = 3 : 그냥하기
+    if (
+      context.me.userPk === props.info.teamA.member[0].userPk &&
+      (aReady.includes('false') || bReady.includes('false'))
+    ) {
+      // 방장 + 준비완료 상태가 아님
+      if (state === 1 || state === 2) {
+        setModalStart(false);
+      } else {
+        setModalStartNoCoin(false);
+      }
+      showToast('모든 사용자가 배틀준비가 되어야 시작합니다.', 2000, 'center');
+      if (foundedAtTeamA !== -1) {
+        tempTeamA.member[foundedAtTeamA].ready = 'N';
+      }
+    } else {
+      if (foundedAtTeamA !== -1) {
+        tempTeamA.member[foundedAtTeamA].ready = 'N';
+      }
+      if (state === 1) {
+        readyNcoinCheck(false);
+        setModalStart(false);
+      } else if (state === 2) {
+        readyNcoinCheck(true);
+        setModalStart(false);
+      } else {
+        readyNcoinCheck(false);
+        setModalStartNoCoin(false);
+      }
+      showToast('준비되었습니다.', 2000, 'center');
+    }
+  };
 
   return (
     <Container>
@@ -770,9 +821,7 @@ export default function TabBattleDetail(props) {
                 text={'아니요'}
                 color={'gray'}
                 onPress={() => {
-                  readyNcoinCheck(false);
-                  setModalStart(false);
-                  showToast('준비되었습니다.', 2000, 'center');
+                  readyCheck(1);
                 }}
                 size={'large'}
                 stretch
@@ -784,9 +833,7 @@ export default function TabBattleDetail(props) {
                 text={'예'}
                 color={custom.themeColor}
                 onPress={() => {
-                  readyNcoinCheck(true);
-                  setModalStart(false);
-                  showToast('준비되었습니다.', 2000, 'center');
+                  readyCheck(2);
                 }}
                 size={'large'}
                 stretch
@@ -828,8 +875,7 @@ export default function TabBattleDetail(props) {
                 text={'그냥하기'}
                 color={'gray'}
                 onPress={() => {
-                  readyNcoinCheck(false);
-                  setModalStartNoCoin(false);
+                  readyCheck(3);
                 }}
                 size={'large'}
                 stretch

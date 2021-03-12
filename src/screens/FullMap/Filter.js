@@ -15,7 +15,7 @@ import {View, TouchableOpacity, ScrollView} from 'react-native';
 import {ShadowStyle, screenWidth} from '../../styles';
 import Icons from '../../commons/Icons';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {custom} from '../../config';
 import ActionSheet from 'react-native-actions-sheet';
 import ListItem from '../../commons/ListItem';
@@ -47,6 +47,16 @@ export default function FullMapFilter(props) {
     }, 500);
   }, [props.route?.params?.selectCa, props.route?.params?.selectCl]);
 
+  const handleCheckAllButton = () => {
+    if (!checkAll) {
+      const temp = [...sports.map((e) => e.code)];
+      setSelectedSports(temp);
+      setCheckAll(true);
+    } else {
+      setSelectedSports([]);
+      setCheckAll(false);
+    }
+  };
   const handleSportsButton = (e) => {
     const temp = [...selectedSports];
     const found = temp.indexOf(e);
@@ -57,6 +67,22 @@ export default function FullMapFilter(props) {
     }
     setSelectedSports(temp);
     console.log('temp:::: ' + temp);
+    console.log(`sports : ${sports}`);
+    if (temp.length === sports.length) {
+      setCheckAll(true);
+    } else {
+      setCheckAll(false);
+    }
+  };
+  const handleCheckAll2Button = () => {
+    if (!checkAll2) {
+      const temp = [...clCode.map((e) => e.code)];
+      setSelectedClCode(temp);
+      setCheckAll2(true);
+    } else {
+      setSelectedClCode([]);
+      setCheckAll2(false);
+    }
   };
   const handleClCodeButton = (e) => {
     const temp = [...selectedClCode];
@@ -67,23 +93,27 @@ export default function FullMapFilter(props) {
       temp.splice(found, 1);
     }
     setSelectedClCode(temp);
+    if (temp.length === 4) {
+      setCheckAll2(true);
+    } else {
+      setCheckAll2(false);
+    }
   };
-  React.useEffect(() => {
-    if (checkAll) {
-      const temp = [...sports.map((e) => e.code)];
-      setSelectedSports(temp);
+  const settingFinish = () => {
+    console.log(`selectedSports : ${selectedSports}`);
+    console.log(`selectedClCode : ${selectedClCode}`);
+    if (selectedSports.length === 0) {
+      showToast(`종목을 선택해주세요.`);
+    } else if (selectedClCode.length === 0) {
+      showToast(`유형을 선택해주세요.`);
     } else {
-      setSelectedSports([]);
+      props.navigation.navigate('FullMap', {
+        itemList: selectedSports,
+        typeList: selectedClCode,
+      });
     }
-  }, [checkAll]);
-  React.useEffect(() => {
-    if (checkAll2) {
-      const temp = [...clCode.map((e) => e.code)];
-      setSelectedClCode(temp);
-    } else {
-      setSelectedClCode([]);
-    }
-  }, [checkAll2]);
+  };
+
   return loading === true ? (
     <Loader />
   ) : (
@@ -105,8 +135,12 @@ export default function FullMapFilter(props) {
                 size={'medium'}
                 paddingHorizontal={30}
                 paddingVertical={15}
-                color={checkAll ? custom.themeColor : 'white'}
-                onPress={() => setCheckAll(!checkAll)}
+                color={
+                  checkAll || sports.length === selectedSports.length
+                    ? custom.themeColor
+                    : 'white'
+                }
+                onPress={() => handleCheckAllButton()}
               />
             </View>
             {sports.map((e, i) => {
@@ -139,8 +173,12 @@ export default function FullMapFilter(props) {
                 size={'medium'}
                 paddingHorizontal={30}
                 paddingVertical={15}
-                color={checkAll2 ? custom.themeColor : 'white'}
-                onPress={() => setCheckAll2(!checkAll2)}
+                color={
+                  checkAll2 || 4 === selectedClCode.length
+                    ? custom.themeColor
+                    : 'white'
+                }
+                onPress={() => handleCheckAll2Button()}
               />
             </View>
             {clCode.map((e, i) => {
@@ -173,12 +211,7 @@ export default function FullMapFilter(props) {
         }}>
         <Button
           text={'설정하기'}
-          onPress={() =>
-            props.navigation.navigate('FullMap', {
-              itemList: selectedSports,
-              typeList: selectedClCode,
-            })
-          }
+          onPress={() => settingFinish()}
           color={custom.themeColor}
           disable={false}
           size={'large'}

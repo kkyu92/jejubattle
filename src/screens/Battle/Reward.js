@@ -158,13 +158,14 @@ export default function Reward(props) {
                         2000,
                         'bottom',
                       );
+                      console.log(`code : ${e.code} || index : ${i}`);
                     }}
                     key={i}
                     style={{alignItems: 'center'}}>
                     <View
                       style={{
                         backgroundColor:
-                          selectedRandomBox - 1 === i ? 'orange' : 'lightgray',
+                          selectedRandomBox === e.code ? 'orange' : 'lightgray',
                         width: 70,
                         height: 70,
                         borderRadius: 35,

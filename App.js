@@ -31,6 +31,7 @@ import {
   custom,
   ANDROID_PLAY_STORE,
   IOS_APP_STORE,
+  API_URL,
 } from './src/config';
 import {AppContext, useAppReducer} from './src/context';
 import AppStackScreen from './src/navigations/AppStack';
@@ -42,7 +43,7 @@ import Init from './src/commons/Init';
 import Axios from 'axios';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
-import {Nuno} from './src/react-native-nuno-ui';
+import {Loader, Nuno} from './src/react-native-nuno-ui';
 import {logApi, showToast} from './src/react-native-nuno-ui/funcs';
 import {localNotificationService} from './src/fcm/LocalNotificationService';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -441,41 +442,37 @@ export default function App() {
     setAppStateVisible(appState.current);
 
     if (newState === 'active') {
+      let authorizationStatus = await messaging().requestPermission();
+      if (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+        await fcmService.getFcmToken();
+        // await localNotificationService.configure(onOpenNotification);
+      } else {
+        const formData = new FormData();
+        formData.append('userTermsEvent', 'N');
+        formData.append('userTermsPush', 'N');
+        Axios({
+          url: API_URL + 'userUpdate',
+          method: 'POST',
+          data: formData,
+          headers: {
+            Accept: 'application/json',
+            token: global.token,
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+          .then(async (res) => {
+            logApi('userUpdate', res.data);
+            dispatch({type: 'UPDATEME', data: res.data});
+          })
+          .catch((err) => {
+            logApi('userUpdate error', err?.response);
+          });
+        // await fcmService.unRegister();
+        // await localNotificationService.unregister();
+      }
       console.log('state::: ' + newState);
       console.log(JSON.stringify(appState));
       global.fcmToken && getPush();
-      // if (Platform.OS === 'ios') {
-      //   let getLocationPermission = await AsyncStorage.getItem(
-      //     'locationPermission',
-      //   );
-      //   let locationPermission = await Geolocation.requestAuthorization(
-      //     'whenInUse',
-      //   );
-      //   console.log(`getLocationPermission : ${getLocationPermission}`);
-      //   console.log(`locationPermission : ${locationPermission}`);
-      //   console.log(`ready : ${ready}`);
-      //   if (locationPermission !== 'granted') {
-      //     console.log('거부 --> 거부 ' + getLocationPermission);
-      //     // await RNBootSplash.hide({duration: 500});
-      //     // if (getLocationPermission) {
-      //     //   await Init();
-      //     // }
-      //     // await getPush();
-      //     // await RNBootSplash.hide({duration: 500});
-      //     await AsyncStorage.setItem('locationPermission', locationPermission);
-      //     // await AuthStackScreen.navigate('Login', {});
-      //   } else if (getLocationPermission !== locationPermission) {
-      //     console.log('거부 --> 허용 ' + getLocationPermission);
-      //     await Init();
-      //     await getPush();
-      //     await AsyncStorage.setItem('locationPermission', locationPermission);
-      //   } else {
-      //     console.log('허용 --> 허용 ' + getLocationPermission);
-      //     await Init();
-      //     await getPush();
-      //     await AsyncStorage.setItem('locationPermission', locationPermission);
-      //   }
-      // }
     } else if (newState === 'background') {
       console.log('state::: ' + newState);
       console.log(JSON.stringify(appState));
@@ -524,18 +521,19 @@ export default function App() {
 
   if (!ready) {
     return (
-      <NavigationContainer theme={theme} ref={navigationRef}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
-        <AppContext.Provider value={{...state, dispatch}}>
-          <Stack.Navigator headerMode="none">
-            {state.me?.userPk ? (
-              <Stack.Screen name="App" component={AppStackScreen} />
-            ) : (
-              <Stack.Screen name="Auth" component={AuthStackScreen} />
-            )}
-          </Stack.Navigator>
-        </AppContext.Provider>
-      </NavigationContainer>
+      <Loader />
+      // <NavigationContainer theme={theme} ref={navigationRef}>
+      //   {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+      //   <AppContext.Provider value={{...state, dispatch}}>
+      //     <Stack.Navigator headerMode="none">
+      //       {state.me?.userPk ? (
+      //         <Stack.Screen name="App" component={AppStackScreen} />
+      //       ) : (
+      //         <Stack.Screen name="Auth" component={AuthStackScreen} />
+      //       )}
+      //     </Stack.Navigator>
+      //   </AppContext.Provider>
+      // </NavigationContainer>
     );
   }
 

@@ -26,6 +26,7 @@ import BattleComponentEmpty from './BattleComponentEmpty';
 import {useIsFocused} from '@react-navigation/native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment';
+import messaging from '@react-native-firebase/messaging';
 
 export default function Home(props) {
   const context = React.useContext(AppContext);
@@ -90,7 +91,8 @@ export default function Home(props) {
 
   const getToken = async () => {
     let token = await AsyncStorage.getItem('fcmToken');
-    Axios.post('updatePushkey', {
+    let authorizationStatus = await messaging().requestPermission();
+    await Axios.post('updatePushkey', {
       userPushkey: token,
     })
       .then((res) => {
@@ -101,6 +103,17 @@ export default function Home(props) {
         logApi('updatePushkey error', err);
         console.log(token);
       });
+    if (
+      token === null ||
+      authorizationStatus !== messaging.AuthorizationStatus.AUTHORIZED
+    ) {
+      context.dispatch({
+        type: 'UPDATEME',
+        data: {
+          userTermsPush: 'N',
+        },
+      });
+    }
   };
 
   React.useEffect(() => {
@@ -187,7 +200,7 @@ export default function Home(props) {
           autoPlay={true}
           loop={false}
           data={banner}
-          height={200}
+          // height={200}
           adIndex={true}
           navigation={props.navigation}
           dotColor={'orange'}

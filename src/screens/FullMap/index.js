@@ -36,9 +36,10 @@ export default function FullMap(props) {
   const [mapReady, setMapReady] = React.useState('');
   const [keyword, setKeyword] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState({
-    latitude: props.route?.params?.latitude || global.address.coords.latitude,
+    latitude:
+      props.route?.params?.latitude || global?.address?.coords?.latitude,
     longitude:
-      props.route?.params?.longitude || global.address.coords.longitude,
+      props.route?.params?.longitude || global?.address?.coords?.longitude,
   });
   const [result, setResult] = React.useState([]);
   const [actionSheetComponent, setActionSheetComponent] = React.useState(null);
@@ -80,11 +81,17 @@ export default function FullMap(props) {
       console.log('selected item : ' + props.route.params.itemList);
       caCode = props.route.params.itemList;
       setSendSubject(caCode);
+    } else {
+      console.log(`caCode : ${caCode}`);
     }
     if (props.route.params?.typeList) {
-      console.log('selected type : ' + props.route.params.typeList);
+      console.log(
+        'selected type : ' + JSON.stringify(props.route.params.typeList),
+      );
       clCode = props.route.params.typeList;
       setSendType(clCode);
+    } else {
+      console.log(`clCode : ${clCode}`);
     }
     let ca = [];
     let cl = [];
@@ -127,8 +134,8 @@ export default function FullMap(props) {
     }
     console.log('useEffect');
     console.log(
-      global.address.coords.latitude,
-      global.address.coords.longitude,
+      global?.address?.coords?.latitude,
+      global?.address?.coords?.longitude,
     );
     setLoading(false);
   }, [props.route.params?.itemList, props.route.params?.typeList]);
@@ -449,8 +456,8 @@ export default function FullMap(props) {
       <Map
         // currentLocation.latitude,
         // currentLocation.longitude,
-        latitude={global.address.coords.latitude}
-        longitude={global.address.coords.longitude}
+        latitude={global?.address?.coords?.latitude}
+        longitude={global?.address?.coords?.longitude}
         showZoom={true}
         showCurrent={true}
         markers={result}
@@ -582,6 +589,8 @@ export default function FullMap(props) {
       </View>
       {!hideFilterGuide &&
         mapReady !== 'facilityReco' &&
+        mapReady !== 'noSearchFilter' &&
+        mapReady !== 'wishList' &&
         mapReady !== 'battleChatLink' && (
           <View
             style={{

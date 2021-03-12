@@ -7,7 +7,11 @@ export default function MySports(props) {
       <Text
         fontSize={14}
         color={'gray'}
-        text={props.userSport?.length !== 0 ? '대표종목: ' : '대표종목: 없음'}
+        text={
+          props.userSport?.length !== 0 && props.userSport !== undefined
+            ? `대표종목: `
+            : '대표종목: 없음'
+        }
       />
       {props.userSport?.map((e, i) => {
         return (

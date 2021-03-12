@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../config';
 import axios from 'axios';
-import {Platform, NativeModules} from 'react-native';
+import {Platform, NativeModules, PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {logApi, getCurrentLocation} from '../../react-native-nuno-ui/funcs';
 import moment from 'moment';
@@ -52,9 +52,18 @@ export default async () => {
   global.popupDate = popupDate;
 
   // location
-  // Geolocation.requestAuthorization('whenInUse');
+  let locationPermission;
+  if (Platform.OS === 'android') {
+    locationPermission = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+  } else {
+    locationPermission = await Geolocation.requestAuthorization('whenInUse');
+  }
 
-  global.address = await getCurrentLocation(global.lang);
+  if (locationPermission === 'granted') {
+    global.address = await getCurrentLocation(global.lang);
+  }
   // console.log('[init] location', global.address);
 
   // if (Platform.OS === 'ios') {

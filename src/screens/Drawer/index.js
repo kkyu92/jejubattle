@@ -14,6 +14,7 @@ import {custom} from '../../config';
 import {ScrollView} from 'react-native-gesture-handler';
 import {AppContext} from '../../context';
 import MySports from '../../commons/MySports';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Drawer(props) {
   const context = React.useContext(AppContext);
@@ -32,11 +33,27 @@ export default function Drawer(props) {
             onPress={() => props.navigation.navigate('Notification')}
             style={{paddingHorizontal: 20, paddingVertical: 5}}>
             {context.me.notification === 'Y' ? (
-              <Icons name="icon-notification-20" size={18} color={'black'} />
+              <MaterialCommunityIcons
+                name={
+                  context.me.userTermsPush === 'Y'
+                    ? 'bell-outline'
+                    : 'bell-off-outline'
+                }
+                size={18}
+                color={context.me.userTermsPush === 'Y' ? 'black' : 'red'}
+              />
             ) : (
               <>
                 {console.log(context.me.notification + 'cNoti')}
-                <Icons name="icon-notification-20" size={18} color={'black'} />
+                <MaterialCommunityIcons
+                  name={
+                    context.me.userTermsPush === 'Y'
+                      ? 'bell-outline'
+                      : 'bell-off-outline'
+                  }
+                  size={18}
+                  color={context.me.userTermsPush === 'Y' ? 'black' : 'red'}
+                />
                 <View
                   style={{
                     position: 'absolute',
@@ -90,7 +107,7 @@ export default function Drawer(props) {
                 fontWeight={'bold'}
               />
               <Seperator height={10} />
-              <MySports userSport={context.me.userSport} />
+              <MySports userSport={context.me?.userSport} />
             </View>
           </HView>
         </View>
@@ -102,7 +119,7 @@ export default function Drawer(props) {
             <StarRating
               disabled={true}
               maxStars={5}
-              rating={5}
+              rating={context.me.userScope}
               starSize={11}
               emptyStarColor={custom.themeColor}
               halfStarEnabled={true}

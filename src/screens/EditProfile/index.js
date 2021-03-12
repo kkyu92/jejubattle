@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  Linking,
 } from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, API_URL} from '../../config';
@@ -54,6 +55,7 @@ export default function EditProfile(props) {
   const [modalGender, setModalGender] = React.useState(false);
   const [modalPassword, setModalPassword] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [mobile, setMobile] = React.useState('');
 
   let provider = '';
   switch (context.me.userCode) {
@@ -73,6 +75,28 @@ export default function EditProfile(props) {
       provider = '연동완료 (애플)';
       break;
   }
+  React.useEffect(() => {
+    Linking.getInitialURL()
+      .then((url) => {
+        if (url) {
+          handleOpenURL(url);
+        } else {
+          console.log(`\n\n\n\n\n\n==========\n${url}`);
+        }
+      })
+      .catch((err) => {
+        console.log(`\n\n\n\n\n\n==========\n${err}`);
+      });
+    Linking.addEventListener('url', handleOpenURL);
+    return () => Linking.removeEventListener('url', handleOpenURL);
+  }, []);
+  const handleOpenURL = async (e) => {
+    const temp = e.url.split('/');
+    const param = temp[temp.length - 1];
+    await console.log('handleOpenURL', e.url, param);
+    await Alert.alert('핸드폰 본인인증이 완료되었습니다', param);
+    await setMobile(param);
+  };
   React.useEffect(() => {
     Axios.post('sportsList', {})
       .then((res) => {
@@ -233,10 +257,10 @@ export default function EditProfile(props) {
           </HView>
           <Seperator height={20} />
           <HView style={{paddingVertical: 10, alignItems: 'center'}}>
-            <View style={{flex: 0.2}}>
+            <View style={{flex: 0.3}}>
               <Text text={'닉네임'} fontSize={18} fontWeight={'500'} />
             </View>
-            <View style={{flex: 0.7}}>
+            <View style={{flex: 0.8}}>
               <Text
                 text={nickName}
                 color={'gray'}
@@ -244,7 +268,7 @@ export default function EditProfile(props) {
                 fontWeight={'500'}
               />
             </View>
-            <View style={{flex: 0.1, alignItems: 'flex-end'}}>
+            <View style={{flex: 0.2, alignItems: 'flex-end'}}>
               <TouchableOpacity
                 onPress={() => {
                   setNickNameModal(nickName);
@@ -257,7 +281,7 @@ export default function EditProfile(props) {
           <Seperator line />
 
           <HView style={{paddingVertical: 10}}>
-            <View style={{flex: 0.2}}>
+            <View style={{flex: 0.3}}>
               <Text text={'전화번호'} fontSize={18} fontWeight={'500'} />
             </View>
             <View style={{flex: 0.8}}>
@@ -268,22 +292,33 @@ export default function EditProfile(props) {
                 fontWeight={'500'}
               />
             </View>
-            {/* <View style={{flex: 0.2}}>
-              <Button
-                text={'인증'}
+            <View style={{flex: 0.2, alignItems: 'flex-end'}}>
+              {/* <Button
+                text={mobile ? '완료' : '요청'}
                 size={'medium'}
-                borderRadius={20}
-                color={custom.themeColor}
-                stretch
+                onPress={() =>
+                  Linking.openURL('https://jejubattle.com/nice/main')
+                }
+                color={mobile ? custom.themeColor : 'white'}
+                borderRadius={10}
+              /> */}
+              <Button
+                text={'요청'}
+                size={'medium'}
+                onPress={() =>
+                  showToast('휴대전화 인증기능 준비중입니다.', 2000, 'center')
+                }
+                color={mobile ? custom.themeColor : 'white'}
+                borderRadius={10}
               />
-            </View> */}
+            </View>
           </HView>
           <Seperator line />
 
           {context.me.userCode === 1 && (
             <>
               <HView style={{paddingVertical: 10}}>
-                <View style={{flex: 0.2}}>
+                <View style={{flex: 0.3}}>
                   <Text text={'이메일'} fontSize={18} fontWeight={'500'} />
                 </View>
                 <View style={{flex: 0.8}}>
@@ -294,25 +329,25 @@ export default function EditProfile(props) {
                     fontWeight={'500'}
                   />
                 </View>
-                {/* <View style={{flex: 0.2}}>
-                <Button
+                <View style={{flex: 0.2, alignItems: 'flex-end'}}>
+                  {/* <Button
                   text={'인증'}
                   size={'medium'}
                   borderRadius={20}
                   color={custom.themeColor}
                   stretch
-                />
-              </View> */}
+                /> */}
+                </View>
               </HView>
               <Seperator line />
             </>
           )}
 
           <HView style={{paddingVertical: 10, alignItems: 'center'}}>
-            <View style={{flex: 0.2}}>
+            <View style={{flex: 0.3}}>
               <Text text={'성별'} fontSize={18} fontWeight={'500'} />
             </View>
-            <View style={{flex: 0.7}}>
+            <View style={{flex: 0.8}}>
               <Text
                 text={
                   gender === 'M' ? '남성' : gender === 'F' ? '여성' : '미정'
@@ -322,7 +357,7 @@ export default function EditProfile(props) {
                 fontWeight={'500'}
               />
             </View>
-            <View style={{flex: 0.1, alignItems: 'flex-end'}}>
+            <View style={{flex: 0.2, alignItems: 'flex-end'}}>
               <TouchableOpacity
                 onPress={() => {
                   setGenderModal(gender);
@@ -336,7 +371,7 @@ export default function EditProfile(props) {
           {context.me.userCode !== 1 && (
             <>
               <HView style={{paddingVertical: 10}}>
-                <View style={{flex: 0.2}}>
+                <View style={{flex: 0.3}}>
                   <Text text={'SNS'} fontSize={18} fontWeight={'500'} />
                 </View>
                 <View style={{flex: 0.8}}>
@@ -347,15 +382,16 @@ export default function EditProfile(props) {
                     fontWeight={'500'}
                   />
                 </View>
+                <View style={{flex: 0.2, alignItems: 'flex-end'}}></View>
               </HView>
               <Seperator line />
             </>
           )}
           <HView style={{paddingVertical: 10, alignItems: 'center'}}>
-            <View style={{flex: 0.2}}>
+            <View style={{flex: 0.3}}>
               <Text text={'소개'} fontSize={18} fontWeight={'500'} />
             </View>
-            <View style={{flex: 0.7}}>
+            <View style={{flex: 0.8}}>
               <Text
                 text={introduce || '잘 부탁드립니다.'}
                 color={'gray'}
@@ -363,7 +399,7 @@ export default function EditProfile(props) {
                 fontWeight={'500'}
               />
             </View>
-            <View style={{flex: 0.1, alignItems: 'flex-end'}}>
+            <View style={{flex: 0.2, alignItems: 'flex-end'}}>
               <TouchableOpacity
                 onPress={() => {
                   setIntroduceModal(introduce);

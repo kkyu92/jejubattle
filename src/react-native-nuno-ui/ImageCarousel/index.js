@@ -43,10 +43,10 @@ export default ({
           source={adIndex ? {uri: item.imgUrl} : {uri: item}}
           style={{
             width: width || screenWidth,
-            height: height || Math.floor(screenWidth / 2),
+            height: height || Math.floor((screenWidth / 3) * 2),
             borderRadius: borderRadius || 0,
           }}
-          resizeMode={'cover'}
+          resizeMode={'contain'}
         />
       </TouchableOpacity>
     );

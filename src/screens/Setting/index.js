@@ -19,6 +19,8 @@ import {
   FlatList,
   Linking,
   Platform,
+  PermissionsAndroid,
+  Alert,
 } from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom, API_URL} from '../../config';
@@ -28,11 +30,13 @@ import {AppContext} from '../../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {fcmService} from '../../../src/fcm/FCMService';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {NaverLogin} from '@react-native-seoul/naver-login';
+import messaging from '@react-native-firebase/messaging';
 
 export default function Setting(props) {
   const context = React.useContext(AppContext);
@@ -46,6 +50,94 @@ export default function Setting(props) {
   const [showLogoutDone, setShowLogoutDone] = React.useState(false);
   const [modalLogout, setModalLogout] = React.useState(false);
   const [userDelete, setUserDelete] = React.useState(false);
+  let authorizationStatus;
+
+  React.useEffect(() => {
+    init();
+  }, []);
+
+  // React.useEffect(() => {
+  //   init();
+  // }, [messaging().requestPermission()]);
+
+  const init = async (check) => {
+    authorizationStatus = await messaging().requestPermission();
+
+    if (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+      console.groupCollapsed('[Messaging Permission Granted]');
+      console.log('authorizationStatus', authorizationStatus);
+      console.groupEnd();
+      if (userTermsEvent === 'Y') {
+        setUserTermsEvent('Y');
+      } else {
+        setUserTermsEvent('N');
+      }
+      if (userTermsPush === 'Y') {
+        setUserTermsPush('Y');
+      } else {
+        setUserTermsPush('N');
+      }
+    } else if (
+      authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL // Silent Notification
+    ) {
+      console.groupCollapsed('[Messaging Permission Provisional]');
+      console.log('authorizationStatus', authorizationStatus);
+      console.groupEnd();
+    } else {
+      // 알림권한 허용안함
+      console.groupCollapsed('[Messaging Permission Denied]');
+      console.log('authorizationStatus', authorizationStatus);
+      console.groupEnd();
+      setUserTermsEvent('N');
+      setUserTermsPush('N');
+    }
+  };
+
+  const checkStatus = async (pushSwitch) => {
+    authorizationStatus = await messaging().requestPermission();
+
+    // 알림권한 허용 됨
+    if (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+      if (pushSwitch === 'event') {
+        if (userTermsEvent === 'Y') {
+          setUserTermsEvent('N');
+          showToast(`이벤트 및 마케팅 활용 동의 안함`, 2000, 'center');
+        } else {
+          setUserTermsEvent('Y');
+          showToast(`이벤트 및 마케팅 활용 동의`, 2000, 'center');
+        }
+      } else {
+        if (userTermsPush === 'Y') {
+          setUserTermsPush('N');
+          showToast(`알림 푸쉬 허용 안함`, 2000, 'center');
+        } else {
+          setUserTermsPush('Y');
+          showToast(`알림 푸쉬 허용`, 2000, 'center');
+        }
+      }
+    } else {
+      Alert.alert('알림권한을 허용해주세요.', '', [
+        {
+          text: '알림권한 설정하기',
+          onPress: () => {
+            Linking.openSettings().catch(() => {
+              Alert.alert('Unable to open settings');
+            });
+          },
+        },
+        {
+          text: '취소',
+          onPress: () => {
+            showToast(
+              `회원님의 알림권한을 허용 후 다시 시도해주세요.`,
+              2000,
+              'center',
+            );
+          },
+        },
+      ]);
+    }
+  };
 
   const signoutNo = async () => {
     setModalLogout(false);
@@ -56,6 +148,9 @@ export default function Setting(props) {
     setTimeout(() => {
       setLoading(true);
     }, 500);
+    if (context.me.userCode === 2) {
+      await NaverLogin.logout();
+    }
     Axios.get('signout')
       .then(logApi('signout'))
       .catch((e) => {
@@ -72,6 +167,9 @@ export default function Setting(props) {
     setTimeout(() => {
       setLoading(true);
     }, 500);
+    if (context.me.userCode === 2) {
+      await NaverLogin.logout();
+    }
     let userPk = context.me.userPk;
     console.log(userPk);
     Axios.delete(`user`)
@@ -159,9 +257,7 @@ export default function Setting(props) {
           />
           <Switch
             checked={userTermsEvent === 'Y'}
-            onPress={() =>
-              setUserTermsEvent(userTermsEvent === 'Y' ? 'N' : 'Y')
-            }
+            onPress={() => checkStatus('event')}
           />
         </HView>
         <HView
@@ -178,7 +274,7 @@ export default function Setting(props) {
           />
           <Switch
             checked={userTermsPush === 'Y'}
-            onPress={() => setUserTermsPush(userTermsPush === 'Y' ? 'N' : 'Y')}
+            onPress={() => checkStatus('push')}
           />
         </HView>
         <Seperator height={20} />
@@ -235,7 +331,8 @@ export default function Setting(props) {
             color={'dimgray'}
           />
           <Text
-            text={`${DeviceInfo.getVersion()}.${DeviceInfo.getBuildNumber()}`}
+            // text={`${DeviceInfo.getVersion()}.${DeviceInfo.getBuildNumber()}`}
+            text={`${DeviceInfo.getVersion()}`}
             fontSize={16}
             fontWeight={'500'}
             color={'dimgray'}

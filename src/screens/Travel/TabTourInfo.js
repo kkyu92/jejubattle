@@ -63,13 +63,13 @@ export default function TabTourInfo(props) {
                 }}
                 key={i}>
                 <View style={{flex: 0.3}}>
-                  <Text text={e.name} fontSize={18} color={'dimgray'} />
+                  <Text text={e.name} fontSize={16} color={'dimgray'} />
                 </View>
                 <View style={{flex: 0.3, alignItems: 'center'}}>
-                  <Text text={'••••••••••'} fontSize={12} color={'dimgray'} />
+                  <Text text={'••••••••••'} fontSize={10} color={'dimgray'} />
                 </View>
                 <View style={{flex: 0.4, alignItems: 'flex-end'}}>
-                  <Text text={e.time} fontSize={18} color={'dimgray'} />
+                  <Text text={e.time} fontSize={16} color={'dimgray'} />
                 </View>
               </HView>
             );
@@ -93,13 +93,13 @@ export default function TabTourInfo(props) {
                 }}
                 key={i}>
                 <View style={{flex: 0.3}}>
-                  <Text text={e.name} fontSize={18} color={'dimgray'} />
+                  <Text text={e.name} fontSize={16} color={'dimgray'} />
                 </View>
                 <View style={{flex: 0.3, alignItems: 'center'}}>
-                  <Text text={'••••••••••'} fontSize={12} color={'dimgray'} />
+                  <Text text={'••••••••••'} fontSize={10} color={'dimgray'} />
                 </View>
                 <View style={{flex: 0.4, alignItems: 'flex-end'}}>
-                  <Text text={e.fare} fontSize={18} color={'dimgray'} />
+                  <Text text={e.fare} fontSize={16} color={'dimgray'} />
                 </View>
               </HView>
             );
@@ -118,7 +118,7 @@ export default function TabTourInfo(props) {
             <Seperator width={20} />
             <TouchableOpacity
               onPress={() => Linking.openURL(`tel:${props.data.faPhone}`)}>
-              <Text text={props.data.faPhone} fontSize={18} color={'dimgray'} />
+              <Text text={props.data.faPhone} fontSize={16} color={'dimgray'} />
             </TouchableOpacity>
           </HView>
         </>
@@ -167,7 +167,7 @@ export default function TabTourInfo(props) {
               }}>
               <Text
                 text={props.data.faAddr}
-                fontSize={18}
+                fontSize={16}
                 color={'dimgray'}
                 selectable={true}
               />

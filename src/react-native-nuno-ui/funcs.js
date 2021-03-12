@@ -182,8 +182,7 @@ export async function getCurrentLocation(lang) {
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
         // title: '',
-        message:
-          '근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요.',
+        message: '회원님의 위치정보를 권한을 확인해주세요.',
       },
     );
   } else {
@@ -191,14 +190,10 @@ export async function getCurrentLocation(lang) {
     console.log('geolocation : ' + result);
     if (result !== 'granted') {
       setTimeout(async () => {
-        await Alert.alert(
-          `근접 회원님과의 매칭을 위해 회원님의 위치정보를 허락해주세요.`,
-          '',
-          [
-            {text: '권한 설정하기', onPress: () => openSetting()},
-            {text: '취소', onPress: () => {}},
-          ],
-        );
+        await Alert.alert('회원님의 위치정보를 권한을 확인해주세요.', '', [
+          {text: '권한 설정하기', onPress: () => openSetting()},
+          {text: '취소', onPress: () => {}},
+        ]);
       }, 400);
       granted = result;
     } else {
@@ -385,7 +380,7 @@ export const swap = (arr, index1, index2) =>
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export function share(deeplink, title, contents, img, callback, efr = '1') {
+export function share(deeplink, title, contents, img, callback) {
   fetch(
     `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${Nuno.config.FIREBASE_WEB_API}`,
     {
@@ -396,8 +391,8 @@ export function share(deeplink, title, contents, img, callback, efr = '1') {
       body: JSON.stringify({
         longDynamicLink: `${Nuno.config.dynamicLink}/?link=${deeplink}&ibi=${Nuno.config.BUNDLE_ID}&isi=${Nuno.config.IOS_STORE_ID}&apn=${Nuno.config.PACKAGE_NAME}&st=${title}
         &sd=${contents}
-        &si=${img}
-        &efr=${efr}`,
+        &si=${img}`,
+        // &efr='1'`,
       }),
     },
   )

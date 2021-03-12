@@ -18,10 +18,15 @@ import {ShadowStyle, screenWidth} from '../../styles';
 import ListItemBattle from '../../commons/ListItemBattle';
 import FloatingButton from '../../commons/FloatingButton';
 import Axios from 'axios';
-import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
+import {
+  getCurrentLocation,
+  logApi,
+  showToast,
+} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import {useIsFocused} from '@react-navigation/native';
+import Init from '../../commons/Init';
 
 export default function Battle(props) {
   const context = React.useContext(AppContext);
@@ -120,8 +125,8 @@ export default function Battle(props) {
             blCode,
             bpCode,
             caCode,
-            lat: global.address.coords.latitude,
-            lon: global.address.coords.longitude,
+            lat: global?.address?.coords?.latitude,
+            lon: global?.address?.coords?.longitude,
           }
         : {
             pageNum: page,
@@ -154,8 +159,8 @@ export default function Battle(props) {
                   blCode,
                   bpCode,
                   caCode,
-                  lat: global.address.coords.latitude,
-                  lon: global.address.coords.longitude,
+                  lat: global?.address?.coords?.latitude,
+                  lon: global?.address?.coords?.longitude,
                 }
               : {
                   pageNum: page + 1,
@@ -185,6 +190,8 @@ export default function Battle(props) {
     if (caCode !== undefined) {
       if (caCode.length === 0) {
         console.log('length : 0');
+        console.log(`latitude : ${global?.address?.coords?.latitude}`);
+        console.log(`longitude : ${global?.address?.coords?.longitude}`);
       } else {
         console.log('length : ' + caCode.length);
       }
@@ -200,8 +207,8 @@ export default function Battle(props) {
             blCode,
             bpCode,
             caCode,
-            lat: global.address.coords.latitude,
-            lon: global.address.coords.longitude,
+            lat: global?.address?.coords?.latitude,
+            lon: global?.address?.coords?.longitude,
           }
         : {bdCode, boCode, baCode, bmCode, blCode, bpCode, caCode},
     )

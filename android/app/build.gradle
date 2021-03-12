@@ -134,8 +134,8 @@ android {
         applicationId "com.jejubattle"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 43
-        versionName "2.0.1"
+        versionCode 215
+        versionName "2.1.5"
         multiDexEnabled true
     }
     splits {
@@ -210,6 +210,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)' // facebook sdk 설정
     // implementation project(':react-native-seoul-kakao-login')
 
+    implementation "androidx.appcompat:appcompat:1.0.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {

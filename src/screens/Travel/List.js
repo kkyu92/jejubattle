@@ -11,14 +11,28 @@ import {
   Checkbox,
   Modal,
 } from '../../react-native-nuno-ui';
-import {View, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  Alert,
+  Linking,
+  Platform,
+} from 'react-native';
 import Icons from '../../commons/Icons';
 import {custom} from '../../config';
 import ListItem from '../../commons/ListItem';
 import Axios from 'axios';
-import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
+import {
+  getCurrentLocation,
+  logApi,
+  showToast,
+} from '../../react-native-nuno-ui/funcs';
+import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from '../../context';
 import {useIsFocused} from '@react-navigation/native';
+import Init from '../../commons/Init';
 
 export default function TravelList(props) {
   const context = React.useContext(AppContext);
@@ -53,8 +67,8 @@ export default function TravelList(props) {
       faCode: props.route.params.faCode,
       code: activeTab,
       orderType: orderType,
-      lat: global.address.coords.latitude,
-      lon: global.address.coords.longitude,
+      lat: global?.address?.coords?.latitude,
+      lon: global?.address?.coords?.longitude,
       pageNum: page,
     })
       .then((res) => {
@@ -78,8 +92,8 @@ export default function TravelList(props) {
             faCode: props.route.params.faCode,
             code: activeTab,
             orderType: orderType,
-            lat: global.address.coords.latitude,
-            lon: global.address.coords.longitude,
+            lat: global?.address?.coords?.latitude,
+            lon: global?.address?.coords?.longitude,
             pageNum: page + 1,
           }).then(async (res) => {
             if (res.data.facility.length === 0) {
@@ -158,6 +172,67 @@ export default function TravelList(props) {
       .catch((err) => {
         logApi('scrapOff error', err.response);
       });
+  };
+  const apply = async (orderType) => {
+    if (orderType === 3) {
+      let locationPermission;
+      if (Platform.OS === 'ios') {
+        locationPermission = await Geolocation.requestAuthorization(
+          'whenInUse',
+        );
+      } else {
+        locationPermission = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+      }
+
+      if (locationPermission === 'granted') {
+        await Init();
+        setFilterVisible(false);
+        setTravel([]);
+        setPage(1);
+        setMoredone(false);
+        getTravelList(1);
+        flatListRef.current.scrollToOffset({
+          animated: false,
+          offset: 0,
+        });
+      } else {
+        Alert.alert('회원님의 위치정보를 권한을 확인해주세요.', '', [
+          {
+            text: '권한 설정하기',
+            onPress: () => {
+              setOrderType(3),
+                Linking.openSettings().catch(() => {
+                  Alert.alert('Unable to open settings');
+                });
+            },
+          },
+          {
+            text: '취소',
+            onPress: () => {
+              showToast(
+                `회원님의 위치정보를 권한을 설정 후 다시 시도해주세요.`,
+                2000,
+                'center',
+              );
+              setFilterVisible(false);
+              setOrderType(0);
+            },
+          },
+        ]);
+      }
+    } else {
+      setFilterVisible(false);
+      setTravel([]);
+      setPage(1);
+      setMoredone(false);
+      getTravelList(1);
+      flatListRef.current.scrollToOffset({
+        animated: false,
+        offset: 0,
+      });
+    }
   };
   return (
     <Container>
@@ -322,15 +397,7 @@ export default function TravelList(props) {
               <Button
                 text={'적용하기'}
                 onPress={() => {
-                  setFilterVisible(false);
-                  setTravel([]);
-                  setPage(1);
-                  setMoredone(false);
-                  getTravelList(1);
-                  flatListRef.current.scrollToOffset({
-                    animated: false,
-                    offset: 0,
-                  });
+                  apply(orderType);
                 }}
                 color={custom.themeColor}
                 stretch

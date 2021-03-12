@@ -127,6 +127,7 @@ export default function Login(props) {
         appleAuthRequestResponse.fullName.givenName === null
           ? shortName
           : `${appleAuthRequestResponse.fullName.givenName}`,
+        '',
       );
     } catch (error) {
       if (error.code === appleAuth.Error.CANCELED) {
@@ -193,133 +194,133 @@ export default function Login(props) {
     global.address = getCurrentLocation(global.lang);
   }
   const signin = async () => {
-    let result;
-    if (Platform.OS === 'android') {
-      result = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      console.log(JSON.stringify(result));
-    } else {
-      result = await Geolocation.requestAuthorization('whenInUse');
-    }
-    if (result === 'granted') {
-      global.address = getCurrentLocation(global.lang);
-      setLoading(true);
-      Axios.post('signin', {
-        userId: email,
-        userPwd: password,
-        userPushkey: global.fcmToken,
-        deviceOs: Platform.OS === 'android' ? 1 : 2,
-        deviceOsVer: Platform.Version,
+    // let result;
+    // if (Platform.OS === 'android') {
+    //   result = await PermissionsAndroid.request(
+    //     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //   );
+    //   console.log(JSON.stringify(result));
+    // } else {
+    //   result = await Geolocation.requestAuthorization('whenInUse');
+    // }
+    // if (result === 'granted') {
+    // global.address = getCurrentLocation(global.lang);
+    setLoading(true);
+    Axios.post('signin', {
+      userId: email,
+      userPwd: password,
+      userPushkey: global.fcmToken,
+      deviceOs: Platform.OS === 'android' ? 1 : 2,
+      deviceOsVer: Platform.Version,
+    })
+      .then(async (res) => {
+        logApi('signin success', res.data);
+        await AsyncStorage.setItem('token', res.data.token);
+        await Init();
+        context.dispatch({type: 'AUTHORIZED', data: res.data});
+        setLoading(false);
       })
-        .then(async (res) => {
-          logApi('signin success', res.data);
-          await AsyncStorage.setItem('token', res.data.token);
-          await Init();
-          context.dispatch({type: 'AUTHORIZED', data: res.data});
+      .catch((err) => {
+        logApi('signin error', err?.response);
+        console.log('e : ' + JSON.stringify(err));
+        if (err?.code !== 1) {
           setLoading(false);
-        })
-        .catch((err) => {
-          logApi('signin error', err?.response);
-          console.log('e : ' + JSON.stringify(err));
-          if (err.code !== 1) {
-            setLoading(false);
-            setTimeout(() => {
-              if (err.response?.data?.message) {
-                Alert.alert('로그인 실패', err.response?.data?.message);
-              }
-            }, 200);
-          }
-        });
-    } else if (result !== 'granted' && Platform.OS === 'ios') {
-      await Init();
-    }
-  };
-  const startWithSNS = async (userId, userEmail, userCode, appleName) => {
-    console.log('userId : ' + userId);
-    console.log('userCode : ' + userCode);
-    console.log('userEmail : ' + userEmail);
-    console.log('token : ' + global.fcmToken);
-    let result;
-    if (Platform.OS === 'android') {
-      result = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      console.log(JSON.stringify(result));
-    } else {
-      result = await Geolocation.requestAuthorization('whenInUse');
-    }
-    if (result === 'granted') {
-      global.address = getCurrentLocation(global.lang);
-      setLoading(true);
-      Axios.post('snsSignin', {
-        userId: userId,
-        userCode: userCode,
-        userPushkey: global.fcmToken,
-        deviceOs: Platform.OS === 'android' ? 1 : 2,
-        deviceOsVer: Platform.Version,
-      })
-        .then(async (res) => {
-          logApi('snsSignin', res.data);
-          await AsyncStorage.setItem('token', res.data.token);
-          await Init();
-          context.dispatch({type: 'AUTHORIZED', data: res.data});
-          setLoading(false);
-        })
-        .catch((err) => {
-          logApi('snsSignin error', err);
-          if (err?.response?.status === 403) {
-            if (userCode === 5) {
-              const formData = new FormData();
-              formData.append('userCode', userCode);
-              formData.append('userId', userId);
-              formData.append('userName', appleName || '이름없음');
-              formData.append('userEmail', userEmail);
-              formData.append('userSex', '');
-              formData.append('userPhone', '');
-              formData.append('userPushkey', global.fcmToken);
-              formData.append('deviceOs', Platform.OS === 'android' ? 1 : 2);
-              formData.append('deviceOsVer', Platform.Version);
-
-              Axios({
-                url: API_URL + 'snsSignup',
-                method: 'POST',
-                data: formData,
-                headers: {
-                  Accept: 'application/json',
-                  token: global.token,
-                  'Content-Type': 'multipart/form-data',
-                },
-              })
-                .then(async (res) => {
-                  logApi('snsSignup', res.data);
-                  if (res.data.token) {
-                    await AsyncStorage.setItem('token', res.data.token);
-                    await Init();
-                    context.dispatch({type: 'AUTHORIZED', data: res.data});
-                  }
-                  setLoading(false);
-                })
-                .catch((err) => {
-                  logApi('snsSignup error', err?.response);
-                  Alert.alert(err.response?.data?.message);
-                  setLoading(false);
-                });
-            } else {
-              props.navigation.navigate('Join', {
-                uid: userId,
-                userId: userEmail,
-                userCode: userCode,
-              });
+          setTimeout(() => {
+            if (err?.response?.data?.message) {
+              Alert.alert('로그인 실패', err?.response?.data?.message);
             }
-          } else if (err.response?.data?.message) {
-            Alert.alert('로그인', err.response?.data?.message);
-          }
-          setLoading(false);
-        });
-    } else if (result === 'denied' && Platform.OS === 'ios') {
-      await Init();
+          }, 200);
+        }
+      });
+    // } else if (result !== 'granted' && Platform.OS === 'ios') {
+    //   await Init();
+    // }
+  };
+  const startWithSNS = async (
+    userId,
+    userEmail,
+    userCode,
+    userName,
+    userGender,
+  ) => {
+    if (userEmail === undefined) {
+      userEmail = 'noemail@mail.com';
     }
+    console.log('userId : ' + userId);
+    console.log('userEmail : ' + userEmail);
+    console.log('userCode : ' + userCode);
+    console.log('userName : ' + userName);
+    console.log('userGender : ' + userGender);
+    console.log('token : ' + global.fcmToken);
+
+    setLoading(true);
+    await Axios.post('snsSignin', {
+      userId: userId,
+      userCode: userCode,
+      userPushkey: global.fcmToken,
+      deviceOs: Platform.OS === 'android' ? 1 : 2,
+      deviceOsVer: Platform.Version,
+    })
+      .then(async (res) => {
+        logApi('snsSignin', res.data);
+        await AsyncStorage.setItem('token', res.data.token);
+        await Init();
+        context.dispatch({type: 'AUTHORIZED', data: res.data});
+        setLoading(false);
+      })
+      .catch(async (err) => {
+        logApi('snsSignin error', err);
+        if (err?.response?.status === 403) {
+          if (userCode === 5) {
+            const formData = new FormData();
+            formData.append('userCode', userCode);
+            formData.append('userId', userId);
+            formData.append('userName', userName || shortName);
+            formData.append('userEmail', userEmail);
+            formData.append('userSex', userGender || '');
+            formData.append('userPhone', '');
+            formData.append('userPushkey', global.fcmToken);
+            formData.append('deviceOs', Platform.OS === 'android' ? 1 : 2);
+            formData.append('deviceOsVer', Platform.Version);
+
+            await Axios({
+              url: API_URL + 'snsSignup',
+              method: 'POST',
+              data: formData,
+              headers: {
+                Accept: 'application/json',
+                token: global.token,
+                'Content-Type': 'multipart/form-data',
+              },
+            })
+              .then(async (res) => {
+                logApi('snsSignup', res.data);
+                if (res.data.token) {
+                  await AsyncStorage.setItem('token', res.data.token);
+                  await Init();
+                  context.dispatch({type: 'AUTHORIZED', data: res.data});
+                }
+                setLoading(false);
+              })
+              .catch((err) => {
+                logApi('snsSignup error', err?.response);
+                Alert.alert(err.response?.data?.message);
+                setLoading(false);
+              });
+          } else {
+            props.navigation.navigate('Join', {
+              uid: userId,
+              userId: userEmail,
+              userCode: userCode,
+              userName: userName || '',
+              userGender: userGender || '',
+            });
+          }
+        } else if (err.response?.data?.message) {
+          Alert.alert('로그인', err.response?.data?.message);
+        }
+        setLoading(false);
+      });
   };
   const pwInquiry = () => {
     setLoading(true);
@@ -338,9 +339,9 @@ export default function Login(props) {
         Alert.alert(err?.response?.data?.message);
       });
   };
-
-  const startWithNaver = () => {
-    NaverLogin.login(
+  const startWithNaver = async () => {
+    await NaverLogin.logout();
+    await NaverLogin.login(
       {
         kConsumerKey: '0bje5MBfj02OLYYq102o',
         kConsumerSecret: '2Z62bOJe_U',
@@ -358,7 +359,14 @@ export default function Login(props) {
           Alert.alert('Naver getProfile fail', profile.message);
           return;
         }
-        startWithSNS(profile.response.id, profile.response.email, 2);
+        console.log(profile);
+        startWithSNS(
+          profile.response.id,
+          profile.response.email,
+          2,
+          profile.response.name,
+          profile.response.gender,
+        );
       },
     );
   };
@@ -382,7 +390,17 @@ export default function Login(props) {
         console.log(`Login Finished:${JSON.stringify(result)}`);
         RNKakaoLogins.getProfile((profileErr, profile) => {
           console.log('kakao getProfile', profile);
-          startWithSNS(profile.id, profile.email, 3);
+          startWithSNS(
+            profile.id,
+            profile.email,
+            3,
+            profile.nickname,
+            profile.gender === 'MALE'
+              ? 'M'
+              : profile.gender === 'FEMALE'
+              ? 'F'
+              : '',
+          );
         });
       })
       .catch((err) => {
@@ -433,7 +451,7 @@ export default function Login(props) {
             Alert.alert('Facebook getAccessToken fail', JSON.stringify(error));
           } else {
             console.log('FB Profile : ' + JSON.stringify(profile));
-            startWithSNS(profile.id, profile.email, 4);
+            startWithSNS(profile.id, profile.email, 4, profile.name, '');
           }
         };
         const infoRequest = new GraphRequest(

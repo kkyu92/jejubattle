@@ -80,6 +80,7 @@ class LocalNotificationService {
       message: message || '',
       playSound: options.playSound || false,
       soundName: options.soundName || 'default',
+      ignoreInForeground: false,
       userInteraction: false, // If the notification was opened by the user from the notification area or not
       channelId: '3429',
     });

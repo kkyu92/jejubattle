@@ -9,13 +9,22 @@ import {
   Image,
   Checkbox,
 } from '../../react-native-nuno-ui';
-import {TouchableOpacity, View, ScrollView} from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import {
+  TouchableOpacity,
+  View,
+  ScrollView,
+  Platform,
+  Alert,
+  Linking,
+} from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {logApi} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import {screenWidth} from '../../styles';
+import Init from '../../commons/Init';
 
 export default function BattleFilter(props) {
   const context = React.useContext(AppContext);
@@ -62,7 +71,7 @@ export default function BattleFilter(props) {
     }
     setCaCode(temp);
   };
-  const apply = () => {
+  const apply = async () => {
     let code = [];
     caCode.map((e) => {
       code.push({
@@ -70,16 +79,50 @@ export default function BattleFilter(props) {
       });
     });
     console.log(JSON.stringify(code));
-    props.navigation.navigate('Battle', {
-      bdCode,
-      boCode,
-      baCode,
-      bmCode,
-      blCode,
-      bpCode,
-      // caCode,
-      caCode: code,
-    });
+    let locationPermission;
+    if (Platform.OS === 'ios') {
+      locationPermission = await Geolocation.requestAuthorization('whenInUse');
+    } else {
+      locationPermission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+    }
+
+    if (locationPermission === 'granted') {
+      await Init();
+      props.navigation.navigate('Battle', {
+        bdCode,
+        boCode,
+        baCode,
+        bmCode,
+        blCode,
+        bpCode,
+        // caCode,
+        caCode: code,
+      });
+    } else {
+      Alert.alert('회원님의 위치정보를 권한을 확인해주세요.', '', [
+        {
+          text: '권한 설정하기',
+          onPress: () => {
+            setBoCode(3),
+              Linking.openSettings().catch(() => {
+                Alert.alert('Unable to open settings');
+              });
+          },
+        },
+        {
+          text: '취소',
+          onPress: () => {
+            showToast(
+              `회원님의 위치정보를 권한을 설정 후 다시 시도해주세요.`,
+              2000,
+              'center',
+            );
+          },
+        },
+      ]);
+    }
   };
   const reset = () => {
     setBdCode(0);

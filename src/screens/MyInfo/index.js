@@ -73,7 +73,7 @@ export default function MyInfo(props) {
           <StarRating
             disabled={true}
             maxStars={5}
-            rating={5}
+            rating={context.me.userScope}
             starSize={11}
             emptyStarColor={custom.themeColor}
             halfStarEnabled={true}

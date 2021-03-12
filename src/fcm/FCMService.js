@@ -3,6 +3,8 @@ import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import Axios from 'axios';
+import {logApi} from '../react-native-nuno-ui/funcs';
 
 class FCMService {
   register = (onNotification, onOpenNotification) => {
@@ -42,7 +44,17 @@ class FCMService {
       console.info(token);
       console.groupEnd();
       await AsyncStorage.setItem('fcmToken', token);
-      console.log(token);
+      await Axios.post('updatePushkey', {
+        userPushkey: token,
+      })
+        .then((res) => {
+          logApi('updatePushkey', res.data);
+          console.log(token);
+        })
+        .catch((err) => {
+          logApi('updatePushkey error', err);
+          console.log(token);
+        });
     }
   };
 

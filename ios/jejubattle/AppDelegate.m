@@ -69,9 +69,13 @@ static void InitializeFlipper(UIApplication *application) {
   // Define UNUserNotificationCenter
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  
-  [[NaverThirdPartyLoginConnection getSharedInstance] setIsInAppOauthEnable:YES];
 
+  [[NaverThirdPartyLoginConnection getSharedInstance] setIsInAppOauthEnable:YES];
+  NaverThirdPartyLoginConnection *thirdConn = [NaverThirdPartyLoginConnection getSharedInstance];
+  [thirdConn setServiceUrlScheme:kServiceAppUrlScheme];
+  [thirdConn setConsumerKey:kConsumerKey];
+  [thirdConn setConsumerSecret:kConsumerSecret];
+  [thirdConn setAppName:kServiceAppName];
   // // datetimepicker darkmode
   // if (@available(iOS 13, *)) {
   //   self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
@@ -93,22 +97,25 @@ static void InitializeFlipper(UIApplication *application) {
   // kakao login
   if ([KOSession isKakaoAccountLoginCallback:url]) {
     return [KOSession handleOpenURL:url];
+  } else if ([[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options]) {
+    return true;
+  } else if ([RCTLinkingManager application:application openURL:url options:options]) {
+     // naver login
+    if ([[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options]) {
+      return true;
+      // return [self handleWithUrl:url];
+    } else {
+      return true;
+    }
+  } else {
+    return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
   }
 
-  // facebook login
-  if ([[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options]) {
-    return true;
-  }
-
-  // naver login
-  if ([[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options]) {
-//    return true;
-    return [self handleWithUrl:url];
-  }
-  
-  if ([RCTLinkingManager application:application openURL:url options:options]) {
-    return true;
-  }
+//   // naver login
+//   if ([[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options]) {
+// //    return true;
+//     return [self handleWithUrl:url];
+//   }
   
   return false;
 }

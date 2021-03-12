@@ -29,13 +29,16 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Init from '../../commons/Init';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {show} from 'react-native-bootsplash';
+import InAppBrowser from 'react-native-inappbrowser-reborn';
 
 export default function Join(props) {
   const context = React.useContext(AppContext);
   const [photo, setPhoto] = React.useState('');
-  const [name, setName] = React.useState('');
+  const [name, setName] = React.useState(props.route?.params?.userName || '');
   const [mobile, setMobile] = React.useState('');
-  const [gender, setGender] = React.useState('');
+  const [gender, setGender] = React.useState(
+    props.route?.params?.userGender || '',
+  );
   const [uid, setUid] = React.useState(props.route?.params?.uid || '');
   const [email, setEmail] = React.useState(props.route?.params?.userId || '');
   const [userAuthkey, setUserAuthkey] = React.useState('');
@@ -48,12 +51,20 @@ export default function Join(props) {
   const [agreement2, setAgreement2] = React.useState(false);
 
   React.useEffect(() => {
-    if (
-      props.route?.params?.userCode &&
-      props.route?.param?.userId === undefined
-    ) {
-      setEmail(`${uid}@undefined.com`);
-    }
+    // if (props.route?.params?.userCode !== undefined) {
+    setGender('U');
+    // }
+    // console.log(JSON.stringify(props.route.params));
+    // if (props.route?.params?.userId === undefined) {
+    //   // setEmail(`${uid}@null.com`);
+    //   console.log(`email 없음 ${props.route?.param?.userId}`);
+    //   console.log(`email 없음 ${email}`);
+    //   console.log(`uid 없음 ${uid}`);
+    // } else {
+    //   console.log(`email 있음 ${props.route?.params?.userId}`);
+    //   console.log(`email 있음 ${email}`);
+    //   console.log(`uid 있음 ${uid}`);
+    // }
     // Alert.alert(
     //   'SNS 받아오는 정보',
     //   `userCode [SNS] : ${props.route?.params?.userCode}
@@ -96,12 +107,13 @@ export default function Join(props) {
     //   console.log('아직인증 노');
     // }
   }, [context.noti]);
-  const handleOpenURL = (e) => {
+  const handleOpenURL = async (e) => {
     const temp = e.url.split('/');
     const param = temp[temp.length - 1];
-    console.log('handleOpenURL', e.url, param);
-    Alert.alert('핸드폰 본인인증이 완료되었습니다', param);
-    setMobile(param);
+    await InAppBrowser.close();
+    await console.log('handleOpenURL', e.url, param);
+    await Alert.alert('핸드폰 본인인증이 완료되었습니다', param);
+    await setMobile(param);
   };
   const handleAgreementAll = () => {
     if (agreement) {
@@ -184,7 +196,7 @@ export default function Join(props) {
     postUser();
   };
   const postUser = async () => {
-    setLoading(true);
+    await setLoading(true);
     if (props.route?.params?.userCode) {
       const formData = new FormData();
       formData.append('userCode', props.route?.params?.userCode);
@@ -223,12 +235,12 @@ export default function Join(props) {
             await Init();
             context.dispatch({type: 'AUTHORIZED', data: res.data});
           }
-          setLoading(false);
+          await setLoading(false);
         })
-        .catch((err) => {
+        .catch(async (err) => {
           logApi('snsSignup error', err?.response);
           Alert.alert(err.response?.data?.message);
-          setLoading(false);
+          await setLoading(false);
         });
     } else {
       const formData = new FormData();
@@ -269,12 +281,12 @@ export default function Join(props) {
             await Init();
             context.dispatch({type: 'AUTHORIZED', data: res.data});
           }
-          setLoading(false);
+          await setLoading(false);
         })
-        .catch((err) => {
+        .catch(async (err) => {
           logApi('signup error', err?.response);
           Alert.alert(err.response?.data?.message);
-          setLoading(false);
+          await setLoading(false);
         });
     }
   };
@@ -294,7 +306,48 @@ export default function Join(props) {
         console.log('ImagePicker openPicker error', err);
       });
   };
-
+  const linkBrowser = async () => {
+    try {
+      const url = 'https://jejubattle.com/nice/main';
+      if (Platform.OS === 'ios') {
+        if (await InAppBrowser.isAvailable()) {
+          const result = await InAppBrowser.open(url, {
+            // iOS Properties
+            dismissButtonStyle: 'cancel',
+            preferredBarTintColor: custom.themeColor,
+            preferredControlTintColor: 'white',
+            readerMode: false,
+            animated: true,
+            modalPresentationStyle: 'fullScreen',
+            modalTransitionStyle: 'coverVertical',
+            modalEnabled: true,
+            enableBarCollapsing: false,
+            // Android Properties
+            showTitle: true,
+            toolbarColor: custom.themeColor,
+            secondaryToolbarColor: 'black',
+            enableUrlBarHiding: true,
+            enableDefaultShare: true,
+            forceCloseOnRedirection: false,
+            // Specify full animation resource identifier(package:anim/name)
+            // or only resource name(in case of animation bundled with app).
+            animations: {
+              startEnter: 'slide_in_right',
+              startExit: 'slide_out_left',
+              endEnter: 'slide_in_left',
+              endExit: 'slide_out_right',
+            },
+            headers: {
+              'my-custom-header': 'my custom header value',
+            },
+          });
+          // Alert.alert(JSON.stringify(result));
+        }
+      } else Linking.openURL(url);
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
   return (
     <Container>
       <Spinner
@@ -380,12 +433,13 @@ export default function Join(props) {
               text={mobile ? '인증완료' : '인증요청'}
               size={'medium'}
               onPress={
-                () => Linking.openURL('https://jejubattle.com/nice/main')
+                // () => Linking.openURL('https://jejubattle.com/nice/main')
                 // () =>
                 //   props.navigation.navigate('Webview', {
-                //     url: 'https://kangmin.shop/nice/main',
+                //     url: 'https://jejubattle.com/nice/main',
                 //     title: '본인인증',
                 //   })
+                () => linkBrowser()
               }
               // textColor={'dimgray'}
               color={mobile ? custom.themeColor : 'white'}

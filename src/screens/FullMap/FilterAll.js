@@ -100,7 +100,12 @@ export default function FullMapFilterAll(props) {
         showToast('또 뭔 카테고리 추가?', 2000, 'center');
       }
       setSelectedCaCode(props.route?.params?.selectCa);
-      setSelectedClCode(props.route?.params?.selectCl);
+      if (selectedCategory[0] === 4) {
+        setSelectedClCode(props.route?.params?.selectCl);
+      } else {
+        setSelectedClCode([]);
+      }
+
       setLoading(false);
     } else if (
       selectedCategory.length !== 0 &&
@@ -140,6 +145,18 @@ export default function FullMapFilterAll(props) {
     const temp = [];
     temp.push(e);
     setSelectedCategory(temp);
+    setCheckAll(false);
+    setCheckAll2(false);
+  };
+  const handleCheckAllButton = () => {
+    if (!checkAll) {
+      const temp = [...item.map((e) => e.code)];
+      setSelectedCaCode(temp);
+      setCheckAll(true);
+    } else {
+      setSelectedCaCode([]);
+      setCheckAll(false);
+    }
   };
   const handleItemsButton = (e) => {
     const temp = [...selectedCaCode];
@@ -150,6 +167,21 @@ export default function FullMapFilterAll(props) {
       temp.splice(found, 1);
     }
     setSelectedCaCode(temp);
+    if (temp.length === item.length) {
+      setCheckAll(true);
+    } else {
+      setCheckAll(false);
+    }
+  };
+  const handleCheckAll2Button = () => {
+    if (!checkAll2) {
+      const temp = [...type.map((e) => e.code)];
+      setSelectedClCode(temp);
+      setCheckAll2(true);
+    } else {
+      setSelectedClCode([]);
+      setCheckAll2(false);
+    }
   };
   const handleClCodeButton = (e) => {
     const temp = [...selectedClCode];
@@ -160,24 +192,44 @@ export default function FullMapFilterAll(props) {
       temp.splice(found, 1);
     }
     setSelectedClCode(temp);
+    if (temp.length === 4) {
+      setCheckAll2(true);
+    } else {
+      setCheckAll2(false);
+    }
   };
 
-  React.useEffect(() => {
-    if (checkAll) {
-      const temp = [...item.map((e) => e.code)];
-      setSelectedCaCode(temp);
+  const settingFinish = () => {
+    if (selectedCategory.length === 0) {
+      showToast(`카테고리를 선택해주세요.`);
     } else {
-      setSelectedCaCode([]);
+      if (selectedCategory[0] === 4) {
+        // 구기종목
+        if (selectedCaCode.length === 0) {
+          showToast(`항목을 선택해주세요.`);
+        } else if (selectedClCode.length === 0) {
+          showToast(`유형을 선택해주세요.`);
+        } else {
+          props.navigation.navigate('FullMap', {
+            selectedCategory: selectedCategory,
+            itemList: selectedCaCode,
+            typeList: selectedClCode,
+          });
+        }
+      } else {
+        if (selectedCaCode.length === 0) {
+          showToast(`항목을 선택해주세요.`);
+        } else {
+          props.navigation.navigate('FullMap', {
+            selectedCategory: selectedCategory,
+            itemList: selectedCaCode,
+            typeList: selectedClCode,
+          });
+        }
+      }
     }
-  }, [checkAll]);
-  React.useEffect(() => {
-    if (checkAll2) {
-      const temp = [...clCode.map((e) => e.code)];
-      setSelectedClCode(temp);
-    } else {
-      setSelectedClCode([]);
-    }
-  }, [checkAll2]);
+  };
+
   return loading ? (
     <Loader />
   ) : (
@@ -225,8 +277,12 @@ export default function FullMapFilterAll(props) {
                   size={'medium'}
                   paddingHorizontal={30}
                   paddingVertical={15}
-                  color={checkAll ? custom.themeColor : 'white'}
-                  onPress={() => setCheckAll(!checkAll)}
+                  color={
+                    checkAll || item.length === selectedCaCode.length
+                      ? custom.themeColor
+                      : 'white'
+                  }
+                  onPress={() => handleCheckAllButton()}
                 />
               </View>
               {item.map((e, i) => {
@@ -261,8 +317,12 @@ export default function FullMapFilterAll(props) {
                   size={'medium'}
                   paddingHorizontal={30}
                   paddingVertical={15}
-                  color={checkAll2 ? custom.themeColor : 'white'}
-                  onPress={() => setCheckAll2(!checkAll2)}
+                  color={
+                    checkAll2 || 4 === selectedClCode.length
+                      ? custom.themeColor
+                      : 'white'
+                  }
+                  onPress={() => handleCheckAll2Button()}
                 />
               </View>
               {clCode.map((e, i) => {
@@ -296,13 +356,7 @@ export default function FullMapFilterAll(props) {
         }}>
         <Button
           text={'설정하기'}
-          onPress={() =>
-            props.navigation.navigate('FullMap', {
-              selectedCategory: selectedCategory,
-              itemList: selectedCaCode,
-              typeList: selectedClCode,
-            })
-          }
+          onPress={() => settingFinish()}
           color={custom.themeColor}
           disable={false}
           size={'large'}

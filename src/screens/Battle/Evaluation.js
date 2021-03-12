@@ -57,6 +57,7 @@ export default function Evaluation(props) {
 
   const complete = async () => {
     setLoading(true);
+    console.log(`setLoading(true)`);
     const team =
       props.route.params.info.teamA.member.filter(
         (e) => e.userPk === context.me.userPk,
@@ -67,7 +68,7 @@ export default function Evaluation(props) {
     console.log(
       `resultBattle > getCurrentCoords > lat : ${coords.latitude} || lon : ${coords.longitude}`,
     );
-    Axios.post('resultBattle', {
+    await Axios.post('resultBattle', {
       baPk: props.route.params.info.baPk,
       [team]: {
         gameResult: gameResult,
@@ -90,6 +91,7 @@ export default function Evaluation(props) {
           } else {
             setModalMsg(res.data.message);
             setModalWaiting(true);
+            setLoading(false);
           }
         } else {
           props.route.params.socket.send(
@@ -102,7 +104,6 @@ export default function Evaluation(props) {
           props.navigation.goBack();
           showToast('평가를 완료했습니다.', 2000, 'center');
         }
-        setLoading(false);
       })
       .catch((err) => {
         if (err.response.status === 403) {
@@ -112,6 +113,7 @@ export default function Evaluation(props) {
         }
         setLoading(false);
       });
+    console.log(`setLoading(false)`);
   };
   let userProfileComponent = null;
   if (evTarget.name === '') {
@@ -258,7 +260,7 @@ export default function Evaluation(props) {
           text={'배틀평가 및 완료'}
           onPress={() => complete()}
           color={custom.themeColor}
-          disable={!timeScope || !playScope || !gameResult}
+          disable={!timeScope || !playScope || !gameResult || loading}
           loading={loading}
           size={'large'}
           stretch
