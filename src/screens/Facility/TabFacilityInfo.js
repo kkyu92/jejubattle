@@ -177,7 +177,7 @@ export default function TabFacilityInfo(props) {
               style={{flex: 0.1}}
               onPress={() => {
                 Clipboard.setString(props.data.faAddr);
-                showToast('주소가가 복사 되었습니다.', 2000, 'center');
+                showToast('주소가 복사 되었습니다.', 2000, 'center');
               }}>
               <FontAwesome5 name={'copy'} size={20} />
             </TouchableOpacity>

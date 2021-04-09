@@ -133,7 +133,7 @@ export default function Header({
       <View style={{alignItems: 'flex-start'}}>{headerLeft}</View>
 
       {/* Title */}
-      {headerCenter}
+      <View style={{alignItems: 'center'}}>{headerCenter}</View>
 
       {/* Right */}
       <View style={{alignItems: 'flex-end'}}>{headerRight}</View>

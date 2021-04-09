@@ -9,6 +9,7 @@ import {
   Modal,
   Button,
   TextInput,
+  Nuno,
 } from '../../react-native-nuno-ui';
 import {
   View,
@@ -48,6 +49,8 @@ export default function CoinCharge(props) {
   const [coinCount, setCoinCount] = React.useState(1);
   const [product, setProduct] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+
+  const [showPopupModal, setShowPopupModal] = React.useState(false);
 
   let purchaseUpdateSubscription;
   let purchaseErrorSubscription;
@@ -258,18 +261,47 @@ export default function CoinCharge(props) {
             />
           </TouchableOpacity>
         }
-        title={'코인충전소'}
+        centerComponent={
+          <View
+            style={{
+              marginStart: 25,
+              paddingHorizontal: 20,
+              paddingVertical: 5,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text
+              fontSize={18}
+              fontWeight={Nuno.config.headerTitleWeight || '500'}
+              color={Nuno.config.textColor || 'dimgray'}
+              text={'코인충전소'}
+            />
+          </View>
+        }
         navigation={props.navigation}
       />
       <ScrollView>
         {/* <Seperator height={20} /> */}
-        <View style={{padding: 20}}>
+        <HView
+          style={{
+            padding: 20,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
           <Text
             text={'현재 내 코인&포인트'}
             fontSize={18}
             fontWeight={'bold'}
           />
-        </View>
+          <Button
+            text={'배틀코인이란?'}
+            textColor={custom.black}
+            onPress={() => {
+              setShowPopupModal(true);
+            }}
+            size={'middle'}
+          />
+        </HView>
         <HView style={{paddingHorizontal: 20}}>
           <HView style={{flex: 0.5, padding: 10, alignItems: 'center'}}>
             <Image
@@ -644,6 +676,39 @@ export default function CoinCharge(props) {
               />
             </View>
           </HView>
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={showPopupModal}
+        onBackdropPress={() => setShowPopupModal(false)}>
+        <View
+          style={{
+            padding: 10,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            // alignItems: 'center',
+          }}>
+          <View>
+            <Image
+              local
+              uri={require('../../../assets/img/info_coin_charge.png')}
+              height={350}
+              width={'100%'}
+              resizeMode={'contain'}
+            />
+          </View>
+          <View>
+            <Button
+              text={'닫기'}
+              color={custom.themeColor}
+              onPress={() => {
+                setShowPopupModal(false);
+              }}
+              size={'middle'}
+              stretch
+            />
+          </View>
         </View>
       </Modal>
     </Container>

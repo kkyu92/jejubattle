@@ -215,7 +215,7 @@ export default function Drawer(props) {
             <HView>
               <Icons name={'icon-tripinfo-20'} size={19} color={'dimgray'} />
               <Seperator width={20} />
-              <Text text={'여행정보'} fontSize={16} color={'dimgray'} />
+              <Text text={'맛집소개'} fontSize={16} color={'dimgray'} />
             </HView>
             <Icons name={'icon-arrow-10'} size={10} color={'lightgray'} />
           </HView>

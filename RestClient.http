@@ -1,10 +1,10 @@
 @fcm=https://fcm.googleapis.com/fcm/send
 @host=https://jejubattle.com/api/
 @tokenFb=cDNp8zs7T4amhKsghPk45m:APA91bEB7JZIk2PFHLpoWoQF-uOmtm2cVRQKkYV9WxUz0AmsSKUbjI5JhQTXgwL03LRrV3q7LjvbVFHVCP3z_4xgEJ6OEAc-GXSl-07iT4SKgCoUAgN7EMK8zdbU7TB0hAURerRrZNTH
-@tokenKakao=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoxOTIsImV4cCI6MTYxNTE3NDM5Nn0.-8ujWZFsNPTAJvCdRgp7oLmwrlPbQMYsBESQReg-ipk
+@tokenKakao=f_jnWwZwdUOCtkVZrvJWKT:APA91bH2DhUVxxPwbbnM3jtnoxbej9ZGgJJXJ7HG1eS9aoqXCdcg9qhf0VBHNS9gpjRzUSqeLmruftjisgfHoMqWjsRUjYY5vjE6_u9RtqY9AYlpCoL7UFShapFPiCc7gdg-mJJFVzwZ
 @token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoi6rmA6rec7IudIiwiaXNzIjoia2FuZ21pbi5zaG9wIiwiX3BrIjoyMSwiZXhwIjoxNjA5NDY3NzUwfQ.qcSt_Arq9B3sb6IHaUb_D65aZ5ledSRz3QElzC0evIM
 @pushKeyKakao=d9P80U8JTPKd8o6OCNbIt4:APA91bENEKBovx8G4mn3aKu9jnIe_xBJVh1_xqLLrUfs3IDCEKyx4UaatPpltqZmCPsRbVSbc-ga8jWJ8PytoNueL0aFndn-s6EKRoVKPWw4S059zc3CsFiTseqcxXMqkDCj-mkQciYx
-@pushKey=fITkvNxP80Yon4znlXr-cF:APA91bEb5A-_YB7-pZ1cVjDXfoCCYx8aIalX8yVjgpFJHy7_hA0DUoV-yCSZJ9UZ87QxnqxYUNT65H0nWwLBykEoGn-3q8YQ9Gl65XE3wDgeHPXqD7aoxaKiLvahBUF5krMqT7EusvuP
+@pushKey=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiVy5kZXYiLCJpc3MiOiJrYW5nbWluLnNob3AiLCJfcGsiOjQ1MiwiZXhwIjoxNjIwNDM3MzI4fQ.2meq6JGxKlqPAoQZuUrqvciVZFHFdRMg6zbIArwxK3s
 
 GET {{host}}mainList HTTP/1.1
 token: {{token}}
@@ -174,25 +174,26 @@ token: {{tokenKakao}}
 POST {{fcm}}
 Authorization: key=AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH
 Content-Type: application/json
-token: {{tokenKakao}}
+token: {{pushKeyKakao}}
 
 {
   //"to": "cSU1jr8rQGSM4JEBlsWY1f:APA91bETzqnC8mOLap0aEAQmKpuBEwUutL6pPKoah0qXmxM-ij-8dwa5LbDQl7EiXvOmJafBtcJea6_jVDltTm8Bkj3brebM-Aaia5VsrBSOqG11BK0tVTF5I33ixnTAlpModYYDEtTg",
-  //"to": "eWfm_D8SR-WAl2oiPV37-8:APA91bG8IEMwAU1KubcWdkcWsNb9S7MT2S37Ep1UVPKhuRL7eR9HdN9CETyY-8U2d-c8DBAvDvidF4H2fNQXDwON7HcUEKYKghqkbibWwVx10Y8E8LrAYvxqbF1uKYnt6-ApoGiNUkJJ",
-  "to": "cDNp8zs7T4amhKsghPk45m:APA91bEnKZheO9TaJo_IFPLcX7-a00Ho2CJI0_jDHmz7BSCEmhd7NhMrhIre0gOwF3VGXL_L-9QCT_NHRRIIhNDOOamO_M0MAW1nVUTNiN-zGqPdeqcoaew_9BGWaf9j125vbAmlEVpD",
+  //"to": "fVqmUzGEQ3aZTmvz8zhAmL:APA91bFOxzaqgqWtb4y3u7hCCINayV7BK0gkPhbjrYYC389AifmFQoYnfZvMMZtMIvQuR5cIOtJPZc_DDl4QRfEwB-uNAQsRPLG8XxqV43BvQGEG99AGLPN6yLRBAa5V1C9w3Ug2qOSO",
+  "to": "f_jnWwZwdUOCtkVZrvJWKT:APA91bH2DhUVxxPwbbnM3jtnoxbej9ZGgJJXJ7HG1eS9aoqXCdcg9qhf0VBHNS9gpjRzUSqeLmruftjisgfHoMqWjsRUjYY5vjE6_u9RtqY9AYlpCoL7UFShapFPiCc7gdg-mJJFVzwZ",
   
   "notification": {
      "title": "noti-title",
      "body": "noti-body"
-    // "image": "123"
-    // "smallIcon": "123"
+     //"image": "123"
+     //"imageUrl": "https://lespo.s3.ap-northeast-2.amazonaws.com/stroage/img-user2.png"
   },
+  "priority" : "high",
   "data": {
-    "baPk": "699", 
+    "baPk": "1060", 
     "body": "data-dody", 
     "imgUrl": "https://lespo.s3.ap-northeast-2.amazonaws.com/stroage/img-user2.png", 
-    "screen": "battlechat", 
-    "tabIndex": "2", 
+    "screen": "admin", 
+    // "tabIndex": "2", 
     "title": "data-title"
   }
 }

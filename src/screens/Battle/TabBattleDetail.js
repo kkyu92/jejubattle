@@ -36,6 +36,8 @@ import {AppContext} from '../../context';
 import Reward from './Reward';
 // import {navigate} from '../../navigations/RootNavigation';
 import * as RootNavigation from '../../navigations/RootNavigation';
+import {getStatusBarHeight, getBottomSpace} from 'react-native-iphone-x-helper';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export default function TabBattleDetail(props) {
   const context = React.useContext(AppContext);
@@ -61,6 +63,10 @@ export default function TabBattleDetail(props) {
   );
   const [battleButtonText, setBattleButtonText] = React.useState('');
   const [reStartBattle, setReStartBattle] = React.useState(false);
+
+  const [hideOutBtnGuide, setHideOutBtnGuide] = React.useState(
+    global.hideOutBtnGuide,
+  );
 
   // let reStartBattle = false;
   // let battleButtonText;
@@ -623,6 +629,40 @@ export default function TabBattleDetail(props) {
         </View>
       </HView>
       <Seperator bottom />
+      {props.info.baCode < 3 && (
+        <View
+          style={{
+            backgroundColor: '#303441',
+            borderRadius: 5,
+            paddingHorizontal: 20,
+            paddingTop: 20,
+            position: 'absolute',
+            bottom: getBottomSpace() + 80,
+            left: 20,
+            alignItems: 'center',
+          }}>
+          <Text
+            text={'해당 방을 원하지 않을시 방을 나가주세요!'}
+            color={'white'}
+            fontSize={16}
+          />
+          <TouchableOpacity
+            onPress={async () => {
+              await AsyncStorage.setItem(
+                'hideFilterGuide',
+                JSON.stringify(true),
+              );
+              setHideFilterGuide(true);
+              global.hideFilterGuide = true;
+            }}
+            style={{padding: 15}}>
+            <Text text={'X 다시보지않기'} color={'lightgray'} fontSize={12} />
+          </TouchableOpacity>
+          <View style={{position: 'absolute', bottom: -18, left: 10}}>
+            <Entypo name={'triangle-down'} color={'#303441'} size={26} />
+          </View>
+        </View>
+      )}
       {/* 방장 나가기 버튼 */}
       <Modal
         isVisible={modalExit}

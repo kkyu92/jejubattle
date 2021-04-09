@@ -8,7 +8,7 @@ export const sports1Table = [
   {code: 7, icon: require('../../assets/img/icon-billards.png')},
   {code: 8, icon: require('../../assets/img/icon-balling.png')},
   {code: 9, icon: require('../../assets/img/icon-footvolley.png')},
-  {code: 10, icon: require('../../assets/img/icon-golf.png')},
+  {code: 10, icon: require('../../assets/img/icon_pingpong.png')},
   {code: 11, icon: require('../../assets/img/icon-moreetc.png')},
 ];
 export const sports2Table = [

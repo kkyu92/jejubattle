@@ -17,18 +17,17 @@ import {
   ScrollView,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import {custom} from '../../config';
 import Axios from 'axios';
-import {
-  logApi,
-  getCurrentCoords,
-  showToast,
-} from '../../react-native-nuno-ui/funcs';
+import {logApi, showToast, sleep} from '../../react-native-nuno-ui/funcs';
 import {AppContext} from '../../context';
 import {sports1Table} from '../../constants';
 import {screenWidth} from '../../styles';
 import StarRating from 'react-native-star-rating';
+import deviceInfoModule from 'react-native-device-info';
+import Geolocation from 'react-native-geolocation-service';
 
 export default function Evaluation(props) {
   const context = React.useContext(AppContext);
@@ -47,6 +46,8 @@ export default function Evaluation(props) {
       : props.route.params.info.teamB,
   );
 
+  const [showPopupModal, setShowPopupModal] = React.useState(false);
+
   React.useEffect(() => {
     if (getBaCode === 4) {
       props.navigation.goBack();
@@ -54,6 +55,32 @@ export default function Evaluation(props) {
     }
     console.log('useEffect ;;; ' + getBaCode);
   }, [props.route?.params?.info, getBaCode]);
+
+  const getCurrentCoords = async () => {
+    const isEmulator = await deviceInfoModule.isEmulator();
+    return new Promise((resolve, reject) => {
+      if (isEmulator) {
+        resolve({latitude: 37.5683905, longitude: 126.9510365});
+      } else {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            console.log('current location', position.coords);
+            resolve({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+          },
+          async (error) => {
+            setLoading(false);
+            await setShowPopupModal(true);
+            console.log('getCurrentPosition1 error', error.code, error.message);
+            reject(error);
+          },
+          {enableHighAccuracy: false, timeout: 15000, maximumAge: 10000},
+        );
+      }
+    });
+  };
 
   const complete = async () => {
     setLoading(true);
@@ -294,6 +321,62 @@ export default function Evaluation(props) {
             stretch
             color={custom.themeColor}
           />
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={showPopupModal}
+        onBackdropPress={() => setShowPopupModal(false)}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            // alignItems: 'center',
+          }}>
+          <View style={{alignItems: 'center', paddingVertical: 10}}>
+            <Text
+              text={'위치권한을 확인해주세요.'}
+              fontSize={18}
+              fontWeight={'bold'}
+            />
+          </View>
+          <Seperator height={20} />
+          <HView
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingVertical: 20,
+            }}>
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <Button
+                paddingVertical={20}
+                text={'설정'}
+                color={'gray'}
+                onPress={async () => {
+                  await setShowPopupModal(false);
+                  await sleep(100);
+                  await Linking.openSettings();
+                }}
+                size={'middle'}
+                stretch
+              />
+            </View>
+            <Seperator width={10} />
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <Button
+                paddingVertical={20}
+                text={'닫기'}
+                color={custom.themeColor}
+                onPress={() => {
+                  setShowPopupModal(false);
+                }}
+                size={'middle'}
+                stretch
+              />
+            </View>
+          </HView>
         </View>
       </Modal>
     </Container>

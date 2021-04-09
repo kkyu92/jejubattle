@@ -11,6 +11,9 @@ export const ANDROID_PLAY_STORE = 'market://details?id=com.jejubattle';
 export const IOS_APP_STORE = 'https://apps.apple.com/app/';
 
 export const custom = {
+  white: '#ffffff',
+  black: '#000000',
+  red: '#f44336',
   themeColor: '#F4A100',
   textColor: '#222430',
   headerTitleWeight: 'bold',

@@ -10,6 +10,7 @@ import {
   Modal,
   Checkbox,
   TextInput,
+  Nuno,
 } from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, FlatList, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -47,6 +48,8 @@ export default function Battle(props) {
   const [blCode, setBlCode] = React.useState(0);
   const [bpCode, setBpCode] = React.useState(0);
   const [caCode, setCaCode] = React.useState([]);
+
+  const [showPopupModal, setShowPopupModal] = React.useState(false);
 
   React.useEffect(() => {
     if (props.route.params || pullToRefresh) {
@@ -337,7 +340,31 @@ export default function Battle(props) {
             />
           </View>
         }
-        title={'스포츠배틀'}
+        centerComponent={
+          <TouchableOpacity
+            onPress={() => setShowPopupModal(true)}
+            style={{
+              marginStart: 25,
+              paddingHorizontal: 20,
+              paddingVertical: 5,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text
+              fontSize={18}
+              fontWeight={Nuno.config.headerTitleWeight || '500'}
+              color={Nuno.config.textColor || 'dimgray'}
+              text={'스포츠배틀'}
+            />
+            <Seperator width={5} />
+            <Image
+              local
+              uri={require('../../../assets/img/icon_quesmark.png')}
+              height={20}
+              width={20}
+            />
+          </TouchableOpacity>
+        }
         navigation={props.navigation}
         rightComponent={
           <TouchableOpacity
@@ -405,6 +432,39 @@ export default function Battle(props) {
           props.navigation.navigate('BattleEdit');
         }}
       />
+
+      <Modal
+        isVisible={showPopupModal}
+        onBackdropPress={() => setShowPopupModal(false)}>
+        <View
+          style={{
+            padding: 10,
+            backgroundColor: 'white',
+            borderRadius: 10,
+            // alignItems: 'center',
+          }}>
+          <View>
+            <Image
+              local
+              uri={require('../../../assets/img/info_sports_battle.png')}
+              height={350}
+              width={'100%'}
+              resizeMode={'contain'}
+            />
+          </View>
+          <View>
+            <Button
+              text={'닫기'}
+              color={custom.themeColor}
+              onPress={() => {
+                setShowPopupModal(false);
+              }}
+              size={'middle'}
+              stretch
+            />
+          </View>
+        </View>
+      </Modal>
     </Container>
   );
 }

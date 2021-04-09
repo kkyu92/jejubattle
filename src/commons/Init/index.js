@@ -40,6 +40,8 @@ export default async () => {
   axios.defaults.headers.post['Content-Type'] = 'application/json';
 
   // 각종 asyncstorage global value
+  const hideOutBtnGuide = await AsyncStorage.getItem('hideOutBtnGuide');
+  global.hideOutBtnGuide = hideOutBtnGuide;
   const hideFilterGuide = await AsyncStorage.getItem('hideFilterGuide');
   global.hideFilterGuide = hideFilterGuide;
   const hidePermissionAlert = await AsyncStorage.getItem('hidePermissionAlert');
