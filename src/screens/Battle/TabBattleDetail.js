@@ -38,6 +38,7 @@ import Reward from './Reward';
 import * as RootNavigation from '../../navigations/RootNavigation';
 import {getStatusBarHeight, getBottomSpace} from 'react-native-iphone-x-helper';
 import Entypo from 'react-native-vector-icons/Entypo';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default function TabBattleDetail(props) {
   const context = React.useContext(AppContext);
@@ -629,7 +630,7 @@ export default function TabBattleDetail(props) {
         </View>
       </HView>
       <Seperator bottom />
-      {props.info.baCode < 3 && (
+      {props.info.baCode < 3 && !hideOutBtnGuide && (
         <View
           style={{
             backgroundColor: '#303441',
@@ -649,11 +650,11 @@ export default function TabBattleDetail(props) {
           <TouchableOpacity
             onPress={async () => {
               await AsyncStorage.setItem(
-                'hideFilterGuide',
+                'hideOutBtnGuide',
                 JSON.stringify(true),
               );
-              setHideFilterGuide(true);
-              global.hideFilterGuide = true;
+              setHideOutBtnGuide(true);
+              global.hideOutBtnGuide = true;
             }}
             style={{padding: 15}}>
             <Text text={'X 다시보지않기'} color={'lightgray'} fontSize={12} />
