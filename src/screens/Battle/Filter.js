@@ -268,28 +268,28 @@ export default function BattleFilter(props) {
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
-                label={'초보'}
+                label={'초보만'}
                 checked={blCode === 1}
                 onPress={() => setBlCode(1)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
-                label={'중수'}
+                label={'중수만'}
                 checked={blCode === 2}
                 onPress={() => setBlCode(2)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
-                label={'고수'}
+                label={'고수만'}
                 checked={blCode === 3}
                 onPress={() => setBlCode(3)}
               />
             </View>
             <View style={{paddingVertical: 10, paddingRight: 20}}>
               <Checkbox
-                label={'프로'}
+                label={'프로만'}
                 checked={blCode === 4}
                 onPress={() => setBlCode(4)}
               />

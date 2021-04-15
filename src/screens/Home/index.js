@@ -11,6 +11,7 @@ import {
   Carousel,
   Image,
   Button,
+  Nuno,
 } from '../../react-native-nuno-ui';
 import {TouchableOpacity, View, Platform} from 'react-native';
 import Icons from '../../commons/Icons';
@@ -71,20 +72,39 @@ export default function Home(props) {
   React.useEffect(() => {
     setPop(true);
     if (pop === true) {
-      Axios.get('popup')
+      Axios.post('version', {})
         .then(async (res) => {
-          logApi('popup', res.data.fileUrl);
-          if (res.data.fileUrl) {
-            setPopupImgUrl(res.data.fileUrl);
-            let now = moment().format('LL');
-            if (popupDate !== now) {
-              // 그만보기 설정한 날짜와 다를경우 보여짐
-              setShowPopupModal(true);
-            }
+          const version = DeviceInfo.getVersion();
+          // const buildNumber = DeviceInfo.getBuildNumber();
+          console.log(`Device Version ${version}`);
+          console.log(`Store Version ${res.data.appVersion}`);
+          if (version !== res.data.appVersion) {
+            setShowUpdateModal(true);
+            setAertTitle('업데이트 알림');
+            setAlertText(
+              `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
+            );
+          } else {
+            Axios.get('popup')
+              .then(async (res) => {
+                logApi('popup', res.data.fileUrl);
+                if (res.data.fileUrl) {
+                  setPopupImgUrl(res.data.fileUrl);
+                  let now = moment().format('LL');
+                  if (popupDate !== now) {
+                    // 그만보기 설정한 날짜와 다를경우 보여짐
+                    setShowPopupModal(true);
+                    // props.route.params.pop = false;
+                  }
+                }
+              })
+              .catch((err) => {
+                logApi('popup error', err);
+              });
           }
         })
         .catch((err) => {
-          logApi('popup error', err);
+          console.log('Version error', err.response);
         });
     }
   }, [props.route.params?.pop]);
@@ -120,42 +140,59 @@ export default function Home(props) {
     if (!appStartGuide) {
       console.log(`appStartGuide::: ${appStartGuide}`);
       props.navigation.navigate('GuideStart');
-    } else {
-      Axios.get('popup')
+      Axios.post('version', {})
         .then(async (res) => {
-          logApi('popup', res.data.fileUrl);
-          if (res.data.fileUrl) {
-            setPopupImgUrl(res.data.fileUrl);
-            let now = moment().format('LL');
-            if (popupDate !== now) {
-              // 그만보기 설정한 날짜와 다를경우 보여짐
-              setShowPopupModal(true);
-              // props.route.params.pop = false;
-            }
+          const version = DeviceInfo.getVersion();
+          // const buildNumber = DeviceInfo.getBuildNumber();
+          console.log(`Device Version ${version}`);
+          console.log(`Store Version ${res.data.appVersion}`);
+          if (version !== res.data.appVersion) {
+            setShowUpdateModal(true);
+            setAertTitle('업데이트 알림');
+            setAlertText(
+              `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
+            );
           }
         })
         .catch((err) => {
-          logApi('popup error', err);
+          console.log('Version error', err.response);
+        });
+    } else {
+      Axios.post('version', {})
+        .then(async (res) => {
+          const version = DeviceInfo.getVersion();
+          // const buildNumber = DeviceInfo.getBuildNumber();
+          console.log(`Device Version ${version}`);
+          console.log(`Store Version ${res.data.appVersion}`);
+          if (version !== res.data.appVersion) {
+            setShowUpdateModal(true);
+            setAertTitle('업데이트 알림');
+            setAlertText(
+              `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
+            );
+          } else {
+            Axios.get('popup')
+              .then(async (res) => {
+                logApi('popup', res.data.fileUrl);
+                if (res.data.fileUrl) {
+                  setPopupImgUrl(res.data.fileUrl);
+                  let now = moment().format('LL');
+                  if (popupDate !== now) {
+                    // 그만보기 설정한 날짜와 다를경우 보여짐
+                    setShowPopupModal(true);
+                    // props.route.params.pop = false;
+                  }
+                }
+              })
+              .catch((err) => {
+                logApi('popup error', err);
+              });
+          }
+        })
+        .catch((err) => {
+          console.log('Version error', err.response);
         });
     }
-
-    Axios.post('version', {})
-      .then(async (res) => {
-        const version = DeviceInfo.getVersion();
-        // const buildNumber = DeviceInfo.getBuildNumber();
-        console.log(`Device Version ${version}`);
-        console.log(`Store Version ${res.data.appVersion}`);
-        if (version !== res.data.appVersion) {
-          setShowUpdateModal(true);
-          setAertTitle('업데이트 알림');
-          setAlertText(
-            `제주배틀박스 앱이 v.${res.data.appVersion} 최신버전으로 업데이트되었습니다! 지금 앱 업데이트를 통해 더욱 쾌적해진 제주배틀박스를 만나보세요!`,
-          );
-        }
-      })
-      .catch((err) => {
-        console.log('Version error', err.response);
-      });
 
     getToken();
   }, []);

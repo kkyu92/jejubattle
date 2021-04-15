@@ -344,14 +344,12 @@ export default function Evaluation(props) {
           <Seperator height={20} />
           <HView
             style={{
-              flex: 1,
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingVertical: 20,
             }}>
             <View style={{flex: 1, alignItems: 'center'}}>
               <Button
-                paddingVertical={20}
+                paddingVertical={15}
                 text={'설정'}
                 color={'gray'}
                 onPress={async () => {
@@ -366,7 +364,7 @@ export default function Evaluation(props) {
             <Seperator width={10} />
             <View style={{flex: 1, alignItems: 'center'}}>
               <Button
-                paddingVertical={20}
+                paddingVertical={15}
                 text={'닫기'}
                 color={custom.themeColor}
                 onPress={() => {
