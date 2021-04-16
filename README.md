@@ -29,6 +29,13 @@
 
 > https://play.google.com/apps/internaltest/4700794782783427988
 
+#### 2021.04.16
+
+> android (2.1.9.219)
+> ios (2.1.9.1)
+
+- QA
+
 #### 2021.04.15
 
 > android (2.1.8.218)
